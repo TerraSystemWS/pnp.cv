@@ -17,10 +17,10 @@ const Layout = ({ children }: Props) => (
 		</Head> */}
 
 		<header>
-			<NavBar />
+			<NavBar />{" "}
 		</header>
 
-		{children}
+		<div className="mt-28">{children}</div>
 
 		<Footer />
 	</div>
