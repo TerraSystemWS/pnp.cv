@@ -46,7 +46,7 @@ const Nav = () => {
 						<li key={link.name} className="md:ml-8 text-xl md:my-0 my-7">
 							<a
 								href={link.link}
-								className="text-branco hover:text-castanho-claro duration-500"
+								className="text-branco hover:text-amarelo-ouro duration-500"
 							>
 								{link.name}
 							</a>
