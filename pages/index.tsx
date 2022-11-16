@@ -12,7 +12,7 @@ export default function Home({ social, contato }: any) {
 	// return
 	return (
 		<Layout rsocial={social} contato={contato}>
-			<div></div>
+			<div>terra</div>
 		</Layout>
 	);
 }
