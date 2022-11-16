@@ -30,6 +30,6 @@ export async function getStaticProps() {
 
 	return {
 		props: { social: rsocials, contato },
-		revalidate: 10 /*in seconds*/,
+		revalidate: 60 /*in seconds*/,
 	};
 }
