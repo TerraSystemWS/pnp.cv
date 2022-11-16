@@ -26,7 +26,10 @@ export async function getStaticProps() {
 		`${process.env.NEXT_PUBLIC_STRAPI_URL}/contato`
 	);
 
-	console.log(rsocials);
+	// console.log(rsocials);
 
-	return { props: { social: rsocials, contato } };
+	return {
+		props: { social: rsocials, contato },
+		revalidate: 10 /*in seconds*/,
+	};
 }
