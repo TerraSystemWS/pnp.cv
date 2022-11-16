@@ -5,31 +5,55 @@ import Layout from "../components/Layout";
 import logo from "public/logo1.png";
 import { fetcher } from "../lib/api";
 
-export default function Home({ social, contato }: any) {
-	console.log("dentu home ta ati pati rsocial");
-	console.log(contato);
+// link para a url do api
+const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
+
+export default function Home({ social, contato, banners }: any) {
+	// create data for Banner carousel
+	let bannerData: any = [];
+	// create de banner object
+	banners.data.map((value: any, index: any) => {
+		if (value.attributes.destaque) {
+			bannerData[index] = {
+				id: index,
+				title: value.attributes.banners.titulo,
+				url: value.attributes.banners.image.data.attributes.url,
+			};
+		}
+	});
 
 	// return
 	return (
 		<Layout rsocial={social} contato={contato}>
+			{/* <pre>{JSON.stringify(banners, null, 2)}</pre> */}
+			<pre>{JSON.stringify(bannerData, null, 2)}</pre>
 			<div>terra</div>
 		</Layout>
 	);
 }
 
-export async function getStaticProps() {
-	const rsocials = await fetcher(
-		`${process.env.NEXT_PUBLIC_STRAPI_URL}/redes-social?populate=*`
-	);
+// export async function getStaticProps() {
 
-	const contato = await fetcher(
-		`${process.env.NEXT_PUBLIC_STRAPI_URL}/contato`
-	);
+// 	return {
+// 		props: ,
+// 		revalidate: 60 /*in seconds*/,
+// 	};
+// }
 
-	// console.log(rsocials);
+// This gets called on every request
+export async function getServerSideProps() {
+	// Fetch data from external API
 
-	return {
-		props: { social: rsocials, contato },
-		revalidate: 60 /*in seconds*/,
-	};
+	// GET: links para as redes sociais
+	const rsocials = await fetcher(`${api_link}/redes-social?populate=*`);
+
+	// GET: dados para contatos
+	const contato = await fetcher(`${api_link}/contato`);
+	// GET: dados para banners
+	const banners = await fetcher(`${api_link}/banners?populate=deep`);
+
+	// console.log(banners.attributes);
+
+	// Pass data to the page via props
+	return { props: { social: rsocials, contato, banners } };
 }
