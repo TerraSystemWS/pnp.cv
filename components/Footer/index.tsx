@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import logo from "public/logo1.png";
+
 import {
 	IoCallOutline,
 	IoSendOutline,
@@ -10,7 +11,10 @@ import {
 	IoLogoTwitter,
 } from "react-icons/io5";
 
-const Footer = () => {
+const Footer = ({ rsocial, contato }: any) => {
+	console.log("dados passado para o footer por layout");
+	console.log(contato.data.attributes.Local);
+
 	let usefulLinks = [
 		{ name: "home", link: "/" },
 		{ name: "About Us", link: "/" },
@@ -27,6 +31,12 @@ const Footer = () => {
 		{ name: "CONTATOS", link: "/contatos" },
 	];
 
+	// if (rsocial) {
+	// 	rsocial.data.attributes.link.map((link: any) => {
+
+	// 	});
+	// }
+
 	return (
 		<footer>
 			<div className="p-10 bg-preto text-amarelo-ouro">
@@ -37,14 +47,15 @@ const Footer = () => {
 								<Image src={logo} alt="logo" />
 							</h4>
 							<p className="text-gray-300">
-								Palmarejo <br />
-								Praia, Santiago
-								<br />
-								Cabo Verde <br />
+								{contato.data.attributes.Local}
 								<strong>{/* <IoCallOutline /> */}</strong>
-								(+238) 261 4915 / 9278968
+								{/* (+238) 261 4915 / 9278968 */}
+								{contato.data.attributes.phone}
 								<br />
-								<strong>{/* <IoSendOutline /> */}</strong> pnp@eme.cv <br />
+								{/* <strong>
+									<IoSendOutline />
+								</strong>{" "} */}
+								{contato.data.attributes.email} <br />
 							</p>
 						</div>
 						<div className="mb-5">
@@ -73,8 +84,7 @@ const Footer = () => {
 						<div className="mb-5">
 							<h4 className="uppercase">Subscreva no NewsLetter</h4>
 							<p className="text-gray-300 pb-2">
-								Junte a outros, e nunca perca eventos ou noticias sobre o premio
-								nacional de publicidades
+								{contato.data.attributes.newsletterTitle}
 							</p>
 							<form action="" className="flex flex-row flex-wrap">
 								<input
@@ -102,6 +112,16 @@ const Footer = () => {
 						</div>
 					</div>
 					<div className="text-center text-xl text-branco mb-2">
+						{/* {rsocial.data.attributes.link.map(({ link, index }: any) => (
+							<Link
+								key={link.canal}
+								href="https://www.facebook.com/PNPCaboVerde/"
+								className="w-10 h-10 rounded-full bg-preto hover:bg-amarelo-escuro mx-1 inline-block pt-1"
+								target="_blank"
+							>
+								<p dangerouslySetInnerHTML={{ __html: link.canal }}></p>
+							</Link>
+						))} */}
 						<Link
 							href="https://www.facebook.com/PNPCaboVerde/"
 							className="w-10 h-10 rounded-full bg-preto hover:bg-amarelo-escuro mx-1 inline-block pt-1"

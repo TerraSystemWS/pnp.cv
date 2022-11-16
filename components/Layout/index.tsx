@@ -7,9 +7,11 @@ import React, { ReactNode } from "react";
 
 interface Props {
 	children?: ReactNode;
+	rsocial: ReactNode;
+	contato: ReactNode;
 }
 
-const Layout = ({ children }: Props) => (
+const Layout = ({ children, rsocial, contato }: Props) => (
 	// <UserProvider value={{ user, loading }}>
 	<div className="">
 		{/* <Head>
@@ -22,7 +24,7 @@ const Layout = ({ children }: Props) => (
 
 		<div className="mt-28">{children}</div>
 
-		<Footer />
+		<Footer rsocial={rsocial} contato={contato} />
 	</div>
 	// </UserProvider>
 );
