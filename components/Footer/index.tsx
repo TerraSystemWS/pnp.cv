@@ -16,10 +16,10 @@ const Footer = ({ rsocial, contato }: any) => {
 	console.log(contato.data.attributes.Local);
 
 	let usefulLinks = [
-		{ name: "home", link: "/" },
-		{ name: "About Us", link: "/" },
-		{ name: "Terms of service", link: "/" },
-		{ name: "Privacy policy", link: "/" },
+		{ name: "Home", link: "/" },
+		{ name: "Sobre Nos", link: "/" },
+		{ name: "Termos de Serviços", link: "/" },
+		{ name: "Politica de Privacidade", link: "/" },
 	];
 
 	let websites = [
@@ -27,7 +27,7 @@ const Footer = ({ rsocial, contato }: any) => {
 		{ name: "REGULAMENTOS", link: "/regulamentos" },
 		{ name: "EDIÇÕES", link: "/edicoes" },
 		{ name: "ARQUIVOS", link: "/arquivos" },
-		{ name: "BLOG'S", link: "/posts" },
+		{ name: "BLOG", link: "/posts" },
 		{ name: "CONTATOS", link: "/contatos" },
 	];
 
@@ -59,7 +59,7 @@ const Footer = ({ rsocial, contato }: any) => {
 							</p>
 						</div>
 						<div className="mb-5">
-							<h4 className="uppercase">Useful Links</h4>
+							<h4 className="uppercase">Links Úteis</h4>
 							<ul className="text-gray-300">
 								{usefulLinks.map((link) => (
 									<li
@@ -82,7 +82,7 @@ const Footer = ({ rsocial, contato }: any) => {
 							</ul>
 						</div>
 						<div className="mb-5">
-							<h4 className="uppercase">Subscreva no NewsLetter</h4>
+							<h4 className="uppercase">Subscreva A Nossa NewsLetter</h4>
 							<p className="text-gray-300 pb-2">
 								{contato.data.attributes.newsletterTitle}
 							</p>

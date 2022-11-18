@@ -4,6 +4,7 @@ import styles from "../styles/Home.module.css";
 import Layout from "../components/Layout";
 import logo from "public/logo1.png";
 import { fetcher } from "../lib/api";
+import { Alert, Carousel } from "flowbite-react";
 
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
@@ -26,8 +27,9 @@ export default function Home({ social, contato, banners }: any) {
 	return (
 		<Layout rsocial={social} contato={contato}>
 			{/* <pre>{JSON.stringify(banners, null, 2)}</pre> */}
-			<pre>{JSON.stringify(bannerData, null, 2)}</pre>
-			<div>terra</div>
+			{/* <pre>{JSON.stringify(bannerData, null, 2)}</pre> */}
+
+			<Alert color="info">Alert! ... &qout;Atualizando dados&qout;</Alert>
 		</Layout>
 	);
 }
