@@ -29,7 +29,22 @@ export default function Home({ social, contato, banners }: any) {
 			{/* <pre>{JSON.stringify(banners, null, 2)}</pre> */}
 			{/* <pre>{JSON.stringify(bannerData, null, 2)}</pre> */}
 
-			<Alert color="info">Alert! ... &qout;Atualizando dados&qout;</Alert>
+			<div className="container max-w-full -mt-2">
+				{/* ex class h-56 sm:h-64 xl:h-80 2xl:h-96 */}
+				<div className="h-56 md:h-screen">
+					<Carousel>
+						{bannerData.map((value: any) => (
+							<Image
+								key={value.id}
+								src={value.url}
+								alt={value.title}
+								width={800}
+								height={600}
+							/>
+						))}
+					</Carousel>
+				</div>
+			</div>
 		</Layout>
 	);
 }
