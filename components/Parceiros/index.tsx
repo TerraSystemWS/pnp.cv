@@ -13,10 +13,15 @@ const Parceiros = (props: any) => {
 					{props.dados?.map((value: any, index: any) => (
 						<a
 							key={index}
-							href="#"
+							href={value.link}
 							className="flex justify-center items-center"
 						>
-							<Image src="" alt="asdd" />
+							<Image
+								src={value.foto}
+								alt={value.title}
+								width={150}
+								height={150}
+							/>
 						</a>
 					))}
 					{/* <a href="#" className="flex justify-center items-center">
@@ -157,7 +162,10 @@ const Parceiros = (props: any) => {
 					<div className="flex flex-wrap lg:w-4/5 sm:mx-auto sm:mb-2 -mx-2">
 						<div className="p-2 sm:w-1/2 w-full">
 							<Tooltip content="saber mais sobre parceiros">
-								<a href="#" className="flex justify-center items-center w-10">
+								<a
+									href="/parceiros"
+									className="flex justify-center items-center w-10"
+								>
 									<Morelink />
 								</a>
 							</Tooltip>
