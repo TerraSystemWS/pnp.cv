@@ -6,11 +6,12 @@ import logo from "public/logo1.png";
 import { fetcher } from "../lib/api";
 import { Alert, Carousel } from "flowbite-react";
 import Juri from "../components/Juri";
+import Categorias from "../components/Categorias";
 
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
 
-export default function Home({ social, contato, banners, juris }: any) {
+export default function Home({ social, contato, banners, edicao }: any) {
 	// create data for Banner carousel
 	let bannerData: any = [];
 	// create banner object
@@ -26,8 +27,10 @@ export default function Home({ social, contato, banners, juris }: any) {
 
 	// dados do juri
 	let Juris: any = [];
+	// dados de categorias
+	let Categoria: any = [];
 	// create Juris objetct
-	juris.data.map((value: any, index: any) => {
+	edicao.data.map((value: any, index: any) => {
 		value.attributes.juri.map((value2: any, index2: any) => {
 			// console.log(value2.foto.data?.attributes.url);
 			Juris[index2] = {
@@ -39,6 +42,13 @@ export default function Home({ social, contato, banners, juris }: any) {
 				j_descricao: value2.descricao,
 			};
 		});
+		value.attributes.categoria.map((categs: any, index3: any) => {
+			Categoria[index3] = {
+				id: index3,
+				titulo: categs.titulo,
+				descricao: categs.descricao,
+			};
+		});
 	});
 
 	// console.log(Juris);
@@ -48,7 +58,7 @@ export default function Home({ social, contato, banners, juris }: any) {
 		<Layout rsocial={social} contato={contato}>
 			{/* <pre>{JSON.stringify(banners, null, 2)}</pre> */}
 			{/* <pre>{JSON.stringify(bannerData, null, 2)}</pre> */}
-			{/* <pre>{JSON.stringify(Juris, null, 2)}</pre> */}
+			<pre>{JSON.stringify(edicao, null, 2)}</pre>
 
 			<div className="-mt-2">
 				{/* ex class h-56 sm:h-64 xl:h-80 2xl:h-96 */}
@@ -89,21 +99,23 @@ export default function Home({ social, contato, banners, juris }: any) {
 				</div>
 			</div>
 
+			<Categorias dados={Categoria} />
+
 			<Juri dados={Juris} />
 
 			<div className="">
 				<div className="bg-gray-50">
 					<div className="mx-auto max-w-7xl py-12 px-4 sm:px-6 lg:flex lg:items-center lg:justify-between lg:py-16 lg:px-8">
 						<h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-							<span className="block">Pronto para inscreva-se?</span>
+							<span className="block">Pronto para se inscrever?</span>
 							<span className="block text-amarelo-ouro">
-								Inscrição aberta apartir do dia 1 a 31 de Janero 2023
+								Inscrições abertas a partir do dia 1 a 31 de Janeiro
 							</span>
 						</h2>
 						<div className="mt-8 flex lg:mt-0 lg:flex-shrink-0">
 							<div className="inline-flex rounded-md shadow">
 								<a
-									href="/inscricao"
+									href="/inscrever"
 									className="inline-flex items-center justify-center rounded-md border border-transparent bg-amarelo-ouro px-5 py-3 text-base font-medium text-white hover:bg-castanho-claro"
 								>
 									Inscrever
@@ -143,11 +155,11 @@ export async function getServerSideProps() {
 	const contato = await fetcher(`${api_link}/contato`);
 	// GET: dados para banners
 	const banners = await fetcher(`${api_link}/banners?populate=deep`);
-	// GET: dados dos juris
-	const juris = await fetcher(`${api_link}/edicoes?populate=deep`);
+	// GET: dados dos juris, categorias
+	const edicao = await fetcher(`${api_link}/edicoes?populate=deep`);
 
 	// console.log(banners.attributes);
 
 	// Pass data to the page via props
-	return { props: { social: rsocials, contato, banners, juris } };
+	return { props: { social: rsocials, contato, banners, edicao } };
 }
