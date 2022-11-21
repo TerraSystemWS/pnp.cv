@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@svgr/webpack": "^6.5.1",
     "flowbite": "^1.5.4",
     "flowbite-react": "^0.3.4",
     "next": "13.0.0",
