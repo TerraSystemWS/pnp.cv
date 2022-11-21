@@ -8,7 +8,7 @@ const Nav = () => {
 		{ name: "HOME", link: "/" },
 		{ name: "REGULAMENTOS", link: "/regulamentos" }, // aqui tem categorias, regulamentos e parceiros
 		{ name: "EDIÇÕES", link: "/edicoes" }, // catalagos e gala
-		{ name: "ARQUIVOS", link: "/archive" }, // Tem videos e galerias
+		{ name: "PARCEIROS", link: "/parceiros" }, // Tem videos e galerias
 		{ name: "BLOG'S", link: "/posts" }, // posts
 		{ name: "CONTATOS", link: "/contatos" }, //
 	];
@@ -16,7 +16,7 @@ const Nav = () => {
 	let [open, setOpen] = useState(false);
 
 	return (
-		<div className="shadow-md w-full fixed top-0 left-0">
+		<div className="shadow-md w-full fixed top-0 left-0 z-10">
 			<div className="md:flex items-center justify-between bg-preto py-4 md:px-10 px-7">
 				<div
 					className="font-bold text-2xl cursor-pointer flex items-center font-[Poppins] 
