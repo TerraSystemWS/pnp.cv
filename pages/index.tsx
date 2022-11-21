@@ -58,7 +58,7 @@ export default function Home({ social, contato, banners, edicao }: any) {
 		<Layout rsocial={social} contato={contato}>
 			{/* <pre>{JSON.stringify(banners, null, 2)}</pre> */}
 			{/* <pre>{JSON.stringify(bannerData, null, 2)}</pre> */}
-			<pre>{JSON.stringify(edicao, null, 2)}</pre>
+			{/* <pre>{JSON.stringify(edicao, null, 2)}</pre> */}
 
 			<div className="-mt-2">
 				{/* ex class h-56 sm:h-64 xl:h-80 2xl:h-96 */}
