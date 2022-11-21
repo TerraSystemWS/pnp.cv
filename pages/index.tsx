@@ -4,16 +4,33 @@ import styles from "../styles/Home.module.css";
 import Layout from "../components/Layout";
 import logo from "public/logo1.png";
 import { fetcher } from "../lib/api";
-import { Alert, Carousel } from "flowbite-react";
+import { Carousel, Button, Alert } from "flowbite-react";
 import Juri from "../components/Juri";
 import Categorias from "../components/Categorias";
+import Parceiros from "../components/Parceiros";
+import { HiInformationCircle } from "react-icons/hi";
 
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
 
-export default function Home({ social, contato, banners, edicao }: any) {
+export default function Home({
+	social,
+	contato,
+	banners,
+	edicao,
+	parceiros,
+}: any) {
 	// create data for Banner carousel
 	let bannerData: any = [];
+	// dados do juri
+	let Juris: any = [];
+	// dados de categorias
+	let Categoria: any = [];
+	//dados do grupo de parceiros
+	let parceirosOrganizacao: any = [];
+	let parceirosPadrinho: any = [];
+	let parceirosPatrocinadores: any = [];
+	let parceirosMedia: any = [];
 	// create banner object
 	banners.data.map((value: any, index: any) => {
 		if (value.attributes.destaque) {
@@ -24,11 +41,6 @@ export default function Home({ social, contato, banners, edicao }: any) {
 			};
 		}
 	});
-
-	// dados do juri
-	let Juris: any = [];
-	// dados de categorias
-	let Categoria: any = [];
 	// create Juris objetct
 	edicao.data.map((value: any, index: any) => {
 		value.attributes.juri.map((value2: any, index2: any) => {
@@ -42,6 +54,7 @@ export default function Home({ social, contato, banners, edicao }: any) {
 				j_descricao: value2.descricao,
 			};
 		});
+		// get dados da categoria
 		value.attributes.categoria.map((categs: any, index3: any) => {
 			Categoria[index3] = {
 				id: index3,
@@ -51,7 +64,74 @@ export default function Home({ social, contato, banners, edicao }: any) {
 		});
 	});
 
-	// console.log(Juris);
+	parceiros.data.map((value: any, index: any) => {
+		value.attributes.organizacao.map((value2: any, index2: any) => {
+			parceirosOrganizacao[index2] = {
+				id: index2,
+				link: value2.link,
+				title: value2.logo.data.attributes.name,
+				foto: value2.logo.data.attributes.url,
+			};
+		});
+		value.attributes.parceiros_padrinhos.map((value2: any, index2: any) => {
+			parceirosPadrinho[index2] = {
+				id: index2,
+				link: value2.link,
+				title: value2.logo.data.attributes.name,
+				foto: value2.logo.data.attributes.url,
+			};
+		});
+		value.attributes.patrocinadores.map((value2: any, index2: any) => {
+			parceirosPatrocinadores[index2] = {
+				id: index2,
+				link: value2.link,
+				title: value2.logo.data.attributes.name,
+				foto: value2.logo.data.attributes.url,
+			};
+		});
+		value.attributes.media_parteners.map((value2: any, index2: any) => {
+			parceirosMedia[index2] = {
+				id: index2,
+				link: value2.link,
+				title: value2.logo.data.attributes.name,
+				foto: value2.logo.data.attributes.url,
+			};
+		});
+	});
+
+	// create the partner list
+	let partnerList: any = [];
+	parceirosOrganizacao.map((value: any) => {
+		partnerList.push({
+			link: value.link,
+			title: value.title,
+			foto: value.foto,
+		});
+	});
+	parceirosPadrinho.map((value: any) => {
+		partnerList.push({
+			link: value.link,
+			title: value.title,
+			foto: value.foto,
+		});
+	});
+	parceirosPatrocinadores.map((value: any) => {
+		partnerList.push({
+			link: value.link,
+			title: value.title,
+			foto: value.foto,
+		});
+	});
+	parceirosMedia.map((value: any) => {
+		partnerList.push({
+			link: value.link,
+			title: value.title,
+			foto: value.foto,
+		});
+	});
+
+	// console.log("partnerList");
+	// console.log(partnerList);
 
 	// return;
 	return (
@@ -59,6 +139,7 @@ export default function Home({ social, contato, banners, edicao }: any) {
 			{/* <pre>{JSON.stringify(banners, null, 2)}</pre> */}
 			{/* <pre>{JSON.stringify(bannerData, null, 2)}</pre> */}
 			{/* <pre>{JSON.stringify(edicao, null, 2)}</pre> */}
+			{/* <pre>{JSON.stringify(parceiros, null, 2)}</pre> */}
 
 			<div className="-mt-2">
 				{/* ex class h-56 sm:h-64 xl:h-80 2xl:h-96 */}
@@ -101,6 +182,39 @@ export default function Home({ social, contato, banners, edicao }: any) {
 
 			<Categorias dados={Categoria} />
 
+			<section className="text-gray-600 body-font">
+				<div className="container px-5 py-24 mx-auto">
+					<div className="text-center mb-20">
+						<h1 className="sm:text-3xl text-2xl font-medium text-center title-font text-amarelo-ouro mb-4">
+							PREMIO PÚBLICO DE PUBLICIDADE
+						</h1>
+						<p className="text-base leading-relaxed xl:w-2/4 lg:w-3/4 mx-auto">
+							O Prémio Público de Publicidade é uma das categorias do Prémio
+							Naccional de Publicidade (PNP) em que a votação é feita somente
+							pelo público, através da internet. Trata-se de um prémio da
+							responsabilidade do PNP, com regulamento próprio, sem avaliaçaõ do
+							júri, baseado apenas no critério de popularidade.
+						</p>
+					</div>
+					<div className="flex flex-col gap-4 w-1/2 justify-center sm:mx-auto sm:mb-2 -mx-2">
+						<button
+							className="h-10 px-6 font-semibold rounded-md bg-black text-white"
+							type="submit"
+							disabled
+						>
+							Area De Votaçao
+						</button>
+
+						<Alert color="warning" icon={HiInformationCircle}>
+							<span>
+								<span className="font-medium">Info!</span> O Link fica ativo
+								somente no peíodo de votação.
+							</span>
+						</Alert>
+					</div>
+				</div>
+			</section>
+
 			<Juri dados={Juris} />
 
 			<div className="">
@@ -133,6 +247,8 @@ export default function Home({ social, contato, banners, edicao }: any) {
 					</div>
 				</div>
 			</div>
+
+			<Parceiros dados={partnerList} />
 		</Layout>
 	);
 }
@@ -157,9 +273,11 @@ export async function getServerSideProps() {
 	const banners = await fetcher(`${api_link}/banners?populate=deep`);
 	// GET: dados dos juris, categorias
 	const edicao = await fetcher(`${api_link}/edicoes?populate=deep`);
+	// GET: dados dos parceiros
+	const parceiros = await fetcher(`${api_link}/parceiros?populate=deep`);
 
 	// console.log(banners.attributes);
 
 	// Pass data to the page via props
-	return { props: { social: rsocials, contato, banners, edicao } };
+	return { props: { social: rsocials, contato, banners, edicao, parceiros } };
 }
