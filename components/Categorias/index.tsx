@@ -8,16 +8,6 @@ const Categorias = (props: any) => {
 					<h1 className="sm:text-3xl text-2xl font-medium text-center title-font text-amarelo-ouro mb-4">
 						CATEGORIA DOS PRÉMIOS
 					</h1>
-					<p className="text-base leading-relaxed xl:w-2/4 lg:w-3/4 mx-auto">
-						O Prémio Público de Publicidade é uma das categorias do Prémio
-						Naccional de Publicidade (PNP) em que a votação é feita somente pelo
-						público, através da internet. Trata-se de um prémio da
-						responsabilidade do PNP, com regulamento próprio, sem avaliaçaõ do
-						júri, baseado apenas no critério de popularidade.
-					</p>
-					<h2 className="text-lg font-semibold leading-8 text-amarelo-escuro">
-						<Link href="#">Link ativo somente no peíodo de votação</Link>
-					</h2>
 				</div>
 				<div className="flex flex-wrap lg:w-4/5 sm:mx-auto sm:mb-2 -mx-2">
 					{props.dados.map((value: any, index: any) => (
