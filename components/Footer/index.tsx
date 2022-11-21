@@ -3,8 +3,6 @@ import Image from "next/image";
 import logo from "public/logo1.png";
 
 import {
-	IoCallOutline,
-	IoSendOutline,
 	IoLogoFacebook,
 	IoLogoInstagram,
 	IoLogoYoutube,
@@ -12,8 +10,8 @@ import {
 } from "react-icons/io5";
 
 const Footer = ({ rsocial, contato }: any) => {
-	console.log("dados passado para o footer por layout");
-	console.log(contato.data.attributes.Local);
+	// console.log("dados passado para o footer por layout");
+	// console.log(contato.data.attributes.Local);
 
 	let usefulLinks = [
 		{ name: "Home", link: "/" },
@@ -26,7 +24,7 @@ const Footer = ({ rsocial, contato }: any) => {
 		{ name: "HOME", link: "/" },
 		{ name: "REGULAMENTOS", link: "/regulamentos" },
 		{ name: "EDIÇÕES", link: "/edicoes" },
-		{ name: "ARQUIVOS", link: "/arquivos" },
+		{ name: "PARCEIROS", link: "/parceiros" },
 		{ name: "BLOG", link: "/posts" },
 		{ name: "CONTATOS", link: "/contatos" },
 	];
