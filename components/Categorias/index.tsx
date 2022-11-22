@@ -6,13 +6,13 @@ const Categorias = (props: any) => {
 			<div className="container px-5 py-24 mx-auto">
 				<div className="text-center mb-20">
 					<h1 className="sm:text-3xl text-2xl font-medium text-center title-font text-amarelo-ouro mb-4">
-						CATEGORIA DOS PRÉMIOS
+						CATEGORIA DE PRÉMIOS
 					</h1>
 				</div>
 				<div className="flex flex-wrap lg:w-4/5 sm:mx-auto sm:mb-2 -mx-2">
 					{props.dados.map((value: any, index: any) => (
 						<div key={index} className="p-2 sm:w-1/2 w-full">
-							<div className="bg-gray-100 rounded flex p-4 h-full items-center">
+							<div className="bg-gray-100 rounded flex p-4 h-full items-center hover:scale-95 hover:-ml-5">
 								<svg
 									fill="none"
 									stroke="currentColor"
