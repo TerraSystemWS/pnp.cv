@@ -9,6 +9,7 @@ import Juri from "../components/Juri";
 import Categorias from "../components/Categorias";
 import Parceiros from "../components/Parceiros";
 import { HiInformationCircle } from "react-icons/hi";
+import Link from "next/link";
 
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
@@ -163,7 +164,7 @@ export default function Home({
 					<div className="mx-auto max-w-7xl py-12 px-4 sm:px-6">
 						<h2 className="text-2xl text-center mb-8 font-bold tracking-tight text-gray-900 sm:text-4xl">
 							<span className="block text-amarelo-ouro">
-								PREMIO NACIONAL DE PUBLICIDADE
+								PRÉMIO NACIONAL DE PUBLICIDADE
 							</span>
 							{/* <span className="block ">
 								Inscrição aberta apartir do dia 1 a 31 de Janero 2023
@@ -186,7 +187,7 @@ export default function Home({
 				<div className="container px-5 py-24 mx-auto">
 					<div className="text-center mb-20">
 						<h1 className="sm:text-3xl text-2xl font-medium text-center title-font text-amarelo-ouro mb-4">
-							PREMIO PÚBLICO DE PUBLICIDADE
+							PRÉMIO PÚBLICO DE PUBLICIDADE
 						</h1>
 						<p className="text-base leading-relaxed xl:w-2/4 lg:w-3/4 mx-auto">
 							O Prémio Público de Publicidade é uma das categorias do Prémio
@@ -202,13 +203,13 @@ export default function Home({
 							type="submit"
 							disabled
 						>
-							Area De Votaçao
+							Votar
 						</button>
 
 						<Alert color="warning" icon={HiInformationCircle}>
 							<span>
-								<span className="font-medium">Info!</span> O Link fica ativo
-								somente no peíodo de votação.
+								<span className="font-medium">Info!</span> Link ativo somente no
+								peíodo de votação.
 							</span>
 						</Alert>
 					</div>
@@ -223,25 +224,25 @@ export default function Home({
 						<h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
 							<span className="block">Pronto para se inscrever?</span>
 							<span className="block text-amarelo-ouro">
-								Inscrições abertas a partir do dia 1 a 31 de Janeiro
+								Inscrições abertas de 1 a 31 de Janeiro de 2023
 							</span>
 						</h2>
 						<div className="mt-8 flex lg:mt-0 lg:flex-shrink-0">
 							<div className="inline-flex rounded-md shadow">
-								<a
+								<Link
 									href="/inscrever"
 									className="inline-flex items-center justify-center rounded-md border border-transparent bg-amarelo-ouro px-5 py-3 text-base font-medium text-white hover:bg-castanho-claro"
 								>
 									Inscrever
-								</a>
+								</Link>
 							</div>
 							<div className="ml-3 inline-flex rounded-md shadow">
-								<a
+								<Link
 									href="/regulamentos"
 									className="inline-flex items-center justify-center rounded-md border border-transparent bg-white px-5 py-3 text-base font-medium text-indigo-600 hover:bg-indigo-50"
 								>
 									Regulamentos
-								</a>
+								</Link>
 							</div>
 						</div>
 					</div>
