@@ -15,6 +15,7 @@ const Parceiros = (props: any) => {
 							key={index}
 							href={value.link}
 							className="flex justify-center items-center"
+							target="_blank"
 						>
 							<Image
 								src={value.foto}
