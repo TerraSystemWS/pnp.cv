@@ -1,6 +1,7 @@
 import Layout from "../components/Layout";
 import { fetcher } from "../lib/api";
-
+import Link from "next/link";
+import Image from "next/image";
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
 
@@ -10,13 +11,14 @@ const Parceiros = ({ social, contato, parceiros }: any) => {
 	let parceirosPadrinho: any = [];
 	let parceirosPatrocinadores: any = [];
 	let parceirosMedia: any = [];
+	let cor: string;
 
 	parceiros.data.map((value: any, index: any) => {
 		value.attributes.organizacao.map((value2: any, index2: any) => {
 			parceirosOrganizacao[index2] = {
 				id: index2,
 				link: value2.link,
-				title: value2.logo.data.attributes.name,
+				title: value2.titulo,
 				foto: value2.logo.data.attributes.url,
 			};
 		});
@@ -24,210 +26,219 @@ const Parceiros = ({ social, contato, parceiros }: any) => {
 			parceirosPadrinho[index2] = {
 				id: index2,
 				link: value2.link,
-				title: value2.logo.data.attributes.name,
+				title: value2.titulo,
 				foto: value2.logo.data.attributes.url,
 			};
 		});
 		value.attributes.patrocinadores.map((value2: any, index2: any) => {
+			if (value2.tipo == "Ouro") cor = "#FFD700";
+			if (value2.tipo == "Bronze") cor = "#CD7F32";
+			if (value2.tipo == "Prata") cor = "#C0C0C0";
 			parceirosPatrocinadores[index2] = {
 				id: index2,
 				link: value2.link,
-				title: value2.logo.data.attributes.name,
+				title: value2.titulo,
 				foto: value2.logo.data.attributes.url,
+				tipo: value2.tipo,
+				cor: cor,
 			};
 		});
 		value.attributes.media_parteners.map((value2: any, index2: any) => {
 			parceirosMedia[index2] = {
 				id: index2,
 				link: value2.link,
-				title: value2.logo.data.attributes.name,
+				title: value2.titulo,
 				foto: value2.logo.data.attributes.url,
 			};
 		});
 	});
 
-	// create the partner list
-	let partnerList: any = [];
-	parceirosOrganizacao.map((value: any) => {
-		partnerList.push({
-			link: value.link,
-			title: value.title,
-			foto: value.foto,
-		});
-	});
-	parceirosPadrinho.map((value: any) => {
-		partnerList.push({
-			link: value.link,
-			title: value.title,
-			foto: value.foto,
-		});
-	});
-	parceirosPatrocinadores.map((value: any) => {
-		partnerList.push({
-			link: value.link,
-			title: value.title,
-			foto: value.foto,
-		});
-	});
-	parceirosMedia.map((value: any) => {
-		partnerList.push({
-			link: value.link,
-			title: value.title,
-			foto: value.foto,
-		});
-	});
+	let heading: string;
+	if (parceirosOrganizacao.length > 1) {
+		heading = "Organizadores";
+	} else {
+		heading = "Organizador";
+	}
 
 	return (
 		<Layout rsocial={social} contato={contato}>
-			<pre>{JSON.stringify(parceiros, null, 2)}</pre>
+			{/* <pre>{JSON.stringify(parceirosOrganizacao, null, 2)}</pre> */}
 			<section className="text-gray-600 body-font">
 				<div className="container px-5 py-24 mx-auto">
 					<div className="flex flex-col text-center w-full mb-20">
 						<h1 className="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">
-							Parceiros
+							{heading}
 						</h1>
-						{/* <p className="lg:w-2/3 mx-auto leading-relaxed text-base">
-							Whatever cardigan tote bag tumblr hexagon brooklyn asymmetrical
-							gentrify, subway tile poke farm-to-table. Franzen you probably
-							haven't heard of them.
-						</p> */}
 					</div>
 					<div className="flex flex-wrap -m-2">
-						<div className="p-2 lg:w-1/3 md:w-1/2 w-full">
-							<div className="h-full flex items-center border-gray-200 border p-4 rounded-lg">
-								<img
-									alt="team"
-									className="w-16 h-16 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4"
-									src="https://dummyimage.com/80x80"
-								/>
-								<div className="flex-grow">
-									<h2 className="text-gray-900 title-font font-medium">
-										Holden Caulfield
-									</h2>
-									<p className="text-gray-500">UI Designer</p>
+						{parceirosOrganizacao.map((value: any, index: number) => (
+							<div key={index} className="p-2 lg:w-1/3 md:w-1/2 w-full">
+								<div className="h-full flex items-center border-gray-200 border p-4 rounded-lg">
+									<Image
+										alt="team"
+										className="w-32 h-32 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4"
+										src={value.foto}
+										width={100}
+										height={100}
+									/>
+									<div className="flex-grow">
+										<h2 className="text-gray-900 title-font font-medium">
+											{value.title}
+											{"  "}
+											<span
+												className={`text-white px-3 py-1 tracking-widest text-xs rounded-bl`}
+												style={{ backgroundColor: value.cor }}
+											>
+												Patrocidador {value.tipo}
+											</span>
+										</h2>
+
+										<Link
+											href={value.link || " "}
+											className="text-amarelo-ouro"
+										>
+											visitar
+										</Link>
+									</div>
 								</div>
 							</div>
-						</div>
-						<div className="p-2 lg:w-1/3 md:w-1/2 w-full">
-							<div className="h-full flex items-center border-gray-200 border p-4 rounded-lg">
-								<img
-									alt="team"
-									className="w-16 h-16 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4"
-									src="https://dummyimage.com/84x84"
-								/>
-								<div className="flex-grow">
-									<h2 className="text-gray-900 title-font font-medium">
-										Henry Letham
-									</h2>
-									<p className="text-gray-500">CTO</p>
+						))}
+					</div>
+				</div>
+			</section>
+			{/* patrocinador padrinho */}
+			<section className="text-gray-600 body-font">
+				<div className="container px-5 py-24 mx-auto justify-content">
+					<div className="flex flex-col text-center w-full mb-20">
+						<h1 className="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">
+							Patrocinador Padrinho
+						</h1>
+					</div>
+					<div className="flex flex-wrap -m-2">
+						{parceirosPadrinho.map((value: any, index: number) => (
+							<div key={index} className="p-2 lg:w-1/3 md:w-1/2 w-full">
+								<div className="h-full flex items-center border-gray-200 border p-4 rounded-lg">
+									<Link href={value.link || " "}>
+										<Image
+											alt="team"
+											className="w-32 h-32 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4"
+											src={value.foto}
+											width={100}
+											height={100}
+										/>
+									</Link>
+									<div className="flex-grow">
+										<Link href={value.link || " "}>
+											<h2 className="text-gray-900 title-font font-medium">
+												{value.title}
+												{"  "}
+												<span
+													className={`text-white px-3 py-1 tracking-widest text-xs rounded-bl`}
+													style={{ backgroundColor: value.cor }}
+												>
+													Patrocidador {value.tipo}
+												</span>
+											</h2>
+										</Link>
+
+										<Link
+											href={value.link || " "}
+											className="text-amarelo-ouro"
+										>
+											visitar
+										</Link>
+									</div>
 								</div>
 							</div>
-						</div>
-						<div className="p-2 lg:w-1/3 md:w-1/2 w-full">
-							<div className="h-full flex items-center border-gray-200 border p-4 rounded-lg">
-								<img
-									alt="team"
-									className="w-16 h-16 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4"
-									src="https://dummyimage.com/88x88"
-								/>
-								<div className="flex-grow">
-									<h2 className="text-gray-900 title-font font-medium">
-										Oskar Blinde
-									</h2>
-									<p className="text-gray-500">Founder</p>
+						))}
+					</div>
+				</div>
+			</section>
+			{/* patrocidores */}
+			<section className="text-gray-600 body-font">
+				<div className="container px-5 py-24 mx-auto">
+					<div className="flex flex-col text-center w-full mb-20">
+						<h1 className="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">
+							Patrocinadores
+						</h1>
+					</div>
+					<div className="flex flex-wrap -m-2">
+						{parceirosPatrocinadores.map((value: any, index: number) => (
+							<div key={index} className="p-2 lg:w-1/3 md:w-1/2 w-full">
+								<div className="h-full flex items-center border-gray-200 border p-4 rounded-lg">
+									<Link href={value.link || " "}>
+										<Image
+											alt="team"
+											className="w-32 h-32 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4"
+											src={value.foto}
+											width={100}
+											height={100}
+										/>
+									</Link>
+									<div className="flex-grow">
+										<Link href={value.link || " "}>
+											<h2 className="text-gray-900 title-font font-medium">
+												{value.title}
+												{"  "}
+												<span
+													className={`text-white px-3 py-1 tracking-widest text-xs rounded-bl`}
+													style={{ backgroundColor: value.cor }}
+												>
+													Patrocidador {value.tipo}
+												</span>
+											</h2>
+										</Link>
+
+										<Link
+											href={value.link || " "}
+											className="text-amarelo-ouro"
+										>
+											visitar
+										</Link>
+									</div>
 								</div>
 							</div>
-						</div>
-						<div className="p-2 lg:w-1/3 md:w-1/2 w-full">
-							<div className="h-full flex items-center border-gray-200 border p-4 rounded-lg">
-								<img
-									alt="team"
-									className="w-16 h-16 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4"
-									src="https://dummyimage.com/90x90"
-								/>
-								<div className="flex-grow">
-									<h2 className="text-gray-900 title-font font-medium">
-										John Doe
-									</h2>
-									<p className="text-gray-500">DevOps</p>
+						))}
+					</div>
+				</div>
+			</section>
+			{/* media */}
+			<section className="text-gray-600 body-font">
+				<div className="container px-5 py-24 mx-auto">
+					<div className="flex flex-col text-center w-full mb-20">
+						<h1 className="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">
+							Parceiros da mídia
+						</h1>
+					</div>
+					<div className="flex flex-wrap -m-2">
+						{parceirosMedia.map((value: any, index: number) => (
+							<div key={index} className="p-2 lg:w-1/3 md:w-1/2 w-full">
+								<div className="h-full flex items-center border-gray-200 border p-4 rounded-lg">
+									<Link href={value.link || " "}>
+										<Image
+											alt="team"
+											className="w-32 h-32 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4"
+											src={value.foto}
+											width={100}
+											height={100}
+										/>
+									</Link>
+									<div className="flex-grow">
+										<Link href={value.link || " "}>
+											<h2 className="text-gray-900 title-font font-medium">
+												{value.title}
+											</h2>
+										</Link>
+										<Link
+											href={value.link || " "}
+											className="text-amarelo-ouro"
+										>
+											visitar
+										</Link>
+									</div>
 								</div>
 							</div>
-						</div>
-						<div className="p-2 lg:w-1/3 md:w-1/2 w-full">
-							<div className="h-full flex items-center border-gray-200 border p-4 rounded-lg">
-								<img
-									alt="team"
-									className="w-16 h-16 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4"
-									src="https://dummyimage.com/94x94"
-								/>
-								<div className="flex-grow">
-									<h2 className="text-gray-900 title-font font-medium">
-										Martin Eden
-									</h2>
-									<p className="text-gray-500">Software Engineer</p>
-								</div>
-							</div>
-						</div>
-						<div className="p-2 lg:w-1/3 md:w-1/2 w-full">
-							<div className="h-full flex items-center border-gray-200 border p-4 rounded-lg">
-								<img
-									alt="team"
-									className="w-16 h-16 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4"
-									src="https://dummyimage.com/98x98"
-								/>
-								<div className="flex-grow">
-									<h2 className="text-gray-900 title-font font-medium">
-										Boris Kitua
-									</h2>
-									<p className="text-gray-500">UX Researcher</p>
-								</div>
-							</div>
-						</div>
-						<div className="p-2 lg:w-1/3 md:w-1/2 w-full">
-							<div className="h-full flex items-center border-gray-200 border p-4 rounded-lg">
-								<img
-									alt="team"
-									className="w-16 h-16 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4"
-									src="https://dummyimage.com/100x90"
-								/>
-								<div className="flex-grow">
-									<h2 className="text-gray-900 title-font font-medium">
-										Atticus Finch
-									</h2>
-									<p className="text-gray-500">QA Engineer</p>
-								</div>
-							</div>
-						</div>
-						<div className="p-2 lg:w-1/3 md:w-1/2 w-full">
-							<div className="h-full flex items-center border-gray-200 border p-4 rounded-lg">
-								<img
-									alt="team"
-									className="w-16 h-16 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4"
-									src="https://dummyimage.com/104x94"
-								/>
-								<div className="flex-grow">
-									<h2 className="text-gray-900 title-font font-medium">
-										Alper Kamu
-									</h2>
-									<p className="text-gray-500">System</p>
-								</div>
-							</div>
-						</div>
-						<div className="p-2 lg:w-1/3 md:w-1/2 w-full">
-							<div className="h-full flex items-center border-gray-200 border p-4 rounded-lg">
-								<img
-									alt="team"
-									className="w-16 h-16 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4"
-									src="https://dummyimage.com/108x98"
-								/>
-								<div className="flex-grow">
-									<h2 className="text-gray-900 title-font font-medium">
-										Rodrigo Monchi
-									</h2>
-									<p className="text-gray-500">Product Manager</p>
-								</div>
-							</div>
-						</div>
+						))}
 					</div>
 				</div>
 			</section>
