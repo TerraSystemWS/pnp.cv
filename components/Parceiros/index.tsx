@@ -1,6 +1,7 @@
 import Morelink from "../../public/more.svg";
 import { Tooltip } from "flowbite-react";
 import Image from "next/image";
+import Link from "next/link";
 
 const Parceiros = (props: any) => {
 	return (
@@ -11,12 +12,12 @@ const Parceiros = (props: any) => {
 				</h2>
 				<div className="grid grid-cols-2 gap-8 text-gray-500 sm:gap-12 md:grid-cols-3 lg:grid-cols-6 dark:text-gray-400">
 					{props.dados?.map((value: any, index: any) => (
-						<a
+						<Link
 							key={index}
 							href={value.link}
 							className="flex justify-center items-center"
 							target="_blank"
-rel="noreferrer"
+							rel="noreferrer"
 						>
 							<Image
 								src={value.foto}
@@ -24,7 +25,7 @@ rel="noreferrer"
 								width={150}
 								height={150}
 							/>
-						</a>
+						</Link>
 					))}
 					{/* <a href="#" className="flex justify-center items-center">
 						<svg
@@ -164,12 +165,12 @@ rel="noreferrer"
 					<div className="flex flex-wrap lg:w-4/5 sm:mx-auto sm:mb-2 -mx-2">
 						<div className="p-2 sm:w-1/2 w-full">
 							<Tooltip content="saber mais sobre parceiros">
-								<a
+								<Link
 									href="/parceiros"
 									className="flex justify-center items-center w-10"
 								>
 									<Morelink />
-								</a>
+								</Link>
 							</Tooltip>
 						</div>
 					</div>
