@@ -78,8 +78,8 @@ export default function Home({
 			parceirosPadrinho[index2] = {
 				id: index2,
 				link: value2.link,
-				title: value2.logo.data.attributes.name,
-				foto: value2.logo.data.attributes.url,
+				title: value2.logo.data?.attributes.name,
+				foto: value2.logo.data?.attributes.url,
 			};
 		});
 		value.attributes.patrocinadores.map((value2: any, index2: any) => {
