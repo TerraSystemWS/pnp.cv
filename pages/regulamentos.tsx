@@ -30,7 +30,7 @@ const Regulamentos = ({ social, contato, edicao }: any) => {
 			Categoria[index3] = {
 				id: index3,
 				titulo: categs.titulo,
-				descricao: categs.descricao,
+				descricao: createMarkup(categs.descricao),
 			};
 		});
 	});
@@ -58,14 +58,8 @@ const Regulamentos = ({ social, contato, edicao }: any) => {
 									</span>
 								</div> */}
 							<div className="md:flex-grow">
-								<h2 className="text-2xl font-medium text-gray-900 title-font mb-2">
-									values.titulo
-								</h2>
 								<div className="leading-relaxed">
-									<span
-										className="text-justify"
-										dangerouslySetInnerHTML={Regulamentos[0].descricao}
-									/>
+									<span dangerouslySetInnerHTML={Regulamentos[0].descricao} />
 								</div>
 							</div>
 						</div>
@@ -86,19 +80,21 @@ const Regulamentos = ({ social, contato, edicao }: any) => {
 								key={values.id}
 								className="py-8 flex flex-wrap md:flex-nowrap"
 							>
-								<div className="md:w-64 md:mb-0 mb-6 flex-shrink-0 flex flex-col">
+								{/* <div className="md:w-64 md:mb-0 mb-6 flex-shrink-0 flex flex-col">
 									<span className="font-semibold title-font text-gray-700">
-										CATEGORY #{values.id}
+										CATEGORY #{values.id+1}
 									</span>
 									<span className="mt-1 text-gray-500 text-sm">
 										12 Jun 2019
 									</span>
-								</div>
+								</div> */}
 								<div className="md:flex-grow">
 									<h2 className="text-2xl font-medium text-gray-900 title-font mb-2">
 										{values.titulo}
 									</h2>
-									<p className="leading-relaxed">{values.descricao}</p>
+									<div className="leading-relaxed">
+										<span dangerouslySetInnerHTML={values.descricao} />
+									</div>
 								</div>
 							</div>
 						))}
