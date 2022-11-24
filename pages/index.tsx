@@ -38,7 +38,7 @@ export default function Home({
 			bannerData[index] = {
 				id: index,
 				title: value.attributes.banners.titulo,
-				url: value.attributes.banners.image.data.attributes.url,
+				url: value.attributes.banners.image.data.attributes.url || "#",
 			};
 		}
 	});
@@ -49,7 +49,7 @@ export default function Home({
 			Juris[index2] = {
 				id: index2,
 				edicao: value.attributes.N_Edicao,
-				j_foto: value2.foto.data?.attributes.url,
+				j_foto: value2.foto.data.attributes.url || "#",
 				j_nome: value2.nome,
 				j_titulo: value2.titulo,
 				j_descricao: value2.descricao,
@@ -71,7 +71,7 @@ export default function Home({
 				id: index2,
 				link: value2.link,
 				title: value2.logo.data.attributes.name,
-				foto: value2.logo.data.attributes.url,
+				foto: value2.logo.data.attributes.url || "#",
 			};
 		});
 		value.attributes.parceiros_padrinhos.map((value2: any, index2: any) => {
@@ -79,7 +79,7 @@ export default function Home({
 				id: index2,
 				link: value2.link,
 				title: value2.logo.data?.attributes.name,
-				foto: value2.logo.data?.attributes.url,
+				foto: value2.logo.data.attributes.url || "#",
 			};
 		});
 		value.attributes.patrocinadores.map((value2: any, index2: any) => {
@@ -87,7 +87,7 @@ export default function Home({
 				id: index2,
 				link: value2.link,
 				title: value2.logo.data.attributes.name,
-				foto: value2.logo.data.attributes.url,
+				foto: value2.logo.data.attributes.url || "#",
 			};
 		});
 		value.attributes.media_parteners.map((value2: any, index2: any) => {
@@ -95,7 +95,7 @@ export default function Home({
 				id: index2,
 				link: value2.link,
 				title: value2.logo.data.attributes.name,
-				foto: value2.logo.data.attributes.url,
+				foto: value2.logo.data.attributes.url || "#",
 			};
 		});
 	});
