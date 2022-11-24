@@ -64,7 +64,7 @@ const Footer = ({ rsocial, contato }: any) => {
 										key={link.name}
 										className="hover:text-amarelo-ouro uppercase"
 									>
-										<Link href={link.link}>{link.name}</Link>
+										<Link href={link?.link}>{link.name}</Link>
 									</li>
 								))}
 							</ul>
@@ -74,7 +74,7 @@ const Footer = ({ rsocial, contato }: any) => {
 							<ul className="text-gray-300">
 								{websites.map((link) => (
 									<li key={link.link} className="hover:text-amarelo-ouro">
-										<Link href={link.link}>{link.name}</Link>
+										<Link href={link?.link}>{link.name}</Link>
 									</li>
 								))}
 							</ul>
