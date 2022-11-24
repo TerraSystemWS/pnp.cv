@@ -71,38 +71,56 @@ const Parceiros = ({ social, contato, parceiros }: any) => {
 						</h1>
 					</div>
 					<div className="flex flex-wrap -m-2">
-						{parceirosOrganizacao.map((value: any, index: number) => (
-							<div key={index} className="p-2 lg:w-1/3 md:w-1/2 w-full">
-								<div className="h-full flex items-center border-gray-200 border p-4 rounded-lg">
-									<Image
-										alt="team"
-										className="w-32 h-32 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4"
-										src={value.foto}
-										width={100}
-										height={100}
-									/>
-									<div className="flex-grow">
-										<h2 className="text-gray-900 title-font font-medium">
-											{value.title}
-											{"  "}
-											<span
+						{parceirosOrganizacao.map((value: any, index: number) => {
+							if (index != 0) {
+								return (
+									<div key={index} className="p-2 lg:w-1/3 md:w-1/2 w-full">
+										<div className="h-full flex items-center border-gray-200 border p-4 rounded-lg">
+											<Link href={value.link || "#"}>
+												<Image
+													alt="team"
+													className="w-32 h-32 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4"
+													src={value.foto}
+													width={100}
+													height={100}
+												/>
+											</Link>
+											<div className="flex-grow">
+												<Link href={value.link || "#"}>
+													<h2 className="text-gray-900 title-font font-medium">
+														{value.title}
+
+														{/* <span
 												className={`text-white px-3 py-1 tracking-widest text-xs rounded-bl`}
 												style={{ backgroundColor: value.cor }}
 											>
 												Patrocidador {value.tipo}
-											</span>
-										</h2>
-
-										<Link
-											href={value.link || "#"}
-											className="text-amarelo-ouro"
-										>
-											visitar
+											</span> */}
+													</h2>
+												</Link>
+											</div>
+										</div>
+									</div>
+								);
+							} else {
+								return (
+									<div
+										key={index}
+										className="container px-5 py-24 mx-auto flex flex-wrap flex-col"
+									>
+										<Link href={value.link || "#"}>
+											<Image
+												className="xl:w-1/4 lg:w-1/3 md:w-1/2 w-2/3 block mx-auto object-cover object-center rounded"
+												alt="hero"
+												src={value.foto}
+												width={150}
+												height={150}
+											/>
 										</Link>
 									</div>
-								</div>
-							</div>
-						))}
+								);
+							}
+						})}
 					</div>
 				</div>
 			</section>
@@ -111,46 +129,60 @@ const Parceiros = ({ social, contato, parceiros }: any) => {
 				<div className="container px-5 py-24 mx-auto justify-content">
 					<div className="flex flex-col text-center w-full mb-20">
 						<h1 className="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">
-							Patrocinador Padrinho
+							Parceiro Institucional
 						</h1>
 					</div>
 					<div className="flex flex-wrap -m-2">
-						{parceirosPadrinho.map((value: any, index: number) => (
-							<div key={index} className="p-2 lg:w-1/3 md:w-1/2 w-full">
-								<div className="h-full flex items-center border-gray-200 border p-4 rounded-lg">
-									<Link href={value.link || "#"}>
-										<Image
-											alt="team"
-											className="w-32 h-32 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4"
-											src={value.foto}
-											width={100}
-											height={100}
-										/>
-									</Link>
-									<div className="flex-grow">
-										<Link href={value.link || "#"}>
-											<h2 className="text-gray-900 title-font font-medium">
-												{value.title}
-												{"  "}
-												<span
+						{parceirosPadrinho.map((value: any, index: number) => {
+							if (index != 0) {
+								return (
+									<div key={index} className="p-2 lg:w-1/3 md:w-1/2 w-full">
+										<div className="h-full flex items-center border-gray-200 border p-4 rounded-lg">
+											<Link href={value.link || "#"}>
+												<Image
+													alt="team"
+													className="w-32 h-32 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4"
+													src={value.foto}
+													width={100}
+													height={100}
+												/>
+											</Link>
+											<div className="flex-grow">
+												<Link href={value.link || "#"}>
+													<h2 className="text-gray-900 title-font font-medium">
+														{value.title}
+
+														{/* <span
 													className={`text-white px-3 py-1 tracking-widest text-xs rounded-bl`}
 													style={{ backgroundColor: value.cor }}
 												>
 													Patrocidador {value.tipo}
-												</span>
-											</h2>
-										</Link>
-
-										<Link
-											href={value.link || "#"}
-											className="text-amarelo-ouro"
-										>
-											visitar
+												</span> */}
+													</h2>
+												</Link>
+											</div>
+										</div>
+									</div>
+								);
+							} else {
+								return (
+									<div
+										key={index}
+										className="container px-5 py-24 mx-auto flex flex-wrap flex-col"
+									>
+										<Link href={value.link || "#"}>
+											<Image
+												className="xl:w-1/4 lg:w-1/3 md:w-1/2 w-2/3 block mx-auto  object-cover object-center rounded"
+												alt="hero"
+												src={value.foto}
+												width={150}
+												height={150}
+											/>
 										</Link>
 									</div>
-								</div>
-							</div>
-						))}
+								);
+							}
+						})}
 					</div>
 				</div>
 			</section>
@@ -163,42 +195,50 @@ const Parceiros = ({ social, contato, parceiros }: any) => {
 						</h1>
 					</div>
 					<div className="flex flex-wrap -m-2">
-						{parceirosPatrocinadores.map((value: any, index: number) => (
-							<div key={index} className="p-2 lg:w-1/3 md:w-1/2 w-full">
-								<div className="h-full flex items-center border-gray-200 border p-4 rounded-lg">
-									<Link href={value.link || "#"}>
-										<Image
-											alt="team"
-											className="w-32 h-32 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4"
-											src={value.foto}
-											width={100}
-											height={100}
-										/>
-									</Link>
-									<div className="flex-grow">
+						{parceirosPatrocinadores.map((value: any, index: number) => {
+							// let a = (
+							// 	<span
+							// 		className={`text-white px-3 py-1 tracking-widest text-xs rounded-bl`}
+							// 		style={{ backgroundColor: value.cor }}
+							// 	>
+							// 		Patrocidador {value.tipo}
+							// 	</span>
+							// );
+							// if (value.tipo == "Ouro" && index == 0) {
+							return (
+								// <div key={index} className="">
+								// 	<div>{a}</div>
+								<div key={index} className="p-2 lg:w-1/3 md:w-1/2 w-full">
+									<div className="h-full flex items-center border-gray-200 border p-4 rounded-lg">
 										<Link href={value.link || "#"}>
-											<h2 className="text-gray-900 title-font font-medium">
-												{value.title}
-												{"  "}
+											<Image
+												alt="team"
+												className="w-32 h-32 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4"
+												src={value.foto}
+												width={100}
+												height={100}
+											/>
+										</Link>
+										<div className="flex-grow">
+											<Link href={value.link || "#"}>
+												<h2 className="text-gray-900 title-font font-medium">
+													{value.title}
+													{"  "}
+												</h2>
 												<span
 													className={`text-white px-3 py-1 tracking-widest text-xs rounded-bl`}
 													style={{ backgroundColor: value.cor }}
 												>
 													Patrocidador {value.tipo}
 												</span>
-											</h2>
-										</Link>
-
-										<Link
-											href={value.link || "#"}
-											className="text-amarelo-ouro"
-										>
-											visitar
-										</Link>
+											</Link>
+										</div>
 									</div>
 								</div>
-							</div>
-						))}
+								// </div>
+							);
+							// }
+						})}
 					</div>
 				</div>
 			</section>
@@ -207,7 +247,7 @@ const Parceiros = ({ social, contato, parceiros }: any) => {
 				<div className="container px-5 py-24 mx-auto">
 					<div className="flex flex-col text-center w-full mb-20">
 						<h1 className="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">
-							Parceiros da mídia
+							Media Partners
 						</h1>
 					</div>
 					<div className="flex flex-wrap -m-2">
@@ -228,12 +268,6 @@ const Parceiros = ({ social, contato, parceiros }: any) => {
 											<h2 className="text-gray-900 title-font font-medium">
 												{value.title}
 											</h2>
-										</Link>
-										<Link
-											href={value.link || "#"}
-											className="text-amarelo-ouro"
-										>
-											visitar
 										</Link>
 									</div>
 								</div>
