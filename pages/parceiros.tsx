@@ -94,7 +94,7 @@ const Parceiros = ({ social, contato, parceiros }: any) => {
 										</h2>
 
 										<Link
-											href={value.link || " "}
+											href={value.link || "#"}
 											className="text-amarelo-ouro"
 										>
 											visitar
@@ -118,7 +118,7 @@ const Parceiros = ({ social, contato, parceiros }: any) => {
 						{parceirosPadrinho.map((value: any, index: number) => (
 							<div key={index} className="p-2 lg:w-1/3 md:w-1/2 w-full">
 								<div className="h-full flex items-center border-gray-200 border p-4 rounded-lg">
-									<Link href={value.link || " "}>
+									<Link href={value.link || "#"}>
 										<Image
 											alt="team"
 											className="w-32 h-32 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4"
@@ -128,7 +128,7 @@ const Parceiros = ({ social, contato, parceiros }: any) => {
 										/>
 									</Link>
 									<div className="flex-grow">
-										<Link href={value.link || " "}>
+										<Link href={value.link || "#"}>
 											<h2 className="text-gray-900 title-font font-medium">
 												{value.title}
 												{"  "}
@@ -142,7 +142,7 @@ const Parceiros = ({ social, contato, parceiros }: any) => {
 										</Link>
 
 										<Link
-											href={value.link || " "}
+											href={value.link || "#"}
 											className="text-amarelo-ouro"
 										>
 											visitar
@@ -166,7 +166,7 @@ const Parceiros = ({ social, contato, parceiros }: any) => {
 						{parceirosPatrocinadores.map((value: any, index: number) => (
 							<div key={index} className="p-2 lg:w-1/3 md:w-1/2 w-full">
 								<div className="h-full flex items-center border-gray-200 border p-4 rounded-lg">
-									<Link href={value.link || " "}>
+									<Link href={value.link || "#"}>
 										<Image
 											alt="team"
 											className="w-32 h-32 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4"
@@ -176,7 +176,7 @@ const Parceiros = ({ social, contato, parceiros }: any) => {
 										/>
 									</Link>
 									<div className="flex-grow">
-										<Link href={value.link || " "}>
+										<Link href={value.link || "#"}>
 											<h2 className="text-gray-900 title-font font-medium">
 												{value.title}
 												{"  "}
@@ -190,7 +190,7 @@ const Parceiros = ({ social, contato, parceiros }: any) => {
 										</Link>
 
 										<Link
-											href={value.link || " "}
+											href={value.link || "#"}
 											className="text-amarelo-ouro"
 										>
 											visitar
@@ -224,13 +224,13 @@ const Parceiros = ({ social, contato, parceiros }: any) => {
 										/>
 									</Link>
 									<div className="flex-grow">
-										<Link href={value.link || " "}>
+										<Link href={value.link || "#"}>
 											<h2 className="text-gray-900 title-font font-medium">
 												{value.title}
 											</h2>
 										</Link>
 										<Link
-											href={value.link || " "}
+											href={value.link || "#"}
 											className="text-amarelo-ouro"
 										>
 											visitar
