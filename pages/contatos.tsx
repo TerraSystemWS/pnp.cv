@@ -51,7 +51,7 @@ const CONTATOS = ({ social, contato, banners }: any) => {
 							Contate-nos
 						</h2>
 						<p className="leading-relaxed mb-5 text-gray-600">
-							Post-ironic portland shabby chic echo park, banjo fashion axe
+							para saber ou ter mais informações sobre o pnp envie-nos um email
 						</p>
 						<div className="relative mb-4">
 							<label htmlFor="name" className="leading-7 text-sm text-gray-600">
@@ -95,8 +95,7 @@ const CONTATOS = ({ social, contato, banners }: any) => {
 							Enviar
 						</button>
 						<p className="text-xs text-gray-500 mt-3">
-							Chicharrones blog helvetica normcore iceland tousled brook viral
-							artisan.
+							*os seus dados são privados e será protegido
 						</p>
 					</div>
 				</div>
