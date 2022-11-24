@@ -1,5 +1,5 @@
 const PostList = () => {
-	return <p>terrasystem</p>;
+	return " ";
 };
 
 export default PostList;
