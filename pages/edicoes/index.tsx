@@ -23,7 +23,7 @@ const Edicoes = ({ social, contato }: any) => {
 							</span> */}
 						</h2>
 						<div className="font-light text-gray-500 lg:mb-16 sm:text-xl dark:text-gray-400">
-							"...descricao..."
+							&quot;...descricao...&quot;
 						</div>
 					</div>
 				</div>
