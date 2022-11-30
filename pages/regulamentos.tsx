@@ -1,6 +1,7 @@
 import Layout from "../components/Layout";
 import { fetcher } from "../lib/api";
 import showdown from "showdown";
+import Link from "next/link";
 
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
@@ -30,6 +31,7 @@ const Regulamentos = ({ social, contato, edicao }: any) => {
 			Categoria[index3] = {
 				id: index3,
 				titulo: categs.titulo,
+				slug: categs.titulo.replace(/ /g, "_"),
 				descricao: createMarkup(categs.descricao),
 			};
 		});
@@ -90,7 +92,7 @@ const Regulamentos = ({ social, contato, edicao }: any) => {
 								</div> */}
 								<div className="md:flex-grow">
 									<h2 className="text-2xl font-medium text-gray-900 title-font mb-2">
-										{values.titulo}
+										<a id={values.slug}>{values.titulo}</a>
 									</h2>
 									<div className="leading-relaxed">
 										<span dangerouslySetInnerHTML={values.descricao} />

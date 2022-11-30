@@ -60,6 +60,7 @@ export default function Home({
 			Categoria[index3] = {
 				id: index3,
 				titulo: categs.titulo,
+				slug: categs.titulo.replace(/ /g, "_"),
 				descricao: categs.descricao,
 			};
 		});

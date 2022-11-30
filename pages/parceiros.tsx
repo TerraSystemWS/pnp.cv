@@ -229,7 +229,7 @@ const Parceiros = ({ social, contato, parceiros }: any) => {
 													className={`text-white px-3 py-1 tracking-widest text-xs rounded-bl`}
 													style={{ backgroundColor: value.cor }}
 												>
-													Patrocinador {value.tipo}
+													{value.tipo}
 												</span>
 											</Link>
 										</div>

@@ -9,50 +9,146 @@ import { fetcher } from "../../lib/api";
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
 
 const Edicoes = ({ social, contato }: any) => {
-	return (" "
-		// <Layout rsocial={social} contato={contato}>
-		// 	<Timeline>
-		// 		<Timeline.Item>
-		// 			<Timeline.Point icon={HiCalendar} />
-		// 			<Timeline.Content>
-		// 				<Timeline.Time>February 2022</Timeline.Time>
-		// 				<Timeline.Title>Application UI code in Tailwind CSS</Timeline.Title>
-		// 				<Timeline.Body>
-		// 					Get access to over 20+ pages including a dashboard layout, charts,
-		// 					kanban board, calendar, and pre-order E-commerce & Marketing
-		// 					pages.
-		// 				</Timeline.Body>
-		// 				<Button color="gray">
-		// 					Learn More
-		// 					<HiArrowNarrowRight className="ml-2 h-3 w-3" />
-		// 				</Button>
-		// 			</Timeline.Content>
-		// 		</Timeline.Item>
-		// 		<Timeline.Item>
-		// 			<Timeline.Point icon={HiCalendar} />
-		// 			<Timeline.Content>
-		// 				<Timeline.Time>March 2022</Timeline.Time>
-		// 				<Timeline.Title>Marketing UI design in Figma</Timeline.Title>
-		// 				<Timeline.Body>
-		// 					All of the pages and components are first designed in Figma and we
-		// 					keep a parity between the two versions even as we update the
-		// 					project.
-		// 				</Timeline.Body>
-		// 			</Timeline.Content>
-		// 		</Timeline.Item>
-		// 		<Timeline.Item>
-		// 			<Timeline.Point icon={HiCalendar} />
-		// 			<Timeline.Content>
-		// 				<Timeline.Time>April 2022</Timeline.Time>
-		// 				<Timeline.Title>E-Commerce UI code in Tailwind CSS</Timeline.Title>
-		// 				<Timeline.Body>
-		// 					Get started with dozens of web components and interactive elements
-		// 					built on top of Tailwind CSS.
-		// 				</Timeline.Body>
-		// 			</Timeline.Content>
-		// 		</Timeline.Item>
-		// 	</Timeline>
-		// </Layout>
+	return (
+		<Layout rsocial={social} contato={contato}>
+			<div className="">
+				<div className="bg-gray-50">
+					<div className="mx-auto max-w-7xl py-12 px-4 sm:px-6">
+						<h2 className="text-2xl text-center mb-8 font-bold tracking-tight text-gray-900 sm:text-4xl">
+							<span className="block text-amarelo-ouro">
+								EDIÇOES DO PRÉMIO NACIONAL DE PUBLICIDADE
+							</span>
+							{/* <span className="block ">
+								Inscrição aberta apartir do dia 1 a 31 de Janero 2023
+							</span> */}
+						</h2>
+						<div className="font-light text-gray-500 lg:mb-16 sm:text-xl dark:text-gray-400">
+							"...descricao..."
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div className="container mx-auto">
+				<Timeline>
+					<Timeline.Item>
+						<Timeline.Point icon={HiCalendar} />
+						<Timeline.Content>
+							<Timeline.Time>Janeiro 2023</Timeline.Time>
+							<Timeline.Title>PNP 6 Edicao</Timeline.Title>
+							<Timeline.Body>
+								<div id="imagens">
+									<h1 className="text-amarelo-ouro text-sm">Imagens</h1>
+								</div>
+								<div id="videos">
+									Videos
+									<Button color="gray">
+										Saber Mais
+										<HiArrowNarrowRight className="ml-2 h-3 w-3" />
+									</Button>
+								</div>
+								<div id="catalogos">
+									Catalogos
+									<Button color="gray">
+										Saber Mais
+										<HiArrowNarrowRight className="ml-2 h-3 w-3" />
+									</Button>
+								</div>
+								<div id="catalogos">
+									Mostra
+									<Button color="gray">
+										Saber Mais
+										<HiArrowNarrowRight className="ml-2 h-3 w-3" />
+									</Button>
+								</div>
+							</Timeline.Body>
+						</Timeline.Content>
+					</Timeline.Item>
+					<Timeline.Item>
+						<Timeline.Point icon={HiCalendar} />
+						<Timeline.Content>
+							<Timeline.Time>March 2022</Timeline.Time>
+							<Timeline.Title>PNP 5 Edicao</Timeline.Title>
+							<Timeline.Body>
+								<Timeline.Body>
+									<div id="imagens">
+										<h1 className="text-amarelo-ouro text-sm">
+											Imagens
+											<Button color="gray">
+												Saber Mais
+												<HiArrowNarrowRight className="ml-2 h-3 w-3" />
+											</Button>
+										</h1>
+									</div>
+									<div id="videos">
+										Videos
+										<Button color="gray">
+											Saber Mais
+											<HiArrowNarrowRight className="ml-2 h-3 w-3" />
+										</Button>
+									</div>
+									<div id="catalogos">
+										Catalogos
+										<Button color="gray">
+											Saber Mais
+											<HiArrowNarrowRight className="ml-2 h-3 w-3" />
+										</Button>
+									</div>
+									<div id="catalogos">
+										Mostra
+										<Button color="gray">
+											Saber Mais
+											<HiArrowNarrowRight className="ml-2 h-3 w-3" />
+										</Button>
+									</div>
+								</Timeline.Body>
+							</Timeline.Body>
+						</Timeline.Content>
+					</Timeline.Item>
+					<Timeline.Item>
+						<Timeline.Point icon={HiCalendar} />
+						<Timeline.Content>
+							<Timeline.Time>April 2021</Timeline.Time>
+							<Timeline.Title>PNP 4 Edicao</Timeline.Title>
+							<Timeline.Body>
+								<Timeline.Body>
+									<div id="imagens">
+										<h1 className="text-amarelo-ouro text-sm">
+											Imagens
+											<Button color="gray">
+												Saber Mais
+												<HiArrowNarrowRight className="ml-2 h-3 w-3" />
+											</Button>
+										</h1>
+									</div>
+									<div id="videos">
+										Videos
+										<Button color="gray">
+											Saber Mais
+											<HiArrowNarrowRight className="ml-2 h-3 w-3" />
+										</Button>
+									</div>
+									<div id="catalogos">
+										Catalogos
+										<Button color="gray">
+											Saber Mais
+											<HiArrowNarrowRight className="ml-2 h-3 w-3" />
+										</Button>
+									</div>
+									<div id="catalogos">
+										Mostra
+										<Button color="gray">
+											Saber Mais
+											<HiArrowNarrowRight className="ml-2 h-3 w-3" />
+										</Button>
+									</div>
+								</Timeline.Body>
+							</Timeline.Body>
+						</Timeline.Content>
+					</Timeline.Item>
+				</Timeline>
+			</div>
+		</Layout>
 	);
 };
 
