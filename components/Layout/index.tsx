@@ -4,7 +4,7 @@ import Footer from "../Footer";
 // import Meta from "../Meta";
 // import { UserProvider } from "../lib/user";
 import React, { ReactNode } from "react";
-
+import Meta from "../Meta";
 interface Props {
 	children?: ReactNode;
 	rsocial: ReactNode;
@@ -14,9 +14,9 @@ interface Props {
 const Layout = ({ children, rsocial, contato }: Props) => (
 	// <UserProvider value={{ user, loading }}>
 	<div className="">
-		{/* <Head>
+		<Head>
 			<Meta />
-		</Head> */}
+		</Head>
 
 		<header>
 			<NavBar />{" "}
