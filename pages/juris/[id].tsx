@@ -101,7 +101,7 @@ const Juris = ({ social, contato, edicao }: any) => {
 				<div className="container px-5 py-24 mx-auto">
 					<div className="flex flex-wrap -m-4">
 						{JurisList.map((value: any, index: any) => (
-							<div key={index} className="lg:w-1/3 sm:w-1/2 p-4">
+							<div key={index} className="lg:w-1/3 sm:w-1/2 p-4 z-0">
 								<Link href={`/juris/${value.idd}?edicao=${value.edicao}`}>
 									<div className="flex relative">
 										<Image
