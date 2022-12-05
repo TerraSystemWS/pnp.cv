@@ -2,6 +2,7 @@ import Layout from "../components/Layout";
 import { fetcher } from "../lib/api";
 import showdown from "showdown";
 import Link from "next/link";
+const qs = require("qs");
 
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
@@ -112,6 +113,14 @@ export default Regulamentos;
 // This gets called on every request
 export async function getServerSideProps() {
 	// Fetch data from external API
+	const query = qs.stringify(
+		{
+			sort: ["N_Edicao:asc"],
+		},
+		{
+			encodeValuesOnly: true, // prettify URL
+		}
+	);
 
 	// GET: links para as redes sociais
 	const rsocials = await fetcher(`${api_link}/redes-social?populate=*`);
@@ -119,7 +128,7 @@ export async function getServerSideProps() {
 	const contato = await fetcher(`${api_link}/contato`);
 
 	// GET: dados dos juris, categorias
-	const edicao = await fetcher(`${api_link}/edicoes?populate=deep`);
+	const edicao = await fetcher(`${api_link}/edicoes?populate=deep&${query}`);
 
 	// Pass data to the page via props
 	return { props: { social: rsocials, contato, edicao } };
