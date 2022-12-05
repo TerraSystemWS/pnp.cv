@@ -11,7 +11,7 @@ type Inputs = {
 	message: string;
 };
 
-const CONTATOS = ({ social, contato, banners }: any) => {
+const CONTATOS = ({ social, contato }: any) => {
 	const {
 		register,
 		handleSubmit,
