@@ -10,6 +10,7 @@ import Categorias from "../components/Categorias";
 import Parceiros from "../components/Parceiros";
 import { HiInformationCircle } from "react-icons/hi";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
@@ -21,6 +22,8 @@ export default function Home({
 	edicao,
 	parceiros,
 }: any) {
+	// router
+	const router = useRouter();
 	// create data for Banner carousel
 	let bannerData: any = [];
 	// dados do juri
@@ -132,6 +135,10 @@ export default function Home({
 		});
 	});
 
+	const goto = (link: string) => {
+		router.push(link);
+	};
+
 	// console.log("partnerList");
 	// console.log(partnerList);
 
@@ -154,6 +161,8 @@ export default function Home({
 								alt={value.title}
 								width={1024}
 								height={500}
+								onClick={() => goto(value.url)}
+								className="cursor-pointer"
 							/>
 						))}
 					</Carousel>
