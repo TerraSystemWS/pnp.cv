@@ -47,29 +47,55 @@ export default function Home({
 		}
 	});
 	// create Juris objetct
-	edicao.data.map((value: any, index: any) => {
-		value.attributes.juri.map((value2: any, index2: any) => {
-			// console.log(value2.foto.data?.attributes.url);
-			Juris[index2] = {
-				id: index2,
-				idd: value2.id,
-				edicao: value.attributes.N_Edicao,
-				j_foto: value2.foto.data?.attributes.formats.medium.url || "/",
-				j_nome: value2.nome,
-				j_titulo: value2.titulo,
-				j_descricao: value2.descricao,
-			};
-		});
-		// get dados da categoria
-		value.attributes.categoria.map((categs: any, index3: any) => {
-			Categoria[index3] = {
-				id: index3,
-				titulo: categs.titulo,
-				slug: categs.titulo.replace(/ /g, "_"),
-				descricao: categs.descricao,
-			};
-		});
+	/**
+	 * fiz um harded code com o numero de edicoes que tem de ser mudade urgente
+	 * antis tinha essa linha edicao.data.map((value: any, index: any) => {
+	 */
+	edicao.data.attributes.juri.map((value2: any, index2: any) => {
+		// console.log(value2.foto.data?.attributes.url);
+		Juris[index2] = {
+			id: index2,
+			idd: value2.id,
+			edicao: edicao.data.attributes.N_Edicao,
+			j_foto: value2.foto.data?.attributes.formats.medium.url || "/",
+			j_nome: value2.nome,
+			j_titulo: value2.titulo,
+			j_descricao: value2.descricao,
+		};
 	});
+
+	edicao.data.attributes.categoria.map((categs: any, index3: any) => {
+		Categoria[index3] = {
+			id: index3,
+			titulo: categs.titulo,
+			slug: categs.titulo.replace(/ /g, "_"),
+			descricao: categs.descricao,
+		};
+	});
+
+	// edicao.data.map((value: any, index: any) => {
+	// 	value.attributes.juri.map((value2: any, index2: any) => {
+	// 		// console.log(value2.foto.data?.attributes.url);
+	// 		Juris[index2] = {
+	// 			id: index2,
+	// 			idd: value2.id,
+	// 			edicao: value.attributes.N_Edicao,
+	// 			j_foto: value2.foto.data?.attributes.formats.medium.url || "/",
+	// 			j_nome: value2.nome,
+	// 			j_titulo: value2.titulo,
+	// 			j_descricao: value2.descricao,
+	// 		};
+	// 	});
+	// 	// get dados da categoria
+	// 	value.attributes.categoria.map((categs: any, index3: any) => {
+	// 		Categoria[index3] = {
+	// 			id: index3,
+	// 			titulo: categs.titulo,
+	// 			slug: categs.titulo.replace(/ /g, "_"),
+	// 			descricao: categs.descricao,
+	// 		};
+	// 	});
+	// });
 
 	parceiros.data.map((value: any, index: any) => {
 		value.attributes.organizacao.map((value2: any, index2: any) => {
@@ -294,11 +320,15 @@ export async function getServerSideProps() {
 	// GET: dados para banners
 	const banners = await fetcher(`${api_link}/banners?populate=deep`);
 	// GET: dados dos juris, categorias
-	const edicao = await fetcher(`${api_link}/edicoes?populate=deep&${query}`);
+	/**
+	 * tem que muda keli urgenti
+	 */
+	const edicao = await fetcher(`${api_link}/edicoes/1?populate=deep&${query}`);
 	// GET: dados dos parceiros
 	const parceiros = await fetcher(`${api_link}/parceiros?populate=deep`);
 
-	// console.log(banners.attributes);
+	console.log("edicoesTT");
+	console.log(edicao);
 
 	// Pass data to the page via props
 	return { props: { social: rsocials, contato, banners, edicao, parceiros } };
