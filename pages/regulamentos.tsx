@@ -70,13 +70,13 @@ const Regulamentos = ({ social, contato, edicao }: any) => {
 				</div>
 			</section>
 			{/* intro to categorias */}
-			<h1 className="text-4xl font-medium text-gray-700 text-center mt-6">
+			<h1 className="text-4xl font-medium text-gray-700 text-center mt-6 bg-gray-100 pt-10">
 				{" "}
 				Categorias de Prémios
 			</h1>{" "}
-			<section className="text-gray-600 body-font overflow-hidden">
+			<section className="text-gray-600 body-font overflow-hidden bg-gray-100">
 				<div className="container px-5 py-24 mx-auto">
-					<div className="-my-8 divide-y-2 divide-gray-100">
+					<div className="-my-8 divide-y-2 divide-gray-300">
 						{Categoria.map((values: any) => (
 							<div
 								key={values.id}
