@@ -11,6 +11,7 @@ import Parceiros from "../components/Parceiros";
 import { HiInformationCircle } from "react-icons/hi";
 import Link from "next/link";
 import { useRouter } from "next/router";
+const qs = require("qs");
 
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
@@ -41,7 +42,7 @@ export default function Home({
 			bannerData[index] = {
 				id: index,
 				title: value.attributes.banners.titulo,
-				url: value.attributes.banners.image.data.attributes.url || "#",
+				url: value.attributes.banners.image.data?.attributes.url || "/",
 			};
 		}
 	});
@@ -52,7 +53,7 @@ export default function Home({
 			Juris[index2] = {
 				id: index2,
 				edicao: value.attributes.N_Edicao,
-				j_foto: value2.foto.data.attributes.url || "#",
+				j_foto: value2.foto.data?.attributes.formats.medium.url || "/",
 				j_nome: value2.nome,
 				j_titulo: value2.titulo,
 				j_descricao: value2.descricao,
@@ -74,8 +75,8 @@ export default function Home({
 			parceirosOrganizacao[index2] = {
 				id: index2,
 				link: value2.link,
-				title: value2.logo.data.attributes.name,
-				foto: value2.logo.data.attributes.url || "#",
+				title: value2.logo.data?.attributes.name,
+				foto: value2.logo.data?.attributes.url || "/",
 			};
 		});
 		value.attributes.parceiros_padrinhos.map((value2: any, index2: any) => {
@@ -83,7 +84,7 @@ export default function Home({
 				id: index2,
 				link: value2.link,
 				title: value2.logo.data?.attributes.name,
-				foto: value2.logo.data.attributes.url || "#",
+				foto: value2.logo.data?.attributes.url || "/",
 			};
 		});
 		value.attributes.patrocinadores.map((value2: any, index2: any) => {
@@ -91,7 +92,7 @@ export default function Home({
 				id: index2,
 				link: value2.link,
 				title: value2.logo.data.attributes.name,
-				foto: value2.logo.data.attributes.url || "#",
+				foto: value2.logo.data?.attributes.url || "/",
 			};
 		});
 		value.attributes.media_parteners.map((value2: any, index2: any) => {
@@ -99,7 +100,7 @@ export default function Home({
 				id: index2,
 				link: value2.link,
 				title: value2.logo.data.attributes.name,
-				foto: value2.logo.data.attributes.url || "#",
+				foto: value2.logo.data?.attributes.url || "/",
 			};
 		});
 	});
@@ -276,6 +277,15 @@ export default function Home({
 export async function getServerSideProps() {
 	// Fetch data from external API
 
+	const query = qs.stringify(
+		{
+			sort: ["N_Edicao:asc"],
+		},
+		{
+			encodeValuesOnly: true, // prettify URL
+		}
+	);
+
 	// GET: links para as redes sociais
 	const rsocials = await fetcher(`${api_link}/redes-social?populate=*`);
 	// GET: dados para contatos
@@ -283,7 +293,7 @@ export async function getServerSideProps() {
 	// GET: dados para banners
 	const banners = await fetcher(`${api_link}/banners?populate=deep`);
 	// GET: dados dos juris, categorias
-	const edicao = await fetcher(`${api_link}/edicoes?populate=deep`);
+	const edicao = await fetcher(`${api_link}/edicoes?populate=deep&${query}`);
 	// GET: dados dos parceiros
 	const parceiros = await fetcher(`${api_link}/parceiros?populate=deep`);
 
