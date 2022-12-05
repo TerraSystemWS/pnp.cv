@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 const Juri = (props: any) => {
 	// console.log("props.dados");
@@ -20,7 +21,7 @@ const Juri = (props: any) => {
 							key={index}
 							className="items-center bg-gray-50 rounded-lg shadow sm:flex dark:bg-gray-800 dark:border-gray-700"
 						>
-							<a href="#">
+							<Link href={`/juris/${value.idd}?edicao=${value.edicao}`}>
 								<Image
 									className="w-full rounded-lg sm:rounded-none sm:rounded-l-lg"
 									src={value.j_foto}
@@ -28,10 +29,12 @@ const Juri = (props: any) => {
 									width={300}
 									height={300}
 								/>
-							</a>
+							</Link>
 							<div className="p-5">
 								<h3 className="text-xl font-bold tracking-tight text-amarelo-ouro dark:text-white">
-									<a href="#">{value.j_nome}</a>
+									<Link href={`/juris/${value.idd}?edicao=${value.edicao}`}>
+										{value.j_nome}
+									</Link>
 								</h3>
 								<span className="text-gray-800 dark:text-gray-400">
 									{value.j_titulo}
