@@ -1,10 +1,60 @@
 import Layout from "../components/Layout";
 import { fetcher } from "../lib/api";
+import { useForm, SubmitHandler } from "react-hook-form";
 
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
 
+type Inputs = {
+	name: string;
+	email: string;
+	message: string;
+};
+
 const CONTATOS = ({ social, contato, banners }: any) => {
+	const {
+		register,
+		handleSubmit,
+		watch,
+		formState: { errors },
+	} = useForm<Inputs>();
+
+	const onSubmit: SubmitHandler<Inputs> = async (data) => {
+		console.log(data);
+
+		// const ok = googleRecaptcha(data);
+		// if (!ok) console.log("nao deve enviar email");
+		const url = `${api_link}/contato`;
+		const response = await fetch(url, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				name: data.name,
+				email: data.email,
+				message: data.message,
+			}),
+		});
+
+		const dados = await response.json();
+		console.log(dados);
+		// setar email enviado
+		// switch (dados.statusCode) {
+		// 	case 200: {
+		// 		setEmail(true);
+		// 		break;
+		// 	}
+		// 	case 500: {
+		// 		console.log("erro no envio de email");
+		// 	}
+		// 	default:
+		// 		setLoading(false);
+		// }
+	};
+
+	// console.log(watch("name")); // watch input value by passing the name of it
+
 	return (
 		<Layout rsocial={social} contato={contato}>
 			<section className="text-gray-600 body-font relative">
@@ -46,7 +96,10 @@ const CONTATOS = ({ social, contato, banners }: any) => {
 							</div>
 						</div>
 					</div>
-					<div className="lg:w-1/3 md:w-1/2 bg-white flex flex-col md:ml-auto w-full md:py-8 mt-8 md:mt-0">
+					<form
+						onSubmit={handleSubmit(onSubmit)}
+						className="lg:w-1/3 md:w-1/2 bg-white flex flex-col md:ml-auto w-full md:py-8 mt-8 md:mt-0"
+					>
 						<h2 className="text-gray-900 text-lg mb-1 font-medium title-font">
 							Contate-nos
 						</h2>
@@ -60,9 +113,12 @@ const CONTATOS = ({ social, contato, banners }: any) => {
 							<input
 								type="text"
 								id="name"
-								name="name"
 								className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+								{...register("name", { required: true })}
 							/>
+							{errors.name && (
+								<span className="text-red-500">*Este campo é obrigatorio</span>
+							)}
 						</div>
 						<div className="relative mb-4">
 							<label
@@ -74,9 +130,12 @@ const CONTATOS = ({ social, contato, banners }: any) => {
 							<input
 								type="email"
 								id="email"
-								name="email"
 								className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+								{...register("email", { required: true })}
 							/>
+							{errors.email && (
+								<span className="text-red-500">*Este campo é obrigatorio</span>
+							)}
 						</div>
 						<div className="relative mb-4">
 							<label
@@ -87,17 +146,23 @@ const CONTATOS = ({ social, contato, banners }: any) => {
 							</label>
 							<textarea
 								id="message"
-								name="message"
 								className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 h-32 text-base outline-none text-gray-700 py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out"
+								{...register("message", { required: true })}
 							></textarea>
+							{errors.message && (
+								<span className="text-red-500">*Este campo é obrigatorio</span>
+							)}
 						</div>
-						<button className="text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg">
+						<button
+							type="submit"
+							className="text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg"
+						>
 							Enviar
 						</button>
 						<p className="text-xs text-gray-500 mt-3">
 							*os seus dados são privados e será protegido
 						</p>
-					</div>
+					</form>
 				</div>
 			</section>
 		</Layout>
