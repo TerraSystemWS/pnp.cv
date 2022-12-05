@@ -220,7 +220,7 @@ export default function Home({
 						<Alert color="warning" icon={HiInformationCircle}>
 							<span>
 								<span className="font-medium">Info!</span> Link ativo somente no
-								peíodo de votação.
+								período de votação.
 							</span>
 						</Alert>
 					</div>
