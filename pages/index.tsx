@@ -52,6 +52,7 @@ export default function Home({
 			// console.log(value2.foto.data?.attributes.url);
 			Juris[index2] = {
 				id: index2,
+				idd: value2.id,
 				edicao: value.attributes.N_Edicao,
 				j_foto: value2.foto.data?.attributes.formats.medium.url || "/",
 				j_nome: value2.nome,
