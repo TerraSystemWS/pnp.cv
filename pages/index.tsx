@@ -327,8 +327,8 @@ export async function getServerSideProps() {
 	// GET: dados dos parceiros
 	const parceiros = await fetcher(`${api_link}/parceiros?populate=deep`);
 
-	console.log("edicoesTT");
-	console.log(edicao);
+	// console.log("edicoesTT");
+	// console.log(edicao);
 
 	// Pass data to the page via props
 	return { props: { social: rsocials, contato, banners, edicao, parceiros } };
