@@ -18,25 +18,47 @@ const Regulamentos = ({ social, contato, edicao }: any) => {
 	let Categoria: any = [];
 	let Regulamentos: any = [];
 	// create Juris objetct
-	edicao.data.map((value: any, index: any) => {
-		value.attributes.regulamentos.map((value2: any, index2: any) => {
-			// console.log(value2.foto.data?.attributes.url);
-			Regulamentos[index2] = {
-				id: index2,
-				titulo: value2.titulo,
-				descricao: createMarkup(value2.descricao),
-			};
-		});
-		// get dados da categoria
-		value.attributes.categoria.map((categs: any, index3: any) => {
-			Categoria[index3] = {
-				id: index3,
-				titulo: categs.titulo,
-				slug: categs.titulo.replace(/ /g, "_"),
-				descricao: createMarkup(categs.descricao),
-			};
-		});
+	/**
+	 * fiz um harded code com o numero de edicoes que tem de ser mudade urgente
+	 * antis tinha essa linha edicao.data.map((value: any, index: any) => {
+	 */
+	edicao.data.attributes.regulamentos.map((value2: any, index2: any) => {
+		// console.log(value2.foto.data?.attributes.url);
+		Regulamentos[index2] = {
+			id: index2,
+			titulo: value2.titulo,
+			descricao: createMarkup(value2.descricao),
+		};
 	});
+
+	edicao.data.attributes.categoria.map((categs: any, index3: any) => {
+		Categoria[index3] = {
+			id: index3,
+			titulo: categs.titulo,
+			slug: categs.titulo.replace(/ /g, "_"),
+			descricao: createMarkup(categs.descricao),
+		};
+	});
+
+	// edicao.data.map((value: any, index: any) => {
+	// 	value.attributes.regulamentos.map((value2: any, index2: any) => {
+	// 		// console.log(value2.foto.data?.attributes.url);
+	// 		Regulamentos[index2] = {
+	// 			id: index2,
+	// 			titulo: value2.titulo,
+	// 			descricao: createMarkup(value2.descricao),
+	// 		};
+	// 	});
+	// 	// get dados da categoria
+	// 	value.attributes.categoria.map((categs: any, index3: any) => {
+	// 		Categoria[index3] = {
+	// 			id: index3,
+	// 			titulo: categs.titulo,
+	// 			slug: categs.titulo.replace(/ /g, "_"),
+	// 			descricao: createMarkup(categs.descricao),
+	// 		};
+	// 	});
+	// });
 
 	// const a = createMarkup(Regulamentos[0].descricao);
 
@@ -128,7 +150,7 @@ export async function getServerSideProps() {
 	const contato = await fetcher(`${api_link}/contato`);
 
 	// GET: dados dos juris, categorias
-	const edicao = await fetcher(`${api_link}/edicoes?populate=deep&${query}`);
+	const edicao = await fetcher(`${api_link}/edicoes/1?populate=deep&${query}`);
 
 	// Pass data to the page via props
 	return { props: { social: rsocials, contato, edicao } };
