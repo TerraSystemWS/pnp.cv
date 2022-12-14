@@ -21,10 +21,12 @@ const CONTATOS = ({ social, contato }: any) => {
 
 	const onSubmit: SubmitHandler<Inputs> = async (data) => {
 		console.log(data);
+		alert("sending email" + data.email);
 
 		// const ok = googleRecaptcha(data);
 		// if (!ok) console.log("nao deve enviar email");
 		const url = `${api_link}/contato`;
+		console.log("user:" + url);
 		const response = await fetch(url, {
 			method: "POST",
 			headers: {
@@ -40,17 +42,19 @@ const CONTATOS = ({ social, contato }: any) => {
 		const dados = await response.json();
 		console.log(dados);
 		// setar email enviado
-		// switch (dados.statusCode) {
-		// 	case 200: {
-		// 		setEmail(true);
-		// 		break;
-		// 	}
-		// 	case 500: {
-		// 		console.log("erro no envio de email");
-		// 	}
-		// 	default:
-		// 		setLoading(false);
-		// }
+		switch (dados.statusCode) {
+			case 200: {
+				//		setEmail(true);
+				console.log("code 200");
+				break;
+			}
+			case 500: {
+				console.log("erro no envio de email: code 500");
+			}
+			default:
+				//		setLoading(false);
+				console.log("default");
+		}
 	};
 
 	// console.log(watch("name")); // watch input value by passing the name of it
