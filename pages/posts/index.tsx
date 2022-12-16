@@ -15,7 +15,7 @@ const PostList = ({ social, contato, posts }: any) => {
 							Nosso Blog
 						</h2>
 						<p className="font-light text-gray-500 sm:text-xl dark:text-gray-400">
-							Aqui pode encontar postagens e artivos relacionado ao pnp e muito
+							Aqui pode encontar postagens e arquivos relacionado ao pnp e muito
 							mais
 						</p>
 					</div>
