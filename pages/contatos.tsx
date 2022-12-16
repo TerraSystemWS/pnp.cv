@@ -20,13 +20,13 @@ const CONTATOS = ({ social, contato }: any) => {
 	} = useForm<Inputs>();
 
 	const onSubmit: SubmitHandler<Inputs> = async (data) => {
-		console.log(data);
-		alert("sending email" + data.email);
+		// console.log(data);
+		// alert("sending email" + data.email);
 
 		// const ok = googleRecaptcha(data);
 		// if (!ok) console.log("nao deve enviar email");
 		const url = `${api_link}/contato`;
-		console.log("user:" + url);
+		// console.log("user:" + url);
 		const response = await fetch(url, {
 			method: "POST",
 			headers: {
