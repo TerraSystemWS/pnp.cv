@@ -6,6 +6,7 @@ import Layout from "../../components/Layout";
 import { fetcher } from "../../lib/api";
 import Image from "next/image";
 const qs = require("qs");
+import Link from "next/link";
 
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
@@ -47,9 +48,9 @@ const Edicoes = ({ social, contato, edicao }: any) => {
 									<div key={index} id="juri">
 										<section className="text-gray-600 body-font">
 											<div className="container px-5 py-24 mx-auto">
-												<div className="flex flex-col text-center w-full mb-20">
+												<div className="flex flex-col w-full mb-20">
 													<h1 className="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">
-														Juri
+														Juris
 													</h1>
 													{/* <p className="lg:w-2/3 mx-auto leading-relaxed text-base">
 														Whatever cardigan tote bag tumblr hexagon brooklyn
@@ -60,29 +61,32 @@ const Edicoes = ({ social, contato, edicao }: any) => {
 												</div>
 												<div className="flex flex-wrap -m-2">
 													{value.attributes.juri.map(
-														(value: any, index: any) => (
-															<div
+														(value2: any, index: any) => (
+															<Link
+																href={`/juris/${value2.id}?edicao=${value.attributes.N_Edicao}`}
 																key={index}
 																className="p-2 lg:w-1/3 md:w-1/2 w-full"
 															>
 																<div className="h-full flex items-center border-gray-200 border p-4 rounded-lg">
+																	{/* <Link href={`/juris/${value2.id}?edicao=${value2.attributes.N_Edicao}`}> */}
 																	<Image
 																		alt="team"
 																		className="w-16 h-16 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4"
 																		src={
-																			value.foto.data?.attributes.formats
+																			value2.foto.data?.attributes.formats
 																				.thumbnail.url || "/"
 																		}
 																		width={50}
 																		height={50}
 																	/>
+																	{/* </Link> */}
 																	<div className="flex-grow">
 																		<h2 className="text-gray-900 title-font font-medium">
-																			{value.nome}
+																			{value2.nome}
 																		</h2>
 																	</div>
 																</div>
-															</div>
+															</Link>
 														)
 													)}
 												</div>
