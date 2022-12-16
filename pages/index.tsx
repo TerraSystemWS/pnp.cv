@@ -37,7 +37,7 @@ export default function Home({
 	let parceirosPatrocinadores: any = [];
 	let parceirosMedia: any = [];
 	// create banner object
-	banners.data.map((value: any, index: any) => {
+	banners.data?.map((value: any, index: any) => {
 		if (value.attributes.destaque) {
 			bannerData[index] = {
 				id: index,
@@ -51,7 +51,7 @@ export default function Home({
 	 * fiz um harded code com o numero de edicoes que tem de ser mudade urgente
 	 * antis tinha essa linha edicao.data.map((value: any, index: any) => {
 	 */
-	edicao.data.attributes.juri.map((value2: any, index2: any) => {
+	edicao.data?.attributes.juri.map((value2: any, index2: any) => {
 		// console.log(value2.foto.data?.attributes.url);
 		Juris[index2] = {
 			id: index2,
@@ -64,7 +64,7 @@ export default function Home({
 		};
 	});
 
-	edicao.data.attributes.categoria.map((categs: any, index3: any) => {
+	edicao.data?.attributes.categoria.map((categs: any, index3: any) => {
 		Categoria[index3] = {
 			id: index3,
 			titulo: categs.titulo,
