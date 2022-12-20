@@ -27,7 +27,9 @@ const Nav = () => {
 						{/* <IonIcon name="logo-ionic"></IonIcon> 
 					</span>
 					Designer */}
-					<Image src={logo} alt="logo" />
+					<Link href={"/"}>
+						<Image src={logo} alt="logo" />
+					</Link>
 				</div>
 
 				<div
