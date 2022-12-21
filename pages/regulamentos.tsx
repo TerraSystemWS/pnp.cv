@@ -2,6 +2,7 @@ import Layout from "../components/Layout";
 import { fetcher } from "../lib/api";
 import showdown from "showdown";
 import Link from "next/link";
+import Head from "next/head";
 const qs = require("qs");
 
 // link para a url do api
@@ -64,6 +65,9 @@ const Regulamentos = ({ social, contato, edicao }: any) => {
 
 	return (
 		<Layout rsocial={social} contato={contato}>
+			<Head>
+				<title>Regulamentos - Prémio Nacional De Publicidade</title>
+			</Head>
 			{/* <pre>{JSON.stringify(edicao, null, 2)}</pre> */}
 			<h1 className="text-4xl font-medium text-gray-700 text-center mt-6">
 				{" "}

@@ -7,6 +7,7 @@ import { fetcher } from "../../lib/api";
 import Image from "next/image";
 const qs = require("qs");
 import Link from "next/link";
+import Head from "next/head";
 
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
@@ -14,12 +15,15 @@ const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
 const Edicoes = ({ social, contato, edicao }: any) => {
 	return (
 		<Layout rsocial={social} contato={contato}>
+			<Head>
+				<title>Edições - Prémio Nacional De Publicidade</title>
+			</Head>
 			<div className="">
 				<div className="bg-gray-50">
 					<div className="mx-auto max-w-7xl py-12 px-4 sm:px-6">
 						<h2 className="text-2xl text-center mb-8 font-bold tracking-tight text-gray-900 sm:text-4xl">
 							<span className="block text-amarelo-ouro">
-								EDIÇOES DO PRÉMIO NACIONAL DE PUBLICIDADE
+								EDIÇÕES DO PRÉMIO NACIONAL DE PUBLICIDADE
 							</span>
 							{/* <span className="block ">
 								Inscrição aberta apartir do dia 1 a 31 de Janero 2023

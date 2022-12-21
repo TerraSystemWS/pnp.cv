@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import showdown from "showdown";
 import Link from "next/link";
+import Head from "next/head";
 
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
@@ -60,6 +61,9 @@ const Juris = ({ social, contato, edicao }: any) => {
 
 	return (
 		<Layout rsocial={social} contato={contato}>
+			<Head>
+				<title> {Juris[0].j_nome} - Prémio Nacional De Publicidade</title>
+			</Head>
 			<h1 className="text-4xl font-medium text-gray-700 text-center pt-2">
 				{" "}
 				Juri Da {Juris[0]?.edicao}ª Edição

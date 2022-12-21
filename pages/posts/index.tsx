@@ -1,6 +1,7 @@
 import Layout from "../../components/Layout";
 import { fetcher } from "../../lib/api";
 import Link from "next/link";
+import Head from "next/head";
 
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
@@ -8,6 +9,9 @@ const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
 const PostList = ({ social, contato, posts }: any) => {
 	return (
 		<Layout rsocial={social} contato={contato}>
+			<Head>
+				<title>Blog - Prémio Nacional De Publicidade</title>
+			</Head>
 			<section className="bg-white dark:bg-gray-900">
 				<div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
 					<div className="mx-auto max-w-screen-sm text-center lg:mb-16 mb-8">

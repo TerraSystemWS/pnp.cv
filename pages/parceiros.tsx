@@ -2,6 +2,7 @@ import Layout from "../components/Layout";
 import { fetcher } from "../lib/api";
 import Link from "next/link";
 import Image from "next/image";
+import Head from "next/head";
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
 
@@ -62,6 +63,9 @@ const Parceiros = ({ social, contato, parceiros }: any) => {
 
 	return (
 		<Layout rsocial={social} contato={contato}>
+			<Head>
+				<title>Parceiros - Prémio Nacional De Publicidade</title>
+			</Head>
 			{/* <pre>{JSON.stringify(parceirosOrganizacao, null, 2)}</pre> */}
 			<section className="text-gray-600 body-font">
 				<div className="container px-5 py-24 mx-auto">
