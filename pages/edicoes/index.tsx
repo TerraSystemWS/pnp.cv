@@ -1,18 +1,25 @@
 import { Timeline } from "flowbite-react";
 import { HiCalendar } from "react-icons/hi";
-import { Button } from "flowbite-react";
-import { HiArrowNarrowRight } from "react-icons/hi";
+import { HiArrowNarrowRight, HiOutlineArrowRight } from "react-icons/hi";
 import Layout from "../../components/Layout";
 import { fetcher } from "../../lib/api";
 import Image from "next/image";
 const qs = require("qs");
 import Link from "next/link";
 import Head from "next/head";
+import { Carousel, Button } from "flowbite-react";
+import ImageViewer from "awesome-image-viewer";
 
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
 
 const Edicoes = ({ social, contato, edicao }: any) => {
+	const Verimg = (url: any) => {
+		new ImageViewer({
+			images: url,
+		});
+	};
+
 	return (
 		<Layout rsocial={social} contato={contato}>
 			<Head>
@@ -98,6 +105,39 @@ const Edicoes = ({ social, contato, edicao }: any) => {
 										</section>
 									</div>
 
+									<div id="galeria">
+										<div className="grid h-56 grid-cols-2 gap-4 sm:h-64 xl:h-80 2xl:h-96">
+											{value.attributes.galeria.map((value: any) => (
+												<div key={value.id}>
+													<div>
+														<h1 className="">{value.titulo}</h1>
+													</div>
+													<div className="w-4/12">
+														<Carousel indicators={false}>
+															{value.imagens.data.map((value: any) => (
+																<>
+																	<Image
+																		key={value.id}
+																		src={value.attributes.formats.thumbnail.url}
+																		alt={value.attributes.hash}
+																		width={
+																			value.attributes.formats.thumbnail.width
+																		}
+																		height={
+																			value.attributes.formats.thumbnail.height
+																		}
+																		//onClick={() => Verimg(value.url)}
+																		className="cursor-pointer"
+																	/>
+																</>
+															))}
+														</Carousel>
+													</div>
+												</div>
+											))}
+										</div>
+									</div>
+
 									<div id="videos">
 										Videos
 										<Button color="gray">
@@ -106,18 +146,28 @@ const Edicoes = ({ social, contato, edicao }: any) => {
 										</Button>
 									</div>
 									<div id="catalogos">
-										Catalogos
-										<Button color="gray">
-											Saber Mais
-											<HiArrowNarrowRight className="ml-2 h-3 w-3" />
-										</Button>
-									</div>
-									<div id="catalogos">
-										Mostra
-										<Button color="gray">
-											Saber Mais
-											<HiArrowNarrowRight className="ml-2 h-3 w-3" />
-										</Button>
+										{value.attributes.documents.map((value: any) => (
+											<div key={value.id}>
+												<h1 className="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">
+													{value.titulo}
+												</h1>
+												<div>
+													<iframe
+														className="w-full h-96"
+														src={value.ficheiro.data.attributes.url}
+													/>
+
+													<Link
+														href={value.ficheiro.data.attributes.url}
+														className="text-amarelo-ouro"
+														target="_blank"
+														rel="noreferrer"
+													>
+														Ver Completo
+													</Link>
+												</div>
+											</div>
+										))}
 									</div>
 								</Timeline.Body>
 							</Timeline.Content>
