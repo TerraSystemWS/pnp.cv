@@ -304,7 +304,11 @@ const Parceiros = ({ social, contato, parceiros }: any) => {
 										/>
 									</Link>
 									<div className="flex-grow">
-										<Link href={value.link || "#"}>
+										<Link
+											href={value.link || "#"}
+											target="_blank"
+											rel="noreferrer"
+										>
 											<h2 className="text-gray-900 title-font font-medium">
 												{value.title}
 											</h2>
