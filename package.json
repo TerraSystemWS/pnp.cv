@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@svgr/webpack": "^6.5.1",
+    "awesome-image-viewer": "^1.0.60",
     "flowbite": "^1.5.4",
     "flowbite-react": "^0.3.4",
     "next": "13.0.0",
