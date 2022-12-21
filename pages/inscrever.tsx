@@ -15,6 +15,7 @@
 import Layout from "../components/Layout";
 import { fetcher } from "../lib/api";
 const qs = require("qs");
+import Head from "next/head";
 
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
@@ -34,6 +35,23 @@ const Inscrever = ({ social, contato, edicao }: any) => {
 
 	return (
 		<Layout rsocial={social} contato={contato}>
+			<Head>
+				<title>Inscrição - Prémio Nacional De Publicidade</title>
+			</Head>
+			<div className="">
+				<div className="bg-gray-50">
+					<div className="mx-auto max-w-7xl py-12 px-4 sm:px-6">
+						<h2 className="text-2xl text-center mb-8 font-bold tracking-tight text-gray-900 sm:text-4xl">
+							<span className="block text-amarelo-ouro">
+								PRÉMIO NACIONAL DE PUBLICIDADE
+							</span>
+							{/* <span className="block ">
+								Inscrição aberta apartir do dia 1 a 31 de Janero 2023
+							</span> */}
+						</h2>
+					</div>
+				</div>
+			</div>
 			<div className="p-11">
 				<div className="mt-10 sm:mt-0">
 					<div className="md:grid md:grid-cols-3 md:gap-6">
