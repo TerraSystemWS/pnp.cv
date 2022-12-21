@@ -80,7 +80,11 @@ const Parceiros = ({ social, contato, parceiros }: any) => {
 								return (
 									<div key={index} className="p-2 lg:w-1/3 md:w-1/2 w-full">
 										<div className="h-full flex items-center border-gray-200 border p-4 rounded-lg">
-											<Link href={value.link || "#"}>
+											<Link
+												href={value.link || "#"}
+												target="_blank"
+												rel="noreferrer"
+											>
 												<Image
 													alt="team"
 													className="w-32 h-32 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4"
@@ -90,7 +94,11 @@ const Parceiros = ({ social, contato, parceiros }: any) => {
 												/>
 											</Link>
 											<div className="flex-grow">
-												<Link href={value.link || "#"}>
+												<Link
+													href={value.link || "#"}
+													target="_blank"
+													rel="noreferrer"
+												>
 													<h2 className="text-gray-900 title-font font-medium">
 														{value.title}
 
@@ -112,7 +120,11 @@ const Parceiros = ({ social, contato, parceiros }: any) => {
 										key={index}
 										className="container px-5 py-24 mx-auto flex flex-wrap flex-col"
 									>
-										<Link href={value.link || "#"}>
+										<Link
+											href={value.link || "#"}
+											target="_blank"
+											rel="noreferrer"
+										>
 											<Image
 												className="xl:w-1/4 lg:w-1/3 md:w-1/2 w-2/3 block mx-auto object-cover object-center rounded"
 												alt="hero"
@@ -142,7 +154,11 @@ const Parceiros = ({ social, contato, parceiros }: any) => {
 								return (
 									<div key={index} className="p-2 lg:w-1/3 md:w-1/2 w-full">
 										<div className="h-full flex items-center border-gray-200 border p-4 rounded-lg">
-											<Link href={value.link || "#"}>
+											<Link
+												href={value.link || "#"}
+												target="_blank"
+												rel="noreferrer"
+											>
 												<Image
 													alt="team"
 													className="w-32 h-32 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4"
@@ -152,7 +168,11 @@ const Parceiros = ({ social, contato, parceiros }: any) => {
 												/>
 											</Link>
 											<div className="flex-grow">
-												<Link href={value.link || "#"}>
+												<Link
+													href={value.link || "#"}
+													target="_blank"
+													rel="noreferrer"
+												>
 													<h2 className="text-gray-900 title-font font-medium">
 														{value.title}
 
@@ -174,7 +194,11 @@ const Parceiros = ({ social, contato, parceiros }: any) => {
 										key={index}
 										className="container px-5 py-24 mx-auto flex flex-wrap flex-col"
 									>
-										<Link href={value.link || "#"}>
+										<Link
+											href={value.link || "#"}
+											target="_blank"
+											rel="noreferrer"
+										>
 											<Image
 												className="xl:w-1/4 lg:w-1/3 md:w-1/2 w-2/3 block mx-auto  object-cover object-center rounded"
 												alt="hero"
@@ -214,7 +238,11 @@ const Parceiros = ({ social, contato, parceiros }: any) => {
 								// 	<div>{a}</div>
 								<div key={index} className="p-2 lg:w-1/3 md:w-1/2 w-full">
 									<div className="h-full flex items-center border-gray-200 border p-4 rounded-lg">
-										<Link href={value.link || "#"}>
+										<Link
+											href={value.link || "#"}
+											target="_blank"
+											rel="noreferrer"
+										>
 											<Image
 												alt="team"
 												className="w-32 h-32 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4"
@@ -224,7 +252,11 @@ const Parceiros = ({ social, contato, parceiros }: any) => {
 											/>
 										</Link>
 										<div className="flex-grow">
-											<Link href={value.link || "#"}>
+											<Link
+												href={value.link || "#"}
+												target="_blank"
+												rel="noreferrer"
+											>
 												<h2 className="text-gray-900 title-font font-medium">
 													{value.title}
 													{"  "}
@@ -258,7 +290,11 @@ const Parceiros = ({ social, contato, parceiros }: any) => {
 						{parceirosMedia.map((value: any, index: number) => (
 							<div key={index} className="p-2 lg:w-1/3 md:w-1/2 w-full">
 								<div className="h-full flex items-center border-gray-200 border p-4 rounded-lg">
-									<Link href={value.link || " "}>
+									<Link
+										href={value.link || " "}
+										target="_blank"
+										rel="noreferrer"
+									>
 										<Image
 											alt="team"
 											className="w-32 h-32 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4"
