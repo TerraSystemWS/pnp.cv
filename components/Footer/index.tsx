@@ -15,9 +15,9 @@ const Footer = ({ rsocial, contato }: any) => {
 
 	let usefulLinks = [
 		{ name: "Home", link: "/" },
-		{ name: "Sobre Nos", link: "/" },
-		{ name: "Termos de Serviços", link: "/" },
-		{ name: "Politica de Privacidade", link: "/" },
+		{ name: "Sobre Nós", link: "/" },
+		{ name: "Termos de Serviço", link: "/" },
+		{ name: "Política de Privacidade", link: "/" },
 	];
 
 	let websites = [

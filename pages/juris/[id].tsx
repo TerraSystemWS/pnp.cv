@@ -66,7 +66,7 @@ const Juris = ({ social, contato, edicao }: any) => {
 			</Head>
 			<h1 className="text-4xl font-medium text-gray-700 text-center pt-2">
 				{" "}
-				Juri Da {Juris[0]?.edicao}ª Edição
+				Júri da {Juris[0]?.edicao}ª Edição
 			</h1>{" "}
 			<section className="text-gray-600 body-font">
 				<div className="container px-5 py-24 mx-auto flex flex-col">

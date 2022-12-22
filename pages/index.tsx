@@ -215,7 +215,7 @@ export default function Home({
 							O PRÉMIO NACIONAL DE PUBLICIDADE tem por objeto a promoção da
 							atividade publicitária, através do reconhecimento da qualidade dos
 							trabalhos publicitários e institucionais exibidos e veiculados,
-							premiando os que pela sua criatividade e originalidade contribuam
+							premiando os que pela sua criatividade e originalidade contribuem
 							para o desenvolvimento do mercado publicitário em Cabo Verde.
 						</div>
 					</div>
@@ -232,10 +232,10 @@ export default function Home({
 						</h1>
 						<p className="text-base leading-relaxed xl:w-2/4 lg:w-3/4 mx-auto">
 							O Prémio Público de Publicidade é uma das categorias do Prémio
-							Naccional de Publicidade (PNP) em que a votação é feita somente
+							Nacional de Publicidade (PNP) em que a votação é feita somente
 							pelo público, através da internet. Trata-se de um prémio da
-							responsabilidade do PNP, com regulamento próprio, sem avaliaçaõ do
-							júri, baseado apenas no critério de popularidade.
+							responsabilidade do PNP, com regulamento próprio, sem avaliação do
+							júri, baseado apenas no critério da popularidade.
 						</p>
 					</div>
 					<div className="flex flex-col gap-4 w-1/2 justify-center sm:mx-auto sm:mb-2 -mx-2">

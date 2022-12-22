@@ -10,7 +10,7 @@ const Nav = () => {
 		{ name: "REGULAMENTOS", link: "/regulamentos" }, // aqui tem categorias, regulamentos e parceiros
 		{ name: "EDIÇÕES", link: "/edicoes" }, // catalagos e gala
 		{ name: "PARCEIROS", link: "/parceiros" }, // Tem videos e galerias
-		{ name: "BLOG'S", link: "/posts" }, // posts
+		{ name: "BLOG", link: "/posts" }, // posts
 		{ name: "CONTATOS", link: "/contatos" }, //
 	];
 

@@ -60,8 +60,8 @@ const Edicoes = ({ social, contato, edicao }: any) => {
 										<section className="text-gray-600 body-font">
 											<div className="container px-5 py-24 mx-auto">
 												<div className="flex flex-col w-full mb-20">
-													<h1 className="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">
-														Juris
+													<h1 className="sm:text-3xl text-2xl font-medium title-font text-gray-900">
+														Os Júrados
 													</h1>
 													{/* <p className="lg:w-2/3 mx-auto leading-relaxed text-base">
 														Whatever cardigan tote bag tumblr hexagon brooklyn
@@ -87,8 +87,14 @@ const Edicoes = ({ social, contato, edicao }: any) => {
 																			value2.foto.data?.attributes.formats
 																				.thumbnail.url || "/"
 																		}
-																		width={50}
-																		height={50}
+																		width={
+																			value2.foto.data?.attributes.formats
+																				.thumbnail.width
+																		}
+																		height={
+																			value2.foto.data?.attributes.formats
+																				.thumbnail.height
+																		}
 																	/>
 																	{/* </Link> */}
 																	<div className="flex-grow">

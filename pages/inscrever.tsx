@@ -502,7 +502,7 @@ const Inscrever = ({ social, contato, edicao }: any) => {
 												htmlFor="about"
 												className="block text-sm font-medium text-gray-700"
 											>
-												Outro
+												Outro (considerações adicionais)
 											</label>
 											<div className="mt-1">
 												<textarea
@@ -514,9 +514,9 @@ const Inscrever = ({ social, contato, edicao }: any) => {
 													defaultValue={""}
 												/>
 											</div>
-											<p className="mt-2 text-sm text-gray-500">
+											{/* <p className="mt-2 text-sm text-gray-500">
 												algumas considerações adicionais
-											</p>
+											</p> */}
 										</div>
 
 										<div className="col-span-6 sm:col-span-4">
@@ -540,7 +540,7 @@ const Inscrever = ({ social, contato, edicao }: any) => {
 												htmlFor="coo_prod"
 												className="block text-sm font-medium text-gray-700"
 											>
-												Data de divulgação
+												Data da divulgação
 											</label>
 											<input
 												type="date"
@@ -598,18 +598,18 @@ const Inscrever = ({ social, contato, edicao }: any) => {
 								<p className="mt-1 text-sm text-gray-600">
 									<p className="mb-2">
 										<span className="text-red-500 font-bold text-lg">*</span> É
-										necessário o envio da cópia do estatuto da empresa e o NIF;
+										necessário o envio da cópia do estatuto da empresa e do NIF;
 									</p>
 									{/* <br /> */}
 									<p className="mb-2">
 										<span className="text-red-500 font-bold text-lg">*</span>{" "}
-										Bilhete de identidade e NIF se for candidatura individual;
+										Bilhete de identidade e NIF, se for candidatura individual;
 									</p>
 									{/* <br /> */}
 									<p className="mb-2">
 										<span className="text-red-500 font-bold text-lg">*</span>{" "}
-										Bilhete de identidade, NIF e certificado de matrícula se for
-										estudante universitário;
+										Bilhete de identidade, NIF e certificado de matrícula, se
+										for estudante universitário;
 									</p>
 									{/* <br /> */}
 									<p className="mb-2">

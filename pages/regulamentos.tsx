@@ -66,7 +66,7 @@ const Regulamentos = ({ social, contato, edicao }: any) => {
 	return (
 		<Layout rsocial={social} contato={contato}>
 			<Head>
-				<title>Regulamentos - Prémio Nacional De Publicidade</title>
+				<title>Regulamento - Prémio Nacional De Publicidade</title>
 			</Head>
 			{/* <pre>{JSON.stringify(edicao, null, 2)}</pre> */}
 			<h1 className="text-4xl font-medium text-gray-700 text-center mt-6">
