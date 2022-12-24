@@ -14,6 +14,7 @@ const Parceiros = ({ social, contato, parceiros, navbar }: any) => {
 	let parceirosPatrocinadores: any = [];
 	let parceirosMedia: any = [];
 	let cor: string;
+	let icon: string;
 
 	parceiros.data.map((value: any, index: any) => {
 		value.attributes.organizacao.map((value2: any, index2: any) => {
@@ -34,9 +35,22 @@ const Parceiros = ({ social, contato, parceiros, navbar }: any) => {
 		});
 
 		value.attributes.patrocinadores.map((value2: any, index2: any) => {
-			if (value2.tipo == "Ouro") cor = "#FFD700";
-			if (value2.tipo == "Bronze") cor = "#CD7F32";
-			if (value2.tipo == "Prata") cor = "#C0C0C0";
+			if (value2.tipo == "Ouro") {
+				cor = "#FFD700";
+				icon = "🥇";
+			}
+			if (value2.tipo == "Bronze") {
+				cor = "#CD7F32";
+				icon = "🥉";
+			}
+			if (value2.tipo == "Prata") {
+				cor = "#C0C0C0";
+				icon = "🥈";
+			}
+			if (value2.tipo == "Diamante") {
+				cor = "";
+				icon = "💎";
+			}
 			parceirosPatrocinadores2[index2] = {
 				id: index2,
 				link: value2.link,
@@ -44,6 +58,7 @@ const Parceiros = ({ social, contato, parceiros, navbar }: any) => {
 				foto: value2.logo.data.attributes.url,
 				tipo: value2.tipo,
 				cor: cor,
+				icon: icon,
 			};
 		});
 		parceirosPatrocinadores = parceirosPatrocinadores2.sort();
@@ -274,6 +289,7 @@ const Parceiros = ({ social, contato, parceiros, navbar }: any) => {
 												>
 													{value.tipo}
 												</span>
+												{value.icon}
 											</Link>
 										</div>
 									</div>
