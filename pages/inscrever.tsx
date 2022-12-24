@@ -20,7 +20,7 @@ import Head from "next/head";
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
 
-const Inscrever = ({ social, contato, edicao }: any) => {
+const Inscrever = ({ social, contato, edicao, navbar }: any) => {
 	// dados de categorias
 	let Categoria: any = [];
 	// create cateoria lists
@@ -34,7 +34,7 @@ const Inscrever = ({ social, contato, edicao }: any) => {
 	});
 
 	return (
-		<Layout rsocial={social} contato={contato}>
+		<Layout rsocial={social} contato={contato} navbar={navbar}>
 			<Head>
 				<title>Inscrição - Prémio Nacional De Publicidade</title>
 			</Head>
@@ -841,10 +841,25 @@ export async function getServerSideProps() {
 	const edicao = await fetcher(`${api_link}/edicoes/1?populate=deep&${query}`);
 	// GET: dados dos parceiros
 	// const parceiros = await fetcher(`${api_link}/parceiros?populate=deep`);
+	// GET: dados do navbar
+	const navbar = await fetcher(`${api_link}/menus?populate=deep`);
+	//get links for menu
+	let dlink: any = [];
+	navbar.data.map((value: any) => {
+		value.attributes.items.data.map((value: any, index: any) => {
+			// value.attributes.title;
+			// value.attributes.url;
+			// console.log(value);
+			dlink[index] = {
+				name: value.attributes.title,
+				link: value.attributes.url,
+			};
+		});
+	});
 
 	// console.log("edicoesTT");
 	// console.log(edicao);
 
 	// Pass data to the page via props
-	return { props: { social: rsocials, contato, edicao } };
+	return { props: { social: rsocials, contato, edicao, navbar: dlink } };
 }

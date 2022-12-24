@@ -4,17 +4,20 @@ import logo from "public/logo1.png";
 import { IoGridOutline, IoClose } from "react-icons/io5";
 import Link from "next/link";
 
-const Nav = () => {
-	let Links = [
-		{ name: "HOME", link: "/" },
-		{ name: "REGULAMENTOS", link: "/regulamentos" }, // aqui tem categorias, regulamentos e parceiros
-		{ name: "EDIÇÕES", link: "/edicoes" }, // catalagos e gala
-		{ name: "PARCEIROS", link: "/parceiros" }, // Tem videos e galerias
-		{ name: "BLOG", link: "/posts" }, // posts
-		{ name: "CONTATOS", link: "/contatos" }, //
-	];
+const Nav = (props: any) => {
+	let Links = props.navbar;
+	// [
+	// 	{ name: "HOME", link: "/" },
+	// 	{ name: "REGULAMENTOS", link: "/regulamentos" }, // aqui tem categorias, regulamentos e parceiros
+	// 	{ name: "EDIÇÕES", link: "/edicoes" }, // catalagos e gala
+	// 	{ name: "PARCEIROS", link: "/parceiros" }, // Tem videos e galerias
+	// 	{ name: "BLOG", link: "/posts" }, // posts
+	// 	{ name: "CONTATOS", link: "/contatos" }, //
+	// ];
 
 	let [open, setOpen] = useState(false);
+	console.log("dadoadosadaijdsjklsad");
+	console.log(props.navbar);
 
 	return (
 		<div className="shadow-md w-full fixed top-0 left-0 z-10">
@@ -45,7 +48,7 @@ const Nav = () => {
 						open ? "top-20 " : "top-[-490px]"
 					}`}
 				>
-					{Links.map((link) => (
+					{Links.map((link: any) => (
 						<li key={link.name} className="md:ml-8 text-xl md:my-0 my-7">
 							<Link
 								href={link.link}

@@ -9,7 +9,7 @@ import Head from "next/head";
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
 
-const Juris = ({ social, contato, edicao }: any) => {
+const Juris = ({ social, contato, edicao, navbar }: any) => {
 	const router = useRouter();
 	const { id } = router.query;
 	console.log("router");
@@ -60,7 +60,7 @@ const Juris = ({ social, contato, edicao }: any) => {
 	// console.log(JurisList);
 
 	return (
-		<Layout rsocial={social} contato={contato}>
+		<Layout rsocial={social} contato={contato} navbar={navbar}>
 			<Head>
 				<title> {Juris[0].j_nome} - Prémio Nacional De Publicidade</title>
 			</Head>
@@ -154,7 +154,24 @@ export async function getServerSideProps({ params, query }: any) {
 	// `${api_link}/edicoes/${query.edicao}?populate=deep`
 	// console.log("edicao");
 	// console.log(edicao);
+	// GET: dados do navbar
+	const navbar = await fetcher(`${api_link}/menus?populate=deep`);
+	//get links for menu
+	let dlink: any = [];
+	navbar.data.map((value: any) => {
+		value.attributes.items.data.map((value: any, index: any) => {
+			// value.attributes.title;
+			// value.attributes.url;
+			// console.log(value);
+			dlink[index] = {
+				name: value.attributes.title,
+				link: value.attributes.url,
+			};
+		});
+	});
 
 	// Pass data to the page via props
-	return { props: { social: rsocials, contato, banners, edicao } };
+	return {
+		props: { social: rsocials, contato, banners, edicao, navbar: dlink },
+	};
 }

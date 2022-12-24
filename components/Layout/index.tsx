@@ -9,9 +9,10 @@ interface Props {
 	children?: ReactNode;
 	rsocial: ReactNode;
 	contato: ReactNode;
+	navbar: ReactNode;
 }
 
-const Layout = ({ children, rsocial, contato }: Props) => (
+const Layout = ({ children, rsocial, contato, navbar }: Props) => (
 	// <UserProvider value={{ user, loading }}>
 	<div className="">
 		<Head>
@@ -19,12 +20,12 @@ const Layout = ({ children, rsocial, contato }: Props) => (
 		</Head>
 
 		<header>
-			<NavBar />{" "}
+			<NavBar navbar={navbar} />{" "}
 		</header>
 
 		<div className="mt-28">{children}</div>
 
-		<Footer rsocial={rsocial} contato={contato} />
+		<Footer rsocial={rsocial} contato={contato} navbar={navbar} />
 	</div>
 	// </UserProvider>
 );

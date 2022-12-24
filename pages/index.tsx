@@ -22,6 +22,7 @@ export default function Home({
 	banners,
 	edicao,
 	parceiros,
+	navbar,
 }: any) {
 	// router
 	const router = useRouter();
@@ -36,6 +37,9 @@ export default function Home({
 	let parceirosPadrinho: any = [];
 	let parceirosPatrocinadores: any = [];
 	let parceirosMedia: any = [];
+
+	// console.log("dlink");
+	// console.log(dlink);
 	// create banner object
 	banners.data?.map((value: any, index: any) => {
 		if (value.attributes.destaque) {
@@ -172,7 +176,7 @@ export default function Home({
 
 	// return;
 	return (
-		<Layout rsocial={social} contato={contato}>
+		<Layout rsocial={social} contato={contato} navbar={navbar}>
 			{/* <pre>{JSON.stringify(banners, null, 2)}</pre> */}
 			{/* <pre>{JSON.stringify(bannerData, null, 2)}</pre> */}
 			{/* <pre>{JSON.stringify(edicao, null, 2)}</pre> */}
@@ -329,10 +333,31 @@ export async function getServerSideProps() {
 	const edicao = await fetcher(`${api_link}/edicoes/1?populate=deep&${query}`);
 	// GET: dados dos parceiros
 	const parceiros = await fetcher(`${api_link}/parceiros?populate=deep`);
-
-	// console.log("edicoesTT");
-	// console.log(edicao);
+	// GET: dados do navbar
+	const navbar = await fetcher(`${api_link}/menus?populate=deep`);
+	//get links for menu
+	let dlink: any = [];
+	navbar.data.map((value: any) => {
+		value.attributes.items.data.map((value: any, index: any) => {
+			// value.attributes.title;
+			// value.attributes.url;
+			// console.log(value);
+			dlink[index] = {
+				name: value.attributes.title,
+				link: value.attributes.url,
+			};
+		});
+	});
 
 	// Pass data to the page via props
-	return { props: { social: rsocials, contato, banners, edicao, parceiros } };
+	return {
+		props: {
+			social: rsocials,
+			contato,
+			banners,
+			edicao,
+			parceiros,
+			navbar: dlink,
+		},
+	};
 }

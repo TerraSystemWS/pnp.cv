@@ -8,7 +8,7 @@ const qs = require("qs");
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
 
-const Regulamentos = ({ social, contato, edicao }: any) => {
+const Regulamentos = ({ social, contato, edicao, navbar }: any) => {
 	const createMarkup = (values: any) => {
 		// const values =
 		const converter = new showdown.Converter();
@@ -64,7 +64,7 @@ const Regulamentos = ({ social, contato, edicao }: any) => {
 	// const a = createMarkup(Regulamentos[0].descricao);
 
 	return (
-		<Layout rsocial={social} contato={contato}>
+		<Layout rsocial={social} contato={contato} navbar={navbar}>
 			<Head>
 				<title>Regulamento - Prémio Nacional De Publicidade</title>
 			</Head>
@@ -155,7 +155,22 @@ export async function getServerSideProps() {
 
 	// GET: dados dos juris, categorias
 	const edicao = await fetcher(`${api_link}/edicoes/1?populate=deep&${query}`);
+	// GET: dados do navbar
+	const navbar = await fetcher(`${api_link}/menus?populate=deep`);
+	//get links for menu
+	let dlink: any = [];
+	navbar.data.map((value: any) => {
+		value.attributes.items.data.map((value: any, index: any) => {
+			// value.attributes.title;
+			// value.attributes.url;
+			// console.log(value);
+			dlink[index] = {
+				name: value.attributes.title,
+				link: value.attributes.url,
+			};
+		});
+	});
 
 	// Pass data to the page via props
-	return { props: { social: rsocials, contato, edicao } };
+	return { props: { social: rsocials, contato, edicao, navbar: dlink } };
 }

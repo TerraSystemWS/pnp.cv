@@ -6,10 +6,11 @@ import Head from "next/head";
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
 
-const Parceiros = ({ social, contato, parceiros }: any) => {
+const Parceiros = ({ social, contato, parceiros, navbar }: any) => {
 	//dados do grupo de parceiros
 	let parceirosOrganizacao: any = [];
 	let parceirosPadrinho: any = [];
+	let parceirosPatrocinadores2: any = [];
 	let parceirosPatrocinadores: any = [];
 	let parceirosMedia: any = [];
 	let cor: string;
@@ -31,11 +32,12 @@ const Parceiros = ({ social, contato, parceiros }: any) => {
 				foto: value2.logo.data.attributes.url,
 			};
 		});
+
 		value.attributes.patrocinadores.map((value2: any, index2: any) => {
 			if (value2.tipo == "Ouro") cor = "#FFD700";
 			if (value2.tipo == "Bronze") cor = "#CD7F32";
 			if (value2.tipo == "Prata") cor = "#C0C0C0";
-			parceirosPatrocinadores[index2] = {
+			parceirosPatrocinadores2[index2] = {
 				id: index2,
 				link: value2.link,
 				title: value2.titulo,
@@ -44,6 +46,9 @@ const Parceiros = ({ social, contato, parceiros }: any) => {
 				cor: cor,
 			};
 		});
+		parceirosPatrocinadores = parceirosPatrocinadores2.sort();
+		// console.log(parceirosPatrocinadores);
+
 		value.attributes.media_parteners.map((value2: any, index2: any) => {
 			parceirosMedia[index2] = {
 				id: index2,
@@ -61,20 +66,22 @@ const Parceiros = ({ social, contato, parceiros }: any) => {
 		heading = "Organizador";
 	}
 
+	// return;
+
 	return (
-		<Layout rsocial={social} contato={contato}>
+		<Layout rsocial={social} contato={contato} navbar={navbar}>
 			<Head>
 				<title>Parceiros - Prémio Nacional De Publicidade</title>
 			</Head>
 			{/* <pre>{JSON.stringify(parceirosOrganizacao, null, 2)}</pre> */}
 			<section className="text-gray-600 body-font">
 				<div className="container px-5 py-24 mx-auto">
-					<div className="flex flex-col text-center w-full mb-20">
+					<div className="flex flex-col text-center w-full -mb-10">
 						<h1 className="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">
 							{heading}
 						</h1>
 					</div>
-					<div className="flex flex-wrap -m-2">
+					<div className="flex flex-wrap ">
 						{parceirosOrganizacao.map((value: any, index: number) => {
 							if (index != 0) {
 								return (
@@ -143,7 +150,7 @@ const Parceiros = ({ social, contato, parceiros }: any) => {
 			{/* patrocinador padrinho */}
 			<section className="text-gray-600 body-font">
 				<div className="container px-5 py-24 mx-auto justify-content">
-					<div className="flex flex-col text-center w-full mb-20">
+					<div className="flex flex-col text-center w-full">
 						<h1 className="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">
 							Parceiro Institucional
 						</h1>
@@ -217,7 +224,7 @@ const Parceiros = ({ social, contato, parceiros }: any) => {
 			{/* patrocidores */}
 			<section className="text-gray-600 body-font">
 				<div className="container px-5 py-24 mx-auto">
-					<div className="flex flex-col text-center w-full mb-20">
+					<div className="flex flex-col text-center w-full ">
 						<h1 className="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">
 							Patrocinadores
 						</h1>
@@ -281,8 +288,8 @@ const Parceiros = ({ social, contato, parceiros }: any) => {
 			{/* media */}
 			<section className="text-gray-600 body-font">
 				<div className="container px-5 py-24 mx-auto">
-					<div className="flex flex-col text-center w-full mb-20">
-						<h1 className="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">
+					<div className="flex flex-col text-center w-full">
+						<h1 className="sm:text-3xl text-2xl font-medium title-font mb-4  text-gray-900">
 							Media Partners
 						</h1>
 					</div>
@@ -339,7 +346,24 @@ export async function getServerSideProps() {
 	const edicao = await fetcher(`${api_link}/edicoes?populate=deep`);
 	// GET: dados dos parceiros
 	const parceiros = await fetcher(`${api_link}/parceiros?populate=deep`);
+	// GET: dados do navbar
+	const navbar = await fetcher(`${api_link}/menus?populate=deep`);
+	//get links for menu
+	let dlink: any = [];
+	navbar.data.map((value: any) => {
+		value.attributes.items.data.map((value: any, index: any) => {
+			// value.attributes.title;
+			// value.attributes.url;
+			// console.log(value);
+			dlink[index] = {
+				name: value.attributes.title,
+				link: value.attributes.url,
+			};
+		});
+	});
 
 	// Pass data to the page via props
-	return { props: { social: rsocials, contato, edicao, parceiros } };
+	return {
+		props: { social: rsocials, contato, edicao, parceiros, navbar: dlink },
+	};
 }

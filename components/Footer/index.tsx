@@ -9,7 +9,7 @@ import {
 	IoLogoTwitter,
 } from "react-icons/io5";
 
-const Footer = ({ rsocial, contato }: any) => {
+const Footer = ({ rsocial, contato, navbar }: any) => {
 	// console.log("dados passado para o footer por layout");
 	// console.log(contato.data.attributes.Local);
 

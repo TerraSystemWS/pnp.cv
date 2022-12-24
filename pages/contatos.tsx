@@ -12,7 +12,7 @@ type Inputs = {
 	message: string;
 };
 
-const CONTATOS = ({ social, contato }: any) => {
+const CONTATOS = ({ social, contato, navbar }: any) => {
 	const {
 		register,
 		handleSubmit,
@@ -61,7 +61,7 @@ const CONTATOS = ({ social, contato }: any) => {
 	// console.log(watch("name")); // watch input value by passing the name of it
 
 	return (
-		<Layout rsocial={social} contato={contato}>
+		<Layout rsocial={social} contato={contato} navbar={navbar}>
 			<Head>
 				<title>Contatos - Prémio Nacional De Publicidade</title>
 			</Head>
@@ -190,9 +190,24 @@ export async function getServerSideProps() {
 	const contato = await fetcher(`${api_link}/contato`);
 	// GET: dados para banners
 	const banners = await fetcher(`${api_link}/banners?populate=deep`);
+	// GET: dados do navbar
+	const navbar = await fetcher(`${api_link}/menus?populate=deep`);
+	//get links for menu
+	let dlink: any = [];
+	navbar.data.map((value: any) => {
+		value.attributes.items.data.map((value: any, index: any) => {
+			// value.attributes.title;
+			// value.attributes.url;
+			// console.log(value);
+			dlink[index] = {
+				name: value.attributes.title,
+				link: value.attributes.url,
+			};
+		});
+	});
 
 	// console.log(banners.attributes);
 
 	// Pass data to the page via props
-	return { props: { social: rsocials, contato, banners } };
+	return { props: { social: rsocials, contato, banners, navbar: dlink } };
 }

@@ -13,7 +13,7 @@ import ImageViewer from "awesome-image-viewer";
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
 
-const Edicoes = ({ social, contato, edicao }: any) => {
+const Edicoes = ({ social, contato, edicao, navbar }: any) => {
 	const Verimg = (url: any) => {
 		new ImageViewer({
 			images: url,
@@ -21,7 +21,7 @@ const Edicoes = ({ social, contato, edicao }: any) => {
 	};
 
 	return (
-		<Layout rsocial={social} contato={contato}>
+		<Layout rsocial={social} contato={contato} navbar={navbar}>
 			<Head>
 				<title>Edições - Prémio Nacional De Publicidade</title>
 			</Head>
@@ -206,7 +206,22 @@ export async function getServerSideProps() {
 
 	// GET: dados dos juris, categorias
 	const edicao = await fetcher(`${api_link}/edicoes?populate=deep&${query}`);
+	// GET: dados do navbar
+	const navbar = await fetcher(`${api_link}/menus?populate=deep`);
+	//get links for menu
+	let dlink: any = [];
+	navbar.data.map((value: any) => {
+		value.attributes.items.data.map((value: any, index: any) => {
+			// value.attributes.title;
+			// value.attributes.url;
+			// console.log(value);
+			dlink[index] = {
+				name: value.attributes.title,
+				link: value.attributes.url,
+			};
+		});
+	});
 
 	// Pass data to the page via props
-	return { props: { social: rsocials, contato, edicao } };
+	return { props: { social: rsocials, contato, edicao, navbar: dlink } };
 }

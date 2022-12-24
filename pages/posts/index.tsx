@@ -6,9 +6,9 @@ import Head from "next/head";
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
 
-const PostList = ({ social, contato, posts }: any) => {
+const PostList = ({ social, contato, posts, navbar }: any) => {
 	return (
-		<Layout rsocial={social} contato={contato}>
+		<Layout rsocial={social} contato={contato} navbar={navbar}>
 			<Head>
 				<title>Blog - Prémio Nacional De Publicidade</title>
 			</Head>
@@ -105,9 +105,23 @@ export async function getServerSideProps() {
 	const contato = await fetcher(`${api_link}/contato`);
 	// GET: dados para posts
 	const posts = await fetcher(`${api_link}/posts?populate=*`);
-
+	// GET: dados do navbar
+	const navbar = await fetcher(`${api_link}/menus?populate=deep`);
+	//get links for menu
+	let dlink: any = [];
+	navbar.data.map((value: any) => {
+		value.attributes.items.data.map((value: any, index: any) => {
+			// value.attributes.title;
+			// value.attributes.url;
+			// console.log(value);
+			dlink[index] = {
+				name: value.attributes.title,
+				link: value.attributes.url,
+			};
+		});
+	});
 	// console.log(banners.attributes);
 
 	// Pass data to the page via props
-	return { props: { social: rsocials, contato, posts } };
+	return { props: { social: rsocials, contato, posts, navbar: dlink } };
 }
