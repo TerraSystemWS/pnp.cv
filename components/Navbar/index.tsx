@@ -16,8 +16,8 @@ const Nav = (props: any) => {
 	// ];
 
 	let [open, setOpen] = useState(false);
-	console.log("dadoadosadaijdsjklsad");
-	console.log(props.navbar);
+	// console.log("dadoadosadaijdsjklsad");
+	// console.log(props.navbar);
 
 	return (
 		<div className="shadow-md w-full fixed top-0 left-0 z-10">
