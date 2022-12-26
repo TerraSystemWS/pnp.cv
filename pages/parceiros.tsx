@@ -15,6 +15,7 @@ const Parceiros = ({ social, contato, parceiros, navbar }: any) => {
 	let parceirosMedia: any = [];
 	let cor: string;
 	let icon: string;
+	let lugar: number;
 
 	parceiros.data.map((value: any, index: any) => {
 		value.attributes.organizacao.map((value2: any, index2: any) => {
@@ -35,24 +36,29 @@ const Parceiros = ({ social, contato, parceiros, navbar }: any) => {
 		});
 
 		value.attributes.patrocinadores.map((value2: any, index2: any) => {
+			if (value2.tipo == "Diamante") {
+				cor = "";
+				icon = "💎";
+				lugar = 0;
+			}
 			if (value2.tipo == "Ouro") {
 				cor = "#FFD700";
 				icon = "🥇";
+				lugar = 10;
 			}
 			if (value2.tipo == "Bronze") {
 				cor = "#CD7F32";
 				icon = "🥉";
+				lugar = 30;
 			}
 			if (value2.tipo == "Prata") {
 				cor = "#C0C0C0";
 				icon = "🥈";
+				lugar = 20;
 			}
-			if (value2.tipo == "Diamante") {
-				cor = "";
-				icon = "💎";
-			}
+
 			parceirosPatrocinadores2[index2] = {
-				id: index2,
+				id: index2 + lugar,
 				link: value2.link,
 				title: value2.titulo,
 				foto: value2.logo.data.attributes.url,
@@ -61,7 +67,12 @@ const Parceiros = ({ social, contato, parceiros, navbar }: any) => {
 				icon: icon,
 			};
 		});
-		parceirosPatrocinadores = parceirosPatrocinadores2.sort();
+		parceirosPatrocinadores = parceirosPatrocinadores2.sort(
+			(a: any, b: any) => {
+				return a.id - b.id;
+			}
+		);
+		// console.log("parceirosPatrocinadores");
 		// console.log(parceirosPatrocinadores);
 
 		value.attributes.media_parteners.map((value2: any, index2: any) => {
