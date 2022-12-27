@@ -22,7 +22,7 @@ const Meta = () => {
 			<meta name="msapplication-TileColor" content="#da532c" />
 			<meta name="theme-color" content="#ffffff" />
 			<meta
-				http-equiv="Content-Security-Policy"
+				httpEquiv="Content-Security-Policy"
 				content="upgrade-insecure-requests"
 			/>
 		</>
