@@ -320,12 +320,23 @@ export async function getServerSideProps() {
 		}
 	);
 
+	const queryBanner = qs.stringify(
+		{
+			sort: ["id:desc"],
+		},
+		{
+			encodeValuesOnly: true, // prettify URL
+		}
+	);
+
 	// GET: links para as redes sociais
 	const rsocials = await fetcher(`${api_link}/redes-social?populate=*`);
 	// GET: dados para contatos
 	const contato = await fetcher(`${api_link}/contato`);
 	// GET: dados para banners
-	const banners = await fetcher(`${api_link}/banners?populate=deep`);
+	const banners = await fetcher(
+		`${api_link}/banners?populate=deep&${queryBanner}`
+	);
 	// GET: dados dos juris, categorias
 	/**
 	 * tem que muda keli urgenti
