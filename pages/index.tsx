@@ -1,10 +1,10 @@
 import Head from "next/head";
 import Image from "next/image";
-import styles from "../styles/Home.module.css";
+// import styles from "../styles/Home.module.css";
 import Layout from "../components/Layout";
-import logo from "public/logo1.png";
+// import logo from "public/logo1.png";
 import { fetcher } from "../lib/api";
-import { Carousel, Button, Alert } from "flowbite-react";
+import { Carousel, Alert } from "flowbite-react";
 import Juri from "../components/Juri";
 import Categorias from "../components/Categorias";
 import Parceiros from "../components/Parceiros";
