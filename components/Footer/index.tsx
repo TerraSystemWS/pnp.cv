@@ -41,11 +41,12 @@ const Footer = ({ rsocial, contato, navbar }: any) => {
           email: email,
         }),
       });
+      // ...
       const data = await res.json();
-      // console.log("data: apos await.res");
-      // console.log(data);
+      console.log("data: apos await.res");
+      console.log(data);
     } catch (err) {
-      // console.log("erro:" + err);
+      console.log("erro:" + err);
     }
   };
 
