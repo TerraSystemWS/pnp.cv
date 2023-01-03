@@ -1,116 +1,162 @@
 import Link from "next/link";
 import Image from "next/image";
 import logo from "public/logo1.png";
+import { useForm, SubmitHandler } from "react-hook-form";
 
 import {
-	IoLogoFacebook,
-	IoLogoInstagram,
-	IoLogoYoutube,
-	IoLogoTwitter,
+  IoLogoFacebook,
+  IoLogoInstagram,
+  IoLogoYoutube,
+  IoLogoTwitter,
 } from "react-icons/io5";
 
+// link para a url do api
+const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
+
+type Inputs = {
+  email: string;
+};
+
 const Footer = ({ rsocial, contato, navbar }: any) => {
-	// console.log("dados passado para o footer por layout");
-	// console.log(contato.data.attributes.Local);
+  // console.log("dados passado para o footer por layout");
+  // console.log(contato.data.attributes.Local);
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<Inputs>();
+  const onSubmit: SubmitHandler<Inputs> = async (email) => {
+    /* console.log(email);
+    return; */
+    try {
+      // console.log("TerraSystem");
+      // console.log(email);
+      const res = await fetch(`${api_link}/api/newsletters`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+        }),
+      });
+      const data = await res.json();
+      // console.log("data: apos await.res");
+      // console.log(data);
+    } catch (err) {
+      // console.log("erro:" + err);
+    }
+  };
 
-	let usefulLinks = [
-		{ name: "Home", link: "/" },
-		{ name: "Sobre Nós", link: "/" },
-		{ name: "Termos de Serviço", link: "/" },
-		{ name: "Política de Privacidade", link: "/" },
-	];
+  let usefulLinks = [
+    { name: "Home", link: "/" },
+    { name: "Sobre Nós", link: "/" },
+    { name: "Termos de Serviço", link: "/" },
+    { name: "Política de Privacidade", link: "/" },
+  ];
 
-	let websites = [
-		{ name: "HOME", link: "/" },
-		{ name: "REGULAMENTOS", link: "/regulamentos" },
-		{ name: "EDIÇÕES", link: "/edicoes" },
-		{ name: "PARCEIROS", link: "/parceiros" },
-		{ name: "BLOG", link: "/posts" },
-		{ name: "CONTATOS", link: "/contatos" },
-	];
+  let websites = [
+    { name: "HOME", link: "/" },
+    { name: "REGULAMENTOS", link: "/regulamentos" },
+    { name: "EDIÇÕES", link: "/edicoes" },
+    { name: "PARCEIROS", link: "/parceiros" },
+    { name: "BLOG", link: "/posts" },
+    { name: "CONTATOS", link: "/contatos" },
+  ];
 
-	// if (rsocial) {
-	// 	rsocial.data.attributes.link.map((link: any) => {
+  // if (rsocial) {
+  // 	rsocial.data.attributes.link.map((link: any) => {
 
-	// 	});
-	// }
+  // 	});
+  // }
 
-	return (
-		<footer>
-			<div className="p-10 bg-preto text-amarelo-ouro">
-				<div className="max-w-7xl mx-auto">
-					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
-						<div className="md-5">
-							<h4 className="text-2xl pb-4 uppercase">
-								<Image src={logo} alt="logo" />
-							</h4>
-							<p className="text-gray-300">
-								{contato.data.attributes.Local}
-								<strong>{/* <IoCallOutline /> */}</strong>
-								{/* (+238) 261 4915 / 9278968 */}
-								{contato.data.attributes.phone}
-								<br />
-								{/* <strong>
+  const d = new Date();
+  let year = d.getFullYear();
+
+  return (
+    <footer>
+      <div className="p-10 bg-preto text-amarelo-ouro">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
+            <div className="md-5">
+              <h4 className="text-2xl pb-4 uppercase">
+                <Image src={logo} alt="logo" />
+              </h4>
+              <p className="text-gray-300">
+                {contato.data.attributes.Local}
+                <strong>{/* <IoCallOutline /> */}</strong>
+                {/* (+238) 261 4915 / 9278968 */}
+                {contato.data.attributes.phone}
+                <br />
+                {/* <strong>
 									<IoSendOutline />
 								</strong>{" "} */}
-								{contato.data.attributes.email} <br />
-							</p>
-						</div>
-						<div className="mb-5">
-							<h4 className="uppercase">Links Úteis</h4>
-							<ul className="text-gray-300">
-								{usefulLinks.map((link) => (
-									<li
-										key={link.name}
-										className="hover:text-amarelo-ouro uppercase"
-									>
-										<Link href={link?.link}>{link.name}</Link>
-									</li>
-								))}
-							</ul>
-						</div>
-						<div className="mb-5">
-							<h4 className="uppercase">Website</h4>
-							<ul className="text-gray-300">
-								{websites.map((link) => (
-									<li key={link.link} className="hover:text-amarelo-ouro">
-										<Link href={link?.link}>{link.name}</Link>
-									</li>
-								))}
-							</ul>
-						</div>
-						<div className="mb-5">
-							<h4 className="uppercase">Subscreva A Nossa NewsLetter</h4>
-							<p className="text-gray-300 pb-2">
-								{contato.data.attributes.newsletterTitle}
-							</p>
-							<form action="" className="flex flex-row flex-wrap">
-								<input
-									type="text"
-									className="text-amarelo-ouro w-2/3 p-2 focus:border-amarelo-ouro"
-									placeholder="email@exemplo.com"
-								/>
-								<button className="p-2 w-1/3 bg-amarelo-ouro text-branco hover:bg-amarelo-escuro">
-									Subscreva
-								</button>
-							</form>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div className="w-full bg-amarelo-ouro text-branco px-10">
-				<div className="max-w-7xl flex flex-col sm:flex-row py-4 mx-auto justify-between items-center">
-					<div className="text-center">
-						<div>
-							PNP{"  "}
-							<strong>
-								<span>Copyright &copy; 2022</span>
-							</strong>
-							. Todos os direitos reservados
-						</div>
-					</div>
-					<div className="text-center text-xl text-branco mb-2">
-						{/* {rsocial.data.attributes.link.map(({ link, index }: any) => (
+                {contato.data.attributes.email} <br />
+              </p>
+            </div>
+            <div className="mb-5">
+              <h4 className="uppercase">Links Úteis</h4>
+              <ul className="text-gray-300">
+                {usefulLinks.map((link) => (
+                  <li
+                    key={link.name}
+                    className="hover:text-amarelo-ouro uppercase"
+                  >
+                    <Link href={link?.link}>{link.name}</Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="mb-5">
+              <h4 className="uppercase">Website</h4>
+              <ul className="text-gray-300">
+                {websites.map((link) => (
+                  <li key={link.link} className="hover:text-amarelo-ouro">
+                    <Link href={link?.link}>{link.name}</Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="mb-5">
+              <h4 className="uppercase">Subscreva A Nossa NewsLetter</h4>
+              <p className="text-gray-300 pb-2">
+                {contato.data.attributes.newsletterTitle}
+              </p>
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="flex flex-row flex-wrap"
+              >
+                <input
+                  type="text"
+                  className="text-amarelo-ouro w-2/3 p-2 focus:border-amarelo-ouro"
+                  placeholder="email@exemplo.com"
+                  {...register("email", { required: true })}
+                />
+                <button
+                  type="submit"
+                  className="p-2 w-1/3 bg-amarelo-ouro text-branco hover:bg-amarelo-escuro"
+                >
+                  Subscreva
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="w-full bg-amarelo-ouro text-branco px-10">
+        <div className="max-w-7xl flex flex-col sm:flex-row py-4 mx-auto justify-between items-center">
+          <div className="text-center">
+            <div>
+              PNP{"  "}
+              <strong>
+                <span>Copyright &copy; {year}</span>
+              </strong>
+              . Todos os direitos reservados
+            </div>
+          </div>
+          <div className="text-center text-xl text-branco mb-2">
+            {/* {rsocial.data.attributes.link.map(({ link, index }: any) => (
 							<Link
 								key={link.canal}
 								href="https://www.facebook.com/PNPCaboVerde/"
@@ -120,39 +166,39 @@ const Footer = ({ rsocial, contato, navbar }: any) => {
 								<p dangerouslySetInnerHTML={{ __html: link.canal }}></p>
 							</Link>
 						))} */}
-						<Link
-							href="https://www.facebook.com/PNPCaboVerde/"
-							className="w-10 h-10 rounded-full bg-preto hover:bg-amarelo-escuro mx-1 inline-block pt-1"
-							target="_blank"
-						>
-							<IoLogoFacebook />
-						</Link>
-						<Link
-							href="#"
-							className="w-10 h-10 rounded-full bg-preto hover:bg-amarelo-escuro mx-1 inline-block pt-1"
-							target="_blank"
-						>
-							<IoLogoInstagram />
-						</Link>
-						<Link
-							href="#"
-							className="w-10 h-10 rounded-full bg-preto hover:bg-amarelo-escuro mx-1 inline-block pt-1"
-							target="_blank"
-						>
-							<IoLogoYoutube />
-						</Link>
-						<Link
-							href="#"
-							className="w-10 h-10 rounded-full bg-preto hover:bg-amarelo-escuro mx-1 inline-block pt-1"
-							target="_blank"
-						>
-							<IoLogoTwitter />
-						</Link>
-					</div>
-				</div>
-			</div>
-		</footer>
-	);
+            <Link
+              href="https://www.facebook.com/PNPCaboVerde/"
+              className="w-10 h-10 rounded-full bg-preto hover:bg-amarelo-escuro mx-1 inline-block pt-1"
+              target="_blank"
+            >
+              <IoLogoFacebook />
+            </Link>
+            <Link
+              href="#"
+              className="w-10 h-10 rounded-full bg-preto hover:bg-amarelo-escuro mx-1 inline-block pt-1"
+              target="_blank"
+            >
+              <IoLogoInstagram />
+            </Link>
+            <Link
+              href="#"
+              className="w-10 h-10 rounded-full bg-preto hover:bg-amarelo-escuro mx-1 inline-block pt-1"
+              target="_blank"
+            >
+              <IoLogoYoutube />
+            </Link>
+            <Link
+              href="#"
+              className="w-10 h-10 rounded-full bg-preto hover:bg-amarelo-escuro mx-1 inline-block pt-1"
+              target="_blank"
+            >
+              <IoLogoTwitter />
+            </Link>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
 };
 
 export default Footer;
