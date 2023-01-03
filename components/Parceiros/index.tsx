@@ -17,23 +17,21 @@ const Parceiros = (props: any) => {
 						// let count = 0;
 						if (index < 6) {
 							return (
-								<>
-									<Link
-										key={index}
-										href={value.link || "#"}
-										className="flex justify-center items-center"
-										target="_blank"
-										rel="noreferrer"
-									>
-										<Image
-											className="grayscale"
-											src={value.foto}
-											alt={value.title}
-											width={150}
-											height={150}
-										/>
-									</Link>
-								</>
+								<Link
+									key={index}
+									href={value.link || "#"}
+									className="flex justify-center items-center"
+									target="_blank"
+									rel="noreferrer"
+								>
+									<Image
+										className="grayscale"
+										src={value.foto}
+										alt={value.title}
+										width={150}
+										height={150}
+									/>
+								</Link>
 							);
 						} else {
 							return "";
