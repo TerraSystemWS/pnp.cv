@@ -20,13 +20,15 @@
     "react-dom": "18.2.0",
     "react-hook-form": "^7.40.0",
     "react-icons": "^4.6.0",
-    "showdown": "^2.1.0"
+    "showdown": "^2.1.0",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@types/node": "18.11.8",
     "@types/react": "18.0.24",
     "@types/react-dom": "18.0.8",
     "@types/showdown": "^2.0.0",
+    "@types/uuid": "^9.0.0",
     "autoprefixer": "^10.4.13",
     "eslint": "8.26.0",
     "eslint-config-next": "13.0.0",
