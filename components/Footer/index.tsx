@@ -27,26 +27,33 @@ const Footer = ({ rsocial, contato, navbar }: any) => {
     formState: { errors },
   } = useForm<Inputs>();
   const onSubmit: SubmitHandler<Inputs> = async (email) => {
-    /* console.log(email);
-    return; */
+    //console.log("email");
+    //console.log(email);
+    /*return; */
     try {
       // console.log("TerraSystem");
       // console.log(email);
-      const res = await fetch(`${api_link}/api/newsletters`, {
+      // c5e2576e41ab25094ae9b666d78e4658d8565738943bf689cf6507457e4a0ae926bc3e326d54c42bb6381cfa680d2402c32077d9f5208c7687e3a50aa1ba08fb8e3662070d721f90929b7779144010cf14d8559bf664f92de2374b83829d78a9c764481a2b35b3d513a2d24ad428d73ad10b1fe4d509b0fd1eb503176b97d647
+      console.log(api_link + "/newsletters");
+      const res = await fetch(`${api_link}/newsletters`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: email,
+          data: email,
         }),
+        /* JSON.stringify({
+          email: email,
+        }), */
       });
       // ...
+      // console.log(res.json());
       const data = await res.json();
-      console.log("data: apos await.res");
-      console.log(data);
+      //console.log("data: apos await.res");
+      //console.log(data);
     } catch (err) {
-      console.log("erro:" + err);
+      //console.log("erro:" + err);
     }
   };
 
@@ -131,7 +138,7 @@ const Footer = ({ rsocial, contato, navbar }: any) => {
                 <input
                   type="text"
                   className="text-amarelo-ouro w-2/3 p-2 focus:border-amarelo-ouro"
-                  placeholder="email@exemplo.com"
+                  placeholder="email@pnp.cv"
                   {...register("email", { required: true })}
                 />
                 <button
