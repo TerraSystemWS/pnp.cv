@@ -34,7 +34,7 @@ const Footer = ({ rsocial, contato, navbar }: any) => {
       // console.log("TerraSystem");
       // console.log(email);
       // c5e2576e41ab25094ae9b666d78e4658d8565738943bf689cf6507457e4a0ae926bc3e326d54c42bb6381cfa680d2402c32077d9f5208c7687e3a50aa1ba08fb8e3662070d721f90929b7779144010cf14d8559bf664f92de2374b83829d78a9c764481a2b35b3d513a2d24ad428d73ad10b1fe4d509b0fd1eb503176b97d647
-      console.log(api_link + "/newsletters");
+      //console.log(api_link + "/newsletters");
       const res = await fetch(`${api_link}/newsletters`, {
         method: "POST",
         headers: {
