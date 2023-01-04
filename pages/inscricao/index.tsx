@@ -74,8 +74,8 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
     }
   };
   // 5555
-  console.log(watch("ncode")); // watch input value by passing the name of it
-  console.log(watch("code")); // watch input value by passing the name of it
+  //   console.log(watch("ncode")); // watch input value by passing the name of it
+  //   console.log(watch("code")); // watch input value by passing the name of it
   // dados de categorias
   let Categoria: any = [];
   // create cateoria lists
