@@ -49,11 +49,11 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
   // console.log("id::cd");
   // console.log(id + ":" + cd + ":" + cid);
 
-  if (!isUUID(id)) {
-    if (typeof window === "undefined") return null;
-    router.push(`/404`); // se nao é uuid manda para 404
-    // console.log("uuid ss");
-  }
+  // if (!isUUID(id)) {
+  //   if (typeof window === "undefined") return null;
+  //   router.push(`/404`); // se nao é uuid manda para 404
+  //   // console.log("uuid ss");
+  // }
 
   const {
     register,
