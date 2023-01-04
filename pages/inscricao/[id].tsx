@@ -18,6 +18,16 @@ type Inputs = {
   nome_projeto: string;
   categoria: string;
   con_criativo: string;
+  coord_prod: string;
+  dir_foto: string;
+  dir_art: string;
+  realizador: string;
+  autor_jingle: string;
+  designer: string;
+  outras_consideracoes: string;
+  data_producao: Date;
+  data_divulgacao: Date;
+  data_apresentacao_publica: Date;
 };
 
 function isUUID(uuid: any) {
@@ -104,8 +114,8 @@ const Inscrever = ({ social, contato, edicao, navbar }: any) => {
 
   const onSubmitftecnica: SubmitHandler<Inputs> = async (data: any) => {
     let dados = data;
-    console.log("submeter ficha de dados de ftecnica");
-    console.log(dados);
+    // console.log("submeter ficha de dados de ftecnica");
+    // console.log(dados);
     let categ: string = "";
     dados.categoria.map((value: any) => {
       categ += value + ",";
@@ -125,6 +135,42 @@ const Inscrever = ({ social, contato, edicao, navbar }: any) => {
             categoria: categ,
             nome_projeto: dados.nome_projeto,
             con_criativo: dados.con_criativo,
+          },
+        }),
+      });
+      const data = await res.json();
+      // console.log("data: apos await.res");
+      // console.log(data);
+      // code = ncode + data.data.id; // id da nova inscricao
+    } catch (err) {
+      // console.log("erro:" + err);
+    }
+  };
+
+  const onSubmitEquipa: SubmitHandler<Inputs> = async (data: any) => {
+    // console.log("submeter ficha de dados de equipa");
+    // console.log(data);
+    let dados = data;
+    try {
+      // c5e2576e41ab25094ae9b666d78e4658d8565738943bf689cf6507457e4a0ae926bc3e326d54c42bb6381cfa680d2402c32077d9f5208c7687e3a50aa1ba08fb8e3662070d721f90929b7779144010cf14d8559bf664f92de2374b83829d78a9c764481a2b35b3d513a2d24ad428d73ad10b1fe4d509b0fd1eb503176b97d647
+      // console.log(api_link + "/inscricoes");
+      const res: any = await fetch(`${api_link}/inscricoes/${cid}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          data: {
+            coord_prod: dados.coord_prod,
+            dir_foto: dados.dir_foto,
+            dir_art: dados.dir_art,
+            realizador: dados.realizador,
+            autor_jingle: dados.autor_jingle,
+            designer: dados.designer,
+            outras_consideracoes: dados.outras_consideracoes,
+            data_producao: dados.data_producao,
+            data_divulgacao: dados.data_divulgacao,
+            data_apresentacao_publica: dados.data_apresentacao_publica,
           },
         }),
       });
@@ -225,25 +271,6 @@ const Inscrever = ({ social, contato, edicao, navbar }: any) => {
                         />
                       </div>
 
-                      {/* <div className="col-span-6 sm:col-span-3">
-												<label
-													htmlFor="country"
-													className="block text-sm font-medium text-gray-700"
-												>
-													Country
-												</label>
-												<select
-													id="country"
-													name="country"
-													autoComplete="country-name"
-													className="mt-1 block w-full rounded-md border border-gray-300 bg-white py-2 px-3 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-												>
-													<option>United States</option>
-													<option>Canada</option>
-													<option>Mexico</option>
-												</select>
-											</div> */}
-
                       <div className="col-span-6">
                         <label
                           htmlFor="street-address"
@@ -259,39 +286,6 @@ const Inscrever = ({ social, contato, edicao, navbar }: any) => {
                           {...register("sede")}
                         />
                       </div>
-
-                      {/* <div className="col-span-6 sm:col-span-6 lg:col-span-2">
-												<label
-													htmlFor="city"
-													className="block text-sm font-medium text-gray-700"
-												>
-													City
-												</label>
-												<input
-													type="text"
-													name="city"
-													id="city"
-													autoComplete="address-level2"
-													className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-												/>
-											</div> */}
-
-                      {/* <div className="col-span-6 sm:col-span-3 lg:col-span-2">
-												<label
-													htmlFor="region"
-													className="block text-sm font-medium text-gray-700"
-												>
-													State / Province
-												</label>
-												<input
-													type="text"
-													name="region"
-													id="region"
-													autoComplete="address-level1"
-													className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-												/>
-											</div> */}
-
                       <div className="col-span-6 sm:col-span-3 lg:col-span-2">
                         <label
                           htmlFor="phone"
@@ -508,7 +502,7 @@ const Inscrever = ({ social, contato, edicao, navbar }: any) => {
               </div>
             </div>
             <div className="mt-5 md:col-span-2 md:mt-0">
-              <form action="#" method="POST">
+              <form onSubmit={handleSubmit(onSubmitEquipa)}>
                 <div className="shadow sm:overflow-hidden sm:rounded-md">
                   <div className="space-y-6 bg-white px-4 py-5 sm:p-6">
                     <div className="col-span-6 sm:col-span-4">
@@ -516,14 +510,14 @@ const Inscrever = ({ social, contato, edicao, navbar }: any) => {
                         htmlFor="coo_prod"
                         className="block text-sm font-medium text-gray-700"
                       >
-                        Coodernador / Produtor
+                        Coordenador / Produtor
                       </label>
                       <input
                         type="text"
-                        name="coo_prod"
                         id="coo_prod"
                         autoComplete="Coodernador / Produtor"
                         className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                        {...register("coord_prod")}
                       />
                     </div>
 
@@ -536,10 +530,10 @@ const Inscrever = ({ social, contato, edicao, navbar }: any) => {
                       </label>
                       <input
                         type="text"
-                        name="d_foto"
                         id="d_foto"
                         autoComplete="d_foto"
                         className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                        {...register("dir_foto")}
                       />
                     </div>
 
@@ -552,10 +546,10 @@ const Inscrever = ({ social, contato, edicao, navbar }: any) => {
                       </label>
                       <input
                         type="text"
-                        name="d_foto"
                         id="d_foto"
                         autoComplete="d_foto"
                         className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                        {...register("dir_art")}
                       />
                     </div>
 
@@ -568,10 +562,10 @@ const Inscrever = ({ social, contato, edicao, navbar }: any) => {
                       </label>
                       <input
                         type="text"
-                        name="d_foto"
                         id="d_foto"
                         autoComplete="d_foto"
                         className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                        {...register("realizador")}
                       />
                     </div>
 
@@ -584,10 +578,10 @@ const Inscrever = ({ social, contato, edicao, navbar }: any) => {
                       </label>
                       <input
                         type="text"
-                        name="d_foto"
                         id="d_foto"
                         autoComplete="d_foto"
                         className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                        {...register("autor_jingle")}
                       />
                     </div>
 
@@ -600,10 +594,10 @@ const Inscrever = ({ social, contato, edicao, navbar }: any) => {
                       </label>
                       <input
                         type="text"
-                        name="d_foto"
                         id="d_foto"
                         autoComplete="d_foto"
                         className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                        {...register("designer")}
                       />
                     </div>
 
@@ -617,11 +611,11 @@ const Inscrever = ({ social, contato, edicao, navbar }: any) => {
                       <div className="mt-1">
                         <textarea
                           id="outros"
-                          name="outro"
                           rows={3}
                           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                           placeholder="descreva seu projeto"
                           defaultValue={""}
+                          {...register("outras_consideracoes")}
                         />
                       </div>
                       {/* <p className="mt-2 text-sm text-gray-500">
@@ -638,10 +632,10 @@ const Inscrever = ({ social, contato, edicao, navbar }: any) => {
                       </label>
                       <input
                         type="date"
-                        name="data_pro"
                         id="d_foto"
                         autoComplete="d_foto"
                         className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                        {...register("data_producao")}
                       />
                     </div>
 
@@ -654,10 +648,10 @@ const Inscrever = ({ social, contato, edicao, navbar }: any) => {
                       </label>
                       <input
                         type="date"
-                        name="data_pro"
                         id="d_foto"
                         autoComplete="d_foto"
                         className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                        {...register("data_divulgacao")}
                       />
                     </div>
 
@@ -671,10 +665,10 @@ const Inscrever = ({ social, contato, edicao, navbar }: any) => {
                       </label>
                       <input
                         type="date"
-                        name="data_pro"
                         id="d_foto"
                         autoComplete="d_foto"
                         className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                        {...register("data_apresentacao_publica")}
                       />
                     </div>
                   </div>
@@ -731,149 +725,6 @@ const Inscrever = ({ social, contato, edicao, navbar }: any) => {
               </div>
             </div>
             <div className="mt-5 md:col-span-2 md:mt-0">
-              {/* <form action="#" method="POST">
-								<div className="overflow-hidden shadow sm:rounded-md">
-									<div className="space-y-6 bg-white px-4 py-5 sm:p-6">
-										<fieldset>
-											<legend className="sr-only">By Email</legend>
-											<div
-												className="text-base font-medium text-gray-900"
-												aria-hidden="true"
-											>
-												By Email
-											</div>
-											<div className="mt-4 space-y-4">
-												<div className="flex items-start">
-													<div className="flex h-5 items-center">
-														<input
-															id="comments"
-															name="comments"
-															type="checkbox"
-															className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-														/>
-													</div>
-													<div className="ml-3 text-sm">
-														<label
-															htmlFor="comments"
-															className="font-medium text-gray-700"
-														>
-															Comments
-														</label>
-														<p className="text-gray-500">
-															Get notified when someones posts a comment on a
-															posting.
-														</p>
-													</div>
-												</div>
-												<div className="flex items-start">
-													<div className="flex h-5 items-center">
-														<input
-															id="candidates"
-															name="candidates"
-															type="checkbox"
-															className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-														/>
-													</div>
-													<div className="ml-3 text-sm">
-														<label
-															htmlFor="candidates"
-															className="font-medium text-gray-700"
-														>
-															Candidates
-														</label>
-														<p className="text-gray-500">
-															Get notified when a candidate applies for a job.
-														</p>
-													</div>
-												</div>
-												<div className="flex items-start">
-													<div className="flex h-5 items-center">
-														<input
-															id="offers"
-															name="offers"
-															type="checkbox"
-															className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-														/>
-													</div>
-													<div className="ml-3 text-sm">
-														<label
-															htmlFor="offers"
-															className="font-medium text-gray-700"
-														>
-															Offers
-														</label>
-														<p className="text-gray-500">
-															Get notified when a candidate accepts or rejects
-															an offer.
-														</p>
-													</div>
-												</div>
-											</div>
-										</fieldset>
-										<fieldset>
-											<legend className="contents text-base font-medium text-gray-900">
-												Push Notifications
-											</legend>
-											<p className="text-sm text-gray-500">
-												These are delivered via SMS to your mobile phone.
-											</p>
-											<div className="mt-4 space-y-4">
-												<div className="flex items-center">
-													<input
-														id="push-everything"
-														name="push-notifications"
-														type="radio"
-														className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500"
-													/>
-													<label
-														htmlFor="push-everything"
-														className="ml-3 block text-sm font-medium text-gray-700"
-													>
-														Everything
-													</label>
-												</div>
-												<div className="flex items-center">
-													<input
-														id="push-email"
-														name="push-notifications"
-														type="radio"
-														className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500"
-													/>
-													<label
-														htmlFor="push-email"
-														className="ml-3 block text-sm font-medium text-gray-700"
-													>
-														Same as email
-													</label>
-												</div>
-												<div className="flex items-center">
-													<input
-														id="push-nothing"
-														name="push-notifications"
-														type="radio"
-														className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500"
-													/>
-													<label
-														htmlFor="push-nothing"
-														className="ml-3 block text-sm font-medium text-gray-700"
-													>
-														No push notifications
-													</label>
-												</div>
-											</div>
-										</fieldset>
-									</div>
-									<div className="bg-gray-50 px-4 py-3 text-right sm:px-6">
-										<button
-											type="submit"
-											className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-										>
-											Guardar
-										</button>
-									</div>
-								</div>
-							</form> */}
-
               <div>
                 <label className="block text-sm font-medium text-gray-700">
                   Documentos
