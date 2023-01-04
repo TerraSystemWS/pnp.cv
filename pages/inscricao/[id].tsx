@@ -30,17 +30,17 @@ type Inputs = {
   data_apresentacao_publica: Date;
 };
 
-function isUUID(uuid: any) {
-  let s = "" + uuid;
+// function isUUID(uuid: any) {
+//   let s = "" + uuid;
 
-  s = s.match(
-    "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
-  );
-  if (s === null) {
-    return false;
-  }
-  return true;
-}
+//   s = s.match(
+//     "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+//   );
+//   if (s === null) {
+//     return false;
+//   }
+//   return true;
+// }
 
 const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
   const router = useRouter();
