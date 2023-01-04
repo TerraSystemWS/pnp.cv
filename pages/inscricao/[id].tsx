@@ -42,7 +42,7 @@ function isUUID(uuid: any) {
   return true;
 }
 
-const Inscrever = ({ social, contato, edicao, navbar }: any) => {
+const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
   const router = useRouter();
   const { id, cd, cid } = router.query;
   // console.log(router);
@@ -60,7 +60,29 @@ const Inscrever = ({ social, contato, edicao, navbar }: any) => {
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm<Inputs>();
+  } = useForm<Inputs>({
+    defaultValues: {
+      nome_completo: inscricao.data.attributes.nome_completo,
+      email: inscricao.data.attributes.email,
+      sede: inscricao.data.attributes.sede,
+      nif: inscricao.data.attributes.NIF,
+      telefone: inscricao.data.attributes.telefone,
+      nome_projeto: inscricao.data.attributes.nome_projeto,
+      categoria: inscricao.data.attributes.categoria,
+      con_criativo: inscricao.data.attributes.con_criativo,
+      coord_prod: inscricao.data.attributes.coord_prod,
+      dir_foto: inscricao.data.attributes.dir_foto,
+      dir_art: inscricao.data.attributes.dir_art,
+      realizador: inscricao.data.attributes.realizador,
+      autor_jingle: inscricao.data.attributes.autor_jingle,
+      designer: inscricao.data.attributes.designer,
+      outras_consideracoes: inscricao.data.attributes.outras_consideracoes,
+      data_producao: inscricao.data.attributes.data_producao,
+      data_divulgacao: inscricao.data.attributes.data_divulgacao,
+      data_apresentacao_publica:
+        inscricao.data.attributes.data_apresentacao_publica,
+    },
+  });
   // dados de categorias
   let Categoria: any = [];
   // create cateoria lists
@@ -72,6 +94,19 @@ const Inscrever = ({ social, contato, edicao, navbar }: any) => {
       descricao: categs.descricao,
     };
   });
+
+  // const watchShowAge = watch(["NIF", "nome_completo"], false); // you can supply default value as second argument
+  // const watchAllFields = watch();// ver tudo
+  // formularios do grupo I
+  // const watchFieldsg1 = watch([
+  //   "nif",
+  //   "nome_completo",
+  //   "email",
+  //   "sede",
+  //   "telefone",
+  // ]);
+  // console.log("whatch fields");
+  // console.log(watchFieldsg1);
 
   /* let num: number = 1;
   let code = "pnp-p0" + num; */
@@ -95,13 +130,15 @@ const Inscrever = ({ social, contato, edicao, navbar }: any) => {
         body: JSON.stringify({
           data: {
             nome_completo: dados.nome_completo,
-            NIF: dados.nif,
+            NIF: dados.nif || 0,
             email: dados.email,
             sede: dados.sede,
-            telefone: dados.telefone,
+            telefone: dados.telefone || 0,
           },
         }),
       });
+
+      console.log(res);
 
       const data = await res.json();
       // console.log("data: apos await.res");
@@ -251,7 +288,9 @@ const Inscrever = ({ social, contato, edicao, navbar }: any) => {
                           id="last-name"
                           autoComplete="000 000 000"
                           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                          {...register("nif")}
+                          {...register("nif", {
+                            valueAsNumber: true,
+                          })}
                         />
                       </div>
 
@@ -304,9 +343,11 @@ const Inscrever = ({ social, contato, edicao, navbar }: any) => {
                     </div>
                   </div>
                   <div className="bg-gray-50 px-4 py-3 text-right sm:px-6">
+                    {/* {watchShowAge && <input type="number" {...register("age", { min: 50 })} />} */}
                     <button
                       type="submit"
-                      className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                      className="inline-flex justify-center rounded-md border border-transparent bg-amarelo-ouro py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-amarelo-escuro focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                      // {  ? 'disabled' : ' '}
                     >
                       Guardar
                     </button>
@@ -472,7 +513,7 @@ const Inscrever = ({ social, contato, edicao, navbar }: any) => {
                   <div className="bg-gray-50 px-4 py-3 text-right sm:px-6">
                     <button
                       type="submit"
-                      className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                      className="inline-flex justify-center rounded-md border border-transparent bg-amarelo-ouro py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-amarelo-escuro focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                     >
                       Guardar
                     </button>
@@ -675,7 +716,7 @@ const Inscrever = ({ social, contato, edicao, navbar }: any) => {
                   <div className="bg-gray-50 px-4 py-3 text-right sm:px-6">
                     <button
                       type="submit"
-                      className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                      className="inline-flex justify-center rounded-md border border-transparent bg-amarelo-ouro py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-amarelo-escuro focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                     >
                       Guardar
                     </button>
@@ -748,7 +789,7 @@ const Inscrever = ({ social, contato, edicao, navbar }: any) => {
                     <div className="flex text-sm text-gray-600">
                       <label
                         htmlFor="file-upload"
-                        className="relative cursor-pointer rounded-md bg-white font-medium text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:text-indigo-500"
+                        className="relative cursor-pointer rounded-md bg-white font-medium text-amarelo-ouro focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:text-amarelo-escuro"
                       >
                         <span>Upload dos Ficheiros</span>
                         <input
@@ -777,10 +818,16 @@ const Inscrever = ({ social, contato, edicao, navbar }: any) => {
 export default Inscrever;
 
 // This gets called on every request
-export async function getServerSideProps() {
+export async function getServerSideProps({ params, query }: any) {
   // Fetch data from external API
+  // console.log("params");
+  // console.log(params);
 
-  const query = qs.stringify(
+  // console.log("query");
+  const { cid } = query;
+  // console.log(cid);
+
+  const queri = qs.stringify(
     {
       sort: ["N_Edicao:asc"],
     },
@@ -799,7 +846,7 @@ export async function getServerSideProps() {
   /**
    * tem que muda keli urgenti
    */
-  const edicao = await fetcher(`${api_link}/edicoes/1?populate=deep&${query}`);
+  const edicao = await fetcher(`${api_link}/edicoes/1?populate=deep&${queri}`);
   // GET: dados dos parceiros
   // const parceiros = await fetcher(`${api_link}/parceiros?populate=deep`);
   // GET: dados do navbar
@@ -818,9 +865,13 @@ export async function getServerSideProps() {
     });
   });
 
+  const inscricao = await fetcher(`${api_link}/inscricoes/${cid}`);
+
   // console.log("edicoesTT");
   // console.log(edicao);
 
   // Pass data to the page via props
-  return { props: { social: rsocials, contato, edicao, navbar: dlink } };
+  return {
+    props: { social: rsocials, contato, edicao, navbar: dlink, inscricao },
+  };
 }
