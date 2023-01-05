@@ -5,6 +5,8 @@ import Head from "next/head";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useRouter } from "next/router";
 import { v4 as uuidv4 } from "uuid";
+import swal from "sweetalert";
+// import React, { useState } from "react";
 //import {v4} from "uuid"
 
 // link para a url do api
@@ -13,11 +15,14 @@ const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
 type Inputs = {
   code: string;
   ncode: string;
+  calc: string;
 };
 
 const Inscreve = ({ social, contato, edicao, navbar }: any) => {
   const router = useRouter();
+  // const [vnum, setVnum] = useState();
   //   console.log(router);
+  let num1 = 5;
 
   const {
     register,
@@ -40,54 +45,72 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
     // e.preventDefault()
     // alert(data.ncode);
     let ncode = data.ncode;
-    let uurl = uuidv4();
-    let code: any;
-    let id: any;
-    //return;
-    try {
-      // c5e2576e41ab25094ae9b666d78e4658d8565738943bf689cf6507457e4a0ae926bc3e326d54c42bb6381cfa680d2402c32077d9f5208c7687e3a50aa1ba08fb8e3662070d721f90929b7779144010cf14d8559bf664f92de2374b83829d78a9c764481a2b35b3d513a2d24ad428d73ad10b1fe4d509b0fd1eb503176b97d647
-      // console.log(api_link + "/inscricoes");
-      const res: any = await fetch(`${api_link}/inscricoes`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          data: {
-            code: ncode,
-            url: uurl,
-          },
-        }),
+
+    let calculo = data.calc - 10;
+    if (calculo != num1) {
+      swal({
+        title: "Erro",
+        text: "o calculo pode estar errado!",
+        icon: "error",
+        button: "Voltar",
       });
-      // ...
-      const data = await res.json();
-      // console.log("data: apos await.res");
-      // console.log(data);
-      code = ncode + data.data.id; // id da nova inscricao
-      id = data.data.id;
-    } catch (err) {
-      // console.log("erro:" + err);
-    }
+    } else {
+      // let isValido: Boolean = false;
+      // if (!isValido) router.reload();
+      swal({
+        title: "Concluida",
+        text: "Sua inscricao foi iniciada!",
+        icon: "success",
+        button: "Continuar",
+      });
+      let uurl = uuidv4();
+      let code: any;
+      let id: any;
+      //return;
+      try {
+        // c5e2576e41ab25094ae9b666d78e4658d8565738943bf689cf6507457e4a0ae926bc3e326d54c42bb6381cfa680d2402c32077d9f5208c7687e3a50aa1ba08fb8e3662070d721f90929b7779144010cf14d8559bf664f92de2374b83829d78a9c764481a2b35b3d513a2d24ad428d73ad10b1fe4d509b0fd1eb503176b97d647
+        // console.log(api_link + "/inscricoes");
+        const res: any = await fetch(`${api_link}/inscricoes`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            data: {
+              code: ncode,
+              url: uurl,
+            },
+          }),
+        });
+        // ...
+        const data = await res.json();
+        // console.log("data: apos await.res");
+        // console.log(data);
+        code = ncode + data.data.id; // id da nova inscricao
+        id = data.data.id;
+      } catch (err) {
+        // console.log("erro:" + err);
+      }
 
-    if (code) {
-      router.push(`/inscricao/${uurl}?cd=${code}&cid=${id}`);
+      if (code) {
+        router.push(`/inscricao/${uurl}?cd=${code}&cid=${id}`);
+      }
     }
+    // 5555
+    //   console.log(watch("ncode")); // watch input value by passing the name of it
+    //   console.log(watch("code")); // watch input value by passing the name of it
+    // dados de categorias
+    let Categoria: any = [];
+    // create cateoria lists
+    edicao.data?.attributes.categoria.map((categs: any, index: any) => {
+      Categoria[index] = {
+        id: index,
+        titulo: categs.titulo,
+        slug: categs.titulo.replace(/ /g, "_"),
+        descricao: categs.descricao,
+      };
+    });
   };
-  // 5555
-  //   console.log(watch("ncode")); // watch input value by passing the name of it
-  //   console.log(watch("code")); // watch input value by passing the name of it
-  // dados de categorias
-  let Categoria: any = [];
-  // create cateoria lists
-  edicao.data?.attributes.categoria.map((categs: any, index: any) => {
-    Categoria[index] = {
-      id: index,
-      titulo: categs.titulo,
-      slug: categs.titulo.replace(/ /g, "_"),
-      descricao: categs.descricao,
-    };
-  });
-
   return (
     <Layout rsocial={social} contato={contato} navbar={navbar}>
       <Head>
@@ -127,23 +150,6 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
               <form onSubmit={handleSubmit(onSubmitcode)}>
                 <div className="">
                   <div className="bg-white px-4 py-5 sm:p-6">
-                    {/* <div className="grid grid-cols-6 gap-6">
-                      <div className="col-span-6 sm:col-span-3 lg:col-span-2">
-                        <label
-                          htmlFor="phone"
-                          className="block text-sm font-medium text-gray-700"
-                        >
-                          Codigo de acesso
-                        </label>
-                        <input
-                          type="text"
-                          name="code"
-                          id="code"
-                          autoComplete="code"
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                        />
-                      </div>
-                    </div> */}
                     <div className="grid grid-cols-6 gap-6">
                       <div className="col-span-6 sm:col-span-3 lg:col-span-2">
                         <label
@@ -199,6 +205,28 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
             <div className="mt-5 md:col-span-2 md:mt-0">
               <form onSubmit={handleSubmit(onSubmitncode)}>
                 <input type="hidden" {...register("ncode")} />
+                <div className="bg-white px-4 py-5 sm:p-6">
+                  <div className="grid grid-cols-6 gap-6">
+                    <div className="col-span-6 sm:col-span-3 lg:col-span-2">
+                      <label
+                        htmlFor="code"
+                        className="block text-sm font-medium text-gray-700 mb-2"
+                      >
+                        Qual o valor?
+                      </label>
+                      <p>{num1} + 10 </p>
+                      <input
+                        id="code"
+                        autoComplete="code"
+                        className="focus:ring-2 focus:ring-blue-500 focus:outline-none appearance-none w-full text-sm leading-6 text-slate-900 placeholder-slate-400 rounded-md py-2 pl-10 ring-1 ring-slate-200 shadow-sm"
+                        {...register("calc")}
+                      />
+                      {errors.code && (
+                        <span>o codigo de acesso é obrigatoria</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
                 <div className="shadow sm:overflow-hidden sm:rounded-md">
                   <div className="space-y-6 bg-white px-4 py-5 sm:p-6">
                     <div className="col-span-6 sm:col-span-4">
