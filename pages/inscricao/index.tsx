@@ -34,9 +34,63 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
     },
   });
 
-  const onSubmitcode: SubmitHandler<Inputs> = (data: any) => {
-    alert(data.code);
+  const onSubmitcode: SubmitHandler<Inputs> = async (data: any) => {
+    //  alert(data.code);
+    const swap: any = data.code.split("i");
+    const id: any = swap[1];
+    try {
+      const res: any = await fetch(`${api_link}/inscricoes/${id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        // ,
+        // body: JSON.stringify({
+        //   data: {
+        //     code: ncode,
+        //     url: uurl,
+        //   },
+        // }),
+      });
+
+      const dados = await res.json();
+      // console.log("terra system");
+      // console.log(data.data.attributes.url);
+      // return;
+      if (dados) {
+        let timerInterval: any;
+
+        Swal.fire({
+          title: "...procurando inscrição...",
+          html: "pesquisando o id #pnp-i<b></b>...",
+          timer: 2000,
+          timerProgressBar: true,
+          didOpen: () => {
+            Swal.showLoading(Swal.getDenyButton());
+            // @ts-ignore
+            const b = Swal.getHtmlContainer().querySelector("b");
+            timerInterval = setInterval(() => {
+              // @ts-ignore
+              b.textContent = Swal.getTimerLeft();
+            }, 100);
+          },
+          willClose: () => {
+            clearInterval(timerInterval);
+          },
+        });
+
+        router.push(
+          `/inscricao/${dados.data.attributes.url}?cd=${data.code}&cid=${id}`
+        );
+      }
+
+      //code = ncode + data.data.id; // id da nova inscricao
+      //id = data.data.id;
+    } catch (err) {
+      // console.log("erro:" + err);
+    }
   };
+
   const onSubmitncode: SubmitHandler<Inputs> = async (data: any) => {
     let ncode = data.ncode;
 
