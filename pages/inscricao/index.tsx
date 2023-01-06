@@ -5,7 +5,8 @@ import Head from "next/head";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useRouter } from "next/router";
 import { v4 as uuidv4 } from "uuid";
-import swal from "sweetalert";
+import Swal from "sweetalert2";
+//import { setTimeout } from "timers/promises";
 // import React, { useState } from "react";
 //import {v4} from "uuid"
 
@@ -48,53 +49,106 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
 
     let calculo = data.calc - 10;
     if (calculo != num1) {
-      swal({
-        title: "Erro",
-        text: "o calculo pode estar errado!",
+      Swal.fire({
         icon: "error",
-        button: "Voltar",
+        title: "Erro",
+        text: "O Valor pode estar errado",
       });
     } else {
       // let isValido: Boolean = false;
       // if (!isValido) router.reload();
-      swal({
-        title: "Concluida",
-        text: "Sua inscricao foi iniciada!",
-        icon: "success",
-        button: "Continuar",
-      });
-      let uurl = uuidv4();
-      let code: any;
-      let id: any;
-      //return;
-      try {
-        // c5e2576e41ab25094ae9b666d78e4658d8565738943bf689cf6507457e4a0ae926bc3e326d54c42bb6381cfa680d2402c32077d9f5208c7687e3a50aa1ba08fb8e3662070d721f90929b7779144010cf14d8559bf664f92de2374b83829d78a9c764481a2b35b3d513a2d24ad428d73ad10b1fe4d509b0fd1eb503176b97d647
-        // console.log(api_link + "/inscricoes");
-        const res: any = await fetch(`${api_link}/inscricoes`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            data: {
-              code: ncode,
-              url: uurl,
-            },
-          }),
-        });
-        // ...
-        const data = await res.json();
-        // console.log("data: apos await.res");
-        // console.log(data);
-        code = ncode + data.data.id; // id da nova inscricao
-        id = data.data.id;
-      } catch (err) {
-        // console.log("erro:" + err);
-      }
+      // Swal.fire({
+      //   title: "Prémio Nacional De Publicidade",
+      //   text: "Antes de iniciar a candidatura saiba sobre os regulamentos do concurso.",
+      //   imageUrl:
+      //     "https://res.cloudinary.com/dkz8fcpla/image/upload/v1672960467/Captura_de_ecra_de_2023_01_05_22_13_23_ae07a3a795.png?updated_at=2023-01-05T23:14:27.822Z",
+      //   imageWidth: 400,
+      //   imageHeight: 200,
+      //   imageAlt: "pnp gala",
+      // });
+      Swal.fire({
+        title: "Prémio Nacional De Publicidade",
+        text: "Antes de iniciar a candidatura saiba sobre os regulamentos do concurso.",
+        imageUrl:
+          "https://res.cloudinary.com/dkz8fcpla/image/upload/v1672960467/Captura_de_ecra_de_2023_01_05_22_13_23_ae07a3a795.png?updated_at=2023-01-05T23:14:27.822Z",
+        imageWidth: 400,
+        imageHeight: 200,
+        imageAlt: "pnp gala",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#c2a12b",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "sim, inscrever",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          let code: any;
+          let id: any;
+          let uurl = uuidv4();
+          //return;
+          try {
+            // c5e2576e41ab25094ae9b666d78e4658d8565738943bf689cf6507457e4a0ae926bc3e326d54c42bb6381cfa680d2402c32077d9f5208c7687e3a50aa1ba08fb8e3662070d721f90929b7779144010cf14d8559bf664f92de2374b83829d78a9c764481a2b35b3d513a2d24ad428d73ad10b1fe4d509b0fd1eb503176b97d647
+            // console.log(api_link + "/inscricoes");
+            const res: any = await fetch(`${api_link}/inscricoes`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                data: {
+                  code: ncode,
+                  url: uurl,
+                },
+              }),
+            });
+            // ...
+            const data = await res.json();
+            // console.log("data: apos await.res");
+            // console.log(data);
+            code = ncode + data.data.id; // id da nova inscricao
+            id = data.data.id;
+          } catch (err) {
+            // console.log("erro:" + err);
+          }
 
-      if (code) {
-        router.push(`/inscricao/${uurl}?cd=${code}&cid=${id}`);
-      }
+          let timerInterval: any;
+
+          Swal.fire({
+            title: "Criando sua inscrição",
+            html: "criando id de incrição #pnp-i<b></b>...",
+            timer: 2000,
+            timerProgressBar: true,
+            didOpen: () => {
+              Swal.showLoading(Swal.getDenyButton());
+              // @ts-ignore
+              const b = Swal.getHtmlContainer().querySelector("b");
+              timerInterval = setInterval(() => {
+                // @ts-ignore
+                b.textContent = Swal.getTimerLeft();
+              }, 100);
+            },
+            willClose: () => {
+              clearInterval(timerInterval);
+            },
+          }).then((result) => {
+            /* Read more about handling dismissals below */
+            if (result.dismiss === Swal.DismissReason.timer) {
+              console.log("I was closed by the timer");
+            }
+          });
+          //await setTimeout(5000);
+          setTimeout(() => {
+            Swal.fire(
+              "Incrito",
+              "A sua incrição foi efetuada com sucesso",
+              "success"
+            );
+          }, 2000);
+
+          if (code) {
+            router.push(`/inscricao/${uurl}?cd=${code}&cid=${id}`);
+          }
+        }
+      });
     }
     // 5555
     //   console.log(watch("ncode")); // watch input value by passing the name of it
