@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import logo from "public/logo1.png";
 import { useForm, SubmitHandler } from "react-hook-form";
+import toast, { Toaster } from "react-hot-toast";
 
 import {
   IoLogoFacebook,
@@ -49,9 +50,23 @@ const Footer = ({ rsocial, contato, navbar }: any) => {
       });
       // ...
       // console.log(res.json());
-      const data = await res.json();
-      //console.log("data: apos await.res");
-      //console.log(data);
+      let data = await res.json();
+      // console.log("data: apos await.res");
+      // console.log(res.status);
+
+      let myPromise = new Promise(function (myResolve, myReject) {
+        if (res.status == 200) {
+          myResolve(true);
+        } else {
+          myReject(false);
+        }
+      });
+
+      toast.promise(myPromise, {
+        loading: "Enviando...",
+        success: "E-mail enviado com sucesso!",
+        error: "Erro no envio de email",
+      });
     } catch (err) {
       //console.log("erro:" + err);
     }
@@ -84,6 +99,7 @@ const Footer = ({ rsocial, contato, navbar }: any) => {
 
   return (
     <footer>
+      <Toaster position="bottom-right" reverseOrder={false} />
       <div className="p-10 bg-preto text-amarelo-ouro">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
