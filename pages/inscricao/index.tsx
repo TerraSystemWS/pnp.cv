@@ -69,6 +69,7 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
       Swal.fire({
         title: "Prémio Nacional De Publicidade",
         text: "Antes de iniciar a candidatura saiba sobre os regulamentos do concurso.",
+        footer: '<a href="/regulamentos">Regulamentos</a>',
         imageUrl:
           "https://res.cloudinary.com/dkz8fcpla/image/upload/v1672960467/Captura_de_ecra_de_2023_01_05_22_13_23_ae07a3a795.png?updated_at=2023-01-05T23:14:27.822Z",
         imageWidth: 400,
@@ -129,17 +130,27 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
             willClose: () => {
               clearInterval(timerInterval);
             },
-          }).then((result) => {
-            /* Read more about handling dismissals below */
-            if (result.dismiss === Swal.DismissReason.timer) {
-              console.log("I was closed by the timer");
-            }
           });
+
           //await setTimeout(5000);
+          // calculation of no. of days between two date
+
+          // To set two dates to two variables
+          var data_inicio = new Date();
+          var data_fim = new Date("01/31/2023");
+
+          // To calculate the time difference of two dates
+          var Difference_In_Time = data_fim.getTime() - data_inicio.getTime();
+
+          // To calculate the no. of days between two dates
+          var Difference_In_Days = Math.round(
+            Difference_In_Time / (1000 * 3600 * 24)
+          );
+
           setTimeout(() => {
             Swal.fire(
               "Incrito",
-              "A sua incrição foi efetuada com sucesso",
+              `A sua incrição foi efetuada com sucesso, tem ${Difference_In_Days} dias para finalizar o processo`,
               "success"
             );
           }, 2000);
