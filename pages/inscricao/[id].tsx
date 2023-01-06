@@ -4,6 +4,7 @@ import { fetcher } from "../../lib/api";
 import { useRouter } from "next/router";
 import { useForm, SubmitHandler } from "react-hook-form";
 const qs = require("qs");
+import toast, { Toaster } from "react-hot-toast";
 // import { normalizeRouteRegex } from "next/dist/lib/load-custom-routes";
 
 // link para a url do api
@@ -144,6 +145,20 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
       // console.log("data: apos await.res");
       // console.log(data);
       // code = ncode + data.data.id; // id da nova inscricao
+
+      let myPromise = new Promise(function (myResolve, myReject) {
+        if (res.status == 200) {
+          myResolve(true);
+        } else {
+          myReject(false);
+        }
+      });
+
+      toast.promise(myPromise, {
+        loading: "Guardando...",
+        success: "FICHA DE INSCRIÇÃO GUARDADO COM SUCESSO!",
+        error: "ERRRO NA FICHA DE INSCRIÇÃO",
+      });
     } catch (err) {
       // console.log("erro:" + err);
     }
@@ -179,6 +194,19 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
       // console.log("data: apos await.res");
       // console.log(data);
       // code = ncode + data.data.id; // id da nova inscricao
+      let myPromise = new Promise(function (myResolve, myReject) {
+        if (res.status == 200) {
+          myResolve(true);
+        } else {
+          myReject(false);
+        }
+      });
+
+      toast.promise(myPromise, {
+        loading: "Guardando...",
+        success: "FICHA DE TÉCNICA GUARDADO COM SUCESSO!",
+        error: "ERRRO NA FICHA DE INSCRIÇÃO",
+      });
     } catch (err) {
       // console.log("erro:" + err);
     }
@@ -215,6 +243,19 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
       // console.log("data: apos await.res");
       // console.log(data);
       // code = ncode + data.data.id; // id da nova inscricao
+      let myPromise = new Promise(function (myResolve, myReject) {
+        if (res.status == 200) {
+          myResolve(true);
+        } else {
+          myReject(false);
+        }
+      });
+
+      toast.promise(myPromise, {
+        loading: "Guardando...",
+        success: "FICHA DA EQUIPA GUARDADO COM SUCESSO!",
+        error: "ERRRO NA FICHA DE EQUIPA",
+      });
     } catch (err) {
       // console.log("erro:" + err);
     }
@@ -225,6 +266,7 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
       <Head>
         <title>Inscrição - Prémio Nacional De Publicidade</title>
       </Head>
+      <Toaster position="bottom-right" reverseOrder={false} />
       <div className="">
         <div className="bg-gray-50">
           <div className="mx-auto max-w-7xl py-12 px-4 sm:px-6">
@@ -799,7 +841,7 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
                           className="sr-only"
                         />
                       </label>
-                      <p className="pl-1">ou arraste e solte</p>
+                      <p className="pl-1">(link ainda não disponivel)</p>
                     </div>
                     <p className="text-xs text-gray-500">
                       PNG, JPG, GIF up to 20MB
