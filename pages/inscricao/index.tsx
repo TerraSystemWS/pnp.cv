@@ -6,9 +6,6 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { useRouter } from "next/router";
 import { v4 as uuidv4 } from "uuid";
 import Swal from "sweetalert2";
-//import { setTimeout } from "timers/promises";
-// import React, { useState } from "react";
-//import {v4} from "uuid"
 
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
@@ -41,10 +38,6 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
     alert(data.code);
   };
   const onSubmitncode: SubmitHandler<Inputs> = async (data: any) => {
-    // console.log("TerraSystem");
-    // console.log(data);
-    // e.preventDefault()
-    // alert(data.ncode);
     let ncode = data.ncode;
 
     let calculo = data.calc - 10;
@@ -55,17 +48,6 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
         text: "O Valor pode estar errado",
       });
     } else {
-      // let isValido: Boolean = false;
-      // if (!isValido) router.reload();
-      // Swal.fire({
-      //   title: "Prémio Nacional De Publicidade",
-      //   text: "Antes de iniciar a candidatura saiba sobre os regulamentos do concurso.",
-      //   imageUrl:
-      //     "https://res.cloudinary.com/dkz8fcpla/image/upload/v1672960467/Captura_de_ecra_de_2023_01_05_22_13_23_ae07a3a795.png?updated_at=2023-01-05T23:14:27.822Z",
-      //   imageWidth: 400,
-      //   imageHeight: 200,
-      //   imageAlt: "pnp gala",
-      // });
       Swal.fire({
         title: "Prémio Nacional De Publicidade",
         text: "Antes de iniciar a candidatura saiba sobre os regulamentos do concurso.",
@@ -85,10 +67,8 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
           let code: any;
           let id: any;
           let uurl = uuidv4();
-          //return;
+
           try {
-            // c5e2576e41ab25094ae9b666d78e4658d8565738943bf689cf6507457e4a0ae926bc3e326d54c42bb6381cfa680d2402c32077d9f5208c7687e3a50aa1ba08fb8e3662070d721f90929b7779144010cf14d8559bf664f92de2374b83829d78a9c764481a2b35b3d513a2d24ad428d73ad10b1fe4d509b0fd1eb503176b97d647
-            // console.log(api_link + "/inscricoes");
             const res: any = await fetch(`${api_link}/inscricoes`, {
               method: "POST",
               headers: {
@@ -101,10 +81,9 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
                 },
               }),
             });
-            // ...
+
             const data = await res.json();
-            // console.log("data: apos await.res");
-            // console.log(data);
+
             code = ncode + data.data.id; // id da nova inscricao
             id = data.data.id;
           } catch (err) {
@@ -153,7 +132,7 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
               `A sua incrição foi efetuada com sucesso, tem ${Difference_In_Days} dias para finalizar o processo`,
               "success"
             );
-          }, 2000);
+          }, 2500);
 
           if (code) {
             router.push(`/inscricao/${uurl}?cd=${code}&cid=${id}`);
@@ -161,7 +140,7 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
         }
       });
     }
-    // 5555
+
     //   console.log(watch("ncode")); // watch input value by passing the name of it
     //   console.log(watch("code")); // watch input value by passing the name of it
     // dados de categorias
