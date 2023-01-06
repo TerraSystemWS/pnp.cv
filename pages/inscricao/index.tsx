@@ -271,7 +271,7 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
                   <div className="bg-gray-50 px-4 py-3 sm:px-6">
                     <button
                       type="submit"
-                      className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                      className="inline-flex justify-center rounded-md border border-transparent bg-amarelo-ouro py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-amarelo-escuro focus:outline-none focus:ring-2 focus:ring-amarelo-escuro focus:ring-offset-2"
                     >
                       Confirmar
                     </button>
@@ -330,7 +330,7 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
                     <div className="col-span-6 sm:col-span-4">
                       <button
                         type="submit"
-                        className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                        className="inline-flex justify-center rounded-md border border-transparent bg-amarelo-ouro py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-amarelo-escuro focus:outline-none focus:ring-2 focus:ring-amarelo-escuro focus:ring-offset-2"
                       >
                         Abrir inscrição
                       </button>
