@@ -23,6 +23,7 @@ type Inputs = {
   dir_foto: string;
   dir_art: string;
   realizador: string;
+  editor: string;
   autor_jingle: string;
   designer: string;
   outras_consideracoes: string;
@@ -75,6 +76,7 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
       dir_foto: inscricao.data.attributes.dir_foto,
       dir_art: inscricao.data.attributes.dir_art,
       realizador: inscricao.data.attributes.realizador,
+      editor: inscricao.data.attributes.editor,
       autor_jingle: inscricao.data.attributes.autor_jingle,
       designer: inscricao.data.attributes.designer,
       outras_consideracoes: inscricao.data.attributes.outras_consideracoes,
@@ -230,6 +232,7 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
             dir_foto: dados.dir_foto,
             dir_art: dados.dir_art,
             realizador: dados.realizador,
+            editor: dados.editor,
             autor_jingle: dados.autor_jingle,
             designer: dados.designer,
             outras_consideracoes: dados.outras_consideracoes,
@@ -649,6 +652,22 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
                         autoComplete="d_foto"
                         className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                         {...register("realizador")}
+                      />
+                    </div>
+
+                    <div className="col-span-6 sm:col-span-4">
+                      <label
+                        htmlFor="coo_prod"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        Editor
+                      </label>
+                      <input
+                        type="text"
+                        id="d_foto"
+                        autoComplete="d_foto"
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                        {...register("editor")}
                       />
                     </div>
 
