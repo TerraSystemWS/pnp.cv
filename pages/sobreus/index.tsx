@@ -1,13 +1,19 @@
 import Layout from "../../components/Layout";
 import { fetcher } from "../../lib/api";
-import Link from "next/link";
-import Image from "next/image";
+import showdown from "showdown";
 import Head from "next/head";
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
 
-const Sobreus = ({ social, contato, navbar }: any) => {
-  //dados do grupo de parceiros;
+const Sobreus = ({ social, contato, navbar, sobreus }: any) => {
+  const createMarkup = (values: any) => {
+    // const values =
+    const converter = new showdown.Converter();
+    const html = converter.makeHtml(values);
+    return { __html: html };
+  };
+
+  const sobreUs: any = createMarkup(sobreus.data.attributes.sobrepnp);
 
   return (
     <Layout rsocial={social} contato={contato} navbar={navbar}>
@@ -23,6 +29,11 @@ const Sobreus = ({ social, contato, navbar }: any) => {
                 <span className="block text-amarelo-ouro">SOBRE NÓS</span>
               </h2>
             </div>
+          </div>
+        </div>
+        <div className="container mx-auto py-5 mx-10">
+          <div className="text-lg font-medium ">
+            <div dangerouslySetInnerHTML={sobreUs}></div>
           </div>
         </div>
       </section>
@@ -42,6 +53,8 @@ export async function getServerSideProps() {
   const contato = await fetcher(`${api_link}/contato`);
   // GET: dados do navbar
   const navbar = await fetcher(`${api_link}/menus?populate=deep`);
+  // GET: dados do sobre Us
+  const sobreus = await fetcher(`${api_link}/sobre-pnp?populate=deep`);
   //get links for menu
   let dlink: any = [];
   navbar.data.map((value: any) => {
@@ -58,6 +71,6 @@ export async function getServerSideProps() {
 
   // Pass data to the page via props
   return {
-    props: { social: rsocials, contato, navbar: dlink },
+    props: { social: rsocials, contato, navbar: dlink, sobreus },
   };
 }
