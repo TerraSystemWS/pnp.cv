@@ -58,15 +58,15 @@ const Nav = (props: any) => {
               </Link>
             </li>
           ))}
-          {/* <li>
-						<Link
-							href={"/auth/login"}
-							className="bg-branco text-preto hover:text-branco font-[Poppins] py-2 px-6 rounded md:ml-8 hover:bg-castanho-claro 
+          <li>
+            <Link
+              href={"/inscricao"}
+              className="bg-amarelo-ouro text-branco hover:text-branco font-[Poppins] py-2 px-6 rounded md:ml-8 hover:bg-castanho-claro 
 						duration-500"
-						>
-							Entrar
-						</Link>
-					</li> */}
+            >
+              Inscrever
+            </Link>
+          </li>
         </ul>
       </div>
     </div>
