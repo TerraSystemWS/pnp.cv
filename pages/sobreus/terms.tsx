@@ -1,13 +1,19 @@
 import Layout from "../../components/Layout";
 import { fetcher } from "../../lib/api";
-import Link from "next/link";
-import Image from "next/image";
+import showdown from "showdown";
 import Head from "next/head";
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
 
-const SobreusTerms = ({ social, contato, navbar }: any) => {
-  //dados do grupo de parceiros;
+const SobreusTerms = ({ social, contato, navbar, sobreus }: any) => {
+  const createMarkup = (values: any) => {
+    // const values =
+    const converter = new showdown.Converter();
+    const html = converter.makeHtml(values);
+    return { __html: html };
+  };
+
+  const sobreUs: any = createMarkup(sobreus.data.attributes.termo_uso);
 
   return (
     <Layout rsocial={social} contato={contato} navbar={navbar}>
@@ -19,12 +25,17 @@ const SobreusTerms = ({ social, contato, navbar }: any) => {
         <div className="">
           <div className="bg-gray-50">
             <div className="mx-auto max-w-7xl py-12 px-4 sm:px-6">
-              <h2 className="text-2xl text-center mb-8 font-bold tracking-tight text-gray-900 sm:text-4xl">
+              <h2 className="text-2xl text-left mb-8 font-bold tracking-tight text-gray-900 sm:text-4xl">
                 <span className="block text-amarelo-ouro">
                   TERMOS DE SERVIÇO
                 </span>
               </h2>
             </div>
+          </div>
+        </div>
+        <div className="container mx-auto py-5 mx-10">
+          <div className="text-lg font-medium ">
+            <div dangerouslySetInnerHTML={sobreUs}></div>
           </div>
         </div>
       </section>
@@ -44,6 +55,8 @@ export async function getServerSideProps() {
   const contato = await fetcher(`${api_link}/contato`);
   // GET: dados do navbar
   const navbar = await fetcher(`${api_link}/menus?populate=deep`);
+  // GET: dados do sobre Us
+  const sobreus = await fetcher(`${api_link}/sobre-pnp?populate=deep`);
   //get links for menu
   let dlink: any = [];
   navbar.data.map((value: any) => {
@@ -60,6 +73,6 @@ export async function getServerSideProps() {
 
   // Pass data to the page via props
   return {
-    props: { social: rsocials, contato, navbar: dlink },
+    props: { social: rsocials, contato, navbar: dlink, sobreus },
   };
 }
