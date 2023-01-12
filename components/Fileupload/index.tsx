@@ -40,7 +40,9 @@ const Fileupload = () => {
             </label>
             <p className="pl-1">(link ainda não disponivel)</p>
           </div>
-          <p className="text-xs text-gray-500">PNG, JPG, GIF up to 20MB</p>
+          <p className="text-xs text-gray-500">
+            PNG, JPG, GIF, PDF, MP4, MP3, AAC up to 20MB
+          </p>
           <input
             className="bg-amarelo-ouro text-branco hover:text-branco font-[Poppins] py-2 px-6 rounded md:ml-8 hover:bg-castanho-claro 
 						duration-500"
