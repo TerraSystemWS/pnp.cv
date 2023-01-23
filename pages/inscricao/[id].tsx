@@ -8,6 +8,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { Table } from "flowbite-react";
 import { IoTrashOutline } from "react-icons/io5";
 import Fileupload from "../../components/Fileupload";
+import FileList from "../../components/FileList";
 // import { normalizeRouteRegex } from "next/dist/lib/load-custom-routes";
 
 // link para a url do api
@@ -916,7 +917,10 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
                 <label className="block text-sm font-medium text-gray-700">
                   Documentos
                 </label>
-                <Fileupload /> 
+                <Fileupload />
+                {/* {!!uploadedFiles.length && (
+                  <FileList files={uploadedFiles} onDelete={this.handleDelete} />
+                )} */}
               </div>
             </div>
           </div>

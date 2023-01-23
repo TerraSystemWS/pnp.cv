@@ -1,6 +1,6 @@
 import { Progress } from "flowbite-react";
 import React, { useCallback, useState } from "react";
-import { useDropzone, FileError, FileRejection } from "react-dropzone";
+import useDropzone from "react-dropzone";
 
 export interface UploadableFile {
   file: File;
