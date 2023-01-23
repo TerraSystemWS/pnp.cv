@@ -88,7 +88,6 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
       data_divulgacao: inscricao.data.attributes.data_divulgacao,
       data_apresentacao_publica:
         inscricao.data.attributes.data_apresentacao_publica,
-      fileLink: inscricao.data.attributes.fileLink,
     },
   });
   // dados de categorias
@@ -835,7 +834,7 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
                     {inscricao.data.attributes.fileLink &&
                       inscricao.data.attributes.fileLink.map(
                         (value: any, index: number) => (
-                          <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                          <Table.Row key={index} className="bg-white dark:border-gray-700 dark:bg-gray-800">
                             <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                               {value.titulo}
                             </Table.Cell>
@@ -844,6 +843,7 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
                                 href={value.file_link}
                                 target="_blank"
                                 className="hover:text-blue-500 hover:underline"
+                                rel="noreferrer"
                               >
                                 {value.file_link}
                               </a>
@@ -916,7 +916,7 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
                 <label className="block text-sm font-medium text-gray-700">
                   Documentos
                 </label>
-                <Fileupload />
+                <Fileupload /> 
               </div>
             </div>
           </div>
