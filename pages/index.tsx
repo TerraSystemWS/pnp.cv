@@ -9,6 +9,7 @@ import Juri from "../components/Juri";
 import Categorias from "../components/Categorias";
 import Parceiros from "../components/Parceiros";
 import { HiInformationCircle } from "react-icons/hi";
+import { IoCall } from "react-icons/io5";
 import Link from "next/link";
 import { useRouter } from "next/router";
 const qs = require("qs");
@@ -294,7 +295,7 @@ export default function Home({
         </div>
       </div>
 
-      <Parceiros dados={partnerList} />
+      {/* <Parceiros dados={partnerList} /> */}
     </Layout>
   );
 }
