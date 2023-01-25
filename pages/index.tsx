@@ -22,7 +22,7 @@ export default function Home({
   contato,
   banners,
   edicao,
-  parceiros,
+  // parceiros,
   navbar,
 }: any) {
   // router
@@ -34,10 +34,10 @@ export default function Home({
   // dados de categorias
   let Categoria: any = [];
   //dados do grupo de parceiros
-  let parceirosOrganizacao: any = [];
-  let parceirosPadrinho: any = [];
-  let parceirosPatrocinadores: any = [];
-  let parceirosMedia: any = [];
+  // let parceirosOrganizacao: any = [];
+  // let parceirosPadrinho: any = [];
+  // let parceirosPatrocinadores: any = [];
+  // let parceirosMedia: any = [];
 
   // console.log("dlink");
   // console.log(dlink);
@@ -102,71 +102,71 @@ export default function Home({
   // 	});
   // });
 
-  parceiros.data.map((value: any, index: any) => {
-    value.attributes.organizacao.map((value2: any, index2: any) => {
-      parceirosOrganizacao[index2] = {
-        id: index2,
-        link: value2.link,
-        title: value2.logo.data?.attributes.name,
-        foto: value2.logo.data?.attributes.url || "/",
-      };
-    });
-    value.attributes.parceiros_padrinhos.map((value2: any, index2: any) => {
-      parceirosPadrinho[index2] = {
-        id: index2,
-        link: value2.link,
-        title: value2.logo.data?.attributes.name,
-        foto: value2.logo.data?.attributes.url || "/",
-      };
-    });
-    value.attributes.patrocinadores.map((value2: any, index2: any) => {
-      parceirosPatrocinadores[index2] = {
-        id: index2,
-        link: value2.link,
-        title: value2.logo.data.attributes.name,
-        foto: value2.logo.data?.attributes.url || "/",
-      };
-    });
-    value.attributes.media_parteners.map((value2: any, index2: any) => {
-      parceirosMedia[index2] = {
-        id: index2,
-        link: value2.link,
-        title: value2.logo.data.attributes.name,
-        foto: value2.logo.data?.attributes.url || "/",
-      };
-    });
-  });
+  // parceiros.data.map((value: any, index: any) => {
+  //   value.attributes.organizacao.map((value2: any, index2: any) => {
+  //     parceirosOrganizacao[index2] = {
+  //       id: index2,
+  //       link: value2.link,
+  //       title: value2.logo.data?.attributes.name,
+  //       foto: value2.logo.data?.attributes.url || "/",
+  //     };
+  //   });
+  //   value.attributes.parceiros_padrinhos.map((value2: any, index2: any) => {
+  //     parceirosPadrinho[index2] = {
+  //       id: index2,
+  //       link: value2.link,
+  //       title: value2.logo.data?.attributes.name,
+  //       foto: value2.logo.data?.attributes.url || "/",
+  //     };
+  //   });
+  //   value.attributes.patrocinadores.map((value2: any, index2: any) => {
+  //     parceirosPatrocinadores[index2] = {
+  //       id: index2,
+  //       link: value2.link,
+  //       title: value2.logo.data.attributes.name,
+  //       foto: value2.logo.data?.attributes.url || "/",
+  //     };
+  //   });
+  //   value.attributes.media_parteners.map((value2: any, index2: any) => {
+  //     parceirosMedia[index2] = {
+  //       id: index2,
+  //       link: value2.link,
+  //       title: value2.logo.data.attributes.name,
+  //       foto: value2.logo.data?.attributes.url || "/",
+  //     };
+  //   });
+  // });
 
   // create the partner list
-  let partnerList: any = [];
-  parceirosOrganizacao.map((value: any) => {
-    partnerList.push({
-      link: value.link,
-      title: value.title,
-      foto: value.foto,
-    });
-  });
-  parceirosPadrinho.map((value: any) => {
-    partnerList.push({
-      link: value.link,
-      title: value.title,
-      foto: value.foto,
-    });
-  });
-  parceirosPatrocinadores.map((value: any) => {
-    partnerList.push({
-      link: value.link,
-      title: value.title,
-      foto: value.foto,
-    });
-  });
-  parceirosMedia.map((value: any) => {
-    partnerList.push({
-      link: value.link,
-      title: value.title,
-      foto: value.foto,
-    });
-  });
+  // let partnerList: any = [];
+  // parceirosOrganizacao.map((value: any) => {
+  //   partnerList.push({
+  //     link: value.link,
+  //     title: value.title,
+  //     foto: value.foto,
+  //   });
+  // });
+  // parceirosPadrinho.map((value: any) => {
+  //   partnerList.push({
+  //     link: value.link,
+  //     title: value.title,
+  //     foto: value.foto,
+  //   });
+  // });
+  // parceirosPatrocinadores.map((value: any) => {
+  //   partnerList.push({
+  //     link: value.link,
+  //     title: value.title,
+  //     foto: value.foto,
+  //   });
+  // });
+  // parceirosMedia.map((value: any) => {
+  //   partnerList.push({
+  //     link: value.link,
+  //     title: value.title,
+  //     foto: value.foto,
+  //   });
+  // });
 
   const goto = (link: string) => {
     router.push(link);
@@ -344,7 +344,7 @@ export async function getServerSideProps() {
    */
   const edicao = await fetcher(`${api_link}/edicoes/1?populate=deep&${query}`);
   // GET: dados dos parceiros
-  const parceiros = await fetcher(`${api_link}/parceiros?populate=deep`);
+  // const parceiros = await fetcher(`${api_link}/parceiros?populate=deep`);
   // GET: dados do navbar
   const navbar = await fetcher(`${api_link}/menus?populate=deep`);
   //get links for menu
@@ -368,7 +368,7 @@ export async function getServerSideProps() {
       contato,
       banners,
       edicao,
-      parceiros,
+      // parceiros,
       navbar: dlink,
     },
   };
