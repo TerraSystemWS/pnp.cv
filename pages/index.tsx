@@ -4,12 +4,13 @@ import Image from "next/image";
 import Layout from "../components/Layout";
 // import logo from "public/logo1.png";
 import { fetcher } from "../lib/api";
+import { HiInformationCircle } from "react-icons/hi";
 import { Carousel, Alert } from "flowbite-react";
 import Juri from "../components/Juri";
 import Categorias from "../components/Categorias";
-import Parceiros from "../components/Parceiros";
-import { HiInformationCircle } from "react-icons/hi";
-import { IoCall } from "react-icons/io5";
+// import Parceiros from "../components/Parceiros";
+
+// import { IoCall } from "react-icons/io5";
 import Link from "next/link";
 import { useRouter } from "next/router";
 const qs = require("qs");
@@ -243,21 +244,22 @@ export default function Home({
               júri, baseado apenas no critério da popularidade.
             </p>
           </div>
-          <div className="flex flex-col gap-4 w-1/2 justify-center sm:mx-auto sm:mb-2 -mx-2">
-            <button
-              className="h-10 px-6 font-semibold rounded-md bg-black text-white"
-              type="submit"
-              disabled
-            >
-              Votar
-            </button>
-
-            <Alert color="warning" icon={HiInformationCircle}>
+          <div className="mx-auto max-w-screen-md text-center lg:mb-16 mb-8">
+            <Alert color="info" icon={HiInformationCircle}>
               <span>
-                <span className="font-medium">Info!</span> Link ativo somente no
+                <span className="font-medium">Info!</span> Disponivel somente no
                 período de votação.
               </span>
             </Alert>
+          </div>
+          <div className="mx-auto max-w-screen-md text-center lg:mb-16 mb-8">
+            <Link
+              href={"/v_publiku"}
+              className="bg-amarelo-ouro text-center font-bold  font-bold text-branco hover:text-branco font-[Poppins] py-5 px-8 rounded hover:bg-castanho-claro 
+						duration-500"
+            >
+              Votar
+            </Link>
           </div>
         </div>
       </section>
