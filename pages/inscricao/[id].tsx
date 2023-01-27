@@ -5,13 +5,15 @@ import { useRouter } from "next/router";
 import { useForm, SubmitHandler } from "react-hook-form";
 const qs = require("qs");
 import toast, { Toaster } from "react-hot-toast";
-import { Table } from "flowbite-react";
+import { Table, Button } from "flowbite-react";
 import { IoTrashOutline } from "react-icons/io5";
 import { MultipleFileUploadField } from "../../components/upload/MultipleFileUpload";
 //import Fileupload from "../../components/Fileupload";
 //import FileList from "../../components/FileList";
 // import { normalizeRouteRegex } from "next/dist/lib/load-custom-routes";
 import { Form, Formik } from "formik";
+import { stringify } from "querystring";
+import { arrayBuffer } from "stream/consumers";
 
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
@@ -938,10 +940,24 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
                         strokeLinejoin="round"
                       />
                     </svg>
-                    <Formik initialValues={{ files: [] }} onSubmit={() => {}}>
+                    <Formik
+                      initialValues={{ files: [] }}
+                      // validationSchema={object({
+                      //   files: array(object({ url: string().required() })),
+                      // })}
+                      onSubmit={(values) => {
+                        console.log("values", values);
+                        return new Promise((res) => setTimeout(res, 2000));
+                      }}
+                    >
                       {({ values, errors }) => (
                         <Form>
                           <MultipleFileUploadField name="files" />
+                          <div>
+                            <button type="submit" className="">
+                              Submit
+                            </button>
+                          </div>
                         </Form>
                       )}
                     </Formik>
