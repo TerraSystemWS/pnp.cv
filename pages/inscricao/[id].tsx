@@ -7,9 +7,11 @@ const qs = require("qs");
 import toast, { Toaster } from "react-hot-toast";
 import { Table } from "flowbite-react";
 import { IoTrashOutline } from "react-icons/io5";
+import { MultipleFileUploadField } from "../../components/upload/MultipleFileUpload";
 //import Fileupload from "../../components/Fileupload";
 //import FileList from "../../components/FileList";
 // import { normalizeRouteRegex } from "next/dist/lib/load-custom-routes";
+import { Form, Formik } from "formik";
 
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
@@ -835,7 +837,10 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
                     {inscricao.data.attributes.fileLink &&
                       inscricao.data.attributes.fileLink.map(
                         (value: any, index: number) => (
-                          <Table.Row key={index} className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                          <Table.Row
+                            key={index}
+                            className="bg-white dark:border-gray-700 dark:bg-gray-800"
+                          >
                             <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                               {value.titulo}
                             </Table.Cell>
@@ -917,12 +922,31 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
                 <label className="block text-sm font-medium text-gray-700">
                   Documentos
                 </label>
-                
-                {/* 
-                <Fileupload />
-                {!!uploadedFiles.length && (
-                  <FileList files={uploadedFiles} onDelete={this.handleDelete} />
-                )} */}
+                <div className="mt-1 flex justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6">
+                  <div className="space-y-1 text-center">
+                    <svg
+                      className="mx-auto h-12 w-12 text-gray-400"
+                      stroke="currentColor"
+                      fill="none"
+                      viewBox="0 0 48 48"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                        strokeWidth={2}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    <Formik initialValues={{ files: [] }} onSubmit={() => {}}>
+                      {({ values, errors }) => (
+                        <Form>
+                          <MultipleFileUploadField name="files" />
+                        </Form>
+                      )}
+                    </Formik>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
