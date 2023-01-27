@@ -1,6 +1,7 @@
 import { Progress } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { FileHeader } from "./FileHeader";
+import AWS from "aws-sdk";
 
 export interface SingleFileUpload {
   file: File;
@@ -34,7 +35,7 @@ export function SingleFileUpload({
 }
 
 function uploadFile(file: File, onProgress: (percentage: number) => void) {
-  const url: string = "....";
+  const url: string = "/api/upload";
   const key: string = "chave";
 
   return new Promise<string>((res, rej) => {
