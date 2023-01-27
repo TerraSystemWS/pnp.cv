@@ -3,6 +3,7 @@ import { useField } from "formik";
 import React, { useCallback, useEffect, useState } from "react";
 import { FileError, FileRejection, useDropzone } from "react-dropzone";
 import { SingleFileUpload } from "./SingleFileUpload";
+import { UploadError } from "./UploadError";
 
 export interface UploadableFile {
   file: File;
@@ -63,6 +64,7 @@ export function MultipleFileUploadField({ name }: { name: string }) {
       "audio/mpeg": [".mpeg"],
       "application/pdf": [".pdf"],
     },
+    maxSize: 300 * 1024, //300KB
   });
 
   return (
@@ -82,7 +84,10 @@ export function MultipleFileUploadField({ name }: { name: string }) {
           className="sr-only"
           {...getInputProps()}
         />
-        <p>Drag & drop some files here, or click to select files</p>
+        <p>
+          <span className="text-amarelo-ouro">click aqui</span> para fazer
+          upload dos ficheiros
+        </p>
         {/* <span>Upload dos Ficheiros</span> */}
         {/* </label> */}
       </div>
@@ -101,7 +106,11 @@ export function MultipleFileUploadField({ name }: { name: string }) {
       {files.map((fileWrapper, index) => (
         <div key={index}>
           {fileWrapper.errors.length ? (
-            <div>ERROR</div>
+            <UploadError
+              file={fileWrapper.file}
+              errors={fileWrapper.errors}
+              onDelete={onDelete}
+            />
           ) : (
             <SingleFileUpload
               onDelete={onDelete}
