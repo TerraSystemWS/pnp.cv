@@ -66,6 +66,7 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
           timer: 2000,
           timerProgressBar: true,
           didOpen: () => {
+            // @ts-ignore
             Swal.showLoading(Swal.getDenyButton());
             // @ts-ignore
             const b = Swal.getHtmlContainer().querySelector("b");
