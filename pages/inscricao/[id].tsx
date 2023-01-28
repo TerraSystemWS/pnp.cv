@@ -1,14 +1,16 @@
 import Head from "next/head";
-import Layout from "../../../components/Layout";
-import { fetcher } from "../../../lib/api";
+import Layout from "../../components/Layout";
+import { fetcher } from "../../lib/api";
 import { useRouter } from "next/router";
 import { useForm, SubmitHandler } from "react-hook-form";
 const qs = require("qs");
 import toast, { Toaster } from "react-hot-toast";
 import { Table, Button } from "flowbite-react";
 import { IoTrashOutline } from "react-icons/io5";
-import { MultipleFileUploadField } from "../../../components/upload/MultipleFileUpload";
+import { MultipleFileUploadField } from "../../components/upload/MultipleFileUpload";
 import Link from "next/link";
+import { useS3Upload } from "next-s3-upload";
+import { useState } from "react";
 //import Fileupload from "../../components/Fileupload";
 //import FileList from "../../components/FileList";
 // import { normalizeRouteRegex } from "next/dist/lib/load-custom-routes";
@@ -120,6 +122,17 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
 
   /* let num: number = 1;
   let code = "pnp-p0" + num; */
+
+  // submit files
+  let { uploadToS3, files } = useS3Upload();
+  let [link, setLink] = useState("");
+
+  let handleFileChange = async (event: any) => {
+    // alert("terrq");
+    let file = event.target.files[0];
+    let { url } = await uploadToS3(file);
+    setLink(url);
+  };
 
   // submits de PUT (atualizacao) para inscricao
   const onSubmitInscricao: SubmitHandler<Inputs> = async (data: any) => {
@@ -938,14 +951,34 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
                         strokeLinejoin="round"
                       />
                     </svg>
-                    ex local de upload
+                    {/* ex local de upload
                     <Link
                       className="bg-amarelo-ouro text-branco hover:text-branco font-[Poppins] py-2 px-6 rounded md:ml-8 hover:bg-castanho-claro 
 						duration-500"
                       href={`/inscricao/${cid}/upload/`}
                     >
                       Upload Files
-                    </Link>
+                    </Link> */}
+                    <div>
+                      <input onChange={handleFileChange} type="file" />
+
+                      <div className="pt-8">
+                        {files.map((file, index) => (
+                          <div key={index}>
+                            Ficheiro #{index} progress:{" "}
+                            {Math.round(file.progress)}% ::{" "}
+                            <a
+                              href={link}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-blue-500 underline"
+                            >
+                              link do documento
+                            </a>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
