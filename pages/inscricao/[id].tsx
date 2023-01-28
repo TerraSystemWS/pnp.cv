@@ -945,7 +945,7 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
                     <span className="text-red-500 font-bold text-lg pointer">
                       <IoTrashOutline />
                     </span>{" "}
-                    remove um ficheiro
+                    {/* remove um ficheiro */}
                   </p>
                 </p>
               </div>
@@ -985,7 +985,7 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
 
                             <Table.Cell>
                               <span
-                                onClick={deleteFile}
+                                // onClick={deleteFile}
                                 className="cursor-pointer text-red-500 hover:underline dark:text-red-500"
                               >
                                 <IoTrashOutline />
@@ -1058,6 +1058,10 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
                   <span className="text-red-500 font-bold">mp3</span>,{" "}
                   <span className="text-red-500 font-bold">aac</span>), videos(
                   <span className="text-red-500 font-bold">mp4</span>))
+                </label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Outros tipos de documentos nao vai ser submetido (progress
+                  fica a 0%)
                 </label>
                 <div className="mt-1 flex justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6">
                   <div className="space-y-1 text-center">
