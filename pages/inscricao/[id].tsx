@@ -76,8 +76,8 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
       nome_completo: inscricao.data.attributes.nome_completo,
       email: inscricao.data.attributes.email,
       sede: inscricao.data.attributes.sede,
-      nif: inscricao.data.attributes.NIF,
-      telefone: inscricao.data.attributes.telefone,
+      nif: inscricao.data?.attributes.NIF,
+      telefone: inscricao.data?.attributes.telefone,
       nome_projeto: inscricao.data.attributes.nome_projeto,
       categoria: inscricao.data.attributes.categoria,
       con_criativo: inscricao.data.attributes.con_criativo,
@@ -122,17 +122,6 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
 
   /* let num: number = 1;
   let code = "pnp-p0" + num; */
-
-  // submit files
-  let { uploadToS3, files } = useS3Upload();
-  let [link, setLink] = useState("");
-
-  let handleFileChange = async (event: any) => {
-    // alert("terrq");
-    let file = event.target.files[0];
-    let { url } = await uploadToS3(file);
-    setLink(url);
-  };
 
   // submits de PUT (atualizacao) para inscricao
   const onSubmitInscricao: SubmitHandler<Inputs> = async (data: any) => {
@@ -286,6 +275,70 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
 
   const deleteFile = async () => {
     alert("deleteFile");
+  };
+
+  // submit files
+  let { uploadToS3, files } = useS3Upload();
+  let [link, setLink] = useState("");
+
+  let handleFileChange = async (event: any) => {
+    // alert("terrq");
+    // setLink("");
+    let file = event.target.files[0];
+
+    // console.log("fikle");
+    // console.log(file.name);
+
+    let { url } = await uploadToS3(file);
+    setLink(url);
+
+    // console.log("url");
+    // console.log(url);
+
+    // guardar o link e fileName no DB (strapi)
+    try {
+      const res: any = await fetch(`${api_link}/inscricoes/${cid}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          data: {
+            fileLink: [
+              {
+                titulo: file.name,
+                file_link: url,
+              },
+            ],
+          },
+        }),
+      });
+
+      const data = await res.json();
+
+      // console.log("controle de uploads");
+      // console.log("res");
+      // console.log(res);
+      // // =================
+      // console.log("data");
+      // console.log(data);
+
+      // listen de promise
+      let myPromise = new Promise(function (myResolve, myReject) {
+        if (res.status == 200) {
+          myResolve(true);
+        } else {
+          myReject(false);
+        }
+      });
+
+      // triguer the toast
+      toast.promise(myPromise, {
+        loading: "Guardando...",
+        success: "DOCUMENTO SUBMETIDO COM SUCESSO",
+        error: "ERRRO NA FICHA DE EQUIPA",
+      });
+    } catch (error) {}
   };
 
   return (
@@ -933,7 +986,16 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
             <div className="mt-5 md:col-span-2 md:mt-0">
               <div>
                 <label className="block text-sm font-medium text-gray-700">
-                  Documentos
+                  Documentos (<span className="text-red-500 font-bold">*</span>{" "}
+                  so é permitido documentos do tipo imagem(
+                  <span className="text-red-500 font-bold">pnp</span>,{" "}
+                  <span className="text-red-500 font-bold">jpg</span>,{" "}
+                  <span className="text-red-500 font-bold">jpeg</span>,{" "}
+                  <span className="text-red-500 font-bold">gif</span>),
+                  <span className="text-red-500 font-bold">pdf</span>, audio (
+                  <span className="text-red-500 font-bold">mp3</span>,{" "}
+                  <span className="text-red-500 font-bold">aac</span>), videos(
+                  <span className="text-red-500 font-bold">mp4</span>))
                 </label>
                 <div className="mt-1 flex justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6">
                   <div className="space-y-1 text-center">
