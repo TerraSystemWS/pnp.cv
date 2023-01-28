@@ -132,6 +132,7 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
                 data: {
                   code: ncode,
                   url: uurl,
+                  publishedAt: null,
                 },
               }),
             });
