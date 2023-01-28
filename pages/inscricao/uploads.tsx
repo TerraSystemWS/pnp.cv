@@ -31,23 +31,24 @@ const Uploads = () => {
     //   <Head>
     //     <title>Uploads De Trabalhos - Prémio Nacional De Publicidade</title>
     //   </Head>
-    <section>
-      <div className="flex items-center justify-center mt-20 mb-10">
-        {/* <Toast ref={toast}></Toast> */}
-        <FileUpload
-          name="demo[]"
-          url="/api/upload-to-s3"
-          onUpload={onUpload}
-          multiple
-          accept="image/*"
-          maxFileSize={1000000}
-          emptyTemplate={
-            <p className="m-0">Drag and drop files to here to upload.</p>
-          }
-        />
-      </div>
-    </section>
+    // <section>
+    //   <div className="flex items-center justify-center mt-20 mb-10">
+    //     {/* <Toast ref={toast}></Toast> */}
+    //     <FileUpload
+    //       name="demo[]"
+    //       url="/api/upload-to-s3"
+    //       onUpload={onUpload}
+    //       multiple
+    //       accept="image/*"
+    //       maxFileSize={1000000}
+    //       emptyTemplate={
+    //         <p className="m-0">Drag and drop files to here to upload.</p>
+    //       }
+    //     />
+    //   </div>
+    // </section>
     // </Layout>
+    <p>terra</p>
   );
 };
 
