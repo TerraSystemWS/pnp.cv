@@ -9,6 +9,7 @@ import { Table } from "flowbite-react";
 import { IoTrashOutline } from "react-icons/io5";
 import { useS3Upload } from "next-s3-upload";
 import { useState } from "react";
+
 //import Fileupload from "../../components/Fileupload";
 //import FileList from "../../components/FileList";
 // import { normalizeRouteRegex } from "next/dist/lib/load-custom-routes";
@@ -271,13 +272,26 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
     }
   };
 
+  /**
+   * seccao para upload de arquivos
+   * 
+   
+   * 
+   */
+
   const deleteFile = async () => {
     alert("deleteFile");
+  };
+
+  const Atualizar = () => {
+    router.reload();
   };
 
   // submit files
   let { uploadToS3, files } = useS3Upload();
   let [link, setLink] = useState("");
+
+  // let [doc, setDoc] = useState([]);
 
   let handleFileChange = async (event: any) => {
     // alert("terrq");
@@ -290,11 +304,66 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
     let { url } = await uploadToS3(file);
     setLink(url);
 
-    // console.log("url");
-    // console.log(url);
+    // if (url) {
+    let doc = [];
+
+    doc[0] = {
+      // @ts-ignore
+      titulo: file?.name,
+      file_link: url,
+    };
+    // }
+
+    // console.log("doc");
+    // console.log(doc);
 
     // guardar o link e fileName no DB (strapi)
     try {
+      // get all the old data
+      const res_old: any = await fetch(
+        `${api_link}/inscricoes/${cid}?populate=deep`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const data_old = await res_old.json();
+
+      // console.log("docs 0");
+
+      // console.log(doc);
+
+      // let docs: any[];
+
+      data_old.data.attributes.fileLink.map((value: string, index: number) => {
+        console.log("data_old");
+        console.log(index);
+        // @ts-ignore
+        doc[index + 1] = {
+          // @ts-ignore
+          titulo: value.titulo,
+          // @ts-ignore
+          file_link: value.file_link,
+        };
+      });
+
+      // console.log("docs lasts");
+      // console.log(doc);
+      // console.log(doc[0].titulo);
+      // console.log("Antes New docs");
+
+      // let old_swap_new_docs: string[] = [];
+      // old_swap_new_docs = data_old.data.fileLink;
+      // console.log("old swap New docs");
+      // console.log(old_swap_new_docs);
+      // let new_docs = old_swap_new_docs.push(doc);
+      // console.log("New docs");
+      // console.log(new_docs);
+
+      // return;
       const res: any = await fetch(`${api_link}/inscricoes/${cid}`, {
         method: "PUT",
         headers: {
@@ -302,12 +371,7 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
         },
         body: JSON.stringify({
           data: {
-            fileLink: [
-              {
-                titulo: file.name,
-                file_link: url,
-              },
-            ],
+            fileLink: doc,
           },
         }),
       });
@@ -1037,6 +1101,15 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
                             </a>
                           </div>
                         ))}
+                      </div>
+                      <div>
+                        <button
+                          className="bg-amarelo-ouro text-branco hover:text-branco font-[Poppins] py-2 px-6 rounded mt-10 hover:bg-castanho-claro 
+						duration-500"
+                          onClick={Atualizar}
+                        >
+                          Confirmar
+                        </button>
                       </div>
                     </div>
                   </div>
