@@ -1050,7 +1050,7 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
                 <label className="block text-sm font-medium text-gray-700">
                   Documentos (<span className="text-red-500 font-bold">*</span>{" "}
                   so é permitido documentos do tipo imagem(
-                  <span className="text-red-500 font-bold">pnp</span>,{" "}
+                  <span className="text-red-500 font-bold">png</span>,{" "}
                   <span className="text-red-500 font-bold">jpg</span>,{" "}
                   <span className="text-red-500 font-bold">jpeg</span>,{" "}
                   <span className="text-red-500 font-bold">gif</span>),
