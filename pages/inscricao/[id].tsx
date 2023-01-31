@@ -177,11 +177,12 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
   const onSubmitftecnica: SubmitHandler<Inputs> = async (data: any) => {
     let dados = data;
     // console.log("submeter ficha de dados de ftecnica");
-    // console.log(dados);
-    let categ: string = "";
-    dados.categoria.map((value: any) => {
-      categ += value + ",";
-    });
+    // console.log(dados.categoria);
+    // let categ: string = "";
+    // dados.categoria.map((value: any) => {
+    //   categ += value + ",";
+    // });
+    // return;
     // console.log("categorias");
     // console.log(categ);
     try {
@@ -194,7 +195,7 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
         },
         body: JSON.stringify({
           data: {
-            categoria: categ,
+            categoria: dados.categoria,
             nome_projeto: dados.nome_projeto,
             con_criativo: dados.con_criativo,
           },
@@ -574,7 +575,7 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
                           Categoria de Prémio a que concorre
                         </label>
                         <select
-                          multiple
+                          // multiple
                           id="countries"
                           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                           {...register("categoria")}
