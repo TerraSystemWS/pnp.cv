@@ -254,7 +254,7 @@ export default function Home({
           </div>
           <div className="mx-auto max-w-screen-md text-center lg:mb-16 mb-8">
             <Link
-              href={"/v_publiku"}
+              href={"/projetos"}
               className="bg-amarelo-ouro text-center font-bold  font-bold text-branco hover:text-branco font-[Poppins] py-5 px-8 rounded hover:bg-castanho-claro 
 						duration-500"
             >
