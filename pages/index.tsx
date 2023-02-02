@@ -258,7 +258,7 @@ export default function Home({
               className="bg-amarelo-ouro text-center font-bold  font-bold text-branco hover:text-branco font-[Poppins] py-5 px-8 rounded hover:bg-castanho-claro 
 						duration-500"
             >
-              Votar
+              PROJETOS
             </Link>
           </div>
         </div>
