@@ -256,7 +256,7 @@ export default function Home({
             <Link
               href={"/projetos"}
               className="bg-amarelo-ouro text-center font-bold  font-bold text-branco hover:text-branco font-[Poppins] py-5 px-8 rounded hover:bg-castanho-claro 
-						duration-500"
+						duration-500 n"
             >
               PROJETOS
             </Link>
