@@ -43,12 +43,12 @@ const CONTATOS = ({ social, contato, navbar }: any) => {
     });
 
     const dados = await response.json();
-    console.log(dados);
+    // console.log(dados);
     // setar email enviado
     switch (dados.statusCode) {
       case 200: {
         //		setEmail(true);
-        console.log("code 200");
+        console.log("code email 200");
         break;
       }
       case 500: {

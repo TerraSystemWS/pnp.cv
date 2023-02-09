@@ -21,8 +21,8 @@ import { useFetchUser } from "../../lib/authContext";
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
 
 const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
-  console.log("detalhes inscritos");
-  console.log(inscricao);
+  // console.log("detalhes inscritos");
+  // console.log(inscricao);
   // const [cor, setCor] = useState(false)
   const [cor, setCor] = useState("CurrentColor");
   const {
@@ -32,7 +32,7 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
     formState: { errors },
   } = useForm();
   const onVotar = (data: any) => {
-    console.log(data);
+    // console.log(data);
     setCor("red");
     alert("Gostei, tem meu voto!");
   };
@@ -913,7 +913,7 @@ export default VpublicaDetalhes;
 // This gets called on every request
 export async function getServerSideProps({ params, query }: any) {
   // Fetch data from external API
-  console.log(query);
+  // console.log(query);
   const { id } = query;
 
   // GET: links para as redes sociais
