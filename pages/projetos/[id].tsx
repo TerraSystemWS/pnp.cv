@@ -25,6 +25,29 @@ const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
 const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
   // console.log("detalhes inscritos");
   // console.log(inscricao);
+  const InscritosValues: any = {
+    nome_completo: inscricao.data.attributes.nome_completo,
+    email: inscricao.data.attributes.email,
+    sede: inscricao.data.attributes.sede,
+    nif: inscricao.data?.attributes.NIF,
+    telefone: inscricao.data?.attributes.telefone,
+    nome_projeto: inscricao.data.attributes.nome_projeto,
+    categoria: inscricao.data.attributes.categoria,
+    con_criativo: inscricao.data.attributes.con_criativo,
+    coord_prod: inscricao.data.attributes.coord_prod,
+    dir_foto: inscricao.data.attributes.dir_foto,
+    dir_art: inscricao.data.attributes.dir_art,
+    realizador: inscricao.data.attributes.realizador,
+    editor: inscricao.data.attributes.editor,
+    autor_jingle: inscricao.data.attributes.autor_jingle,
+    designer: inscricao.data.attributes.designer,
+    outras_consideracoes: inscricao.data.attributes.outras_consideracoes,
+    data_producao: inscricao.data.attributes.data_producao,
+    data_divulgacao: inscricao.data.attributes.data_divulgacao,
+    data_apresentacao_publica:
+      inscricao.data.attributes.data_apresentacao_publica,
+  };
+
   // const [cor, setCor] = useState(false)
   const [cor, setCor] = useState("CurrentColor");
   const {
@@ -147,12 +170,9 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
                         >
                           Nome Completo (Empresa ou candidato individual)
                         </label>
-                        <input
-                          type="text"
-                          id="first-name"
-                          autoComplete="given-name"
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                        />
+                        <p className="font-bold text-amarelo-ouro">
+                          {InscritosValues.nome_completo}
+                        </p>
                       </div>
 
                       <div className="col-span-6 sm:col-span-3">
@@ -162,12 +182,9 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
                         >
                           NIF
                         </label>
-                        <input
-                          type="Number"
-                          id="last-name"
-                          autoComplete="000 000 000"
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                        />
+                        <p className="font-bold text-amarelo-ouro">
+                          {InscritosValues.nif}
+                        </p>
                       </div>
 
                       <div className="col-span-6 sm:col-span-4">
@@ -177,12 +194,9 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
                         >
                           Email
                         </label>
-                        <input
-                          type="text"
-                          id="email-address"
-                          autoComplete="email"
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                        />
+                        <p className="font-bold text-amarelo-ouro">
+                          {InscritosValues.email}
+                        </p>
                       </div>
 
                       <div className="col-span-6">
@@ -192,12 +206,9 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
                         >
                           Sede ou Local de Residência
                         </label>
-                        <input
-                          type="text"
-                          id="street-address"
-                          autoComplete="street-address"
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                        />
+                        <p className="font-bold text-amarelo-ouro">
+                          {InscritosValues.sede}
+                        </p>
                       </div>
                       <div className="col-span-6 sm:col-span-3 lg:col-span-2">
                         <label
@@ -206,17 +217,14 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
                         >
                           Telefone
                         </label>
-                        <input
-                          type="number"
-                          id="phone-code"
-                          autoComplete="postal-code"
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                        />
+                        <p className="font-bold text-amarelo-ouro">
+                          {InscritosValues.telefone}
+                        </p>
                       </div>
                     </div>
                   </div>
-                  <div className="bg-gray-50 px-4 py-3 text-right sm:px-6">
-                    {/* {watchShowAge && <input type="number" {...register("age", { min: 50 })} />} */}
+                  {/* <div className="bg-gray-50 px-4 py-3 text-right sm:px-6">
+                    
                     <button
                       type="submit"
                       className="inline-flex justify-center rounded-md border border-transparent bg-amarelo-ouro py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-amarelo-escuro focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
@@ -224,7 +232,7 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
                     >
                       Guardar
                     </button>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
@@ -262,20 +270,9 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
                         >
                           Categoria de Prémio a que concorre
                         </label>
-                        <select
-                          // multiple
-                          id="countries"
-                          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        >
-                          <option key={0} selected>
-                            Escolha uma Categoria
-                          </option>
-                          {/* {Categoria.map((value: any, index: number) => (
-                            <option key={index + 1} value={value.titulo}>
-                              {value.titulo}
-                            </option>
-                          ))} */}
-                        </select>
+                        <p className="font-bold text-amarelo-ouro">
+                          {InscritosValues.categoria}
+                        </p>
                       </div>
                     </div>
 
@@ -286,12 +283,9 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
                       >
                         Nome do Projeto
                       </label>
-                      <input
-                        type="text"
-                        id="proj_nome"
-                        autoComplete="nome projecto"
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                      />
+                      <p className="font-bold text-amarelo-ouro">
+                        {InscritosValues.nome_projeto}
+                      </p>
                     </div>
 
                     <div>
@@ -302,17 +296,13 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
                         Conceito Criativo
                       </label>
                       <div className="mt-1">
-                        <textarea
-                          id="about"
-                          rows={3}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                          placeholder="descreva seu projeto"
-                          defaultValue={""}
-                        />
+                        <p className="font-bold text-amarelo-ouro">
+                          {InscritosValues.con_criativo}
+                        </p>
                       </div>
-                      <p className="mt-2 text-sm text-gray-500">
+                      {/* <p className="mt-2 text-sm text-gray-500">
                         Breve descrição sobre seu projeto e outros observações
-                      </p>
+                      </p> */}
                     </div>
 
                     {/* <div>
@@ -380,14 +370,14 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
 											</div>
 										</div> */}
                   </div>
-                  <div className="bg-gray-50 px-4 py-3 text-right sm:px-6">
+                  {/* <div className="bg-gray-50 px-4 py-3 text-right sm:px-6">
                     <button
                       type="submit"
                       className="inline-flex justify-center rounded-md border border-transparent bg-amarelo-ouro py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-amarelo-escuro focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                     >
                       Guardar
                     </button>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
@@ -423,12 +413,9 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
                       >
                         Coordenador / Produtor
                       </label>
-                      <input
-                        type="text"
-                        id="coo_prod"
-                        autoComplete="Coodernador / Produtor"
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                      />
+                      <p className="font-bold text-amarelo-ouro">
+                        {InscritosValues.coord_prod}
+                      </p>
                     </div>
 
                     <div className="col-span-6 sm:col-span-4">
@@ -438,12 +425,9 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
                       >
                         Diretor de Fotografia
                       </label>
-                      <input
-                        type="text"
-                        id="d_foto"
-                        autoComplete="d_foto"
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                      />
+                      <p className="font-bold text-amarelo-ouro">
+                        {InscritosValues.dir_foto}
+                      </p>
                     </div>
 
                     <div className="col-span-6 sm:col-span-4">
@@ -453,12 +437,9 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
                       >
                         Diretor de Arte
                       </label>
-                      <input
-                        type="text"
-                        id="d_foto"
-                        autoComplete="d_foto"
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                      />
+                      <p className="font-bold text-amarelo-ouro">
+                        {InscritosValues.dir_art}
+                      </p>
                     </div>
 
                     <div className="col-span-6 sm:col-span-4">
@@ -468,12 +449,9 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
                       >
                         Realizador
                       </label>
-                      <input
-                        type="text"
-                        id="d_foto"
-                        autoComplete="d_foto"
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                      />
+                      <p className="font-bold text-amarelo-ouro">
+                        {InscritosValues.realizador}
+                      </p>
                     </div>
 
                     <div className="col-span-6 sm:col-span-4">
@@ -483,12 +461,9 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
                       >
                         Editor
                       </label>
-                      <input
-                        type="text"
-                        id="d_foto"
-                        autoComplete="d_foto"
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                      />
+                      <p className="font-bold text-amarelo-ouro">
+                        {InscritosValues.editor}
+                      </p>
                     </div>
 
                     <div className="col-span-6 sm:col-span-4">
@@ -498,12 +473,9 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
                       >
                         Autoria do Jingle
                       </label>
-                      <input
-                        type="text"
-                        id="d_foto"
-                        autoComplete="d_foto"
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                      />
+                      <p className="font-bold text-amarelo-ouro">
+                        {InscritosValues.autor_jingle}
+                      </p>
                     </div>
 
                     <div className="col-span-6 sm:col-span-4">
@@ -513,12 +485,9 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
                       >
                         Designer
                       </label>
-                      <input
-                        type="text"
-                        id="d_foto"
-                        autoComplete="d_foto"
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                      />
+                      <p className="font-bold text-amarelo-ouro">
+                        {InscritosValues.designer}
+                      </p>
                     </div>
 
                     <div>
@@ -529,13 +498,9 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
                         Outro (considerações adicionais)
                       </label>
                       <div className="mt-1">
-                        <textarea
-                          id="outros"
-                          rows={3}
-                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                          placeholder="descreva seu projeto"
-                          defaultValue={""}
-                        />
+                        <p className="font-bold text-amarelo-ouro">
+                          {InscritosValues.outras_consideracoes}
+                        </p>
                       </div>
                       {/* <p className="mt-2 text-sm text-gray-500">
 												algumas considerações adicionais
@@ -549,12 +514,9 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
                       >
                         Data da sua produção
                       </label>
-                      <input
-                        type="date"
-                        id="d_foto"
-                        autoComplete="d_foto"
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                      />
+                      <p className="font-bold text-amarelo-ouro">
+                        {InscritosValues.data_producao}
+                      </p>
                     </div>
 
                     <div className="col-span-6 sm:col-span-4">
@@ -564,12 +526,9 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
                       >
                         Data da divulgação
                       </label>
-                      <input
-                        type="date"
-                        id="d_foto"
-                        autoComplete="d_foto"
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                      />
+                      <p className="font-bold text-amarelo-ouro">
+                        {InscritosValues.data_divulgacao}
+                      </p>
                     </div>
 
                     <div className="col-span-6 sm:col-span-4">
@@ -580,22 +539,19 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
                         Data da sua apresentação pública (se trabalho
                         universitário)
                       </label>
-                      <input
-                        type="date"
-                        id="d_foto"
-                        autoComplete="d_foto"
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                      />
+                      <p className="font-bold text-amarelo-ouro">
+                        {InscritosValues.data_apresentacao_publica}
+                      </p>
                     </div>
                   </div>
-                  <div className="bg-gray-50 px-4 py-3 text-right sm:px-6">
+                  {/* <div className="bg-gray-50 px-4 py-3 text-right sm:px-6">
                     <button
                       type="submit"
                       className="inline-flex justify-center rounded-md border border-transparent bg-amarelo-ouro py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-amarelo-escuro focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                     >
                       Guardar
                     </button>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
@@ -1036,48 +992,3 @@ export async function getServerSideProps({ params, query }: any) {
     props: { social: rsocials, contato, navbar: dlink, inscricao: inscritos },
   };
 }
-
-/* <Table hoverable={true}>
-<Table.Head>
-  <Table.HeadCell>Documento</Table.HeadCell>
-  <Table.HeadCell>Link</Table.HeadCell>
-  <Table.HeadCell>
-    <span className="sr-only">Remover</span>
-  </Table.HeadCell>
-</Table.Head>
-<Table.Body className="divide-y">
-  {/* loop para o array */
-// {inscricao.data.attributes.fileLink &&
-//   inscricao.data.attributes.fileLink.map(
-//     (value: any, index: number) => (
-//       <Table.Row
-//         key={index}
-//         className="bg-white dark:border-gray-700 dark:bg-gray-800"
-//       >
-//         <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-//           {value.titulo}
-//         </Table.Cell>
-//         <Table.Cell>
-//           <a
-//             href={value.file_link}
-//             target="_blank"
-//             className="hover:text-blue-500 hover:underline"
-//             rel="noreferrer"
-//           >
-//             {value.file_link}
-//           </a>
-//         </Table.Cell>
-
-//         <Table.Cell>
-//           <span
-//             // onClick={deleteFile}
-//             className="cursor-pointer text-red-500 hover:underline dark:text-red-500"
-//           >
-//             <IoTrashOutline />
-//           </span>
-//         </Table.Cell>
-//       </Table.Row>
-//     )
-//   )}
-// </Table.Body>
-// </Table> */}
