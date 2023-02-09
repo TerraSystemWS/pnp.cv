@@ -7,14 +7,16 @@ import { Alert } from "flowbite-react";
 import { IoCall } from "react-icons/io5";
 import { HiInformationCircle } from "react-icons/hi";
 import Image from "next/image";
+import { useFetchUser } from "../../lib/authContext";
 
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
 
 const Vpublica = ({ social, contato, inscritos, navbar }: any) => {
+  const { user, loading } = useFetchUser();
   console.log(inscritos);
   return (
-    <Layout rsocial={social} contato={contato} navbar={navbar}>
+    <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
       <Head>
         <title>Votação Pública - Prémio Nacional De Publicidade</title>
       </Head>

@@ -4,11 +4,13 @@ import showdown from "showdown";
 import Link from "next/link";
 import Head from "next/head";
 const qs = require("qs");
+import { useFetchUser } from "../lib/authContext";
 
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
 
 const Regulamentos = ({ social, contato, edicao, navbar }: any) => {
+  const { user, loading } = useFetchUser();
   const createMarkup = (values: any) => {
     // const values =
     const converter = new showdown.Converter();
@@ -64,7 +66,7 @@ const Regulamentos = ({ social, contato, edicao, navbar }: any) => {
   // const a = createMarkup(Regulamentos[0].descricao);
 
   return (
-    <Layout rsocial={social} contato={contato} navbar={navbar}>
+    <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
       <Head>
         <title>Regulamento - Prémio Nacional De Publicidade</title>
       </Head>

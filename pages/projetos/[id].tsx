@@ -15,6 +15,7 @@ import "primereact/resources/themes/lara-light-indigo/theme.css"; //theme
 import "primereact/resources/primereact.min.css"; //core css
 import "primeicons/primeicons.css"; //icons
 // import { Confetti } from "/public/confetti.min.js";
+import { useFetchUser } from "../../lib/authContext";
 
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
@@ -88,8 +89,10 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
     { title: "Pontuacao Geral", nota: 0 },
   ];
 
+  const { user, loading } = useFetchUser();
+
   return (
-    <Layout rsocial={social} contato={contato} navbar={navbar}>
+    <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
       <Head>
         <title>Votação Pública - Prémio Nacional De Publicidade</title>
       </Head>

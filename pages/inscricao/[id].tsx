@@ -9,6 +9,7 @@ import { Table } from "flowbite-react";
 import { IoTrashOutline } from "react-icons/io5";
 import { useS3Upload } from "next-s3-upload";
 import { useState } from "react";
+import { useFetchUser } from "../../lib/authContext";
 
 //import Fileupload from "../../components/Fileupload";
 //import FileList from "../../components/FileList";
@@ -53,6 +54,7 @@ type Inputs = {
 // }
 
 const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
+  const { user, loading } = useFetchUser();
   const router = useRouter();
   const { id, cd, cid } = router.query;
   // console.log(router);
@@ -405,7 +407,7 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
   };
 
   return (
-    <Layout rsocial={social} contato={contato} navbar={navbar}>
+    <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
       <Head>
         <title>Inscrição - Prémio Nacional De Publicidade</title>
       </Head>

@@ -13,6 +13,7 @@ import Categorias from "../components/Categorias";
 // import { IoCall } from "react-icons/io5";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useFetchUser } from "../lib/authContext";
 const qs = require("qs");
 
 // link para a url do api
@@ -175,10 +176,11 @@ export default function Home({
 
   // console.log("partnerList");
   // console.log(partnerList);
+  const { user, loading } = useFetchUser();
 
   // return;
   return (
-    <Layout rsocial={social} contato={contato} navbar={navbar}>
+    <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
       {/* <pre>{JSON.stringify(banners, null, 2)}</pre> */}
       {/* <pre>{JSON.stringify(bannerData, null, 2)}</pre> */}
       {/* <pre>{JSON.stringify(edicao, null, 2)}</pre> */}

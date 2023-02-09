@@ -6,6 +6,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { useRouter } from "next/router";
 import { v4 as uuidv4 } from "uuid";
 import Swal from "sweetalert2";
+import { useFetchUser } from "../../lib/authContext";
 
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
@@ -17,6 +18,7 @@ type Inputs = {
 };
 
 const Inscreve = ({ social, contato, edicao, navbar }: any) => {
+  const { user, loading } = useFetchUser();
   const router = useRouter();
   // const [vnum, setVnum] = useState();
   //   console.log(router);
@@ -211,7 +213,7 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
     });
   };
   return (
-    <Layout rsocial={social} contato={contato} navbar={navbar}>
+    <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
       <Head>
         <title>Inscrição - Prémio Nacional De Publicidade</title>
       </Head>
