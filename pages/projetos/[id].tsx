@@ -18,6 +18,7 @@ import { Accordion, AccordionTab } from "primereact/accordion";
 import React from "react";
 // import { Confetti } from "/public/confetti.min.js";
 import { useFetchUser } from "../../lib/authContext";
+import { Image } from "primereact/image";
 
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
@@ -115,6 +116,19 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
   ];
 
   const { user, loading } = useFetchUser();
+
+  const excluirPrivados = (title: String): boolean => {
+    let title_clean: boolean = false;
+    const substr = ["nif", "pagamento", "comprovativo pagamento"];
+    for (let index = 0; index < substr.length; index++) {
+      title_clean = title.toLowerCase().includes(substr[index].toLowerCase());
+      if (title_clean) {
+        break;
+      }
+    }
+
+    return title_clean;
+  };
 
   return (
     <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
@@ -588,22 +602,121 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
 
                   {inscricao.data.attributes.fileLink &&
                     inscricao.data.attributes.fileLink.map(
-                      (value: any, index: number) => (
-                        <AccordionTab key={index} header={value.titulo}>
-                          <p className="m-0">
-                            <a
-                              href={value.file_link}
-                              target="_blank"
-                              className="hover:text-blue-500 hover:underline"
-                              rel="noreferrer"
-                            >
-                              {value.file_link.substring(0, 50) +
-                                "..." +
-                                "[Abrir]"}
-                            </a>
-                          </p>
-                        </AccordionTab>
-                      )
+                      (value: any, index: number) => {
+                        // pergar so as ultimas 4 letras do link ex(.pdf)
+                        const string_bruto: string = value.file_link.substr(
+                          value.file_link.length - 4
+                        );
+
+                        let op: String;
+                        // passar pelo filtro para excluir ficeiros privados
+                        const isPrivate = excluirPrivados(value.titulo);
+                        if (isPrivate) {
+                          op = "...";
+                        } else {
+                          op = string_bruto;
+                        }
+
+                        switch (op) {
+                          case ".pdf":
+                            return (
+                              <AccordionTab key={index} header={value.titulo}>
+                                <p className="m-0">
+                                  <a
+                                    href={value.file_link}
+                                    target="_blank"
+                                    className="hover:text-blue-500 hover:underline"
+                                    rel="noreferrer"
+                                  >
+                                    [Abrir Link]
+                                  </a>
+                                </p>
+                              </AccordionTab>
+                            );
+
+                            break;
+
+                          case ".mp3":
+                            return (
+                              <AccordionTab key={index} header={value.titulo}>
+                                <p className="m-0">
+                                  <a
+                                    href={value.file_link}
+                                    target="_blank"
+                                    className="hover:text-blue-500 hover:underline"
+                                    rel="noreferrer"
+                                  >
+                                    [Abrir Link]
+                                  </a>
+                                </p>
+                                <audio controls>
+                                  <source
+                                    src={value.file_link}
+                                    type="audio/mpeg"
+                                  />
+                                  Your browser does not support the audio
+                                  element.
+                                </audio>
+                              </AccordionTab>
+                            );
+
+                            break;
+
+                          case ".mp4":
+                            return (
+                              <AccordionTab key={index} header={value.titulo}>
+                                <p className="m-0">
+                                  <a
+                                    href={value.file_link}
+                                    target="_blank"
+                                    className="hover:text-blue-500 hover:underline"
+                                    rel="noreferrer"
+                                  >
+                                    [Abrir Link]
+                                  </a>
+                                </p>
+                                <video width="500" height="300" controls>
+                                  <source
+                                    src={value.file_link}
+                                    type="video/mp4"
+                                  />
+                                  Your browser does not support the video tag.
+                                </video>
+                              </AccordionTab>
+                            );
+
+                            break;
+
+                          case ".png" || ".jpg" || ".jpeg":
+                            return (
+                              <AccordionTab key={index} header={value.titulo}>
+                                <p className="m-0">
+                                  <a
+                                    href={value.file_link}
+                                    target="_blank"
+                                    className="hover:text-blue-500 hover:underline"
+                                    rel="noreferrer"
+                                  >
+                                    [Abrir Link]
+                                  </a>
+                                </p>
+                                <div className="card flex justify-content-center">
+                                  <Image
+                                    src={value.file_link}
+                                    alt={value.titulo}
+                                    width="500"
+                                    preview
+                                  />
+                                </div>
+                              </AccordionTab>
+                            );
+
+                            break;
+
+                          default:
+                            break;
+                        }
+                      }
                     )}
                 </Accordion>
               </div>
