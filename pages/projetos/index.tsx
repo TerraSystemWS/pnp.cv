@@ -62,7 +62,7 @@ const Vpublica = ({ social, contato, inscritos, navbar }: any) => {
                 //     </p>
                 // </Card>
                 <div key={index} className="flex font-sans shadow-2xl">
-                  <div className="flex-none w-48 relative">
+                  {/* <div className="flex-none w-48 relative">
                     <Link href={`/projetos/${value.id}`}>
                       <Image
                         src="https://res.cloudinary.com/dkz8fcpla/image/upload/v1674656587/pnp-icon.png"
@@ -73,7 +73,7 @@ const Vpublica = ({ social, contato, inscritos, navbar }: any) => {
                         height={500}
                       />
                     </Link>
-                  </div>
+                  </div> */}
                   <form className="flex-auto p-6">
                     <div className="flex flex-wrap">
                       <Link href={`/projetos/${value.id}`}>
@@ -89,21 +89,10 @@ const Vpublica = ({ social, contato, inscritos, navbar }: any) => {
                       </div>
                     </div>
                     <div className="flex items-baseline mt-4 mb-6 pb-6 border-b border-slate-200">
-                      <p>{value.attributes.con_criativo}</p>
+                      <p>{value.attributes?.con_criativo?.substring(0, 536)}</p>
                     </div>
                     <div className="flex space-x-4 mb-6 text-sm font-medium">
-                      <div className="flex-auto flex space-x-4">
-                        {/* <Link
-                          href={`/projetos/${value.id}`}
-                          className="bg-amarelo-ouro text-branco hover:text-branco font-[Poppins] py-2 px-6 rounded md:ml-8 hover:bg-castanho-claro 
-                                            duration-500"
-                        >
-                          Detalhes
-                        </Link> */}
-                        {/* <button className="h-10 px-6 font-semibold rounded-md border border-slate-200 text-slate-900" type="button">
-                            Add to bag
-                            </button> */}
-                      </div>
+                      <div className="flex-auto flex space-x-4"></div>
                       <Link
                         href={`/projetos/${value.id}`}
                         className="bg-amarelo-ouro text-branco hover:text-branco font-[Poppins] py-2 px-6 rounded md:ml-8 hover:bg-castanho-claro 
@@ -112,9 +101,6 @@ const Vpublica = ({ social, contato, inscritos, navbar }: any) => {
                         Detalhes
                       </Link>
                     </div>
-                    {/* <p className="text-sm text-slate-700">
-                      Free shipping on all continental US orders.
-                    </p> */}
                   </form>
                 </div>
               ))}
