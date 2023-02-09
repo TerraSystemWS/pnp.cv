@@ -2,6 +2,7 @@ import Layout from "../../components/Layout";
 import { fetcher } from "../../lib/api";
 import showdown from "showdown";
 import Head from "next/head";
+import { useFetchUser } from "../../lib/authContext";
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
 
@@ -15,8 +16,9 @@ const SobreusTerms = ({ social, contato, navbar, sobreus }: any) => {
 
   const sobreUs: any = createMarkup(sobreus.data.attributes.termo_uso);
 
+  const { user, loading } = useFetchUser();
   return (
-    <Layout rsocial={social} contato={contato} navbar={navbar}>
+    <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
       <Head>
         <title>Parceiros - Prémio Nacional De Publicidade</title>
       </Head>

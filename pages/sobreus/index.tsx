@@ -2,10 +2,12 @@ import Layout from "../../components/Layout";
 import { fetcher } from "../../lib/api";
 import showdown from "showdown";
 import Head from "next/head";
+import { useFetchUser } from "../../lib/authContext";
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
 
 const Sobreus = ({ social, contato, navbar, sobreus }: any) => {
+  const { user, loading } = useFetchUser();
   const createMarkup = (values: any) => {
     // const values =
     const converter = new showdown.Converter();
@@ -16,7 +18,7 @@ const Sobreus = ({ social, contato, navbar, sobreus }: any) => {
   const sobreUs: any = createMarkup(sobreus.data.attributes.sobrepnp);
 
   return (
-    <Layout rsocial={social} contato={contato} navbar={navbar}>
+    <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
       <Head>
         <title>Parceiros - Prémio Nacional De Publicidade</title>
       </Head>
