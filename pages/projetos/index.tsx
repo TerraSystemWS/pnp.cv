@@ -18,22 +18,39 @@ const Vpublica = ({ social, contato, inscritos, navbar }: any) => {
   return (
     <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
       <Head>
-        <title>Votação Pública - Prémio Nacional De Publicidade</title>
+        <title>Trabalhos Concorentes - Prémio Nacional De Publicidade</title>
       </Head>
       <section className="bg-white dark:bg-gray-900">
         <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
-          <div className="mx-auto max-w-screen-md text-center lg:mb-16 mb-8">
-            <h2 className="mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold text-amarelo-ouro dark:text-white">
-              Votação Pública
-            </h2>
-            <p className="font-light text-justify text-gray-500 sm:text-xl dark:text-gray-400">
-              O Prémio Público de Publicidade é uma das categorias do Prémio
-              Nacional de Publicidade (PNP) em que a votação é feita somente
-              pelo público, através da Internet. Trata-se de um prémio da
-              responsabilidade do PNP, com regulamento próprio, sem avaliação do
-              júri, baseado apenas no critério de popularidade.
-            </p>
-          </div>
+          {!loading &&
+            (user ? (
+              <div className="mx-auto max-w-screen-md text-center lg:mb-16 mb-8">
+                <h2 className="mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold text-amarelo-ouro dark:text-white">
+                  Avaliaçao Dos Jurados
+                </h2>
+                <p className="font-light text-justify text-gray-500 sm:text-xl dark:text-gray-400">
+                  O Prémio Público de Publicidade é uma das categorias do Prémio
+                  Nacional de Publicidade (PNP) em que a votação é feita somente
+                  pelo público, através da Internet. Trata-se de um prémio da
+                  responsabilidade do PNP, com regulamento próprio, sem
+                  avaliação do júri, baseado apenas no critério de popularidade.
+                </p>
+              </div>
+            ) : (
+              <div className="mx-auto max-w-screen-md text-center lg:mb-16 mb-8">
+                <h2 className="mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold text-amarelo-ouro dark:text-white">
+                  Votação Pública
+                </h2>
+                <p className="font-light text-justify text-gray-500 sm:text-xl dark:text-gray-400">
+                  O Prémio Público de Publicidade é uma das categorias do Prémio
+                  Nacional de Publicidade (PNP) em que a votação é feita somente
+                  pelo público, através da Internet. Trata-se de um prémio da
+                  responsabilidade do PNP, com regulamento próprio, sem
+                  avaliação do júri, baseado apenas no critério de popularidade.
+                </p>
+              </div>
+            ))}
+
           <div className="dados das inscriçoes">
             <div className="mx-auto max-w-screen-md text-center lg:mb-16 mb-8">
               <h2 className="mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold text-amarelo-ouro dark:text-white">

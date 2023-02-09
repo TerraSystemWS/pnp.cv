@@ -94,11 +94,14 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
   return (
     <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
       <Head>
-        <title>Votação Pública - Prémio Nacional De Publicidade</title>
+        <title>
+          {inscricao.data?.attributes?.nome_projeto} - Prémio Nacional De
+          Publicidade
+        </title>
       </Head>
 
       <div className="">
-        <div className="bg-gray-50">
+        <div className="bg-gray-200">
           <div className="mx-auto max-w-7xl py-12 px-4 sm:px-6">
             <h2 className="text-2xl text-center mb-8 font-bold tracking-tight text-gray-900 sm:text-4xl">
               <span className="block text-amarelo-ouro">
@@ -108,11 +111,11 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
 								Inscrição aberta apartir do dia 1 a 31 de Janero 2023
 							</span> */}
             </h2>
-            <div className="font-light text-gray-500 lg:mb-16 sm:text-xl dark:text-gray-400">
+            {/* <div className="font-light text-gray-500 lg:mb-16 sm:text-xl dark:text-gray-400">
               Fotografias, videos, regulamento, os vencedores dos Prémios
               Palmeira e respetivos discursos de vitória… Aqui encontra tudo
               sobre as anteriores edições do PNP.
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
@@ -683,28 +686,35 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
           </div>
         </div>
 
-        {/* formulario de upload de ficheiros */}
-        <div className="mt-10 sm:mt-0">
-          <div className="md:grid md:grid-cols-3 md:gap-6">
-            <div className="md:col-span-1">
-              <div className="px-4 sm:px-0">
-                <h3 className="text-lg font-medium leading-6 text-gray-900">
-                  Avaliaçao dos Jurados
-                </h3>
-                <p className="mt-1 text-sm text-gray-600">
-                  <p className="mb-2">
-                    <span className="text-red-500 font-bold text-lg">*</span>{" "}
-                    Notas da Avaliaçao por parte de cada jurado
-                  </p>
-                  <div>
-                    <button
-                      type="button"
-                      // onClick={like}
-                      onClick={() => show("top")}
-                      className="inline-block px-6 py-2 border-2 border-yellow-500 text-yellow-500 font-medium text-xs leading-tight uppercase rounded hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0 transition duration-150 ease-in-out"
-                    >
-                      Avaliar
-                      {/* <svg
+        {!loading &&
+          (user ? (
+            <>
+              <div className="mt-10 sm:mt-0">
+                <div
+                  id="AvaliaçaoJuri"
+                  className="md:grid md:grid-cols-3 md:gap-6"
+                >
+                  <div className="md:col-span-1">
+                    <div className="px-4 sm:px-0">
+                      <h3 className="text-lg font-medium leading-6 text-gray-900">
+                        Avaliaçao dos Jurados
+                      </h3>
+                      <p className="mt-1 text-sm text-gray-600">
+                        <p className="mb-2">
+                          <span className="text-red-500 font-bold text-lg">
+                            *
+                          </span>{" "}
+                          Notas da Avaliaçao por parte de cada jurado
+                        </p>
+                        <div>
+                          <button
+                            type="button"
+                            // onClick={like}
+                            onClick={() => show("top")}
+                            className="inline-block px-6 py-2 border-2 border-yellow-500 text-yellow-500 font-medium text-xs leading-tight uppercase rounded hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0 transition duration-150 ease-in-out"
+                          >
+                            Avaliar
+                            {/* <svg
                         width="20"
                         height="20"
                         fill={cor}
@@ -717,192 +727,292 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
                           d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
                         />
                       </svg> */}
-                    </button>
-                    <Dialog
-                      header="Avaliar Trabalho"
-                      visible={visible}
-                      // @ts-ignore
-                      position={position}
-                      style={{ width: "30vw" }}
-                      onHide={() => setVisible(false)}
-                      footer={footerContent}
-                      draggable={false}
-                      resizable={false}
-                    >
-                      <p className="m-0">
-                        <form
-                          className=""
-                          //  onSubmit={handleSubmit(onSubmit)}
-                        >
-                          {avaliacao &&
-                            avaliacao.map((value: any, index: number) => (
-                              <div key={index}>
-                                <label
-                                  htmlFor="email"
-                                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                                >
-                                  {value.title}
-                                </label>
-                                <input
-                                  type="email"
-                                  id="email"
-                                  className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                  placeholder="De 0 a 10"
-                                  // {...register("email", { required: true })}
-                                />
-                                {/* {errors.email && (
+                          </button>
+                          <Dialog
+                            header="Avaliar Trabalho"
+                            visible={visible}
+                            // @ts-ignore
+                            position={position}
+                            style={{ width: "30vw" }}
+                            onHide={() => setVisible(false)}
+                            footer={footerContent}
+                            draggable={false}
+                            resizable={false}
+                          >
+                            <p className="m-0">
+                              <form
+                                className=""
+                                //  onSubmit={handleSubmit(onSubmit)}
+                              >
+                                {avaliacao &&
+                                  avaliacao.map((value: any, index: number) => (
+                                    <div key={index}>
+                                      <label
+                                        htmlFor="email"
+                                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                      >
+                                        {value.title}
+                                      </label>
+                                      <input
+                                        type="email"
+                                        id="email"
+                                        className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        placeholder="De 0 a 10"
+                                        // {...register("email", { required: true })}
+                                      />
+                                      {/* {errors.email && (
                       <span className="text-red-500">
                         O email é obrigatorio!
                       </span>
                     )} */}
-                              </div>
-                            ))}
+                                    </div>
+                                  ))}
 
-                          <button
-                            type="submit"
-                            className="mt-5 w-full text-white bg-amarelo-ouro hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                          >
-                            Confirmar
-                          </button>
-                        </form>
+                                <button
+                                  type="submit"
+                                  className="mt-5 w-full text-white bg-amarelo-ouro hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                                >
+                                  Confirmar
+                                </button>
+                              </form>
+                            </p>
+                          </Dialog>
+                        </div>
                       </p>
-                    </Dialog>
+                    </div>
                   </div>
-                </p>
-              </div>
-            </div>
-            <div className="mt-5 md:col-span-2 md:mt-0">
-              <div className="mb-5 font-bold text-gray-500">
-                <h1>Categoria: {categoria_pnp}</h1>
-              </div>
-              <div>
-                <Table hoverable={true}>
-                  <Table.Head>
-                    <Table.HeadCell>***</Table.HeadCell>
-                    <Table.HeadCell>Avaliaçao</Table.HeadCell>
-                    {/* <Table.HeadCell>
+                  <div className="mt-5 md:col-span-2 md:mt-0">
+                    <div className="mb-5 font-bold text-gray-500">
+                      <h1>Categoria: {categoria_pnp}</h1>
+                    </div>
+                    <div>
+                      <Table hoverable={true}>
+                        <Table.Head>
+                          <Table.HeadCell>Areas</Table.HeadCell>
+                          <Table.HeadCell>Avaliaçao</Table.HeadCell>
+                          {/* <Table.HeadCell>
                       <span className="sr-only">Remover</span>
                     </Table.HeadCell> */}
-                  </Table.Head>
-                  <Table.Body className="divide-y">
-                    {/* loop para o array */}
-                    {avaliacao &&
-                      avaliacao.map((value: any, index: number) => (
-                        <Table.Row
-                          key={index}
-                          className="bg-white dark:border-gray-700 dark:bg-gray-800"
+                        </Table.Head>
+                        <Table.Body className="divide-y">
+                          {/* loop para o array */}
+                          {avaliacao &&
+                            avaliacao.map((value: any, index: number) => (
+                              <Table.Row
+                                key={index}
+                                className="bg-white dark:border-gray-700 dark:bg-gray-800"
+                              >
+                                <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                                  {value.title}
+                                </Table.Cell>
+                                <Table.Cell>
+                                  <a
+                                    // href={value.file_link}
+                                    target="_blank"
+                                    className="hover:text-blue-500 hover:underline"
+                                    rel="noreferrer"
+                                  >
+                                    {value.nota}
+                                  </a>
+                                </Table.Cell>
+                              </Table.Row>
+                            ))}
+                        </Table.Body>
+                      </Table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="hidden sm:block" aria-hidden="true">
+                <div className="py-5">
+                  <div className="border-t border-gray-200" />
+                </div>
+              </div>
+
+              <div id="votacaoPublica" className="mt-10 sm:mt-0">
+                <div className="md:grid md:grid-cols-3 md:gap-6">
+                  <div className="md:col-span-1">
+                    <div className="px-4 sm:px-0">
+                      <h3 className="text-lg font-medium leading-6 text-gray-900">
+                        Votaçao Publica
+                      </h3>
+                      <p className="mt-1 text-sm text-gray-600">
+                        <p className="mb-2">
+                          <span className="text-red-500 font-bold text-lg">
+                            *
+                          </span>{" "}
+                          Votaçao publica por parte do publico
+                        </p>
+                        <p className="mb-2">
+                          <span className="text-red-500 font-bold text-lg">
+                            *
+                          </span>{" "}
+                          Apos fornecer o email use o botao de &quot;votar&quot;
+                          para enviar o seu voto
+                        </p>
+                      </p>
+                    </div>
+                  </div>
+                  <div className="mt-5 md:col-span-2 md:mt-0">
+                    <form className="" onSubmit={handleSubmit(onVotar)}>
+                      <div>
+                        <label
+                          htmlFor="email"
+                          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                         >
-                          <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                            {value.title}
-                          </Table.Cell>
-                          <Table.Cell>
-                            <a
-                              // href={value.file_link}
-                              target="_blank"
-                              className="hover:text-blue-500 hover:underline"
-                              rel="noreferrer"
-                            >
-                              {value.nota}
-                            </a>
-                          </Table.Cell>
-                        </Table.Row>
-                      ))}
-                  </Table.Body>
-                </Table>
+                          Nome Completo
+                        </label>
+                        <input
+                          type="text"
+                          id="nome"
+                          className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                          placeholder="Sr. premio nacional de publicidade"
+                          {...register("nome", { required: true })}
+                        />
+                        {errors.email && (
+                          <span className="text-red-500">
+                            O email é obrigatorio!
+                          </span>
+                        )}
+                      </div>
+                      <div>
+                        <label
+                          htmlFor="email"
+                          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                        >
+                          Email
+                        </label>
+                        <input
+                          type="email"
+                          id="email"
+                          className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                          placeholder="exemplo@pnp.cv"
+                          {...register("email", { required: true })}
+                        />
+                        {errors.email && (
+                          <span className="text-red-500">
+                            O email é obrigatorio!
+                          </span>
+                        )}
+                      </div>
+
+                      <button
+                        type="submit"
+                        className="mt-5 w-full text-white bg-amarelo-ouro hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                      >
+                        Votar
+                        <svg
+                          width="20"
+                          height="20"
+                          fill={cor}
+                          aria-hidden="true"
+                          className="ml-2"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            clipRule="evenodd"
+                            d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                          />
+                        </svg>
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </>
+          ) : (
+            <div id="votacaoPublica" className="mt-10 sm:mt-0">
+              <div className="md:grid md:grid-cols-3 md:gap-6">
+                <div className="md:col-span-1">
+                  <div className="px-4 sm:px-0">
+                    <h3 className="text-lg font-medium leading-6 text-gray-900">
+                      Votaçao Publica
+                    </h3>
+                    <p className="mt-1 text-sm text-gray-600">
+                      <p className="mb-2">
+                        <span className="text-red-500 font-bold text-lg">
+                          *
+                        </span>{" "}
+                        Votaçao publica por parte do publico
+                      </p>
+                      <p className="mb-2">
+                        <span className="text-red-500 font-bold text-lg">
+                          *
+                        </span>{" "}
+                        Apos fornecer o email use o botao de &quot;votar&quot;
+                        para enviar o seu voto
+                      </p>
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-5 md:col-span-2 md:mt-0">
+                  <form className="" onSubmit={handleSubmit(onVotar)}>
+                    <div>
+                      <label
+                        htmlFor="email"
+                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      >
+                        Nome Completo
+                      </label>
+                      <input
+                        type="text"
+                        id="nome"
+                        className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="Sr. premio nacional de publicidade"
+                        {...register("nome", { required: true })}
+                      />
+                      {errors.email && (
+                        <span className="text-red-500">
+                          O email é obrigatorio!
+                        </span>
+                      )}
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="email"
+                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      >
+                        Email
+                      </label>
+                      <input
+                        type="email"
+                        id="email"
+                        className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="exemplo@pnp.cv"
+                        {...register("email", { required: true })}
+                      />
+                      {errors.email && (
+                        <span className="text-red-500">
+                          O email é obrigatorio!
+                        </span>
+                      )}
+                    </div>
+
+                    <button
+                      type="submit"
+                      className="mt-5 w-full text-white bg-amarelo-ouro hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                    >
+                      Votar
+                      <svg
+                        width="20"
+                        height="20"
+                        fill={cor}
+                        aria-hidden="true"
+                        className="ml-2"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          clipRule="evenodd"
+                          d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                        />
+                      </svg>
+                    </button>
+                  </form>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-
-        <div className="hidden sm:block" aria-hidden="true">
-          <div className="py-5">
-            <div className="border-t border-gray-200" />
-          </div>
-        </div>
-
-        {/* votacao publica */}
-        {/* <div className="mt-10 sm:mt-0">
-          <div className="md:grid md:grid-cols-3 md:gap-6">
-            <div className="md:col-span-1">
-              <div className="px-4 sm:px-0">
-                <h3 className="text-lg font-medium leading-6 text-gray-900">
-                  Votaçao Publica
-                </h3>
-                <p className="mt-1 text-sm text-gray-600">
-                  <p className="mb-2">
-                    <span className="text-red-500 font-bold text-lg">*</span>{" "}
-                    Votaçao publica por parte do publico
-                  </p>
-                  <p className="mb-2">
-                    <span className="text-red-500 font-bold text-lg">*</span>{" "}
-                    Apos fornecer o email use o botao de &quot;votar&quot; para
-                    enviar o seu voto
-                  </p>
-                </p>
-              </div>
-            </div>
-            <div className="mt-5 md:col-span-2 md:mt-0">
-              <form className="" onSubmit={handleSubmit(onVotar)}>
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    Nome Completo
-                  </label>
-                  <input
-                    type="text"
-                    id="nome"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder="Sr. premio nacional de publicidade"
-                    {...register("nome", { required: true })}
-                  />
-                  {errors.email && (
-                    <span className="text-red-500">O email é obrigatorio!</span>
-                  )}
-                </div>
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder="exemplo@pnp.cv"
-                    {...register("email", { required: true })}
-                  />
-                  {errors.email && (
-                    <span className="text-red-500">O email é obrigatorio!</span>
-                  )}
-                </div>
-
-                <button
-                  type="submit"
-                  className="mt-5 w-full text-white bg-amarelo-ouro hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                >
-                  Votar
-                  <svg
-                    width="20"
-                    height="20"
-                    fill={cor}
-                    aria-hidden="true"
-                    className="ml-2"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      clipRule="evenodd"
-                      d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
-                    />
-                  </svg>
-                </button>
-              </form>
-            </div>
-          </div>
-        </div> */}
+          ))}
       </div>
     </Layout>
   );
