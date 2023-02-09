@@ -14,6 +14,8 @@ import { Button } from "primereact/button";
 import "primereact/resources/themes/lara-light-indigo/theme.css"; //theme
 import "primereact/resources/primereact.min.css"; //core css
 import "primeicons/primeicons.css"; //icons
+import { Accordion, AccordionTab } from "primereact/accordion";
+import React from "react";
 // import { Confetti } from "/public/confetti.min.js";
 import { useFetchUser } from "../../lib/authContext";
 
@@ -625,50 +627,29 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
             </div>
             <div className="mt-5 md:col-span-2 md:mt-0">
               <div>
-                <Table hoverable={true}>
-                  <Table.Head>
-                    <Table.HeadCell>Documento</Table.HeadCell>
-                    <Table.HeadCell>Link</Table.HeadCell>
-                    <Table.HeadCell>
-                      <span className="sr-only">Remover</span>
-                    </Table.HeadCell>
-                  </Table.Head>
-                  <Table.Body className="divide-y">
-                    {/* loop para o array */}
-                    {inscricao.data.attributes.fileLink &&
-                      inscricao.data.attributes.fileLink.map(
-                        (value: any, index: number) => (
-                          <Table.Row
-                            key={index}
-                            className="bg-white dark:border-gray-700 dark:bg-gray-800"
-                          >
-                            <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                              {value.titulo}
-                            </Table.Cell>
-                            <Table.Cell>
-                              <a
-                                href={value.file_link}
-                                target="_blank"
-                                className="hover:text-blue-500 hover:underline"
-                                rel="noreferrer"
-                              >
-                                {value.file_link}
-                              </a>
-                            </Table.Cell>
+                <Accordion activeIndex={0}>
+                  {/* loop para o array */}
 
-                            <Table.Cell>
-                              <span
-                                // onClick={deleteFile}
-                                className="cursor-pointer text-red-500 hover:underline dark:text-red-500"
-                              >
-                                {/* <IoTrashOutline /> */}
-                              </span>
-                            </Table.Cell>
-                          </Table.Row>
-                        )
-                      )}
-                  </Table.Body>
-                </Table>
+                  {inscricao.data.attributes.fileLink &&
+                    inscricao.data.attributes.fileLink.map(
+                      (value: any, index: number) => (
+                        <AccordionTab key={index} header={value.titulo}>
+                          <p className="m-0">
+                            <a
+                              href={value.file_link}
+                              target="_blank"
+                              className="hover:text-blue-500 hover:underline"
+                              rel="noreferrer"
+                            >
+                              {value.file_link.substring(0, 50) +
+                                "..." +
+                                "[Abrir]"}
+                            </a>
+                          </p>
+                        </AccordionTab>
+                      )
+                    )}
+                </Accordion>
               </div>
             </div>
           </div>
