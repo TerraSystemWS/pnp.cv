@@ -123,6 +123,7 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
           let code: any;
           let id: any;
           let uurl = uuidv4();
+          let Status: number = 0;
 
           try {
             const res: any = await fetch(`${api_link}/inscricoes`, {
@@ -141,58 +142,74 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
 
             const data = await res.json();
 
+            // console.log("================ data =================");
+            // console.log(data);
+            Status = data.error.status;
+
             code = ncode + data.data.id; // id da nova inscricao
             id = data.data.id;
           } catch (err) {
             // console.log("erro:" + err);
           }
 
+          // console.log("====== status ======");
+          // console.log(Status);
+
           let timerInterval: any;
-
-          Swal.fire({
-            title: "Criando sua inscrição",
-            html: "criando id de incrição #pnp-i<b></b>...",
-            timer: 2000,
-            timerProgressBar: true,
-            didOpen: () => {
-              Swal.showLoading(Swal.getDenyButton()!);
-              // @ts-ignore
-              const b = Swal.getHtmlContainer().querySelector("b");
-              timerInterval = setInterval(() => {
+          if (Status == 200) {
+            Swal.fire({
+              title: "Criando sua inscrição",
+              html: "criando id de incrição #pnp-i<b></b>...",
+              timer: 2000,
+              timerProgressBar: true,
+              didOpen: () => {
+                Swal.showLoading(Swal.getDenyButton()!);
                 // @ts-ignore
-                b.textContent = Swal.getTimerLeft();
-              }, 100);
-            },
-            willClose: () => {
-              clearInterval(timerInterval);
-            },
-          });
+                const b = Swal.getHtmlContainer().querySelector("b");
+                timerInterval = setInterval(() => {
+                  // @ts-ignore
+                  b.textContent = Swal.getTimerLeft();
+                }, 100);
+              },
+              willClose: () => {
+                clearInterval(timerInterval);
+              },
+            });
 
-          //await setTimeout(5000);
-          // calculation of no. of days between two date
+            //await setTimeout(5000);
+            // calculation of no. of days between two date
 
-          // To set two dates to two variables
-          var data_inicio = new Date();
-          var data_fim = new Date("01/31/2023");
+            // To set two dates to two variables
+            var data_inicio = new Date();
+            var data_fim = new Date("01/31/2023");
 
-          // To calculate the time difference of two dates
-          var Difference_In_Time = data_fim.getTime() - data_inicio.getTime();
+            // To calculate the time difference of two dates
+            var Difference_In_Time = data_fim.getTime() - data_inicio.getTime();
 
-          // To calculate the no. of days between two dates
-          var Difference_In_Days = Math.round(
-            Difference_In_Time / (1000 * 3600 * 24)
-          );
-
-          setTimeout(() => {
-            Swal.fire(
-              "Incrito",
-              `A sua incrição foi efetuada com sucesso, tem ${Difference_In_Days} dias para finalizar o processo`,
-              "success"
+            // To calculate the no. of days between two dates
+            var Difference_In_Days = Math.round(
+              Difference_In_Time / (1000 * 3600 * 24)
             );
-          }, 2500);
 
-          if (code) {
-            router.push(`/inscricao/${uurl}?cd=${code}&cid=${id}`);
+            setTimeout(() => {
+              Swal.fire(
+                "Incrito",
+                `A sua incrição foi efetuada com sucesso, tem ${Difference_In_Days} dias para finalizar o processo`,
+                "success"
+              );
+            }, 2500);
+
+            if (code) {
+              router.push(`/inscricao/${uurl}?cd=${code}&cid=${id}`);
+            }
+          } else {
+            setTimeout(() => {
+              Swal.fire(
+                "ERRO",
+                `O tempo para a candidatura terminou`,
+                "warning"
+              );
+            }, 2500);
           }
         }
       });

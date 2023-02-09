@@ -40,8 +40,8 @@ const Nav = (props: any) => {
 
   const { user, loading } = useUser();
 
-  console.log("===================== user ========================");
-  console.log(user);
+  // console.log("===================== user ========================");
+  // console.log(user);
 
   const {
     register,
@@ -75,7 +75,7 @@ const Nav = (props: any) => {
     // console.log(responseData);
   };
 
-  console.log(watch("email")); // watch input value by passing the name of it
+  // console.log(watch("email")); // watch input value by passing the name of it
 
   let [open, setOpen] = useState(false);
   // console.log("dadoadosadaijdsjklsad");
