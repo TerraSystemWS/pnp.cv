@@ -5,6 +5,8 @@ import { IoGridOutline, IoClose } from "react-icons/io5";
 import Link from "next/link";
 // import Link from 'next/link';
 // import { useState } from 'react';
+
+// libs para autenticaçao
 import { fetcher } from "../../lib/api";
 import { setToken, unsetToken } from "../../lib/auth";
 import { useUser } from "../../lib/authContext";
@@ -35,15 +37,39 @@ const Nav = (props: any) => {
   // 	{ name: "BLOG", link: "/posts" }, // posts
   // 	{ name: "CONTATOS", link: "/contatos" }, //
   // ];
+
+  const { user, loading } = useUser();
+
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
   } = useForm<Inputs>();
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    console.log("================ data ==============");
     console.log(data);
     // make a post
+    // return;
+    // e.preventDefault();
+
+    const responseData = await fetcher(
+      `${process.env.NEXT_PUBLIC_STRAPI_URL}/auth/local`,
+      {
+        //@ts-ignore
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          identifier: data.email,
+          password: data.password,
+        }),
+      }
+    );
+    setToken(responseData);
+    console.log("=============== responseData ====================");
+    console.log(responseData);
   };
 
   console.log(watch("email")); // watch input value by passing the name of it
@@ -84,6 +110,9 @@ const Nav = (props: any) => {
   // const OpenLoginDialog = () => {
   //   alert("teste");
   // };
+  const logout = () => {
+    unsetToken();
+  };
 
   return (
     <div className="shadow-md w-full fixed top-0 left-0 z-10">
@@ -124,15 +153,42 @@ const Nav = (props: any) => {
               </Link>
             </li>
           ))}
-          <li>
-            <button
-              onClick={() => show("top")}
-              className="bg-amarelo-ouro text-branco hover:text-branco font-[Poppins] py-2 px-6 rounded md:ml-8 hover:bg-castanho-claro 
+          {!loading &&
+            (user ? (
+              <li className="md:ml-8 text-xl md:my-0 my-7">
+                <Link
+                  href="/profile"
+                  className="text-branco hover:text-amarelo-ouro duration-500"
+                >
+                  Perfil
+                </Link>
+              </li>
+            ) : (
+              ""
+            ))}
+          {!loading &&
+            (user ? (
+              <li>
+                <a
+                  // onClick={() => show("top")}
+                  className="bg-preto outline outline-offset-2 outline-amarelo-ouro font-bold text-branco hover:text-branco font-[Poppins] py-2 px-6 rounded md:ml-8 hover:bg-castanho-claro 
+                  duration-500"
+                  onClick={logout}
+                  style={{ cursor: "pointer" }}
+                >
+                  Logout
+                </a>
+              </li>
+            ) : (
+              <li>
+                <button
+                  onClick={() => show("top")}
+                  className="bg-amarelo-ouro font-bold text-branco hover:text-branco font-[Poppins] py-2 px-6 rounded md:ml-8 hover:bg-castanho-claro 
 						duration-500"
-            >
-              Login
-            </button>
-            {/* <Button
+                >
+                  Login
+                </button>
+                {/* <Button
               label="Login"
               icon="pi pi-arrow-down"
               onClick={() => show("top")}
@@ -140,101 +196,102 @@ const Nav = (props: any) => {
               style={{ minWidth: "1rem" }}
             /> */}
 
-            <Dialog
-              header="Login"
-              visible={visible}
-              // @ts-ignore
-              position={position}
-              style={{ width: "30vw" }}
-              onHide={() => setVisible(false)}
-              footer={footerContent}
-              draggable={false}
-              resizable={false}
-            >
-              <p className="m-0">
-                <form className="" onSubmit={handleSubmit(onSubmit)}>
-                  <div>
-                    <label
-                      htmlFor="email"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      placeholder="name@email.com"
-                      {...register("email", { required: true })}
-                    />
-                    {errors.email && (
-                      <span className="text-red-500">
-                        O email é obrigatorio!
-                      </span>
-                    )}
-                  </div>
-                  <div>
-                    <label
-                      htmlFor="password"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      Password
-                    </label>
-                    <input
-                      type="password"
-                      id="password"
-                      placeholder="••••••••"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      {...register("password", { required: true })}
-                    />
-                    {/* errors will return when field validation fails  */}
-                    {errors.password && <span>password é obrigatorio</span>}
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-start">
-                      <div className="flex items-center h-5">
-                        <input
-                          id="remember"
-                          aria-describedby="remember"
-                          type="checkbox"
-                          className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
-                        />
-                      </div>
-                      <div className="ml-3 text-sm">
+                <Dialog
+                  header="Login"
+                  visible={visible}
+                  // @ts-ignore
+                  position={position}
+                  style={{ width: "30vw" }}
+                  onHide={() => setVisible(false)}
+                  footer={footerContent}
+                  draggable={false}
+                  resizable={false}
+                >
+                  <p className="m-0">
+                    <form className="" onSubmit={handleSubmit(onSubmit)}>
+                      <div>
                         <label
-                          htmlFor="remember"
-                          className="text-gray-500 dark:text-gray-300"
+                          htmlFor="email"
+                          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                         >
-                          Remember me
+                          Email
                         </label>
+                        <input
+                          type="email"
+                          id="email"
+                          className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                          placeholder="name@email.com"
+                          {...register("email", { required: true })}
+                        />
+                        {errors.email && (
+                          <span className="text-red-500">
+                            O email é obrigatorio!
+                          </span>
+                        )}
                       </div>
-                    </div>
-                    <a
-                      href="#"
-                      className="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500"
-                    >
-                      Esqueceu da senha?
-                    </a>
-                  </div>
-                  <button
-                    type="submit"
-                    className="w-full text-white bg-amarelo-ouro hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                  >
-                    Login
-                  </button>
-                  <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-                    nao tem uma conta ainda?{" "}
-                    <a
-                      href="#"
-                      className="font-medium text-primary-600 hover:underline dark:text-primary-500"
-                    >
-                      Criar conta
-                    </a>
+                      <div>
+                        <label
+                          htmlFor="password"
+                          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                        >
+                          Password
+                        </label>
+                        <input
+                          type="password"
+                          id="password"
+                          placeholder="••••••••"
+                          className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                          {...register("password", { required: true })}
+                        />
+                        {/* errors will return when field validation fails  */}
+                        {errors.password && <span>password é obrigatorio</span>}
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-start">
+                          <div className="flex items-center h-5">
+                            <input
+                              id="remember"
+                              aria-describedby="remember"
+                              type="checkbox"
+                              className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
+                            />
+                          </div>
+                          <div className="ml-3 text-sm">
+                            <label
+                              htmlFor="remember"
+                              className="text-gray-500 dark:text-gray-300"
+                            >
+                              Remember me
+                            </label>
+                          </div>
+                        </div>
+                        <a
+                          href="#"
+                          className="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500"
+                        >
+                          Esqueceu da senha?
+                        </a>
+                      </div>
+                      <button
+                        type="submit"
+                        className="w-full text-white bg-amarelo-ouro hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                      >
+                        Login
+                      </button>
+                      <p className="text-sm font-light text-gray-500 dark:text-gray-400">
+                        nao tem uma conta ainda?{" "}
+                        <a
+                          href="#"
+                          className="font-medium text-primary-600 hover:underline dark:text-primary-500"
+                        >
+                          Criar conta
+                        </a>
+                      </p>
+                    </form>
                   </p>
-                </form>
-              </p>
-            </Dialog>
-          </li>
+                </Dialog>
+              </li>
+            ))}
         </ul>
       </div>
     </div>
