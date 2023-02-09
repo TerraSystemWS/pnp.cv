@@ -40,6 +40,9 @@ const Nav = (props: any) => {
 
   const { user, loading } = useUser();
 
+  console.log("===================== user ========================");
+  console.log(user);
+
   const {
     register,
     handleSubmit,
@@ -47,8 +50,8 @@ const Nav = (props: any) => {
     formState: { errors },
   } = useForm<Inputs>();
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    console.log("================ data ==============");
-    console.log(data);
+    // console.log("================ data ==============");
+    // console.log(data);
     // make a post
     // return;
     // e.preventDefault();
@@ -68,8 +71,8 @@ const Nav = (props: any) => {
       }
     );
     setToken(responseData);
-    console.log("=============== responseData ====================");
-    console.log(responseData);
+    // console.log("=============== responseData ====================");
+    // console.log(responseData);
   };
 
   console.log(watch("email")); // watch input value by passing the name of it
@@ -160,7 +163,7 @@ const Nav = (props: any) => {
                   href="/profile"
                   className="text-branco hover:text-amarelo-ouro duration-500"
                 >
-                  Perfil
+                  Perfil[<span>{user}</span>]
                 </Link>
               </li>
             ) : (
