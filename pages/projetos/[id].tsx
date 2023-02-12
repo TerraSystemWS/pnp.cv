@@ -7,6 +7,7 @@ import { IoCall } from "react-icons/io5";
 import { useState } from "react";
 import { Table } from "flowbite-react";
 import { useForm, SubmitHandler } from "react-hook-form";
+import Swal from "sweetalert2";
 
 // primereact tools
 import { Dialog } from "primereact/dialog";
@@ -16,7 +17,7 @@ import "primereact/resources/primereact.min.css"; //core css
 import "primeicons/primeicons.css"; //icons
 import { Accordion, AccordionTab } from "primereact/accordion";
 import React from "react";
-// import { Confetti } from "/public/confetti.min.js";
+// import Confetti from "confetti.min.js";
 import { useFetchUser } from "../../lib/authContext";
 import { Image } from "primereact/image";
 
@@ -69,10 +70,6 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
     console.log("============== DATA ==================");
     console.log(data.nomeVota);
     console.log(data.emailVota);
-    setCor("red");
-    // alert("Gostei, tem meu voto!");
-    setBlock(true);
-    setBlockCor("bg-gray-500");
 
     try {
       const res = await fetcher(
@@ -95,9 +92,23 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
 
       console.log("=========== response ====================");
       console.log(res);
-      const dados = await res.json();
-      console.log("=========== dados ====================");
-      console.log(dados);
+      if (res.data) {
+        setCor("red");
+        // alert("Gostei, tem meu voto!");
+        setBlock(true);
+        setBlockCor("bg-gray-500");
+        Swal.fire({
+          icon: "success",
+          title: "Concluida",
+          text: "",
+        });
+      } else {
+        Swal.fire({
+          icon: "warning",
+          title: "AVISO",
+          text: "So Pode Votar Uma Unica Vez",
+        });
+      }
     } catch (error) {
       console.log("=========== dados Erros ====================");
       console.log(error);
@@ -1042,6 +1053,12 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
                         </span>{" "}
                         Apos fornecer o email use o botao de &quot;votar&quot;
                         para enviar o seu voto
+                      </p>
+                      <p className="mb-2">
+                        <span className="text-red-500 font-bold text-lg">
+                          *
+                        </span>{" "}
+                        A votaçao so pode ser feita uma unica vez
                       </p>
                     </p>
                   </div>
