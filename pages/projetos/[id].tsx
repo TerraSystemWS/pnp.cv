@@ -1052,20 +1052,20 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
                         <span className="text-red-500 font-bold text-lg">
                           *
                         </span>{" "}
-                        Votaçao publica por parte do publico
+                        Votação pública por parte do público
                       </p>
                       <p className="mb-2">
                         <span className="text-red-500 font-bold text-lg">
                           *
                         </span>{" "}
-                        Apos fornecer o email use o botao de &quot;votar&quot;
-                        para enviar o seu voto
+                        Após digitar o seu email use o botao de
+                        &quot;votar&quot; para enviar o seu voto
                       </p>
                       <p className="mb-2">
                         <span className="text-red-500 font-bold text-lg">
                           *
                         </span>{" "}
-                        A votaçao so pode ser feita uma unica vez
+                        A votação só pode ser feita uma única vez
                       </p>
                       <p className="mb-2">
                         <span className="text-red-500 font-bold text-lg">
