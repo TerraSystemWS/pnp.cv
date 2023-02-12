@@ -138,7 +138,6 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
           Publicidade
         </title>
       </Head>
-
       <div className="">
         <div className="bg-gray-200">
           <div className="mx-auto max-w-7xl py-12 px-4 sm:px-6">
@@ -160,84 +159,88 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
       </div>
 
       <div className="p-11">
-        <div className="mt-10 sm:mt-0">
-          <div className="md:grid md:grid-cols-3 md:gap-6">
-            <div className="md:col-span-1">
-              <div className="px-4 sm:px-0">
-                <h3 className="text-lg font-medium leading-6 text-gray-900">
-                  FICHA DE INSCRIÇÃO
-                </h3>
-                <p className="mt-1 text-sm text-gray-600">
-                  Concurso do Prémio Nacional de Publicidade
-                </p>
-              </div>
-            </div>
-            <div className="mt-5 md:col-span-2 md:mt-0">
-              <div>
-                <div className="overflow-hidden shadow sm:rounded-md">
-                  <div className="bg-white px-4 py-5 sm:p-6">
-                    <div className="grid grid-cols-6 gap-6">
-                      <div className="col-span-6 sm:col-span-3">
-                        <label
-                          htmlFor="fname"
-                          className="block text-sm font-medium text-gray-700"
-                        >
-                          Nome Completo (Empresa ou candidato individual)
-                        </label>
-                        <p className="font-bold text-amarelo-ouro">
-                          {InscritosValues.nome_completo}
-                        </p>
-                      </div>
-
-                      <div className="col-span-6 sm:col-span-3">
-                        <label
-                          htmlFor="nif"
-                          className="block text-sm font-medium text-gray-700"
-                        >
-                          NIF
-                        </label>
-                        <p className="font-bold text-amarelo-ouro">
-                          {InscritosValues.nif}
-                        </p>
-                      </div>
-
-                      <div className="col-span-6 sm:col-span-4">
-                        <label
-                          htmlFor="email"
-                          className="block text-sm font-medium text-gray-700"
-                        >
-                          Email
-                        </label>
-                        <p className="font-bold text-amarelo-ouro">
-                          {InscritosValues.email}
-                        </p>
-                      </div>
-
-                      <div className="col-span-6">
-                        <label
-                          htmlFor="street-address"
-                          className="block text-sm font-medium text-gray-700"
-                        >
-                          Sede ou Local de Residência
-                        </label>
-                        <p className="font-bold text-amarelo-ouro">
-                          {InscritosValues.sede}
-                        </p>
-                      </div>
-                      <div className="col-span-6 sm:col-span-3 lg:col-span-2">
-                        <label
-                          htmlFor="phone"
-                          className="block text-sm font-medium text-gray-700"
-                        >
-                          Telefone
-                        </label>
-                        <p className="font-bold text-amarelo-ouro">
-                          {InscritosValues.telefone}
-                        </p>
-                      </div>
+        {/* Inicio dos detalhes de cada projeto */}
+        {!loading &&
+          (user ? (
+            <>
+              <div className="mt-10 sm:mt-0">
+                <div className="md:grid md:grid-cols-3 md:gap-6">
+                  <div className="md:col-span-1">
+                    <div className="px-4 sm:px-0">
+                      <h3 className="text-lg font-medium leading-6 text-gray-900">
+                        FICHA DE INSCRIÇÃO
+                      </h3>
+                      <p className="mt-1 text-sm text-gray-600">
+                        Concurso do Prémio Nacional de Publicidade
+                      </p>
                     </div>
                   </div>
-                  {/* <div className="bg-gray-50 px-4 py-3 text-right sm:px-6">
+                  <div className="mt-5 md:col-span-2 md:mt-0">
+                    <div>
+                      <div className="overflow-hidden shadow sm:rounded-md">
+                        <div className="bg-white px-4 py-5 sm:p-6">
+                          <div className="grid grid-cols-6 gap-6">
+                            <div className="col-span-6 sm:col-span-3">
+                              <label
+                                htmlFor="fname"
+                                className="block text-sm font-medium text-gray-700"
+                              >
+                                Nome Completo (Empresa ou candidato individual)
+                              </label>
+                              <p className="font-bold text-amarelo-ouro">
+                                {InscritosValues.nome_completo}
+                              </p>
+                            </div>
+
+                            <div className="col-span-6 sm:col-span-3">
+                              <label
+                                htmlFor="nif"
+                                className="block text-sm font-medium text-gray-700"
+                              >
+                                NIF
+                              </label>
+                              <p className="font-bold text-amarelo-ouro">
+                                {InscritosValues.nif}
+                              </p>
+                            </div>
+
+                            <div className="col-span-6 sm:col-span-4">
+                              <label
+                                htmlFor="email"
+                                className="block text-sm font-medium text-gray-700"
+                              >
+                                Email
+                              </label>
+                              <p className="font-bold text-amarelo-ouro">
+                                {InscritosValues.email}
+                              </p>
+                            </div>
+
+                            <div className="col-span-6">
+                              <label
+                                htmlFor="street-address"
+                                className="block text-sm font-medium text-gray-700"
+                              >
+                                Sede ou Local de Residência
+                              </label>
+                              <p className="font-bold text-amarelo-ouro">
+                                {InscritosValues.sede}
+                              </p>
+                            </div>
+                            <div className="col-span-6 sm:col-span-3 lg:col-span-2">
+                              <label
+                                htmlFor="phone"
+                                className="block text-sm font-medium text-gray-700"
+                              >
+                                Telefone
+                              </label>
+                              <p className="font-bold text-amarelo-ouro">
+                                {InscritosValues.telefone}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                        {/* <div className="bg-gray-50 px-4 py-3 text-right sm:px-6">
                     
                     <button
                       type="submit"
@@ -247,18 +250,20 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
                       Guardar
                     </button>
                   </div> */}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="hidden sm:block" aria-hidden="true">
-          <div className="py-5">
-            <div className="border-t border-gray-200" />
-          </div>
-        </div>
-
+              <div className="hidden sm:block" aria-hidden="true">
+                <div className="py-5">
+                  <div className="border-t border-gray-200" />
+                </div>
+              </div>
+            </>
+          ) : (
+            <></>
+          ))}
         <div>
           <div className="md:grid md:grid-cols-3 md:gap-6">
             <div className="md:col-span-1">
@@ -397,168 +402,169 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
             </div>
           </div>
         </div>
-
         <div className="hidden sm:block" aria-hidden="true">
           <div className="py-5">
             <div className="border-t border-gray-200" />
           </div>
         </div>
-
-        <div>
-          <div className="md:grid md:grid-cols-3 md:gap-6">
-            <div className="md:col-span-1">
-              <div className="px-4 sm:px-0">
-                <h3 className="text-lg font-medium leading-6 text-gray-900">
-                  Equipa do Projeto
-                </h3>
-                <p className="mt-1 text-sm text-gray-600">
-                  Informações sobre as equipas e colaboradores do projeto
-                </p>
-              </div>
-            </div>
-            <div className="mt-5 md:col-span-2 md:mt-0">
+        {!loading &&
+          (user ? (
+            <>
               <div>
-                <div className="shadow sm:overflow-hidden sm:rounded-md">
-                  <div className="space-y-6 bg-white px-4 py-5 sm:p-6">
-                    <div className="col-span-6 sm:col-span-4">
-                      <label
-                        htmlFor="coo_prod"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        Coordenador / Produtor
-                      </label>
-                      <p className="font-bold text-amarelo-ouro">
-                        {InscritosValues.coord_prod}
-                      </p>
-                    </div>
-
-                    <div className="col-span-6 sm:col-span-4">
-                      <label
-                        htmlFor="coo_prod"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        Diretor de Fotografia
-                      </label>
-                      <p className="font-bold text-amarelo-ouro">
-                        {InscritosValues.dir_foto}
-                      </p>
-                    </div>
-
-                    <div className="col-span-6 sm:col-span-4">
-                      <label
-                        htmlFor="coo_prod"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        Diretor de Arte
-                      </label>
-                      <p className="font-bold text-amarelo-ouro">
-                        {InscritosValues.dir_art}
-                      </p>
-                    </div>
-
-                    <div className="col-span-6 sm:col-span-4">
-                      <label
-                        htmlFor="coo_prod"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        Realizador
-                      </label>
-                      <p className="font-bold text-amarelo-ouro">
-                        {InscritosValues.realizador}
-                      </p>
-                    </div>
-
-                    <div className="col-span-6 sm:col-span-4">
-                      <label
-                        htmlFor="coo_prod"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        Editor
-                      </label>
-                      <p className="font-bold text-amarelo-ouro">
-                        {InscritosValues.editor}
-                      </p>
-                    </div>
-
-                    <div className="col-span-6 sm:col-span-4">
-                      <label
-                        htmlFor="coo_prod"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        Autoria do Jingle
-                      </label>
-                      <p className="font-bold text-amarelo-ouro">
-                        {InscritosValues.autor_jingle}
-                      </p>
-                    </div>
-
-                    <div className="col-span-6 sm:col-span-4">
-                      <label
-                        htmlFor="coo_prod"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        Designer
-                      </label>
-                      <p className="font-bold text-amarelo-ouro">
-                        {InscritosValues.designer}
-                      </p>
-                    </div>
-
-                    <div>
-                      <label
-                        htmlFor="about"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        Outro (considerações adicionais)
-                      </label>
-                      <div className="mt-1">
-                        <p className="font-bold text-amarelo-ouro">
-                          {InscritosValues.outras_consideracoes}
-                        </p>
-                      </div>
-                      {/* <p className="mt-2 text-sm text-gray-500">
-												algumas considerações adicionais
-											</p> */}
-                    </div>
-
-                    <div className="col-span-6 sm:col-span-4">
-                      <label
-                        htmlFor="coo_prod"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        Data da sua produção
-                      </label>
-                      <p className="font-bold text-amarelo-ouro">
-                        {InscritosValues.data_producao}
-                      </p>
-                    </div>
-
-                    <div className="col-span-6 sm:col-span-4">
-                      <label
-                        htmlFor="coo_prod"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        Data da divulgação
-                      </label>
-                      <p className="font-bold text-amarelo-ouro">
-                        {InscritosValues.data_divulgacao}
-                      </p>
-                    </div>
-
-                    <div className="col-span-6 sm:col-span-4">
-                      <label
-                        htmlFor="coo_prod"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        Data da sua apresentação pública (se trabalho
-                        universitário)
-                      </label>
-                      <p className="font-bold text-amarelo-ouro">
-                        {InscritosValues.data_apresentacao_publica}
+                <div className="md:grid md:grid-cols-3 md:gap-6">
+                  <div className="md:col-span-1">
+                    <div className="px-4 sm:px-0">
+                      <h3 className="text-lg font-medium leading-6 text-gray-900">
+                        Equipa do Projeto
+                      </h3>
+                      <p className="mt-1 text-sm text-gray-600">
+                        Informações sobre as equipas e colaboradores do projeto
                       </p>
                     </div>
                   </div>
-                  {/* <div className="bg-gray-50 px-4 py-3 text-right sm:px-6">
+                  <div className="mt-5 md:col-span-2 md:mt-0">
+                    <div>
+                      <div className="shadow sm:overflow-hidden sm:rounded-md">
+                        <div className="space-y-6 bg-white px-4 py-5 sm:p-6">
+                          <div className="col-span-6 sm:col-span-4">
+                            <label
+                              htmlFor="coo_prod"
+                              className="block text-sm font-medium text-gray-700"
+                            >
+                              Coordenador / Produtor
+                            </label>
+                            <p className="font-bold text-amarelo-ouro">
+                              {InscritosValues.coord_prod}
+                            </p>
+                          </div>
+
+                          <div className="col-span-6 sm:col-span-4">
+                            <label
+                              htmlFor="coo_prod"
+                              className="block text-sm font-medium text-gray-700"
+                            >
+                              Diretor de Fotografia
+                            </label>
+                            <p className="font-bold text-amarelo-ouro">
+                              {InscritosValues.dir_foto}
+                            </p>
+                          </div>
+
+                          <div className="col-span-6 sm:col-span-4">
+                            <label
+                              htmlFor="coo_prod"
+                              className="block text-sm font-medium text-gray-700"
+                            >
+                              Diretor de Arte
+                            </label>
+                            <p className="font-bold text-amarelo-ouro">
+                              {InscritosValues.dir_art}
+                            </p>
+                          </div>
+
+                          <div className="col-span-6 sm:col-span-4">
+                            <label
+                              htmlFor="coo_prod"
+                              className="block text-sm font-medium text-gray-700"
+                            >
+                              Realizador
+                            </label>
+                            <p className="font-bold text-amarelo-ouro">
+                              {InscritosValues.realizador}
+                            </p>
+                          </div>
+
+                          <div className="col-span-6 sm:col-span-4">
+                            <label
+                              htmlFor="coo_prod"
+                              className="block text-sm font-medium text-gray-700"
+                            >
+                              Editor
+                            </label>
+                            <p className="font-bold text-amarelo-ouro">
+                              {InscritosValues.editor}
+                            </p>
+                          </div>
+
+                          <div className="col-span-6 sm:col-span-4">
+                            <label
+                              htmlFor="coo_prod"
+                              className="block text-sm font-medium text-gray-700"
+                            >
+                              Autoria do Jingle
+                            </label>
+                            <p className="font-bold text-amarelo-ouro">
+                              {InscritosValues.autor_jingle}
+                            </p>
+                          </div>
+
+                          <div className="col-span-6 sm:col-span-4">
+                            <label
+                              htmlFor="coo_prod"
+                              className="block text-sm font-medium text-gray-700"
+                            >
+                              Designer
+                            </label>
+                            <p className="font-bold text-amarelo-ouro">
+                              {InscritosValues.designer}
+                            </p>
+                          </div>
+
+                          <div>
+                            <label
+                              htmlFor="about"
+                              className="block text-sm font-medium text-gray-700"
+                            >
+                              Outro (considerações adicionais)
+                            </label>
+                            <div className="mt-1">
+                              <p className="font-bold text-amarelo-ouro">
+                                {InscritosValues.outras_consideracoes}
+                              </p>
+                            </div>
+                            {/* <p className="mt-2 text-sm text-gray-500">
+												algumas considerações adicionais
+											</p> */}
+                          </div>
+
+                          <div className="col-span-6 sm:col-span-4">
+                            <label
+                              htmlFor="coo_prod"
+                              className="block text-sm font-medium text-gray-700"
+                            >
+                              Data da sua produção
+                            </label>
+                            <p className="font-bold text-amarelo-ouro">
+                              {InscritosValues.data_producao}
+                            </p>
+                          </div>
+
+                          <div className="col-span-6 sm:col-span-4">
+                            <label
+                              htmlFor="coo_prod"
+                              className="block text-sm font-medium text-gray-700"
+                            >
+                              Data da divulgação
+                            </label>
+                            <p className="font-bold text-amarelo-ouro">
+                              {InscritosValues.data_divulgacao}
+                            </p>
+                          </div>
+
+                          <div className="col-span-6 sm:col-span-4">
+                            <label
+                              htmlFor="coo_prod"
+                              className="block text-sm font-medium text-gray-700"
+                            >
+                              Data da sua apresentação pública (se trabalho
+                              universitário)
+                            </label>
+                            <p className="font-bold text-amarelo-ouro">
+                              {InscritosValues.data_apresentacao_publica}
+                            </p>
+                          </div>
+                        </div>
+                        {/* <div className="bg-gray-50 px-4 py-3 text-right sm:px-6">
                     <button
                       type="submit"
                       className="inline-flex justify-center rounded-md border border-transparent bg-amarelo-ouro py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-amarelo-escuro focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
@@ -566,17 +572,22 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
                       Guardar
                     </button>
                   </div> */}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
+              <div className="hidden sm:block" aria-hidden="true">
+                <div className="py-5">
+                  <div className="border-t border-gray-200" />
+                </div>
+              </div>
+            </>
+          ) : (
+            <></>
+          ))}
 
-        <div className="hidden sm:block" aria-hidden="true">
-          <div className="py-5">
-            <div className="border-t border-gray-200" />
-          </div>
-        </div>
+        {/* fim dos detalhes de cada projeto */}
         {/* lista de documentos submetidos */}
         <div className="mt-10 sm:mt-0">
           <div className="md:grid md:grid-cols-3 md:gap-6">
@@ -729,13 +740,11 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
             <div className="border-t border-gray-200" />
           </div>
         </div>
-
         <div className="hidden sm:block" aria-hidden="true">
           <div className="py-5">
             <div className="border-t border-gray-200" />
           </div>
         </div>
-
         {!loading &&
           (user ? (
             <>
