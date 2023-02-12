@@ -1067,6 +1067,12 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
                         </span>{" "}
                         A votaçao so pode ser feita uma unica vez
                       </p>
+                      <p className="mb-2">
+                        <span className="text-red-500 font-bold text-lg">
+                          *
+                        </span>{" "}
+                        E-mails inválidos não serão contabilizados
+                      </p>
                     </p>
                   </div>
                 </div>
