@@ -6,7 +6,7 @@ import { Card } from "flowbite-react";
 import { IoCall } from "react-icons/io5";
 import { useState } from "react";
 import { Table } from "flowbite-react";
-import { useForm } from "react-hook-form";
+import { useForm, SubmitHandler } from "react-hook-form";
 
 // primereact tools
 import { Dialog } from "primereact/dialog";
@@ -22,6 +22,11 @@ import { Image } from "primereact/image";
 
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
+
+// type VotaInputs = {
+//   emailVota: string;
+//   nomeVota: string;
+// };
 
 const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
   // console.log("detalhes inscritos");
@@ -51,16 +56,52 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
 
   // const [cor, setCor] = useState(false)
   const [cor, setCor] = useState("CurrentColor");
+  const [isBlock, setBlock] = useState(false);
+  const [blockCor, setBlockCor] = useState("bg-amarelo-ouro");
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
   } = useForm();
-  const onVotar = (data: any) => {
-    // console.log(data);
+
+  const onVotar = async (data: any) => {
+    console.log("============== DATA ==================");
+    console.log(data.nomeVota);
+    console.log(data.emailVota);
     setCor("red");
-    alert("Gostei, tem meu voto!");
+    // alert("Gostei, tem meu voto!");
+    setBlock(true);
+    setBlockCor("bg-gray-500");
+
+    try {
+      const res = await fetcher(
+        `${process.env.NEXT_PUBLIC_STRAPI_URL}/votacao-publicas`,
+        {
+          //@ts-ignore
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            data: {
+              nome_completo: data.nomeVota,
+              email: data.emailVota,
+              inscricoe: [inscricao.data.id],
+            },
+          }),
+        }
+      );
+
+      console.log("=========== response ====================");
+      console.log(res);
+      const dados = await res.json();
+      console.log("=========== dados ====================");
+      console.log(dados);
+    } catch (error) {
+      console.log("=========== dados Erros ====================");
+      console.log(error);
+    }
   };
 
   // Pass in the id of an element
@@ -1019,7 +1060,7 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
                         id="nome"
                         className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="Sr. premio nacional de publicidade"
-                        {...register("nome", { required: true })}
+                        {...register("nomeVota", { required: true })}
                       />
                       {errors.email && (
                         <span className="text-red-500">
@@ -1039,7 +1080,7 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
                         id="email"
                         className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="exemplo@pnp.cv"
-                        {...register("email", { required: true })}
+                        {...register("emailVota", { required: true })}
                       />
                       {errors.email && (
                         <span className="text-red-500">
@@ -1050,7 +1091,8 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
 
                     <button
                       type="submit"
-                      className="mt-5 w-full text-white bg-amarelo-ouro hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                      className={`mt-5 w-full text-white ${blockCor} hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800`}
+                      disabled={isBlock}
                     >
                       Votar
                       <svg
