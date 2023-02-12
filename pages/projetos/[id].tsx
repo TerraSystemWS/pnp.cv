@@ -17,9 +17,9 @@ import "primereact/resources/primereact.min.css"; //core css
 import "primeicons/primeicons.css"; //icons
 import { Accordion, AccordionTab } from "primereact/accordion";
 import React from "react";
-// import Confetti from "confetti.min.js";
 import { useFetchUser } from "../../lib/authContext";
 import { Image } from "primereact/image";
+import JSConfetti from "js-confetti";
 
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
@@ -67,6 +67,8 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
   } = useForm();
 
   const onVotar = async (data: any) => {
+    // teste de confetti
+    const jsConfetti = new JSConfetti();
     console.log("============== DATA ==================");
     console.log(data.nomeVota);
     console.log(data.emailVota);
@@ -97,6 +99,11 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
         // alert("Gostei, tem meu voto!");
         setBlock(true);
         setBlockCor("bg-gray-500");
+        jsConfetti.addConfetti({
+          emojis: ["🌈", "⚡️", "💥", "✨", "💫", "🌸"],
+          emojiSize: 10,
+          confettiNumber: 500,
+        });
         Swal.fire({
           icon: "success",
           title: "Concluida",
@@ -1107,6 +1114,7 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
                     </div>
 
                     <button
+                      id="votaPublico"
                       type="submit"
                       className={`mt-5 w-full text-white ${blockCor} hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800`}
                       disabled={isBlock}
