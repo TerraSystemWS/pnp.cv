@@ -1,9 +1,9 @@
 import Layout from "../../components/Layout";
 import { fetcher } from "../../lib/api";
-import Link from "next/link";
+// import Link from "next/link";
 import Head from "next/head";
-import { Card } from "flowbite-react";
-import { IoCall } from "react-icons/io5";
+// import { Card } from "flowbite-react";
+// import { IoCall } from "react-icons/io5";
 import { useState } from "react";
 import { Table } from "flowbite-react";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -117,8 +117,8 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
         });
       }
     } catch (error) {
-      console.log("=========== dados Erros ====================");
-      console.log(error);
+      // console.log("=========== dados Erros ====================");
+      // console.log(error);
     }
   };
 
