@@ -3,6 +3,7 @@ import { fetcher } from "../../lib/api";
 import Link from "next/link";
 import Head from "next/head";
 import { useFetchUser } from "../../lib/authContext";
+import Router, { useRouter } from "next/router";
 
 // para primereact
 import React, { useState, useEffect, useRef } from "react";
@@ -17,6 +18,15 @@ const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
 
 const VotacaoPublicaStatus = ({ social, contato, Vpublica, navbar }: any) => {
   const { user, loading } = useFetchUser();
+
+  //   useEffect(() => {
+  //     if (user) {
+  //       //   return "";
+  //     } else {
+  //       Router.push("/");
+  //     }
+  //   });
+
   const [products, setProducts] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
   let dt = useRef(null);
@@ -122,73 +132,86 @@ const VotacaoPublicaStatus = ({ social, contato, Vpublica, navbar }: any) => {
     });
   };
 
-  const header = (
-    <div className="flex align-items-center export-buttons">
-      {/* <Button
+  if (user) {
+    const header = (
+      <div className="flex align-items-center export-buttons">
+        {/* <Button
         type="button"
         icon="pi pi-file"
         onClick={() => exportCSV(false)}
         className="!mr-2 "
         data-pr-tooltip="CSV"
       /> */}
-      <Button
-        type="button"
-        icon="pi pi-file-excel"
-        onClick={exportExcel}
-        className="p-button-success !mr-2"
-        data-pr-tooltip="Excel"
-      />
-      <Button
-        type="button"
-        icon="pi pi-file-pdf"
-        onClick={exportPdf}
-        className="p-button-warning !mr-2"
-        data-pr-tooltip="PDF"
-      />
-      {/* <Button
+        <Button
+          type="button"
+          icon="pi pi-file-excel"
+          onClick={exportExcel}
+          className="p-button-success !mr-2"
+          data-pr-tooltip="Excel"
+        />
+        <Button
+          type="button"
+          icon="pi pi-file-pdf"
+          onClick={exportPdf}
+          className="p-button-warning !mr-2"
+          data-pr-tooltip="PDF"
+        />
+        {/* <Button
         type="button"
         icon="pi pi-filter"
         onClick={() => exportCSV(true)}
         className="p-button-info !ml-auto"
         data-pr-tooltip="Seleção Única"
       /> */}
-    </div>
-  );
-  return (
-    <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
-      <Head>
-        <title>
-          Resultado Da Votaçao Publica - Prémio Nacional De Publicidade
-        </title>
-      </Head>
+      </div>
+    );
 
-      <section className="bg-white dark:bg-gray-900">
-        <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
-          <div className="card">
-            <Tooltip target=".export-buttons>button" position="bottom" />
+    return (
+      <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
+        <Head>
+          <title>
+            Resultado Da Votaçao Publica - Prémio Nacional De Publicidade
+          </title>
+        </Head>
 
-            <DataTable
-              ref={(el) => {
-                //@ts-ignore
-                dt = el;
-              }}
-              value={products}
-              header={header}
-              dataKey="id"
-              responsiveLayout="scroll"
-              selectionMode="multiple"
-              selection={selectedProducts}
-              onSelectionChange={onSelectionChange}
-            >
-              {cols.map((col: any, index: any) => (
-                <Column key={index} field={col.field} header={col.header} />
-              ))}
-            </DataTable>
+        <section className="bg-white dark:bg-gray-900">
+          <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
+            <div className="mx-auto max-w-screen-md text-center lg:mb-16 mb-8">
+              <h2 className="mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold text-amarelo-ouro dark:text-white">
+                Votação Pública
+              </h2>
+              <p className="font-light text-center text-gray-500 sm:text-xl dark:text-gray-400">
+                Contagem dos votos feitos na plataforma
+              </p>
+            </div>
+            <div className="card">
+              <Tooltip target=".export-buttons>button" position="bottom" />
+
+              <DataTable
+                ref={(el) => {
+                  //@ts-ignore
+                  dt = el;
+                }}
+                value={products}
+                header={header}
+                dataKey="id"
+                responsiveLayout="scroll"
+                selectionMode="multiple"
+                selection={selectedProducts}
+                onSelectionChange={onSelectionChange}
+              >
+                {cols.map((col: any, index: any) => (
+                  <Column key={index} field={col.field} header={col.header} />
+                ))}
+              </DataTable>
+            </div>
           </div>
-        </div>
-      </section>
-    </Layout>
-  );
+        </section>
+      </Layout>
+    );
+  } else {
+    return "";
+  }
 };
 
 export default VotacaoPublicaStatus;
