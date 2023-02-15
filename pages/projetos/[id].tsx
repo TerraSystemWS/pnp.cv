@@ -69,9 +69,9 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
   const onVotar = async (data: any) => {
     // teste de confetti
     const jsConfetti = new JSConfetti();
-    console.log("============== DATA ==================");
-    console.log(data.nomeVota);
-    console.log(data.emailVota);
+    // console.log("============== DATA ==================");
+    // console.log(data.nomeVota);
+    // console.log(data.emailVota);
 
     try {
       const res = await fetcher(
@@ -173,6 +173,24 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
     { title: "Aspetos Administrativos", nota: 0 },
     { title: "Pontuacao Geral", nota: 0 },
   ];
+
+  // const Avalicao: any = [
+  //   {
+  //     id_inscricao: 1,
+  //     categoria: "Publicidade Internet",
+  //     juri: "Nome do Juri",
+  //     areas: [
+  //       { title: "Conceito Criativo", nota: 0 },
+  //       { title: "Design", nota: 0 },
+  //       { title: "Interatividade", nota: 0 },
+  //       { title: "Alcance Pago", nota: 0 },
+  //       { title: "Soluçao Tecnologica", nota: 0 },
+  //       { title: "Redaçao", nota: 0 },
+  //       { title: "Aspetos Administrativos", nota: 0 },
+  //       { title: "Pontuacao Geral", nota: 0 },
+  //     ],
+  //   },
+  // ];
 
   const { user, loading } = useFetchUser();
 
