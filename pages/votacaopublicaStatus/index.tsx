@@ -4,6 +4,7 @@ import Link from "next/link";
 import Head from "next/head";
 import { useFetchUser } from "../../lib/authContext";
 import Router, { useRouter } from "next/router";
+const qs = require("qs");
 
 // para primereact
 import React, { useState, useEffect, useRef } from "react";
@@ -32,6 +33,8 @@ const VotacaoPublicaStatus = ({ social, contato, Vpublica, navbar }: any) => {
   let dt = useRef(null);
 
   let ProductService: any = [];
+  console.log("============ Vpublica ===============");
+  console.log(Vpublica);
   /* create the data */
   Vpublica.data.map((value: any, index: number) => {
     // console.log(value.id);
@@ -220,6 +223,21 @@ export default VotacaoPublicaStatus;
 export async function getServerSideProps() {
   // Fetch data from external API
 
+  const query = qs.stringify(
+    {
+      fields: ["nome_completo", "categoria", "nome_projeto"],
+      // populate: ["votacao_publicas"],
+      populate: {
+        votacao_publicas: {
+          fields: ["id"],
+        },
+      },
+    },
+    {
+      encodeValuesOnly: true, // prettify URL
+    }
+  );
+
   // GET: links para as redes sociais
   const rsocials = await fetcher(`${api_link}/redes-social?populate=*`);
   // GET: dados para contatos
@@ -244,7 +262,7 @@ export async function getServerSideProps() {
   // console.log(banners.attributes);
 
   // Get inscricao e suas votacoes
-  const Vpublica = await fetcher(`${api_link}/inscricoes?populate=deep`);
+  const Vpublica = await fetcher(`${api_link}/inscricoes?${query}`);
 
   // Pass data to the page via props
   return { props: { social: rsocials, contato, Vpublica, navbar: dlink } };
