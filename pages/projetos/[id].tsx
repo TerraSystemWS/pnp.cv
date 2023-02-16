@@ -1183,7 +1183,9 @@ export async function getServerSideProps({ params, query }: any) {
   // GET: dados do navbar
   const navbar = await fetcher(`${api_link}/menus?populate=deep`);
   // GET: dados dos projetos inscritos
-  const inscritos = await fetcher(`${api_link}/inscricoes/${id}?populate=deep`);
+  const inscritos = await fetcher(
+    `${api_link}/inscricoes/${id}?populate=fileLink`
+  );
   //get links for menu
   let dlink: any = [];
   navbar.data.map((value: any) => {
