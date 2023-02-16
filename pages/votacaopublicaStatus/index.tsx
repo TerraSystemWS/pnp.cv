@@ -33,8 +33,8 @@ const VotacaoPublicaStatus = ({ social, contato, Vpublica, navbar }: any) => {
   let dt = useRef(null);
 
   let ProductService: any = [];
-  console.log("============ Vpublica ===============");
-  console.log(Vpublica);
+  // console.log("============ Vpublica ===============");
+  // console.log(Vpublica);
   /* create the data */
   Vpublica.data.map((value: any, index: number) => {
     // console.log(value.id);
