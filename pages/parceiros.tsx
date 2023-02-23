@@ -14,6 +14,7 @@ const Parceiros = ({ social, contato, parceiros, navbar }: any) => {
   let parceirosPadrinho: any = [];
   let parceirosPatrocinadores2: any = [];
   let parceirosPatrocinadores: any = [];
+  let parceirosOperacionais: any = [];
   let parceirosMedia: any = [];
   let cor: string;
   let icon: string;
@@ -25,7 +26,7 @@ const Parceiros = ({ social, contato, parceiros, navbar }: any) => {
         id: index2,
         link: value2.link,
         title: value2.titulo,
-        foto: value2.logo.data.attributes.url,
+        foto: value2.logo.data?.attributes.url,
       };
     });
     value.attributes.parceiros_padrinhos.map((value2: any, index2: any) => {
@@ -33,7 +34,7 @@ const Parceiros = ({ social, contato, parceiros, navbar }: any) => {
         id: index2,
         link: value2.link,
         title: value2.titulo,
-        foto: value2.logo.data.attributes.url,
+        foto: value2.logo.data?.attributes.url,
       };
     });
 
@@ -63,7 +64,7 @@ const Parceiros = ({ social, contato, parceiros, navbar }: any) => {
         id: index2 + lugar,
         link: value2.link,
         title: value2.titulo,
-        foto: value2.logo.data.attributes.url,
+        foto: value2.logo.data?.attributes.url,
         tipo: value2.tipo,
         cor: cor,
         icon: icon,
@@ -76,6 +77,17 @@ const Parceiros = ({ social, contato, parceiros, navbar }: any) => {
     );
     // console.log("parceirosPatrocinadores");
     // console.log(parceirosPatrocinadores);
+
+    value.attributes?.parceiros_operacionais?.map(
+      (value2: any, index2: any) => {
+        parceirosOperacionais[index2] = {
+          id: index2,
+          link: value2.link,
+          title: value2.titulo,
+          foto: value2.logo?.data?.attributes.url,
+        };
+      }
+    );
 
     value.attributes.media_parteners.map((value2: any, index2: any) => {
       parceirosMedia[index2] = {
@@ -103,7 +115,7 @@ const Parceiros = ({ social, contato, parceiros, navbar }: any) => {
       </Head>
       {/* <pre>{JSON.stringify(parceirosOrganizacao, null, 2)}</pre> */}
       <section className="text-gray-600 body-font">
-        <div className="container px-5 py-24 mx-auto">
+        <div className="container px-5 py-10 mx-auto">
           <div className="flex flex-col text-center w-full -mb-10">
             <h1 className="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">
               {heading}
@@ -177,7 +189,7 @@ const Parceiros = ({ social, contato, parceiros, navbar }: any) => {
       </section>
       {/* patrocinador padrinho */}
       <section className="text-gray-600 body-font">
-        <div className="container px-5 py-24 mx-auto justify-content">
+        <div className="container px-5 py-10 mx-auto justify-content">
           <div className="flex flex-col text-center w-full">
             <h1 className="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">
               Parceiro Institucional
@@ -314,6 +326,52 @@ const Parceiros = ({ social, contato, parceiros, navbar }: any) => {
           </div>
         </div>
       </section>
+      {/*parceiros Operacionais */}
+      {/* {parceirosOperacionais ? ( */}
+      <section className="text-gray-600 body-font">
+        <div className="container px-5 py-24 mx-auto">
+          <div className="flex flex-col text-center w-full">
+            <h1 className="sm:text-3xl text-2xl font-medium title-font mb-4  text-gray-900">
+              Parceiros Operacionais
+            </h1>
+          </div>
+          <div className="flex flex-wrap -m-2">
+            {parceirosOperacionais.map((value: any, index: number) => (
+              <div key={index} className="p-2 lg:w-1/3 md:w-1/2 w-full">
+                <div className="h-full flex items-center border-gray-200 border p-4 rounded-lg">
+                  <Link
+                    href={value.link || " "}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <Image
+                      alt="team"
+                      className="w-32 h-32 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4"
+                      src={value.foto}
+                      width={100}
+                      height={100}
+                    />
+                  </Link>
+                  <div className="flex-grow">
+                    <Link
+                      href={value.link || "#"}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <h2 className="text-gray-900 title-font font-medium">
+                        {value.title}
+                      </h2>
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+      {/* ) : (
+        ""
+      )} */}
       {/* media */}
       <section className="text-gray-600 body-font">
         <div className="container px-5 py-24 mx-auto">
