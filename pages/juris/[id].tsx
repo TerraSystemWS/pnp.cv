@@ -61,10 +61,13 @@ const Juris = ({ social, contato, edicao, navbar }: any) => {
   let Juris = JurisA.filter((n: any) => n);
   // console.log(JurisList);
 
+  let description: string = `Juri ${Juris[0].j_nome} participou na {Juris[0]?.edicao}ª Edição do Prémio Nacional De Publicidade`;
+
   return (
     <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
       <Head>
         <title> {Juris[0].j_nome} - Prémio Nacional De Publicidade</title>
+        <meta name="description" content={description} />
       </Head>
       <h1 className="text-4xl font-medium text-gray-700 text-center pt-2">
         {" "}
