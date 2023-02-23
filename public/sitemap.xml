@@ -1,97 +1,329 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset
-      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
-            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-<!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
-
-
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+<!--  created with Free Online Sitemap Generator www.xml-sitemaps.com  -->
 <url>
-  <loc>https://pnp.cv/</loc>
-  <lastmod>2022-12-28T16:48:24+00:00</lastmod>
-  <priority>1.00</priority>
+<loc>https://pnp.cv/</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>1.00</priority>
 </url>
 <url>
-  <loc>https://pnp.cv/regulamentos</loc>
-  <lastmod>2022-12-28T16:48:24+00:00</lastmod>
-  <priority>0.80</priority>
+<loc>https://pnp.cv/regulamentos</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.80</priority>
 </url>
 <url>
-  <loc>https://pnp.cv/edicoes</loc>
-  <lastmod>2022-12-28T16:48:24+00:00</lastmod>
-  <priority>0.80</priority>
+<loc>https://pnp.cv/edicoes</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.80</priority>
 </url>
 <url>
-  <loc>https://pnp.cv/parceiros</loc>
-  <lastmod>2022-12-28T16:48:24+00:00</lastmod>
-  <priority>0.80</priority>
+<loc>https://pnp.cv/parceiros</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.80</priority>
 </url>
 <url>
-  <loc>https://pnp.cv/posts</loc>
-  <lastmod>2022-12-28T16:48:24+00:00</lastmod>
-  <priority>0.80</priority>
+<loc>https://pnp.cv/posts</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.80</priority>
 </url>
 <url>
-  <loc>https://pnp.cv/contatos</loc>
-  <lastmod>2022-12-28T16:48:24+00:00</lastmod>
-  <priority>0.80</priority>
+<loc>https://pnp.cv/contatos</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.80</priority>
 </url>
 <url>
-  <loc>https://pnp.cv/juris/1?edicao=6</loc>
-  <lastmod>2022-12-28T16:48:24+00:00</lastmod>
-  <priority>0.80</priority>
+<loc>https://pnp.cv/projetos</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.80</priority>
 </url>
 <url>
-  <loc>https://pnp.cv/juris/2?edicao=6</loc>
-  <lastmod>2022-12-28T16:48:24+00:00</lastmod>
-  <priority>0.80</priority>
+<loc>https://pnp.cv/juris/1?edicao=6</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.80</priority>
 </url>
 <url>
-  <loc>https://pnp.cv/juris/3?edicao=6</loc>
-  <lastmod>2022-12-28T16:48:24+00:00</lastmod>
-  <priority>0.80</priority>
+<loc>https://pnp.cv/juris/2?edicao=6</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.80</priority>
 </url>
 <url>
-  <loc>https://pnp.cv/juris/4?edicao=6</loc>
-  <lastmod>2022-12-28T16:48:24+00:00</lastmod>
-  <priority>0.80</priority>
+<loc>https://pnp.cv/juris/3?edicao=6</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.80</priority>
 </url>
 <url>
-  <loc>https://pnp.cv/juris/5?edicao=6</loc>
-  <lastmod>2022-12-28T16:48:24+00:00</lastmod>
-  <priority>0.80</priority>
+<loc>https://pnp.cv/juris/4?edicao=6</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.80</priority>
 </url>
 <url>
-  <loc>https://pnp.cv/inscrever</loc>
-  <lastmod>2022-12-28T16:48:24+00:00</lastmod>
-  <priority>0.80</priority>
+<loc>https://pnp.cv/juris/5?edicao=6</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.80</priority>
 </url>
 <url>
-  <loc>https://pnp.cv/juris/6?edicao=5</loc>
-  <lastmod>2022-12-28T16:48:24+00:00</lastmod>
-  <priority>0.64</priority>
+<loc>https://pnp.cv/inscricao</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.80</priority>
 </url>
 <url>
-  <loc>https://pnp.cv/juris/7?edicao=5</loc>
-  <lastmod>2022-12-28T16:48:24+00:00</lastmod>
-  <priority>0.64</priority>
+<loc>https://pnp.cv/sobreus</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.80</priority>
 </url>
 <url>
-  <loc>https://pnp.cv/juris/8?edicao=5</loc>
-  <lastmod>2022-12-28T16:48:24+00:00</lastmod>
-  <priority>0.64</priority>
+<loc>https://pnp.cv/sobreus/terms</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.80</priority>
 </url>
 <url>
-  <loc>https://pnp.cv/juris/9?edicao=5</loc>
-  <lastmod>2022-12-28T16:48:24+00:00</lastmod>
-  <priority>0.64</priority>
+<loc>https://pnp.cv/sobreus/policy</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.80</priority>
 </url>
 <url>
-  <loc>https://pnp.cv/juris/10?edicao=5</loc>
-  <lastmod>2022-12-28T16:48:24+00:00</lastmod>
-  <priority>0.64</priority>
+<loc>https://pnp.cv/juris/6?edicao=5</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
 </url>
-
-
+<url>
+<loc>https://pnp.cv/juris/7?edicao=5</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/juris/8?edicao=5</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/juris/9?edicao=5</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/juris/10?edicao=5</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/projetos/55</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/projetos/56</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/projetos/66</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/projetos/67</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/projetos/69</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/projetos/70</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/projetos/77</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/projetos/94</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/projetos/108</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/projetos/105</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/projetos/85</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/projetos/80</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/projetos/88</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/projetos/106</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/projetos/78</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/projetos/79</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/projetos/84</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/projetos/81</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/projetos/82</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/projetos/76</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/projetos/92</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/projetos/86</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/projetos/93</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/projetos/102</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/projetos/87</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/projetos/89</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/projetos/91</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/projetos/90</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/projetos/72</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/projetos/95</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/projetos/96</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/projetos/97</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/projetos/98</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/projetos/99</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/projetos/100</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/projetos/103</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/projetos/104</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/projetos/52</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/projetos/61</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/projetos/101</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/projetos/107</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/projetos/109</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/projetos/110</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
+<url>
+<loc>https://pnp.cv/projetos/83</loc>
+<lastmod>2023-02-23T13:25:05+00:00</lastmod>
+<priority>0.64</priority>
+</url>
 </urlset>
