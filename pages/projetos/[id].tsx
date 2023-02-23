@@ -214,6 +214,10 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
           {inscricao.data?.attributes?.nome_projeto} - Prémio Nacional De
           Publicidade
         </title>
+        <meta
+          name="description"
+          content={inscricao.data.attributes.con_criativo}
+        />
       </Head>
       <div className="">
         <div className="bg-gray-200">

@@ -21,6 +21,10 @@ const SobreusPolicy = ({ social, contato, navbar, sobreus }: any) => {
     <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
       <Head>
         <title>Parceiros - Prémio Nacional De Publicidade</title>
+        <meta
+          name="description"
+          content="Politica de Privacidade - Prémio Nacional De Publicidade"
+        />
       </Head>
       {/* <pre>{JSON.stringify(parceirosOrganizacao, null, 2)}</pre> */}
       <section className="text-gray-600 body-font">

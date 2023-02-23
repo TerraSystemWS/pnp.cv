@@ -26,6 +26,12 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
     <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
       <Head>
         <title>Edições - Prémio Nacional De Publicidade</title>
+        <meta
+          name="description"
+          content="Fotografias, videos, regulamento, os vencedores dos Prémios
+          Palmeira e respetivos discursos de vitória… Aqui encontra tudo
+          sobre as anteriores edições do PNP."
+        />
       </Head>
       <div className="">
         <div className="bg-gray-50">

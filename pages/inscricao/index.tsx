@@ -233,6 +233,12 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
     <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
       <Head>
         <title>Inscrição - Prémio Nacional De Publicidade</title>
+        <meta
+          name="description"
+          content="Para aceder a sua inscrição introduza o codigo que foi criado
+          como participante do PNP, use esse codigo para verificar a sua
+          inscrição e ou fazer alterações"
+        />
       </Head>
       <div className="">
         <div className="bg-gray-50">

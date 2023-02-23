@@ -69,6 +69,7 @@ const Regulamentos = ({ social, contato, edicao, navbar }: any) => {
     <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
       <Head>
         <title>Regulamento - Prémio Nacional De Publicidade</title>
+        <meta name="description" content={Regulamentos[0].titulo} />
       </Head>
       {/* <pre>{JSON.stringify(edicao, null, 2)}</pre> */}
       <div className="">

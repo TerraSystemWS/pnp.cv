@@ -187,6 +187,14 @@ export default function Home({
       {/* <pre>{JSON.stringify(parceiros, null, 2)}</pre> */}
       <Head>
         <title>Prémio Nacional De Publicidade</title>
+        <meta
+          name="description"
+          content="O PRÉMIO NACIONAL DE PUBLICIDADE tem por objeto a promoção da
+              atividade publicitária, através do reconhecimento da qualidade dos
+              trabalhos publicitários e institucionais exibidos e veiculados,
+              premiando os que pela sua criatividade e originalidade contribuem
+              para o desenvolvimento do mercado publicitário em Cabo Verde."
+        />
       </Head>
 
       <div className="-mt-2">
