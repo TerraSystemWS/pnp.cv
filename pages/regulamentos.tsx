@@ -11,12 +11,25 @@ const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
 
 const Regulamentos = ({ social, contato, edicao, navbar }: any) => {
   const { user, loading } = useFetchUser();
+  // const createMarkup = (values: any) => {
+  //   // const values =
+  //   const converter = new showdown.Converter();
+  //   const html = converter.makeHtml(values);
+  //   return { __html: html };
+  // };
+
   const createMarkup = (values: any) => {
-    // const values =
+    if (typeof values !== 'string') {
+      // Handle the case when values is not a string, such as logging an error or returning a default value.
+      console.error("Error: 'values' is not a string.");
+      return { __html: '' }; // or any default value you want to return
+    }
+  
     const converter = new showdown.Converter();
     const html = converter.makeHtml(values);
     return { __html: html };
   };
+  
 
   let Categoria: any = [];
   let Regulamentos: any = [];
