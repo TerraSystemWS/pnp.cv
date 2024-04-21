@@ -27,7 +27,7 @@ const Vpublica = ({ social, contato, inscritos, navbar }: any) => {
       <section className="bg-white dark:bg-gray-900">
         <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
           {!loading &&
-            (user ? (
+            (user ? ( //user
               <div className="mx-auto max-w-screen-md text-center lg:mb-16 mb-8">
                 <h2 className="mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold text-amarelo-ouro dark:text-white">
                   Avaliaçao Dos Jurados
@@ -58,7 +58,7 @@ const Vpublica = ({ social, contato, inscritos, navbar }: any) => {
           <div className="dados das inscriçoes">
             <div className="mx-auto max-w-screen-md text-center lg:mb-16 mb-8">
               <h2 className="mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold text-amarelo-ouro dark:text-white">
-                Projetos Concorentes a 6 Edição
+                Projetos Concorentes a {'?'} Edição
               </h2>
             </div>
 
@@ -149,7 +149,7 @@ export async function getServerSideProps() {
   const inscritos = await fetcher(`${api_link}/inscricoes`);
   //get links for menu
   let dlink: any = [];
-  navbar.data.map((value: any) => {
+  navbar.data?.map((value: any) => {
     value.attributes.items.data.map((value: any, index: any) => {
       // value.attributes.title;
       // value.attributes.url;
