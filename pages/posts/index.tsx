@@ -111,7 +111,7 @@ export async function getServerSideProps() {
   // GET: dados para contatos
   const contato = await fetcher(`${api_link}/contato`);
   // GET: dados para posts
-  const posts = await fetcher(`${api_link}/posts?populate=*`);
+  const posts = await fetcher(`${api_link}/noticias?populate=*`);
   // GET: dados do navbar
   const navbar = await fetcher(`${api_link}/menus?populate=deep`);
   //get links for menu
