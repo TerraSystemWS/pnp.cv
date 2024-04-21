@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import {truncateString} from "../../lib/utils"
+// import {truncateString} from "../../lib/utils"
 
 const Juri = (props: any) => {
 	// console.log("props.dados");
@@ -24,7 +24,7 @@ const Juri = (props: any) => {
 							className="items-center bg-gray-50 rounded-lg shadow sm:flex dark:bg-gray-800 dark:border-gray-700"
 						>
 							<Link href={`/juris/${value.idd}?edicao=${value.edicao}`}>
-								<Image
+								<Image 
 									className="w-full rounded-lg sm:rounded-none sm:rounded-l-lg"
 									src={value.j_foto}
 									alt={value.j_nome}
