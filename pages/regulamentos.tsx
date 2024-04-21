@@ -19,6 +19,7 @@ const Regulamentos = ({ social, contato, edicao, navbar }: any) => {
   // };
 
   const createMarkup = (values: any) => {
+    // console.log(values);
     if (typeof values !== 'string') {
       // Handle the case when values is not a string, such as logging an error or returning a default value.
       console.error("Error: 'values' is not a string.");
@@ -38,8 +39,14 @@ const Regulamentos = ({ social, contato, edicao, navbar }: any) => {
    * fiz um harded code com o numero de edicoes que tem de ser mudade urgente
    * antis tinha essa linha edicao.data.map((value: any, index: any) => {
    */
+
+  // console.log("edicao.data");
+  // console.log(edicao.data);
   edicao.data?.attributes.regulamentos.map((value2: any, index2: any) => {
-    // console.log(value2.foto.data?.attributes.url);
+     console.log("value2 :: regulamentos");
+     console.log(value2.titulo);
+     console.log(value2.descricao);
+    //  console.log(value2.foto.data?.attributes.url);
     Regulamentos[index2] = {
       id: index2,
       titulo: value2.titulo,
