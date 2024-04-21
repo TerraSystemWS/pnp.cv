@@ -365,7 +365,7 @@ export async function getServerSideProps() {
     value.attributes.items.data.map((value: any, index: any) => {
       // value.attributes.title;
       // value.attributes.url;
-      // console.log(value);
+       //console.log(value);
       dlink[index] = {
         name: value.attributes.title,
         link: value.attributes.url,
