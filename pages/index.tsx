@@ -44,15 +44,29 @@ export default function Home({
   // console.log("dlink");
   // console.log(dlink);
   // create banner object
-  banners.data?.map((value: any, index: any) => {
-    if (value.attributes.destaque) {
-      bannerData[index] = {
-        id: index,
-        title: value.attributes.banners.titulo,
-        url: value.attributes.banners.image.data?.attributes.url || "/",
-      };
-    }
-  });
+  // banners.data?.map((value: any, index: any) => {
+  //   if (value.attributes.destaque) {
+  //     bannerData[index] = {
+  //       id: index,
+  //       title: value.attributes?.banners?.titulo,
+  //       url: value.attributes.banners.image.data?.attributes.url || "/",
+  //     };
+  //   }
+  // });
+  // create banner object
+  // let bannerData: any = [];
+  if (banners && banners.data) {
+    banners.data.map((value: any, index: any) => {
+      if (value.attributes.destaque) {
+        bannerData[index] = {
+          id: index,
+          title: value.attributes?.banners?.titulo || "", // Adicionando uma verificação aqui
+          url: value.attributes.banners.image.data?.attributes.url || "/",
+        };
+      }
+    });
+  }
+
   // create Juris objetct
   /**
    * fiz um harded code com o numero de edicoes que tem de ser mudade urgente
