@@ -25,7 +25,7 @@ const Regulamentos = ({ social, contato, edicao, navbar }: any) => {
    * fiz um harded code com o numero de edicoes que tem de ser mudade urgente
    * antis tinha essa linha edicao.data.map((value: any, index: any) => {
    */
-  edicao.data.attributes.regulamentos.map((value2: any, index2: any) => {
+  edicao.data?.attributes.regulamentos.map((value2: any, index2: any) => {
     // console.log(value2.foto.data?.attributes.url);
     Regulamentos[index2] = {
       id: index2,
@@ -34,7 +34,7 @@ const Regulamentos = ({ social, contato, edicao, navbar }: any) => {
     };
   });
 
-  edicao.data.attributes.categoria.map((categs: any, index3: any) => {
+  edicao.data?.attributes.categoria.map((categs: any, index3: any) => {
     Categoria[index3] = {
       id: index3,
       titulo: categs.titulo,
@@ -69,7 +69,7 @@ const Regulamentos = ({ social, contato, edicao, navbar }: any) => {
     <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
       <Head>
         <title>Regulamento - Prémio Nacional De Publicidade</title>
-        <meta name="description" content={Regulamentos[0].titulo} />
+        <meta name="description" content={Regulamentos[0]?.titulo || " "} />
       </Head>
       {/* <pre>{JSON.stringify(edicao, null, 2)}</pre> */}
       <div className="">
@@ -77,7 +77,7 @@ const Regulamentos = ({ social, contato, edicao, navbar }: any) => {
           <div className="mx-auto max-w-7xl py-12 px-4 sm:px-6">
             <h2 className="text-2xl text-center mb-8 font-bold tracking-tight text-gray-900 sm:text-4xl">
               <span className="block text-amarelo-ouro">
-                {Regulamentos[0].titulo}
+                {Regulamentos[0]?.titulo}
               </span>
             </h2>
           </div>
@@ -98,7 +98,7 @@ const Regulamentos = ({ social, contato, edicao, navbar }: any) => {
 								</div> */}
               <div className="md:flex-grow">
                 <div className="leading-relaxed">
-                  <span dangerouslySetInnerHTML={Regulamentos[0].descricao} />
+                  <span dangerouslySetInnerHTML={Regulamentos[0]?.descricao} />
                 </div>
               </div>
             </div>
