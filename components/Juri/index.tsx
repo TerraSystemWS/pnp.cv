@@ -1,9 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
+import {truncateString} from "../../lib/utils"
 
 const Juri = (props: any) => {
 	// console.log("props.dados");
 	// console.log(props);
+
 	return (
 		<section className="bg-white dark:bg-gray-900">
 			<div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6 ">
@@ -40,7 +42,11 @@ const Juri = (props: any) => {
 									{value.j_titulo}
 								</span>
 								<p className="mt-3 mb-4 font-light text-gray-500 dark:text-gray-400">
-									{value.j_descricao.substring(0, 100) + "..."}
+									{/* { truncateString(value.j_descricao, 100)} */}
+									{/* {value.j_descricao + "..."} */}
+									{/* {value.j_descricao.substring(0, 100) + "..."} */}
+									{/* Verifica se value.j_descricao é uma string antes de chamar o método substring */}
+        							{typeof value.j_descricao === 'string' ? value.j_descricao.substring(0, 100) + "..." : ""}
 								</p>
 								{/* <ul className="flex space-x-4 sm:mt-0">
 									<li>
