@@ -23,7 +23,7 @@ const PostList = ({ social, contato, posts, navbar }: any) => {
         <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
           <div className="mx-auto max-w-screen-sm text-center lg:mb-16 mb-8">
             <h2 className="mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
-              Nosso Blog
+              Nossas Notiçias
             </h2>
             <p className="font-light text-gray-500 sm:text-xl dark:text-gray-400">
               Aqui pode encontar postagens e arquivos relacionado ao pnp e muito
@@ -31,7 +31,7 @@ const PostList = ({ social, contato, posts, navbar }: any) => {
             </p>
           </div>
           <div className="grid gap-8 lg:grid-cols-2">
-            {posts.data.map((value: any, index: any) => (
+            {posts.data?.map((value: any, index: any) => (
               <article
                 key={index}
                 className="p-6 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
@@ -116,7 +116,7 @@ export async function getServerSideProps() {
   const navbar = await fetcher(`${api_link}/menus?populate=deep`);
   //get links for menu
   let dlink: any = [];
-  navbar.data.map((value: any) => {
+  navbar.data?.map((value: any) => {
     value.attributes.items.data.map((value: any, index: any) => {
       // value.attributes.title;
       // value.attributes.url;
