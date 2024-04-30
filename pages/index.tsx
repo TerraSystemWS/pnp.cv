@@ -19,11 +19,13 @@ const qs = require("qs");
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
 // console.log(api_link)
-const site_link = 'http://localhost:1337/uploads/9264885_06e47bbf59.jpg';
+// const site_link = 'http://localhost:1337/uploads/9264885_06e47bbf59.jpg';
 // console.log('site_link')
 // console.log(site_link)
 // Depois
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:1337";
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+
+// console.log(baseUrl)
 
 export default function Home({
   social,
