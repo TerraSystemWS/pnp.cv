@@ -25,7 +25,8 @@ const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
 // Depois
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
-// console.log(baseUrl)
+console.log('baseUrl')
+console.log(baseUrl)
 
 export default function Home({
   social,
