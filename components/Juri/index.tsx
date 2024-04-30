@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 // import {truncateString} from "../../lib/utils"
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:1337";
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 const Juri = (props: any) => {
 	// console.log("props.dados");

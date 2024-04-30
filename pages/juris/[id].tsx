@@ -9,7 +9,7 @@ import { useFetchUser } from "../../lib/authContext";
 
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:1337";
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 const Juris = ({ social, contato, edicao, navbar }: any) => {
   const { user, loading } = useFetchUser();
