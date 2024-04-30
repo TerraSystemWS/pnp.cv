@@ -99,13 +99,14 @@ if (banners && banners.data) {
         title: value.attributes?.banners.titulo || "",
         url: `${baseUrl}${value.attributes.banners.image.data.attributes.url || "/uploads/9264885_06e47bbf59.jpg"}`,
       };
-    } else {
-      bannerData[index] = {
-        id: 0,
-        title: "Sem Dados",
-        url: site_link
-      };
-    }
+    } 
+    // else {
+    //   bannerData[index] = {
+    //     id: 0,
+    //     title: "Sem Dados",
+    //     url: site_link
+    //   };
+    // }
   });
 }
 // console.log("bannerData");
