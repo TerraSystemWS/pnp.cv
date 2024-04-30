@@ -18,6 +18,12 @@ const qs = require("qs");
 
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
+// console.log(api_link)
+const site_link = 'http://localhost:1337/uploads/9264885_06e47bbf59.jpg';
+// console.log('site_link')
+// console.log(site_link)
+// Depois
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:1337";
 
 export default function Home({
   social,
@@ -68,23 +74,44 @@ export default function Home({
   // }
 
   // create banner object
+  console.log("banners");
+  console.log(banners.data);
 // let bannerData: any = [];
 if (banners && banners.data) {
+  // console.log("banners");
+  // console.log(banners.data);
   banners.data.map((value: any, index: any) => {
-    if (value.attributes.destaque && value.attributes.banners && value.attributes.banners.image) {
+    // console.log("value.attributes");
+    // console.dir(value.attributes);
+    // console.log('value.attributes.destaque')
+    // console.log(value.attributes.destaque)
+    // console.log('value.attributes.banners')
+    // console.log(value.attributes.banners)
+    if (value.attributes.destaque && value.attributes.banners)/* && value.attributes.banners.image*/ {
+      // console.dir('value.attributes.banners.image.data.attributes.url');
+      // console.dir(value.attributes.banners.image.data.attributes.url);
+      // console.dir('value.attributes.banners.image.data');
+      // console.dir(value.attributes.banners.image.data);
       bannerData[index] = {
         id: index,
-        title: value.attributes?.banners?.titulo || "",
-        url: value.attributes.banners.image.data?.attributes.url || "/",
+        title: value.attributes?.banners.titulo || "",
+        url: `${baseUrl}${value.attributes.banners.image.data.attributes.url || "/uploads/9264885_06e47bbf59.jpg"}`,
+      };
+    } else {
+      bannerData[index] = {
+        id: 0,
+        title: "Sem Dados",
+        url: site_link
       };
     }
   });
 }
-
+// console.log("bannerData");
+// console.log(bannerData)
 
   // create Juris objetct
   /**
-   * fiz um harded code com o numero de edicoes que tem de ser mudade urgente
+   * fiz um hard code com o numero de edicoes que tem de ser mudade urgente
    * antis tinha essa linha edicao.data.map((value: any, index: any) => {
    */
   edicao.data?.attributes.juri.map((value2: any, index2: any) => {
@@ -376,9 +403,8 @@ export async function getServerSideProps() {
   // GET: dados para contatos
   const contato = await fetcher(`${api_link}/contato`);
   // GET: dados para banners
-  const banners = await fetcher(
-    `${api_link}/banners?populate=deep&${queryBanner}`
-  );
+  // http://localhost:1337/api/banners?populate[0]=banners&populate[1]=banners.image
+  const banners = await fetcher(`${api_link}/banners?populate[0]=banners&populate[1]=banners.image&${queryBanner}`);
   // GET: dados dos juris, categorias
   /**
    * tem que muda keli urgenti

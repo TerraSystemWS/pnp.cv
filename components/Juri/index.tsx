@@ -2,6 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 // import {truncateString} from "../../lib/utils"
 
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:1337";
+
 const Juri = (props: any) => {
 	// console.log("props.dados");
 	// console.log(props);
@@ -26,7 +28,7 @@ const Juri = (props: any) => {
 							<Link href={`/juris/${value.idd}?edicao=${value.edicao}`}>
 								<Image 
 									className="w-full rounded-lg sm:rounded-none sm:rounded-l-lg"
-									src={value.j_foto}
+									src={`${baseUrl}` + value.j_foto}
 									alt={value.j_nome}
 									width={300}
 									height={300}
