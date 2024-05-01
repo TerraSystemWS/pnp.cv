@@ -100,7 +100,7 @@ if (banners && banners.data) {
         title: value.attributes?.banners.titulo,
         url: value.attributes.banners.image.data.attributes.url,
       };
-      console.log(value.attributes.banners.image.data.attributes.url)
+      // console.log(value.attributes.banners.image.data.attributes.url)
     } 
     // else {
     //   bannerData[index] = {
