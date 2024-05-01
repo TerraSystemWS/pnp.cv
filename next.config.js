@@ -3,7 +3,7 @@ const nextConfig = {
 	reactStrictMode: true,
 	swcMinify: true,
 	images: {
-		domains: ['localhost', 'https://api.pnp.cv'],
+		domains: ['localhost', 'https://api.pnp.cv', 'https://pnp.cv'],
 	  },
 	webpack(config) {
 		config.module.rules.push({
