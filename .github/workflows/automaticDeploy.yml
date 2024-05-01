@@ -1,0 +1,15 @@
+name: Automatic Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Trigger deployment
+        run: |
+          curl -X POST http://176.31.106.116:3000/api/deploy/39638a6051c546442b8e4a867dfad013135711f15081dbeb
