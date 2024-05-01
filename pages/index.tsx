@@ -14,7 +14,11 @@ import Categorias from "../components/Categorias";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useFetchUser } from "../lib/authContext";
+import {StrapiImage} from "../components/custom/StrapiImage";
+
+
 const qs = require("qs");
+
 
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
@@ -23,10 +27,6 @@ const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
 // console.log('site_link')
 // console.log(site_link)
 // Depois
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-
-console.log('baseUrl')
-console.log(baseUrl)
 
 export default function Home({
   social,
@@ -77,8 +77,8 @@ export default function Home({
   // }
 
   // create banner object
-  console.log("banners");
-  console.log(banners.data);
+  // console.log("banners");
+  // console.log(banners.data);
 // let bannerData: any = [];
 if (banners && banners.data) {
   // console.log("banners");
@@ -97,9 +97,10 @@ if (banners && banners.data) {
       // console.dir(value.attributes.banners.image.data);
       bannerData[index] = {
         id: index,
-        title: value.attributes?.banners.titulo || "",
-        url: `${baseUrl}${value.attributes.banners.image.data.attributes.url || "/uploads/9264885_06e47bbf59.jpg"}`,
+        title: value.attributes?.banners.titulo,
+        url: value.attributes.banners.image.data.attributes.url,
       };
+      console.log(value.attributes.banners.image.data.attributes.url)
     } 
     // else {
     //   bannerData[index] = {
@@ -262,13 +263,13 @@ if (banners && banners.data) {
         <div className="h-56 md:h-screen z-0">
           <Carousel>
             {bannerData.map((value: any) => (
-              <Image
+              <StrapiImage
                 key={value.id}
                 src={value.url}
                 alt={value.title}
                 width={1024}
                 height={500}
-                onClick={() => goto(value.url)}
+                // onClick={() => goto(value.url)}
                 className="cursor-pointer"
               />
             ))}
@@ -403,21 +404,21 @@ export async function getServerSideProps() {
   );
 
   // GET: links para as redes sociais
-  const rsocials = await fetcher(`${api_link}/redes-social?populate=*`);
+  const rsocials = await fetcher(`${api_link}/api/redes-social?populate=*`);
   // GET: dados para contatos
-  const contato = await fetcher(`${api_link}/contato`);
+  const contato = await fetcher(`${api_link}/api/contato`);
   // GET: dados para banners
   // http://localhost:1337/api/banners?populate[0]=banners&populate[1]=banners.image
-  const banners = await fetcher(`${api_link}/banners?populate[0]=banners&populate[1]=banners.image&${queryBanner}`);
+  const banners = await fetcher(`${api_link}/api/banners?populate[0]=banners&populate[1]=banners.image&${queryBanner}`);
   // GET: dados dos juris, categorias
   /**
    * tem que muda keli urgenti
    */
-  const edicao = await fetcher(`${api_link}/edicoes/1?populate=deep&${query}`);
+  const edicao = await fetcher(`${api_link}/api/edicoes/1?populate=deep&${query}`);
   // GET: dados dos parceiros
   // const parceiros = await fetcher(`${api_link}/parceiros?populate=deep`);
   // GET: dados do navbar
-  const navbar = await fetcher(`${api_link}/menus?populate=deep`);
+  const navbar = await fetcher(`${api_link}/api/menus?populate=deep`);
   //get links for menu
   let dlink: any = [];
   navbar.data.map((value: any) => {
