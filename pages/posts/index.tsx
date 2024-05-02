@@ -3,6 +3,7 @@ import { fetcher } from "../../lib/api";
 import Link from "next/link";
 import Head from "next/head";
 import {StrapiImage} from "../../components/custom/StrapiImage"
+import { useFetchUser } from "../../lib/authContext";
 
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
 
@@ -13,9 +14,10 @@ const PostList = ({ social, contato, posts, navbar }: any) => {
     // posts.data?.map((post:any) => {
     //     console.log(post.attributes.capa.data?.attributes.url)
     // })
+    const { user, loading } = useFetchUser();
 
   return (
-    <Layout rsocial={social} contato={contato} navbar={navbar}>
+    <Layout rsocial={social} contato={contato} navbar={navbar}  user={user}>
       <Head>
         <title>Blog - Prémio Nacional De Publicidade</title>
         <meta
