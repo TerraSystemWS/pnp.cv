@@ -1181,14 +1181,14 @@ export async function getServerSideProps({ params, query }: any) {
   const { id } = query;
 
   // GET: links para as redes sociais
-  const rsocials = await fetcher(`${api_link}/redes-social?populate=*`);
+  const rsocials = await fetcher(`${api_link}/api/redes-social?populate=*`);
   // GET: dados para contatos
-  const contato = await fetcher(`${api_link}/contato`);
+  const contato = await fetcher(`${api_link}/api/contato`);
   // GET: dados do navbar
-  const navbar = await fetcher(`${api_link}/menus?populate=deep`);
+  const navbar = await fetcher(`${api_link}/api/menus?populate=deep`);
   // GET: dados dos projetos inscritos
   const inscritos = await fetcher(
-    `${api_link}/inscricoes/${id}?populate=fileLink`
+    `${api_link}/api/inscricoes/${id}?populate=fileLink`
   );
   //get links for menu
   let dlink: any = [];

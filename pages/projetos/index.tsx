@@ -140,13 +140,13 @@ export async function getServerSideProps() {
   // Fetch data from external API
 
   // GET: links para as redes sociais
-  const rsocials = await fetcher(`${api_link}/redes-social?populate=*`);
+  const rsocials = await fetcher(`${api_link}/api/redes-social?populate=*`);
   // GET: dados para contatos
-  const contato = await fetcher(`${api_link}/contato`);
+  const contato = await fetcher(`${api_link}/api/contato`);
   // GET: dados do navbar
-  const navbar = await fetcher(`${api_link}/menus?populate=deep`);
+  const navbar = await fetcher(`${api_link}/api/menus?populate=deep`);
   // GET: dados dos projetos inscritos
-  const inscritos = await fetcher(`${api_link}/inscricoes`);
+  const inscritos = await fetcher(`${api_link}/api/inscricoes`);
   //get links for menu
   let dlink: any = [];
   navbar.data?.map((value: any) => {

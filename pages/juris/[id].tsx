@@ -150,18 +150,18 @@ export async function getServerSideProps({ params, query }: any) {
   console.log(query.edicao);
 
   // GET: links para as redes sociais
-  const rsocials = await fetcher(`${api_link}/redes-social?populate=*`);
+  const rsocials = await fetcher(`${api_link}/api/redes-social?populate=*`);
   // GET: dados para contatos
-  const contato = await fetcher(`${api_link}/contato`);
+  const contato = await fetcher(`${api_link}/api/contato`);
   // GET: dados para banners
-  const banners = await fetcher(`${api_link}/banners?populate=deep`);
+  const banners = await fetcher(`${api_link}/api/banners?populate=deep`);
   // GET: dados dos juris, categorias
-  const edicao = await fetcher(`${api_link}/edicoes?populate=deep`);
+  const edicao = await fetcher(`${api_link}/api/edicoes?populate=deep`);
   // `${api_link}/edicoes/${query.edicao}?populate=deep`
   // console.log("edicao");
   // console.log(edicao);
   // GET: dados do navbar
-  const navbar = await fetcher(`${api_link}/menus?populate=deep`);
+  const navbar = await fetcher(`${api_link}/api/menus?populate=deep`);
   //get links for menu
   let dlink: any = [];
   navbar.data.map((value: any) => {
