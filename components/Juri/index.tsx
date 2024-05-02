@@ -29,7 +29,7 @@ const Juri = (props: any) => {
 							<Link href={`/juris/${value.idd}?edicao=${value.edicao}`}>
 								<StrapiImage 
 									className="w-full rounded-lg sm:rounded-none sm:rounded-l-lg"
-									src={value.j_foto}
+									src={value.j_foto + `?_=${Date.now()}`}
 									alt={value.j_nome}
 									width={300}
 									height={300}
