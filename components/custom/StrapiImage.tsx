@@ -17,7 +17,7 @@ export function StrapiImage({
   src,
   alt,
   height,
-  width,
+  width=height,
   className,
 }: Readonly<StrapiImageProps>) {
   if (!src) return null;
