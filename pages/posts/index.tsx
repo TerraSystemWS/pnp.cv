@@ -35,8 +35,8 @@ const PostList = ({ social, contato, posts, navbar }: any) => {
         <StrapiImage
           src={post.attributes.capa && post.attributes.capa.data ? post.attributes.capa.data.attributes.url : `https://placehold.co/${150}x${150}`}
           alt={post.attributes.Titulo}
-          height={150}
-        //   width={150}
+          width={150}
+          //   height={150}
           className="w-full h-auto rounded-lg"
         />
       </div>
@@ -81,7 +81,7 @@ const PostList = ({ social, contato, posts, navbar }: any) => {
           <div className="lg:col-span-1">
             <div className="grid gap-8">
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Outras Notícias</h3>
-              {posts.data && posts.data.slice(2).map((post, index) => (
+              {posts.data && posts.data.slice(2).map((post: any, index: any) => (
                 <article
                   key={index}
                   className="p-4 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"

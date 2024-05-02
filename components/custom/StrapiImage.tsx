@@ -16,8 +16,8 @@ const imageLoader = ({ src }: any) => {
 export function StrapiImage({
   src,
   alt,
-  height,
-  width=height,
+  width,
+  height=width,
   className,
 }: Readonly<StrapiImageProps>) {
   if (!src) return null;
