@@ -383,6 +383,7 @@ if (banners && banners.data) {
 // 	};
 // }
 
+{/*
 // This gets called on every request
 export async function getServerSideProps() {
   // Fetch data from external API
@@ -415,7 +416,7 @@ export async function getServerSideProps() {
   // GET: dados dos juris, categorias
   /**
    * tem que muda keli urgenti
-   */
+   ** /
   const edicao = await fetcher(`${api_link}/api/edicoes/1?populate=deep&${query}`);
   // GET: dados dos parceiros
   // const parceiros = await fetcher(`${api_link}/parceiros?populate=deep`);
@@ -446,4 +447,56 @@ export async function getServerSideProps() {
       navbar: dlink,
     },
   };
+}
+
+*/}
+
+export async function getServerSideProps() {
+  const query = qs.stringify(
+    {
+      sort: ["N_Edicao:asc"],
+    },
+    {
+      encodeValuesOnly: true, // prettify URL
+    }
+  );
+
+  const queryBanner = qs.stringify(
+    {
+      sort: ["id:desc"],
+    },
+    {
+      encodeValuesOnly: true, // prettify URL
+    }
+  );
+  
+  try {
+    const [rsocials, contato, banners, edicao, navbar] = await Promise.all([
+      fetcher(`${api_link}/api/redes-social?populate=*`),
+      fetcher(`${api_link}/api/contato`),
+      fetcher(`${api_link}/api/banners?populate[0]=banners&populate[1]=banners.image&${queryBanner}`),
+      fetcher(`${api_link}/api/edicoes/1?populate=deep&${query}`),
+      fetcher(`${api_link}/api/menus?populate=deep`),
+    ]);
+
+    const dlink = navbar.data.flatMap((value: any) =>
+      value.attributes.items.data.map((item: any) => ({
+        name: item.attributes.title,
+        link: item.attributes.url,
+      }))
+    );
+
+    return {
+      props: {
+        social: rsocials,
+        contato,
+        banners,
+        edicao,
+        navbar: dlink,
+      },
+    };
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return { props: { error: "Failed to fetch data" } };
+  }
 }
