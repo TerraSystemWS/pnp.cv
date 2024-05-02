@@ -1,5 +1,5 @@
 import Head from "next/head";
-import Image from "next/image";
+// import Image from "next/image";
 // import styles from "../styles/Home.module.css";
 import Layout from "../components/Layout";
 // import logo from "public/logo1.png";
@@ -16,7 +16,7 @@ import { useRouter } from "next/router";
 import { useFetchUser } from "../lib/authContext";
 import {StrapiImage} from "../components/custom/StrapiImage";
 
-import { SpeedInsights } from "@vercel/speed-insights/next"
+// import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const qs = require("qs");
 
@@ -257,7 +257,7 @@ if (banners && banners.data) {
               premiando os que pela sua criatividade e originalidade contribuem
               para o desenvolvimento do mercado publicitário em Cabo Verde."
         />
-        <SpeedInsights/>
+        {/* <SpeedInsights/> */}
       </Head>
 
       <div className="-mt-2">
