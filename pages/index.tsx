@@ -267,7 +267,7 @@ if (banners && banners.data) {
             {bannerData.map((value: any) => (
               <StrapiImage
                 key={value.id}
-                src={value.url}
+                src={value.url + `?_=${Date.now()}`}
                 alt={value.title}
                 width={1024}
                 height={500}
