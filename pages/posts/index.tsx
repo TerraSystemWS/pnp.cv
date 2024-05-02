@@ -4,6 +4,7 @@ import Link from "next/link";
 import Head from "next/head";
 import {StrapiImage} from "../../components/custom/StrapiImage"
 import { useFetchUser } from "../../lib/authContext";
+import { formatDateTime } from "../../lib/utils"
 
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
 
@@ -88,7 +89,7 @@ const PostList = ({ social, contato, posts, navbar }: any) => {
       {/* Conteúdo do post */}
       <div className="w-2/3">
         <div className="mb-5 text-gray-500">
-          <span className="text-sm">{post.attributes.publishedAt}</span>
+          <span className="text-sm">{formatDateTime(post.attributes.publishedAt)}</span>
         </div>
         <h2 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
           <Link href={`/posts/${post.id}`}>
@@ -144,7 +145,7 @@ const PostList = ({ social, contato, posts, navbar }: any) => {
                     }}></span>
                   </p>
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-500 dark:text-gray-400">Publicado em: {post.attributes.publishedAt}</span>
+                    <span className="text-sm text-gray-500 dark:text-gray-400">Publicado em: {formatDateTime(post.attributes.publishedAt)}</span>
                     <Link href={`/posts/${post.id}`} className="font-medium text-primary-600 dark:text-primary-500 hover:underline">
                       Ler mais
                       <svg
