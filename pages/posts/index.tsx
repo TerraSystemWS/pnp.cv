@@ -36,7 +36,7 @@ const PostList = ({ social, contato, posts, navbar }: any) => {
           src={post.attributes.capa && post.attributes.capa.data ? post.attributes.capa.data.attributes.url : `https://placehold.co/${150}x${150}`}
           alt={post.attributes.Titulo}
           width={150}
-          //   height={150}
+            height={150}
           className="w-full h-auto rounded-lg"
         />
       </div>
