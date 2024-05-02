@@ -9,6 +9,10 @@ interface StrapiImageProps {
   className?: string;
 }
 
+const imageLoader = ({ src }: any) => {
+  return src
+}
+
 export function StrapiImage({
   src,
   alt,
@@ -25,6 +29,7 @@ export function StrapiImage({
   // console.log(imageFallback);
   return (
     <Image
+      loader={imageLoader}
       src={imageUrl ?? imageFallback}
       alt={alt}
       height={height}
