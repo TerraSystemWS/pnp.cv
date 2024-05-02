@@ -183,8 +183,8 @@ export async function getServerSideProps() {
       fetcher(`${api_link}/api/menus?populate=deep`),
     ]);
 
-    const dlink = navbar.data?.flatMap((value) =>
-      value.attributes.items.data.map((item) => ({
+    const dlink = navbar.data?.flatMap((value: any) =>
+      value.attributes.items.data.map((item: any) => ({
         name: item.attributes.title,
         link: item.attributes.url,
       }))
