@@ -4,7 +4,7 @@ const nextConfig = {
 	swcMinify: true,
 	images: {
 		domains: ['localhost', 'https://api.pnp.cv', 'https://pnp.cv', 'https://placehold.co'],
-		unoptimized: true,
+		// unoptimized: true,
 	  },
 	// webpack(config) {
 	// 	config.module.rules.push({
