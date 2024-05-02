@@ -1,7 +1,7 @@
 import Layout from "../components/Layout";
 import { fetcher } from "../lib/api";
 import showdown from "showdown";
-import Link from "next/link";
+// import Link from "next/link";
 import Head from "next/head";
 const qs = require("qs");
 import { useFetchUser } from "../lib/authContext";

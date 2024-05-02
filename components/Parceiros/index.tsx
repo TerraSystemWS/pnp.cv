@@ -1,5 +1,5 @@
-import Morelink from "../../public/more.svg";
-import { Tooltip } from "flowbite-react";
+// import Morelink from "../../public/more.svg";
+// import { Tooltip } from "flowbite-react";
 import Image from "next/image";
 import Link from "next/link";
 

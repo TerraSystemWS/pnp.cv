@@ -1,4 +1,4 @@
-import Image from "next/image";
+// import Image from "next/image";
 import Link from "next/link";
 import {StrapiImage} from "../custom/StrapiImage";
 // import {truncateString} from "../../lib/utils"
