@@ -69,7 +69,7 @@ const PostList = ({ social, contato, posts, navbar }: any) => {
               ))}
             </div> */}
             <div className="grid gap-8">
-  {posts.data && posts.data.map((post: any, index: any) => ( //?.slice(3).
+  {posts.data && posts.data.slice(0, 2).map((post: any, index: any) => (
     <article
       key={index}
       className="p-6 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700 flex"
