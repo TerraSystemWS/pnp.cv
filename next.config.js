@@ -3,16 +3,16 @@ const nextConfig = {
 	reactStrictMode: true,
 	swcMinify: true,
 	images: {
-		domains: ['localhost', 'https://api.pnp.cv', 'https://pnp.cv'],
+		domains: ['localhost', 'https://api.pnp.cv', 'https://pnp.cv', 'https://placehold.co'],
 	  },
-	webpack(config) {
-		config.module.rules.push({
-			test: /\.svg$/,
-			use: ["@svgr/webpack"],
-		});
+	// webpack(config) {
+	// 	config.module.rules.push({
+	// 		test: /\.svg$/,
+	// 		use: ["@svgr/webpack"],
+	// 	});
 
-		return config;
-	},
+	// 	return config;
+	// },
 };
 
 module.exports = nextConfig;
