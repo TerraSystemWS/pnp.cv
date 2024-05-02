@@ -8,7 +8,7 @@ const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
 
 
 
-const PostList = ({ social, contato, posts, navbar }) => {
+const PostList = ({ social, contato, posts, navbar }: any) => {
 
     // posts.data?.map((post:any) => {
     //     console.log(post.attributes.capa.data?.attributes.url)
@@ -67,7 +67,7 @@ const PostList = ({ social, contato, posts, navbar }) => {
               ))}
             </div> */}
             <div className="grid gap-8">
-  {posts.data && posts.data.map((post, index) => ( //?.slice(3).
+  {posts.data && posts.data.map((post: any, index: any) => ( //?.slice(3).
     <article
       key={index}
       className="p-6 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700 flex"
