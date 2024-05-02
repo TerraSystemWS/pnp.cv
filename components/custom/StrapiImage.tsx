@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { getStrapiMedia } from "../../lib/utils";
 
+const loaderProp = ({ src }: any) => { return src }
+
 interface StrapiImageProps {
   src: string;
   alt: string;
@@ -25,6 +27,7 @@ export function StrapiImage({
   // console.log(imageFallback);
   return (
     <Image
+      loader={loaderProp(imageUrl ?? imageFallback)}
       src={imageUrl ?? imageFallback}
       alt={alt}
       height={height}
