@@ -127,7 +127,7 @@ const PostList = ({ social, contato, posts, navbar }: any) => {
           <div className="col-span-1">
             <div className="grid gap-8">
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Outras Notícias</h3>
-              {posts.data?.map((post: any, index: any) => (
+              {posts.data?.slice(2).map((post: any, index: any) => (
                 <article
                   key={index}
                   className="p-4 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
