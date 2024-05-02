@@ -16,6 +16,7 @@ import { useRouter } from "next/router";
 import { useFetchUser } from "../lib/authContext";
 import {StrapiImage} from "../components/custom/StrapiImage";
 
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const qs = require("qs");
 
@@ -256,6 +257,7 @@ if (banners && banners.data) {
               premiando os que pela sua criatividade e originalidade contribuem
               para o desenvolvimento do mercado publicitário em Cabo Verde."
         />
+        <SpeedInsights/>
       </Head>
 
       <div className="-mt-2">
