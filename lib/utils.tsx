@@ -20,7 +20,7 @@ export function getStrapiURL() {
   //   return `${hours}:${minutes} ${day}-${month}-${year}`;
   // };
 
-  export const formatDateTime = (dateTimeString) => {
+  export const formatDateTime = (dateTimeString: string): string => {
     const date = new Date(dateTimeString);
     const hours = String(date.getHours()).padStart(2, '0');
     const minutes = String(date.getMinutes()).padStart(2, '0');
@@ -30,4 +30,5 @@ export function getStrapiURL() {
     
     return `${hours}:${minutes} ${day}-${month}-${year}`;
   };
+  
   
