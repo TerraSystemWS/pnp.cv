@@ -8,7 +8,7 @@ import { formatDateTime } from "../../lib/utils";
 
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
 
-const PostList = ({ social, contato, posts, navbar }) => {
+const PostList = ({ social, contato, posts, navbar }: any) => {
   const { user, loading } = useFetchUser();
 
   return (
@@ -135,8 +135,8 @@ export async function getServerSideProps() {
       fetcher(`${api_link}/api/menus?populate=deep`),
     ]);
 
-    const dlink = navbar.data?.flatMap((value) =>
-      value.attributes.items.data.map((item) => ({
+    const dlink = navbar.data?.flatMap((value: any) =>
+      value.attributes.items.data.map((item: any) => ({
         name: item.attributes.title,
         link: item.attributes.url,
       }))
