@@ -2,18 +2,18 @@ import { Timeline } from "flowbite-react";
 import { HiCalendar, HiArrowNarrowRight } from "react-icons/hi";
 import Layout from "../../components/Layout";
 import { fetcher } from "../../lib/api";
-import Image from "next/image";
+// import Image from "next/image";
 import Link from "next/link";
 import Head from "next/head";
 // import { Button } from "flowbite-react";
 import ImageViewer from "awesome-image-viewer";
-import { Carousel, Button } from "flowbite-react";
+// import { Carousel, Button } from "flowbite-react";
 import { useFetchUser } from "../../lib/authContext";
-import { StrapiImage, StrapiData } from "../../components/custom/StrapiImage";
+import { StrapiImage } from "../../components/custom/StrapiImage";
 import Galery from "../../components/custom/galery";
 import { getStrapiMedia } from "../../lib/utils";
-import React, { useState } from "react";
-import SimpleModal from "../../components/custom/pdfModal";
+import React from "react";
+// import SimpleModal from "../../components/custom/pdfModal";
 
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
 
@@ -26,16 +26,16 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
 		});
 	};
 
-	const [isModalOpen, setIsModalOpen] = useState(false);
-	// const pdfSrc = "/path/to/your/pdf.pdf"; // Replace with the actual path to your PDF file
+	// const [isModalOpen, setIsModalOpen] = useState(false);
+	// // const pdfSrc = "/path/to/your/pdf.pdf"; // Replace with the actual path to your PDF file
 
-	const openModal = () => {
-		setIsModalOpen(true);
-	};
+	// const openModal = () => {
+	// 	setIsModalOpen(true);
+	// };
 
-	const closeModal = () => {
-		setIsModalOpen(false);
-	};
+	// const closeModal = () => {
+	// 	setIsModalOpen(false);
+	// };
 
 	return (
 		<Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
@@ -64,6 +64,7 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
 			</div>
 
 			<div className="container mx-auto">
+				{/* @ts-ignore */}
 				<Timeline>
 					{edicao.data.map((value: any, index: any) => (
 						<Timeline.Item key={index}>
@@ -104,7 +105,7 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
 															>
 																<div className="h-full flex items-center border-gray-200 border p-4 rounded-lg">
 																	{/* <Link href={`/juris/${value2.id}?edicao=${value2.attributes.N_Edicao}`}> */}
-
+																	{/* @ts-ignore */}
 																	<StrapiImage
 																		key={
 																			index
@@ -179,6 +180,7 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
 															</h1>
 														</div>
 														<div className="">
+															{/* @ts-ignore */}
 															<Galery
 																imageUrls={value.imagens.data.map(
 																	(
