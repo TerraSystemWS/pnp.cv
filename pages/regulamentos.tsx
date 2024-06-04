@@ -42,9 +42,9 @@ const Regulamentos = ({ social, contato, edicao, navbar }: any) => {
 	// console.log("edicao.data");
 	// console.log(edicao.data);
 	edicao.data?.attributes.regulamentos.map((value2: any, index2: any) => {
-		console.log("value2 :: regulamentos");
-		console.log(value2.titulo);
-		console.log(value2.descricao);
+		// console.log("value2 :: regulamentos");
+		// console.log(value2.titulo);
+		// console.log(value2.descricao);
 		//  console.log(value2.foto.data?.attributes.url);
 		Regulamentos[index2] = {
 			id: index2,
@@ -105,19 +105,30 @@ const Regulamentos = ({ social, contato, edicao, navbar }: any) => {
 					</div>
 				</div>
 			</div>
-			<section className="text-gray-800 body-font overflow-hidden">
+			<section className="text-gray-600 body-font overflow-hidden">
 				<div className="container px-5 py-24 mx-auto">
 					<div className="-my-8 divide-y-2 divide-gray-100">
+						{/* {Categoria.map((values: any) => ( */}
 						<div className="py-8 flex flex-wrap md:flex-nowrap">
+							{/* <div className="md:w-64 md:mb-0 mb-6 flex-shrink-0 flex flex-col">
+									<span className="font-semibold title-font text-gray-700">
+										CATEGORY #{values.id}
+									</span>
+									<span className="mt-1 text-gray-500 text-sm">
+										12 Jun 2019
+									</span>
+								</div> */}
 							<div className="md:flex-grow">
-								<div
-									className="prose lg:prose-xl max-w-none"
-									dangerouslySetInnerHTML={
-										Regulamentos[0]?.descricao
-									}
-								/>
+								<div className="leading-relaxed">
+									<span
+										dangerouslySetInnerHTML={
+											Regulamentos[0]?.descricao
+										}
+									/>
+								</div>
 							</div>
 						</div>
+						{/* ))} */}
 					</div>
 				</div>
 			</section>
