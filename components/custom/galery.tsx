@@ -57,6 +57,7 @@ const Galery: React.FC<GaleryProps> = ({ imageUrls }) => {
 							onClick={() => handleMagnify(url, index)}
 						>
 							<div className="w-full p-1 md:p-2">
+								{/* @ts-ignore */}
 								<StrapiImage
 									src={url}
 									alt="gallery"
@@ -75,10 +76,12 @@ const Galery: React.FC<GaleryProps> = ({ imageUrls }) => {
 					className="fixed top-0 left-0 z-50 w-full h-full flex justify-center items-center bg-black bg-opacity-50"
 					onClick={handleCloseMagnify}
 				>
+					{/*  @ts-ignore */}
 					<StrapiImage
 						src={magnifyImageUrl}
 						alt="Magnified Image"
 						className="max-h-full max-w-full"
+						// @ts-ignore
 						onClick={(e) => e.stopPropagation()}
 					/>
 					<button
