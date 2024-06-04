@@ -1,6 +1,7 @@
 // import Image from "next/image";
 import Link from "next/link";
 import { StrapiImage } from "../custom/StrapiImage";
+
 // import {truncateString} from "../../lib/utils"
 
 // const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
@@ -33,8 +34,8 @@ const Juri = (props: any) => {
 									className="w-full rounded-lg sm:rounded-none sm:rounded-l-lg"
 									src={value.j_foto}
 									alt={value.j_nome}
-									width={300}
 									height={300}
+									width={300}
 								/>
 							</Link>
 							<div className="p-5">
