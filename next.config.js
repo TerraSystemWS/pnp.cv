@@ -3,9 +3,14 @@ const nextConfig = {
 	reactStrictMode: true,
 	swcMinify: true,
 	images: {
-		domains: ['localhost', 'https://api.pnp.cv', 'https://pnp.cv', 'https://placehold.co'],
-		unoptimized: true,
-	  },
+		domains: [
+			"localhost",
+			"https://api.pnp.cv",
+			"https://pnp.cv",
+			"https://placehold.co",
+		],
+		// unoptimized: true,
+	},
 	// webpack(config) {
 	// 	config.module.rules.push({
 	// 		test: /\.svg$/,
