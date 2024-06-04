@@ -1,6 +1,6 @@
 // import Image from "next/image";
 import Link from "next/link";
-import {StrapiImage} from "../custom/StrapiImage";
+import { StrapiImage } from "../custom/StrapiImage";
 // import {truncateString} from "../../lib/utils"
 
 // const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
@@ -26,8 +26,10 @@ const Juri = (props: any) => {
 							key={index}
 							className="items-center bg-gray-50 rounded-lg shadow sm:flex dark:bg-gray-800 dark:border-gray-700"
 						>
-							<Link href={`/juris/${value.idd}?edicao=${value.edicao}`}>
-								<StrapiImage 
+							<Link
+								href={`/juris/${value.idd}?edicao=${value.edicao}`}
+							>
+								<StrapiImage
 									className="w-full rounded-lg sm:rounded-none sm:rounded-l-lg"
 									src={value.j_foto}
 									alt={value.j_nome}
@@ -37,7 +39,9 @@ const Juri = (props: any) => {
 							</Link>
 							<div className="p-5">
 								<h3 className="text-xl font-bold tracking-tight text-amarelo-ouro dark:text-white">
-									<Link href={`/juris/${value.idd}?edicao=${value.edicao}`}>
+									<Link
+										href={`/juris/${value.idd}?edicao=${value.edicao}`}
+									>
 										{value.j_nome}
 									</Link>
 								</h3>
@@ -49,7 +53,10 @@ const Juri = (props: any) => {
 									{/* {value.j_descricao + "..."} */}
 									{/* {value.j_descricao.substring(0, 100) + "..."} */}
 									{/* Verifica se value.j_descricao é uma string antes de chamar o método substring */}
-        							{typeof value.j_descricao === 'string' ? value.j_descricao.substring(0, 100) + "..." : ""}
+									{typeof value.j_descricao === "string"
+										? value.j_descricao.substring(3, 100) +
+										  "..."
+										: ""}
 								</p>
 								{/* <ul className="flex space-x-4 sm:mt-0">
 									<li>

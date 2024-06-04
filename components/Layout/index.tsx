@@ -9,7 +9,7 @@ import Meta from "../Meta";
 interface Props {
 	children?: ReactNode;
 	rsocial: ReactNode;
-	contato: ReactNode;
+	contato: any;
 	navbar: ReactNode;
 	user: ReactNode;
 	loading?: ReactNode;
@@ -25,17 +25,20 @@ const Layout = ({
 }: Props) => (
 	<UserProvider value={{ user, loading }}>
 		<div className="">
+			{/* @ts-ignore */}
 			<Head>
+				{/* @ts-ignore */}
 				<Meta />
 			</Head>
 
 			<header>
+				{/* @ts-ignore */}
 				<NavBar navbar={navbar} />{" "}
 			</header>
 
 			<div className="mt-28">{children}</div>
-
-			<Footer rsocial={rsocial} contato={contato} navbar={navbar} />
+			{/* @ts-ignore */}
+			<Footer rsocial={rsocial} contato={contato} />
 		</div>
 	</UserProvider>
 );
