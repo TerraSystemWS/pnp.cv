@@ -8,7 +8,10 @@ interface StrapiImageProps {
 	width: number;
 	className?: string;
 }
-
+interface StrapiDataProps {
+	src: string;
+	className?: string;
+}
 const imageLoader = ({ src }: any) => {
 	return src;
 };
@@ -39,4 +42,12 @@ export function StrapiImage({
 			className={className}
 		/>
 	);
+}
+
+export function StrapiData({ src }: Readonly<StrapiDataProps>) {
+	if (!src) return " ";
+	const imageUrl = getStrapiMedia(src);
+	let srcFinal = { imageUrl };
+
+	return srcFinal;
 }
