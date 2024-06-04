@@ -28,7 +28,7 @@ const Parceiros = ({ social, contato, parceiros, navbar }: any) => {
 				id: index2,
 				link: value2.link,
 				title: value2.titulo,
-				foto: getStrapiMedia(value2.logo.data?.attributes.url) || " ",
+				foto: getStrapiMedia(value2.logo?.data?.attributes.url) || " ",
 			};
 		});
 		value.attributes.parceiros_padrinhos.map((value2: any, index2: any) => {
@@ -36,7 +36,7 @@ const Parceiros = ({ social, contato, parceiros, navbar }: any) => {
 				id: index2,
 				link: value2.link,
 				title: value2.titulo,
-				foto: getStrapiMedia(value2.logo.data?.attributes.url) || " ",
+				foto: getStrapiMedia(value2.logo?.data?.attributes.url) || " ",
 			};
 		});
 
@@ -66,7 +66,7 @@ const Parceiros = ({ social, contato, parceiros, navbar }: any) => {
 				id: index2 + lugar,
 				link: value2.link,
 				title: value2.titulo,
-				foto: getStrapiMedia(value2.logo.data?.attributes.url) || " ",
+				foto: getStrapiMedia(value2.logo?.data?.attributes.url) || " ",
 				tipo: value2.tipo,
 				cor: cor,
 				icon: icon,
@@ -98,7 +98,7 @@ const Parceiros = ({ social, contato, parceiros, navbar }: any) => {
 				id: index2,
 				link: value2.link,
 				title: value2.titulo,
-				foto: getStrapiMedia(value2.logo.data.attributes.url) || " ",
+				foto: getStrapiMedia(value2.logo?.data?.attributes.url) || " ",
 			};
 		});
 	});
