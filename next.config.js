@@ -8,6 +8,7 @@ const nextConfig = {
 			"https://api.pnp.cv",
 			"https://pnp.cv",
 			"https://placehold.co",
+			"http://localhost:1337/",
 		],
 		// unoptimized: true,
 	},
