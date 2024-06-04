@@ -280,6 +280,7 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
 																	) || " "
 																}
 																target="_blank"
+																rel="noreferrer"
 															>
 																<h5 className="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
 																	{
