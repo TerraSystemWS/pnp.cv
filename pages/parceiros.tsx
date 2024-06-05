@@ -141,12 +141,12 @@ const Parceiros = ({ social, contato, parceiros, navbar }: any) => {
 													target="_blank"
 													rel="noreferrer"
 												>
-													<Image
+													<img
 														alt={value.title}
 														className="w-32 h-32 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4"
 														src={value.foto}
-														width={100}
-														height={100}
+														width="100px"
+														height="100px"
 													/>
 												</Link>
 												<div className="flex-grow">
@@ -181,12 +181,12 @@ const Parceiros = ({ social, contato, parceiros, navbar }: any) => {
 												target="_blank"
 												rel="noreferrer"
 											>
-												<Image
+												<img
 													className="xl:w-1/4 lg:w-1/3 md:w-1/2 w-2/3 block mx-auto object-cover object-center rounded"
 													alt={value.title}
 													src={value.foto}
-													width={150}
-													height={150}
+													width="150px"
+													height="150px"
 												/>
 											</Link>
 										</div>
@@ -219,12 +219,12 @@ const Parceiros = ({ social, contato, parceiros, navbar }: any) => {
 												target="_blank"
 												rel="noreferrer"
 											>
-												<Image
+												<img
 													alt={value.title}
 													className="w-32 h-32 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4"
 													src={value.foto}
-													width={100}
-													height={100}
+													width="100px"
+													height="100px"
 												/>
 											</Link>
 											<div className="flex-grow">
@@ -259,12 +259,12 @@ const Parceiros = ({ social, contato, parceiros, navbar }: any) => {
 											target="_blank"
 											rel="noreferrer"
 										>
-											<Image
+											<img
 												className="xl:w-1/4 lg:w-1/3 md:w-1/2 w-2/3 block mx-auto  object-cover object-center rounded"
 												alt={value.title}
 												src={value.foto}
-												width={150}
-												height={150}
+												width="150px"
+												height="150px"
 											/>
 										</Link>
 									</div>
@@ -307,12 +307,12 @@ const Parceiros = ({ social, contato, parceiros, navbar }: any) => {
 												target="_blank"
 												rel="noreferrer"
 											>
-												<Image
+												<img
 													alt={value.title}
 													className="w-32 h-32 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4"
 													src={value.foto}
-													width={100}
-													height={100}
+													width="100px"
+													height="100px"
 												/>
 											</Link>
 											<div className="flex-grow">
@@ -369,12 +369,12 @@ const Parceiros = ({ social, contato, parceiros, navbar }: any) => {
 											target="_blank"
 											rel="noreferrer"
 										>
-											<Image
+											<img
 												alt={value.title}
 												className="w-32 h-32 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4"
 												src={value.foto}
-												width={100}
-												height={100}
+												width="100px"
+												height="100px"
 											/>
 										</Link>
 										<div className="flex-grow">
@@ -418,12 +418,12 @@ const Parceiros = ({ social, contato, parceiros, navbar }: any) => {
 										target="_blank"
 										rel="noreferrer"
 									>
-										<Image
+										<img
 											alt={value.title}
 											className="w-32 h-32 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4"
 											src={value.foto}
-											width={100}
-											height={100}
+											width="100px"
+											height="100px"
 										/>
 									</Link>
 									<div className="flex-grow">
