@@ -43,6 +43,7 @@ const PostDetail = ({ social, contato, post, navbar }: PostDetailProps) => {
 						<StrapiImage
 							src={capa.data?.attributes.url}
 							width={800}
+							height={400}
 							alt={Titulo}
 							className="w-full h-auto rounded-lg"
 						/>
