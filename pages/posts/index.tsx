@@ -11,8 +11,8 @@ const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
 const PostList = ({ social, contato, posts, navbar }: any) => {
 	const { user, loading } = useFetchUser();
 
-	console.log("post");
-	console.log(posts.data[0].attributes.capa);
+	// console.log("post");
+	// console.log(posts.data[0].attributes.capa);
 
 	return (
 		<Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
