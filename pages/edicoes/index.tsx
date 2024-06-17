@@ -170,32 +170,7 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
 														them.
 													</p> */}
 										</div>
-										{/* <div className="flex flex-wrap justify-between gap-4 sm:gap-8 xl:gap-12 2xl:gap-16">
-											{value.attributes.galeria.map(
-												(value: any) => (
-													<div key={value.id}>
-														<div>
-															<h1 className="">
-																{value.titulo}
-															</h1>
-														</div>
-														<div className="">
-															{/* @ts-ignore * /}
-															<Galery
-																imageUrls={value.imagens.data.map(
-																	(
-																		value: any
-																	) =>
-																		value
-																			.attributes
-																			.url
-																)}
-															/>
-														</div>
-													</div>
-												)
-											)}
-										</div> */}
+
 										{/* <div className="flex flex-wrap justify-between gap-4 sm:gap-8 xl:gap-12 2xl:gap-16">
 											{value.attributes.galeria
 												.slice(0, 10)
@@ -260,19 +235,27 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
 																					.url
 																		)}
 																/>
-																{index ===
-																	9 && ( // Verifica se é a última imagem (índice 9 porque estamos cortando para 10)
-																	<div className="hover:underline">
-																		<a href="/pagina-da-galeria">
-																			Ver
-																			mais...
-																		</a>
-																	</div>
-																)}
 															</div>
 														</div>
 													)
 												)}
+											<div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 p-2">
+												<Link
+													href="/galeria"
+													className="hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500 group w-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-slate-300 text-sm leading-6 text-slate-900 font-medium py-3"
+												>
+													<svg
+														className="group-hover:text-blue-500 mb-1 text-slate-400"
+														width="20"
+														height="20"
+														fill="currentColor"
+														aria-hidden="true"
+													>
+														<path d="M10 5a1 1 0 0 1 1 1v3h3a1 1 0 1 1 0 2h-3v3a1 1 0 1 1-2 0v-3H6a1 1 0 1 1 0-2h3V6a1 1 0 0 1 1-1Z" />
+													</svg>
+													Ver mais fotos na galeria
+												</Link>
+											</div>
 										</div>
 									</div>
 									{/* Videos section */}
