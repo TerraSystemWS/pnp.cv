@@ -320,7 +320,10 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
 										</div>
 										{value.attributes.documents.map(
 											(value: any) => (
-												<div key={value.id}>
+												<div
+													key={value.id}
+													className="m-5"
+												>
 													<div>
 														<div className="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
 															{/* <svg
