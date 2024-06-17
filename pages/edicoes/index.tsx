@@ -196,7 +196,7 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
 												)
 											)}
 										</div> */}
-										<div className="flex flex-wrap justify-between gap-4 sm:gap-8 xl:gap-12 2xl:gap-16">
+										{/* <div className="flex flex-wrap justify-between gap-4 sm:gap-8 xl:gap-12 2xl:gap-16">
 											{value.attributes.galeria
 												.slice(0, 10)
 												.map((item: any) => (
@@ -207,7 +207,7 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
 															</h1>
 														</div>
 														<div className="">
-															{/* @ts-ignore */}
+															{/* @ts-ignore * /}
 															<Galery
 																imageUrls={item.imagens.data
 																	.slice(
@@ -226,6 +226,53 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
 														</div>
 													</div>
 												))}
+										</div> */}
+										<div className="flex flex-wrap justify-between gap-4 sm:gap-8 xl:gap-12 2xl:gap-16">
+											{value.attributes.galeria
+												.slice(0, 10)
+												.map(
+													(
+														item: any,
+														index: number
+													) => (
+														<div key={item.id}>
+															<div>
+																<h1 className="">
+																	{
+																		item.titulo
+																	}
+																</h1>
+															</div>
+															<div className="">
+																{/* @ts-ignore */}
+																<Galery
+																	imageUrls={item.imagens.data
+																		.slice(
+																			0,
+																			10
+																		)
+																		.map(
+																			(
+																				img: any
+																			) =>
+																				img
+																					.attributes
+																					.url
+																		)}
+																/>
+																{index ===
+																	9 && ( // Verifica se é a última imagem (índice 9 porque estamos cortando para 10)
+																	<div className="hover:underline">
+																		<a href="/pagina-da-galeria">
+																			Ver
+																			mais...
+																		</a>
+																	</div>
+																)}
+															</div>
+														</div>
+													)
+												)}
 										</div>
 									</div>
 									{/* Videos section */}
