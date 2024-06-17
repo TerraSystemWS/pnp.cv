@@ -170,7 +170,7 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
 														them.
 													</p> */}
 										</div>
-										<div className="flex flex-wrap justify-between gap-4 sm:gap-8 xl:gap-12 2xl:gap-16">
+										{/* <div className="flex flex-wrap justify-between gap-4 sm:gap-8 xl:gap-12 2xl:gap-16">
 											{value.attributes.galeria.map(
 												(value: any) => (
 													<div key={value.id}>
@@ -180,7 +180,7 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
 															</h1>
 														</div>
 														<div className="">
-															{/* @ts-ignore */}
+															{/* @ts-ignore * /}
 															<Galery
 																imageUrls={value.imagens.data.map(
 																	(
@@ -195,6 +195,37 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
 													</div>
 												)
 											)}
+										</div> */}
+										<div className="flex flex-wrap justify-between gap-4 sm:gap-8 xl:gap-12 2xl:gap-16">
+											{value.attributes.galeria
+												.slice(0, 10)
+												.map((item: any) => (
+													<div key={item.id}>
+														<div>
+															<h1 className="">
+																{item.titulo}
+															</h1>
+														</div>
+														<div className="">
+															{/* @ts-ignore */}
+															<Galery
+																imageUrls={item.imagens.data
+																	.slice(
+																		0,
+																		10
+																	)
+																	.map(
+																		(
+																			img: any
+																		) =>
+																			img
+																				.attributes
+																				.url
+																	)}
+															/>
+														</div>
+													</div>
+												))}
 										</div>
 									</div>
 									{/* Videos section */}
@@ -208,7 +239,7 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
 														asymmetrical gentrify, subway tile poke
 														farm-to-table. Franzen you probably havent heard of
 														them.
-													</p> */}
+											</p> */}
 										</div>
 										<section className="grid grid-cols-2 gap-4">
 											{value.attributes.videos.map(
@@ -349,8 +380,8 @@ export async function getServerSideProps() {
 		fetcher(`${api_link}/api/menus?populate=deep`),
 	]);
 
-	console.log("edicao");
-	console.log(edicao.data[0].attributes);
+	// console.log("edicao");
+	// console.log(edicao.data[0].attributes);
 
 	const dlink = navbar.data.flatMap((value: any) =>
 		value.attributes.items.data.map((item: any) => ({
