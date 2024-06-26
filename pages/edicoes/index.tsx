@@ -241,7 +241,7 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
 												)}
 											<div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 p-2">
 												<Link
-													href="/galeria"
+													href={`/galeria?edicao=${value.attributes.N_Edicao}`}
 													className="hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500 group w-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-slate-300 text-sm leading-6 text-slate-900 font-medium py-3"
 												>
 													<svg
