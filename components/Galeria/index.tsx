@@ -8,7 +8,7 @@ interface GalleryProps {
 
 const Gallery: React.FC<GalleryProps> = ({ images }) => {
 	return (
-		<div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+		<div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-5">
 			{images.map((imageUrl, index) => (
 				<div key={index}>
 					<img
