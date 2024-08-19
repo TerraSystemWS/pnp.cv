@@ -81,9 +81,7 @@ const Votacao = () => {
 
 	return (
 		<div className=" mx-auto p-6 bg-white shadow-md rounded-lg">
-			<h1 className="text-2xl font-bold mb-6 text-center">
-				Avaliação de Prémios
-			</h1>
+			<h1 className="text-2xl font-bold mb-6 text-center">Avaliação</h1>
 			<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
 				<div>
 					<label
