@@ -75,7 +75,7 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
 
     try {
       const res = await fetcher(
-        `${process.env.NEXT_PUBLIC_STRAPI_URL}/votacao-publicas`,
+        `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/votacao-publicas`,
         {
           //@ts-ignore
           method: "POST",
@@ -119,6 +119,11 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
     } catch (error) {
       // console.log("=========== dados Erros ====================");
       // console.log(error);
+      Swal.fire({
+        icon: "error",
+        title: "Falhou",
+        text: "Não foi possivel votar",
+      });
     }
   };
 
