@@ -13,77 +13,86 @@ import { useFetchUser } from "../../lib/authContext";
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
 
 const Vpublica = ({ social, contato, inscritos, navbar }: any) => {
-  const { user, loading } = useFetchUser();
-  console.log(inscritos);
-  return (
-    <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
-      <Head>
-        <title>Trabalhos Concorentes - Prémio Nacional De Publicidade</title>
-        <meta
-          name="description"
-          content="Projetos Concorentes aos Premios - Prémio Nacional De Publicidade"
-        />
-      </Head>
-      <section className="bg-white dark:bg-gray-900">
-        <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
-          {!loading &&
-            (user ? ( //user
-              <div className="mx-auto max-w-screen-md text-center lg:mb-16 mb-8">
-                <h2 className="mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold text-amarelo-ouro dark:text-white">
-                  Avaliaçao Dos Jurados
-                </h2>
-                <p className="font-light text-justify text-gray-500 sm:text-xl dark:text-gray-400">
-                  O Prémio Público de Publicidade é uma das categorias do Prémio
-                  Nacional de Publicidade (PNP) em que a votação é feita somente
-                  pelo público, através da Internet. Trata-se de um prémio da
-                  responsabilidade do PNP, com regulamento próprio, sem
-                  avaliação do júri, baseado apenas no critério de popularidade.
-                </p>
-              </div>
-            ) : (
-              <div className="mx-auto max-w-screen-md text-center lg:mb-16 mb-8">
-                <h2 className="mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold text-amarelo-ouro dark:text-white">
-                  Votação Pública
-                </h2>
-                <p className="font-light text-justify text-gray-500 sm:text-xl dark:text-gray-400">
-                  O Prémio Público de Publicidade é uma das categorias do Prémio
-                  Nacional de Publicidade (PNP) em que a votação é feita somente
-                  pelo público, através da Internet. Trata-se de um prémio da
-                  responsabilidade do PNP, com regulamento próprio, sem
-                  avaliação do júri, baseado apenas no critério de popularidade.
-                </p>
-              </div>
-            ))}
+	const { user, loading } = useFetchUser();
+	console.log(inscritos);
+	return (
+		<Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
+			<Head>
+				<title>
+					Trabalhos Concorentes - Prémio Nacional De Publicidade
+				</title>
+				<meta
+					name="description"
+					content="Projetos Concorentes aos Premios - Prémio Nacional De Publicidade"
+				/>
+			</Head>
+			<section className="bg-white dark:bg-gray-900">
+				<div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
+					{!loading &&
+						(user ? ( //user
+							<div className="mx-auto max-w-screen-md text-center lg:mb-16 mb-8">
+								<h2 className="mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold text-amarelo-ouro dark:text-white">
+									Avaliaçao Dos Jurados
+								</h2>
+								<p className="font-light text-justify text-gray-500 sm:text-xl dark:text-gray-400">
+									O Prémio Público de Publicidade é uma das
+									categorias do Prémio Nacional de Publicidade
+									(PNP) em que a votação é feita somente pelo
+									público, através da Internet. Trata-se de um
+									prémio da responsabilidade do PNP, com
+									regulamento próprio, sem avaliação do júri,
+									baseado apenas no critério de popularidade.
+								</p>
+							</div>
+						) : (
+							<div className="mx-auto max-w-screen-md text-center lg:mb-16 mb-8">
+								<h2 className="mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold text-amarelo-ouro dark:text-white">
+									Votação Pública
+								</h2>
+								<p className="font-light text-justify text-gray-500 sm:text-xl dark:text-gray-400">
+									O Prémio Público de Publicidade é uma das
+									categorias do Prémio Nacional de Publicidade
+									(PNP) em que a votação é feita somente pelo
+									público, através da Internet. Trata-se de um
+									prémio da responsabilidade do PNP, com
+									regulamento próprio, sem avaliação do júri,
+									baseado apenas no critério de popularidade.
+								</p>
+							</div>
+						))}
 
-          <div className="dados das inscriçoes">
-            <div className="mx-auto max-w-screen-md text-center lg:mb-16 mb-8">
-              <h2 className="mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold text-amarelo-ouro dark:text-white">
-                Projetos Concorentes a {'?'} Edição
-              </h2>
-            </div>
+					<div className="dados das inscriçoes">
+						<div className="mx-auto max-w-screen-md text-center lg:mb-16 mb-8">
+							<h2 className="mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold text-amarelo-ouro dark:text-white">
+								Projetos Concorentes a {"?"} Edição
+							</h2>
+						</div>
 
-            <div className="mx-auto max-w-screen-md text-center lg:mb-16 mb-8">
-              <Alert color="warning" icon={HiInformationCircle}>
-                <span>
-                  <span className="font-medium">Info!</span> Disponivel somente
-                  no período de votação.
-                </span>
-              </Alert>
-            </div>
+						<div className="mx-auto max-w-screen-md text-center lg:mb-16 mb-8">
+							<Alert color="warning" icon={HiInformationCircle}>
+								<span>
+									<span className="font-medium">Info!</span>{" "}
+									Disponivel somente no período de votação.
+								</span>
+							</Alert>
+						</div>
 
-            <div className="grid grid-row md:grid-cols-2 gap-4">
-              {inscritos.data.map((value: any, index: number) => (
-                // <div key={index}>{value.attributes.url}</div>
-                // <Card href="#"  key={index}>
-                //     <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                //     {value.attributes.nome_projeto}
-                //     </h5>
-                //     <p className="font-normal text-gray-700 dark:text-gray-400">
-                //         {value.attributes.con_criativo}
-                //     </p>
-                // </Card>
-                <div key={index} className="flex font-sans shadow-2xl">
-                  {/* <div className="flex-none w-48 relative">
+						<div className="grid grid-row md:grid-cols-2 gap-4">
+							{inscritos.data.map((value: any, index: number) => (
+								// <div key={index}>{value.attributes.url}</div>
+								// <Card href="#"  key={index}>
+								//     <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+								//     {value.attributes.nome_projeto}
+								//     </h5>
+								//     <p className="font-normal text-gray-700 dark:text-gray-400">
+								//         {value.attributes.con_criativo}
+								//     </p>
+								// </Card>
+								<div
+									key={index}
+									className="flex font-sans shadow-2xl"
+								>
+									{/* <div className="flex-none w-48 relative">
                     <Link href={`/projetos/${value.id}`}>
                       <Image
                         src="https://res.cloudinary.com/dkz8fcpla/image/upload/v1674656587/pnp-icon.png"
@@ -95,75 +104,86 @@ const Vpublica = ({ social, contato, inscritos, navbar }: any) => {
                       />
                     </Link>
                   </div> */}
-                  <form className="flex-auto p-6">
-                    <div className="flex flex-wrap">
-                      <Link href={`/projetos/${value.id}`}>
-                        <h1 className="flex-auto text-lg font-semibold text-slate-900">
-                          {value.attributes.nome_projeto}
-                        </h1>
-                      </Link>
-                      <div className="w-full flex-none text-sm font-medium text-slate-700 mt-2">
-                        {value.attributes.nome_completo}
-                        <p>
-                          <IoCall /> {value.attributes.telefone}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-baseline mt-4 mb-6 pb-6 border-b border-slate-200">
-                      <p>{value.attributes?.con_criativo?.substring(0, 536)}</p>
-                    </div>
-                    <div className="flex space-x-4 mb-6 text-sm font-medium">
-                      <div className="flex-auto flex space-x-4"></div>
-                      <Link
-                        href={`/projetos/${value.id}`}
-                        className="bg-amarelo-ouro text-branco hover:text-branco font-[Poppins] py-2 px-6 rounded md:ml-8 hover:bg-castanho-claro 
+									<form className="flex-auto p-6">
+										<div className="flex flex-wrap">
+											<Link
+												href={`/projetos/${value.id}`}
+											>
+												<h1 className="flex-auto text-lg font-semibold text-slate-900">
+													{
+														value.attributes
+															.nome_projeto
+													}
+												</h1>
+											</Link>
+											<div className="w-full flex-none text-sm font-medium text-slate-700 mt-2">
+												{value.attributes.nome_completo}
+												<p>
+													<IoCall />{" "}
+													{value.attributes.telefone}
+												</p>
+											</div>
+										</div>
+										<div className="flex items-baseline mt-4 mb-6 pb-6 border-b border-slate-200">
+											<p>
+												{value.attributes?.con_criativo?.substring(
+													0,
+													536
+												)}
+											</p>
+										</div>
+										<div className="flex space-x-4 mb-6 text-sm font-medium">
+											<div className="flex-auto flex space-x-4"></div>
+											<Link
+												href={`/projetos/${value.id}`}
+												className="bg-amarelo-ouro text-branco hover:text-branco font-[Poppins] py-2 px-6 rounded md:ml-8 hover:bg-castanho-claro 
                                             duration-500"
-                      >
-                        Detalhes
-                      </Link>
-                    </div>
-                  </form>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-    </Layout>
-  );
+											>
+												Detalhes
+											</Link>
+										</div>
+									</form>
+								</div>
+							))}
+						</div>
+					</div>
+				</div>
+			</section>
+		</Layout>
+	);
 };
 
 export default Vpublica;
 
 // This gets called on every request
 export async function getServerSideProps() {
-  // Fetch data from external API
+	// Fetch data from external API
 
-  // GET: links para as redes sociais
-  const rsocials = await fetcher(`${api_link}/api/redes-social?populate=*`);
-  // GET: dados para contatos
-  const contato = await fetcher(`${api_link}/api/contato`);
-  // GET: dados do navbar
-  const navbar = await fetcher(`${api_link}/api/menus?populate=deep`);
-  // GET: dados dos projetos inscritos
-  const inscritos = await fetcher(`${api_link}/api/inscricoes`);
-  //get links for menu
-  let dlink: any = [];
-  navbar.data?.map((value: any) => {
-    value.attributes.items.data.map((value: any, index: any) => {
-      // value.attributes.title;
-      // value.attributes.url;
-      // console.log(value);
-      dlink[index] = {
-        name: value.attributes.title,
-        link: value.attributes.url,
-      };
-    });
-  });
-  console.log(inscritos);
+	// GET: links para as redes sociais
+	const rsocials = await fetcher(`${api_link}/api/redes-social?populate=*`);
+	// GET: dados para contatos
+	const contato = await fetcher(`${api_link}/api/contato`);
+	// GET: dados do navbar
+	const navbar = await fetcher(`${api_link}/api/menus?populate=deep`);
+	// GET: dados dos projetos inscritos
+	const inscritos = await fetcher(`${api_link}/api/inscricoes`);
+	//get links for menu
+	let dlink: any = [];
+	navbar.data?.map((value: any) => {
+		value.attributes.items.data.map((value: any, index: any) => {
+			// value.attributes.title;
+			// value.attributes.url;
+			// console.log(value);
+			dlink[index] = {
+				name: value.attributes.title,
+				link: value.attributes.url,
+			};
+		});
+	});
+	console.log(inscritos);
 
-  // Pass data to the page via props
-  return { props: { social: rsocials, contato, navbar: dlink, inscritos } };
+	// Pass data to the page via props
+	return { props: { social: rsocials, contato, navbar: dlink, inscritos } };
 }
 
 /*
