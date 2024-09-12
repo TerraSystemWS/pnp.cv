@@ -39,8 +39,8 @@ const Regulamentos = ({ social, contato, edicao, navbar }: any) => {
 	 * antis tinha essa linha edicao.data.map((value: any, index: any) => {
 	 */
 
-	// console.log("edicao");
-	// console.log(edicao);
+	console.log("edicao");
+	console.log(edicao);
 	edicao.attributes.regulamentos.map((value2: any, index2: any) => {
 		// console.log("value2 :: regulamentos");
 		// console.log(value2.titulo);
