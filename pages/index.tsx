@@ -200,7 +200,7 @@ export default function Home({
 export async function getServerSideProps() {
 	const query = qs.stringify(
 		{
-			sort: ["N_Edicao:asc"],
+			sort: ["N_Edicao:DESC"],
 		},
 		{
 			encodeValuesOnly: true, // prettify URL
@@ -223,9 +223,7 @@ export async function getServerSideProps() {
 			fetcher(
 				`${api_link}/api/banners?populate[0]=banners&populate[1]=banners.image&${queryBanner}`
 			),
-			fetcher(
-				`${api_link}/api/edicoes?_sort=id:DESC&_limit=1&populate=deep&${query}`
-			),
+			fetcher(`${api_link}/api/edicoes?_limit=1&populate=deep&${query}`),
 			fetcher(`${api_link}/api/menus?populate=deep`),
 		]);
 
