@@ -178,7 +178,7 @@ export default Regulamentos;
 
 export async function getServerSideProps() {
 	const query = qs.stringify(
-		{ sort: ["N_Edicao:asc"] },
+		{ sort: ["N_Edicao:DESC"] },
 		{ encodeValuesOnly: true }
 	);
 
@@ -186,9 +186,7 @@ export async function getServerSideProps() {
 		await Promise.all([
 			fetcher(`${api_link}/api/redes-social?populate=*`),
 			fetcher(`${api_link}/api/contato`),
-			fetcher(
-				`${api_link}/api/edicoes?_sort=N_Edicao:DESC&_limit=1&populate=deep&${query}`
-			),
+			fetcher(`${api_link}/api/edicoes?_limit=1&populate=deep&${query}`),
 			fetcher(`${api_link}/api/menus?populate=deep`),
 		]);
 
