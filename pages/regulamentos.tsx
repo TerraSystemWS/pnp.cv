@@ -39,9 +39,9 @@ const Regulamentos = ({ social, contato, edicao, navbar }: any) => {
 	 * antis tinha essa linha edicao.data.map((value: any, index: any) => {
 	 */
 
-	// console.log("edicao.data");
-	// console.log(edicao.data);
-	edicao.data?.attributes.regulamentos.map((value2: any, index2: any) => {
+	// console.log("edicao");
+	// console.log(edicao);
+	edicao.attributes.regulamentos.map((value2: any, index2: any) => {
 		// console.log("value2 :: regulamentos");
 		// console.log(value2.titulo);
 		// console.log(value2.descricao);
@@ -53,7 +53,7 @@ const Regulamentos = ({ social, contato, edicao, navbar }: any) => {
 		};
 	});
 
-	edicao.data?.attributes.categoria.map((categs: any, index3: any) => {
+	edicao.attributes.categoria.map((categs: any, index3: any) => {
 		Categoria[index3] = {
 			id: index3,
 			titulo: categs.titulo,
@@ -176,43 +176,86 @@ const Regulamentos = ({ social, contato, edicao, navbar }: any) => {
 
 export default Regulamentos;
 
-// This gets called on every request
 export async function getServerSideProps() {
-	// Fetch data from external API
 	const query = qs.stringify(
-		{
-			sort: ["N_Edicao:asc"],
+		{ sort: ["N_Edicao:asc"] },
+		{ encodeValuesOnly: true }
+	);
+
+	const [rsocials, contato, edicaoResponse, navbarResponse] =
+		await Promise.all([
+			fetcher(`${api_link}/api/redes-social?populate=*`),
+			fetcher(`${api_link}/api/contato`),
+			fetcher(
+				`${api_link}/api/edicoes?_sort=id:DESC&_limit=1&populate=deep&${query}`
+			),
+			fetcher(`${api_link}/api/menus?populate=deep`),
+		]);
+
+	const edicao = edicaoResponse?.data?.[0] || null;
+
+	const navbar =
+		navbarResponse?.data?.flatMap((menu: any) =>
+			menu.attributes.items.data.map((item: any) => ({
+				name: item.attributes.title,
+				link: item.attributes.url,
+			}))
+		) || [];
+
+	return {
+		props: {
+			social: rsocials,
+			contato,
+			edicao,
+			navbar,
 		},
-		{
-			encodeValuesOnly: true, // prettify URL
-		}
-	);
-
-	// GET: links para as redes sociais
-	const rsocials = await fetcher(`${api_link}/api/redes-social?populate=*`);
-	// GET: dados para contatos
-	const contato = await fetcher(`${api_link}/api/contato`);
-
-	// GET: dados dos juris, categorias
-	const edicao = await fetcher(
-		`${api_link}/api/edicoes/1?populate=deep&${query}`
-	);
-	// GET: dados do navbar
-	const navbar = await fetcher(`${api_link}/api/menus?populate=deep`);
-	//get links for menu
-	let dlink: any = [];
-	navbar.data.map((value: any) => {
-		value.attributes.items.data.map((value: any, index: any) => {
-			// value.attributes.title;
-			// value.attributes.url;
-			// console.log(value);
-			dlink[index] = {
-				name: value.attributes.title,
-				link: value.attributes.url,
-			};
-		});
-	});
-
-	// Pass data to the page via props
-	return { props: { social: rsocials, contato, edicao, navbar: dlink } };
+	};
 }
+
+// This gets called on every request
+// export async function getServerSideProps2() {
+// 	// Fetch data from external API
+// 	const query = qs.stringify(
+// 		{
+// 			sort: ["N_Edicao:asc"],
+// 		},
+// 		{
+// 			encodeValuesOnly: true, // prettify URL
+// 		}
+// 	);
+
+// 	// GET: links para as redes sociais
+// 	const rsocials = await fetcher(`${api_link}/api/redes-social?populate=*`);
+// 	// GET: dados para contatos
+// 	const contato = await fetcher(`${api_link}/api/contato`);
+
+// 	// GET: dados dos juris, categorias
+// 	const edicao = await fetcher(
+// 		`${api_link}/api/edicoes?_sort=id:DESC&_limit=1&populate=deep&${query}`
+// 	);
+// 	// GET: dados do navbar
+// 	const navbar = await fetcher(`${api_link}/api/menus?populate=deep`);
+// 	//get links for menu
+// 	let dlink: any = [];
+// 	navbar.data.map((value: any) => {
+// 		value.attributes.items.data.map((value: any, index: any) => {
+// 			// value.attributes.title;
+// 			// value.attributes.url;
+// 			// console.log(value);
+// 			dlink[index] = {
+// 				name: value.attributes.title,
+// 				link: value.attributes.url,
+// 			};
+// 		});
+// 	});
+
+// 	// Pass data to the page via props
+// 	return {
+// 		props: {
+// 			social: rsocials,
+// 			contato,
+// 			edicao: edicao && edicao.data && edicao.data[0],
+// 			navbar: dlink,
+// 		},
+// 	};
+// }
