@@ -187,7 +187,7 @@ export async function getServerSideProps() {
 			fetcher(`${api_link}/api/redes-social?populate=*`),
 			fetcher(`${api_link}/api/contato`),
 			fetcher(
-				`${api_link}/api/edicoes?_sort=id:DESC&_limit=1&populate=deep&${query}`
+				`${api_link}/api/edicoes?_sort=N_Edicao:DESC&_limit=1&populate=deep&${query}`
 			),
 			fetcher(`${api_link}/api/menus?populate=deep`),
 		]);
