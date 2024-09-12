@@ -169,17 +169,17 @@ export default function Home({
 								Pronto para se inscrever?
 							</span>
 							<span className="block text-amarelo-ouro">
-								Inscrições abertas de 1 a 31 de Janeiro de 2023
+								Inscrições abertas de 1 a 31 de Janeiro de 2025
 							</span>
 						</h2>
 						<div className="mt-8 flex lg:mt-0 lg:flex-shrink-0">
 							<div className="inline-flex rounded-md shadow">
-								<Link
+								{/* <Link
 									href="/inscricao"
 									className="inline-flex items-center justify-center rounded-md border border-transparent bg-amarelo-ouro px-5 py-3 text-base font-medium text-white hover:bg-castanho-claro"
 								>
 									Inscrever
-								</Link>
+								</Link> */}
 							</div>
 							<div className="ml-3 inline-flex rounded-md shadow">
 								<Link
