@@ -40,6 +40,9 @@ const PostList = ({ social, contato, posts, navbar }: any) => {
 											<div className="w-full lg:w-1/3 mb-4 lg:mr-4">
 												{" "}
 												{/* Altere a classe para ocupar a largura total em dispositivos móveis */}
+												<Link
+														href={`/posts/${post.id}`}
+													>
 												<StrapiImage
 													src={
 														post.attributes.capa
@@ -51,6 +54,7 @@ const PostList = ({ social, contato, posts, navbar }: any) => {
 													height={150}
 													className="w-full h-auto rounded-lg"
 												/>
+												</Link>
 											</div>
 											{/* Conteúdo do post abaixo */}
 											<div className="w-full lg:w-2/3">
