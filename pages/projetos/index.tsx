@@ -32,7 +32,7 @@ const Vpublica = ({ social, contato, inscritos, navbar }: any) => {
 						(user ? ( //user
 							<div className="mx-auto max-w-screen-md text-center lg:mb-16 mb-8">
 								<h2 className="mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold text-amarelo-ouro dark:text-white">
-									Avaliaçao Dos Jurados
+									Avaliação Dos Jurados
 								</h2>
 								<p className="font-light text-justify text-gray-500 sm:text-xl dark:text-gray-400">
 									O Prémio Público de Publicidade é uma das
