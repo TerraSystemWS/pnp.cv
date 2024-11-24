@@ -1,8 +1,6 @@
 import Head from "next/head"
 import Layout from "../components/Layout"
 import { fetcher } from "../lib/api"
-import { HiInformationCircle } from "react-icons/hi"
-import { Carousel, Alert } from "flowbite-react"
 import Juri from "../components/Juri"
 import Categorias from "../components/Categorias"
 import Link from "next/link"
@@ -11,6 +9,7 @@ import { useFetchUser } from "../lib/authContext"
 import { StrapiImage } from "../components/custom/StrapiImage"
 import { getStrapiMedia } from "../lib/utils"
 import Banner from "../components/Banner"
+import Projetos from "../components/Projetos"
 const qs = require("qs")
 
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
@@ -106,61 +105,31 @@ export default function Home({
         </div>
       </div> */}
 
-      <div className="">
-        <div className="bg-gray-50">
-          <div className="mx-auto max-w-7xl py-12 px-4 sm:px-6">
-            <h2 className="text-2xl text-center mb-8 font-bold tracking-tight text-gray-900 sm:text-4xl">
-              <span className="block text-amarelo-ouro">
-                PRÉMIO NACIONAL DE PUBLICIDADE
-              </span>
-            </h2>
-            <div className="font-light text-gray-500 lg:mb-16 sm:text-xl dark:text-gray-400">
-              O PRÉMIO NACIONAL DE PUBLICIDADE tem por objeto a promoção da
-              atividade publicitária, através do reconhecimento da qualidade dos
-              trabalhos publicitários e institucionais exibidos e veiculados,
-              premiando os que, pela sua criatividade e originalidade,
-              contribuem para o desenvolvimento do mercado publicitário em Cabo
-              Verde.
-            </div>
+      <div className="py-12">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <h2 className="text-3xl sm:text-4xl text-center font-extrabold tracking-tight text-white mb-8">
+            <span className="block  text-[rgb(194,161,43)]">
+              PRÉMIO NACIONAL DE PUBLICIDADE
+            </span>
+          </h2>
+          <div className="font-light text-lg sm:text-xl text-gray-800 dark:text-gray-300 mb-16 leading-relaxed">
+            O{" "}
+            <span className="font-semibold text-[rgb(194,161,43)]">
+              PRÉMIO NACIONAL DE PUBLICIDADE
+            </span>{" "}
+            tem como objetivo promover a atividade publicitária através do
+            reconhecimento da qualidade dos trabalhos publicitários e
+            institucionais veiculados. Este prêmio é dedicado a premiar aqueles
+            que, com sua criatividade e originalidade, contribuem de forma
+            significativa para o desenvolvimento do mercado publicitário em Cabo
+            Verde.
           </div>
         </div>
       </div>
 
       <Categorias dados={Categoria} />
 
-      <section className="text-gray-600 body-font">
-        <div className="container px-5 py-24 mx-auto">
-          <div className="text-center mb-20">
-            <h1 className="sm:text-3xl text-2xl font-medium text-center title-font text-amarelo-ouro mb-4">
-              PRÉMIO PÚBLICO DE PUBLICIDADE
-            </h1>
-            <p className="text-base leading-relaxed xl:w-2/4 lg:w-3/4 mx-auto">
-              O Prémio Público de Publicidade é uma das categorias do Prémio
-              Nacional de Publicidade (PNP), em que a votação é feita somente
-              pelo público, através da internet. Trata-se de um prémio da
-              responsabilidade do PNP, com regulamento próprio, sem avaliação do
-              júri, baseado apenas no critério da popularidade.
-            </p>
-          </div>
-          <div className="mx-auto max-w-screen-md text-center lg:mb-16 mb-8">
-            <Alert color="info" icon={HiInformationCircle}>
-              <span>
-                <span className="font-medium">Info!</span> Disponivel somente no
-                período de votação.
-              </span>
-            </Alert>
-          </div>
-          <div className="mx-auto max-w-screen-md text-center lg:mb-16 mb-8">
-            <Link
-              href={"/projetos"}
-              className="bg-amarelo-ouro text-center font-bold  font-bold text-branco hover:text-branco font-[Poppins] py-5 px-8 rounded hover:bg-castanho-claro 
-						duration-500 n"
-            >
-              PROJETOS
-            </Link>
-          </div>
-        </div>
-      </section>
+      <Projetos />
 
       <Juri dados={Juris} />
 
