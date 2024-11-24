@@ -5,7 +5,7 @@ import { HiInformationCircle } from "react-icons/hi"
 const Projetos = () => {
   return (
     <>
-      <section className="text-gray-700 body-font bg-white">
+      <section className="text-gray-700 body-font bg-gradient-to-r from-[#e6e2d8] via-white to-[#e6e2d8]">
         <div className="container px-6 py-20 mx-auto">
           {/* Título e Descrição */}
           <div className="text-center mb-12">
