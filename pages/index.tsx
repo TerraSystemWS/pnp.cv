@@ -9,6 +9,7 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 import { useFetchUser } from "../lib/authContext"
 import { StrapiImage } from "../components/custom/StrapiImage"
+import { getStrapiMedia } from "../lib/utils"
 const qs = require("qs")
 
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
@@ -58,6 +59,7 @@ export default function Home({
       Categoria[index3] = {
         id: index3,
         titulo: categs.titulo,
+        url: getStrapiMedia(categs.capa.data?.attributes.formats.small.url),
         slug: categs.titulo.replace(/ /g, "_"),
         descricao: categs.descricao,
       }
