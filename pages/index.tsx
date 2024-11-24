@@ -10,6 +10,7 @@ import { useRouter } from "next/router"
 import { useFetchUser } from "../lib/authContext"
 import { StrapiImage } from "../components/custom/StrapiImage"
 import { getStrapiMedia } from "../lib/utils"
+import Banner from "../components/Banner"
 const qs = require("qs")
 
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
@@ -86,7 +87,9 @@ export default function Home({
         />
       </Head>
 
-      <div className="-mt-2">
+      <Banner dados={bannerData} />
+
+      {/* <div className="-mt-2">
         <div className="h-56 md:h-screen z-0">
           <Carousel>
             {bannerData.map((value: any) => (
@@ -101,7 +104,7 @@ export default function Home({
             ))}
           </Carousel>
         </div>
-      </div>
+      </div> */}
 
       <div className="">
         <div className="bg-gray-50">
