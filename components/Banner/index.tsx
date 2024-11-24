@@ -7,7 +7,7 @@ const Banner = (props: any) => {
     <>
       <div className="-mt-2">
         <div className="h-56 md:h-screen z-0">
-          <Carousel>
+          <Carousel data-carousel="slide">
             {props.dados.map((value: any) => (
               <StrapiImage
                 key={value.id}
