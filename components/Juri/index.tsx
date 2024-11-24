@@ -39,7 +39,7 @@ const Juri = ({ dados }: { dados: any[] }) => {
   }, [dados])
 
   return (
-    <section className="bg-white dark:bg-gray-900">
+    <section className="bg-gradient-to-r from-gray-100 via-gray-300 to-[rgb(194,161,43)] text-gray-800 body-font py-24">
       <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
         <div className="mx-auto max-w-screen-sm text-center mb-8 lg:mb-16">
           <h2 className="mb-4 text-4xl font-extrabold tracking-tight text-amarelo-ouro dark:text-white">
