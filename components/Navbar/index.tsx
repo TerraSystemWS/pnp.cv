@@ -3,15 +3,24 @@ import React, { useState } from "react"
 import logo from "public/logo1.png"
 import { IoGridOutline, IoClose } from "react-icons/io5"
 import Link from "next/link"
+// import Link from 'next/link';
+// import { useState } from 'react';
+
+// libs para autenticaçao
 import { fetcher } from "../../lib/api"
 import { setToken, unsetToken } from "../../lib/auth"
 import { useUser } from "../../lib/authContext"
+import { Password } from "primereact/password"
+import { InputText } from "primereact/inputtext"
+
+// primereact tools
 import { Dialog } from "primereact/dialog"
 import { Button } from "primereact/button"
+import "primereact/resources/themes/lara-light-indigo/theme.css" //theme
+import "primereact/resources/primereact.min.css" //core css
+import "primeicons/primeicons.css" //icons
+
 import { useForm, SubmitHandler } from "react-hook-form"
-import "primereact/resources/themes/lara-light-indigo/theme.css"
-import "primereact/resources/primereact.min.css"
-import "primeicons/primeicons.css"
 
 type Inputs = {
   email: string
@@ -22,7 +31,19 @@ const Nav = ({ navbar }: any) => {
   const { user, loading } = useUser()
   const [open, setOpen] = useState(false)
   const [visible, setVisible] = useState(false)
-  const [position, setPosition] = useState("center")
+
+  // Tipo de 'position' agora é restrito a valores válidos
+  const [position, setPosition] = useState<
+    | "top-left"
+    | "top-right"
+    | "bottom-left"
+    | "bottom-right"
+    | "top"
+    | "bottom"
+    | "left"
+    | "right"
+    | "center"
+  >("center")
 
   const {
     register,
@@ -65,10 +86,8 @@ const Nav = ({ navbar }: any) => {
   )
 
   return (
-    <div className="shadow-md w-full fixed top-0 left-0 z-10  bg-preto ">
+    <div className="shadow-md w-full fixed top-0 left-0 z-10 bg-preto">
       <div className="max-w-7xl mx-auto">
-        {" "}
-        {/* Aqui adicionei a classe max-w-7xl e mx-auto para centralizar */}
         <div className="md:flex items-center justify-between py-4 md:px-10 px-7">
           <div className="font-bold text-2xl cursor-pointer flex items-center font-[Poppins] text-gray-800">
             <Link href="/">
