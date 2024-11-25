@@ -153,7 +153,7 @@ const Nav = ({ navbar }: any) => {
                 id="email"
                 placeholder="name@email.com"
                 className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                {...register("email", { required: "Email is required" })}
+                {...register("email", { required: "Email é necessario" })}
               />
               {errors.email && (
                 <span className="text-red-500">{errors.email.message}</span>
@@ -171,7 +171,7 @@ const Nav = ({ navbar }: any) => {
                 id="password"
                 placeholder="••••••••"
                 className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                {...register("password", { required: "Password is required" })}
+                {...register("password", { required: "Password é necessario" })}
               />
               {errors.password && (
                 <span className="text-red-500">{errors.password.message}</span>
@@ -184,7 +184,7 @@ const Nav = ({ navbar }: any) => {
               Login
             </button>
             <p className="text-sm font-light text-gray-500">
-              Don't have an account?{" "}
+              Don&apos;t have an account?{" "}
               <a
                 href="#"
                 className="font-medium text-primary-600 hover:underline"
