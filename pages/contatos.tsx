@@ -1,89 +1,83 @@
-import Layout from "../components/Layout";
-import { fetcher } from "../lib/api";
-import { useForm, SubmitHandler } from "react-hook-form";
-import Head from "next/head";
-import { useFetchUser } from "../lib/authContext";
-
-// link para a url do api
-const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
+import Layout from "../components/Layout"
+import { fetcher } from "../lib/api"
+import { useForm, SubmitHandler } from "react-hook-form"
+import Head from "next/head"
+import { useFetchUser } from "../lib/authContext"
+import { useState } from "react"
+// link para a URL do API
+const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
 
 type Inputs = {
-  name: string;
-  email: string;
-  message: string;
-};
+  name: string
+  email: string
+  message: string
+}
 
 const CONTATOS = ({ social, contato, navbar }: any) => {
-  const { user, loading } = useFetchUser();
+  const { user, loading } = useFetchUser()
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
-  } = useForm<Inputs>();
+    // setStatus,
+  } = useForm<Inputs>()
+
+  const [statusMessage, setStatusMessage] = useState("")
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    // console.log(data);
-    // alert("sending email" + data.email);
+    // Limpa o status anterior
+    setStatusMessage("")
+    try {
+      // Envia os dados para o backend
+      const url = `${api_link}/contato`
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: data.name,
+          email: data.email,
+          message: data.message,
+        }),
+      })
 
-    // const ok = googleRecaptcha(data);
-    // if (!ok) console.log("nao deve enviar email");
-    const url = `${api_link}/contato`;
-    // console.log("user:" + url);
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: data.name,
-        email: data.email,
-        message: data.message,
-      }),
-    });
+      const result = await response.json()
 
-    const dados = await response.json();
-    // console.log(dados);
-    // setar email enviado
-    switch (dados.statusCode) {
-      case 200: {
-        //		setEmail(true);
-        console.log("code email 200");
-        break;
+      if (response.status === 200) {
+        setStatusMessage("Sua mensagem foi enviada com sucesso!")
+      } else {
+        setStatusMessage(
+          "Houve um erro ao enviar sua mensagem. Tente novamente mais tarde."
+        )
       }
-      case 500: {
-        console.log("erro no envio de email: code 500");
-      }
-      default:
-        //		setLoading(false);
-        console.log("default");
+    } catch (error) {
+      setStatusMessage("Erro ao enviar a mensagem. Tente novamente.")
+      console.error("Erro no envio do formulário:", error)
     }
-  };
-
-  // console.log(watch("name")); // watch input value by passing the name of it
+  }
 
   return (
     <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
       <Head>
         <title>Contatos - Prémio Nacional De Publicidade</title>
-        <meta name="description" content="pagina de contatos" />
+        <meta name="description" content="Página de contatos" />
       </Head>
-      <section className="text-gray-600 body-font relative">
+
+      <section className="text-gray-600 body-font relative mt-5">
         <div className="container px-5 py-24 mx-auto flex sm:flex-nowrap flex-wrap">
           <div className="lg:w-2/3 md:w-1/2 bg-gray-300 rounded-lg overflow-hidden sm:mr-10 p-10 flex items-end justify-start relative">
             <iframe
               width="100%"
               height="100%"
-              className="absolute inset-0 "
+              className="absolute inset-0"
               frameBorder="0"
               title="map"
               marginHeight={0}
               marginWidth={0}
               scrolling="no"
               src={contato.data.attributes.mapa}
-              // style={{filter: grayscale(1) contrast(1.2) opacity(0.4)}}
             ></iframe>
-            {/* {contato.data.attributes.mapa} */}
             <div className="bg-white relative flex flex-wrap py-6 rounded shadow-md">
               <div className="lg:w-1/2 px-6">
                 <h2 className="title-font font-semibold text-gray-900 tracking-widest text-xs">
@@ -107,6 +101,8 @@ const CONTATOS = ({ social, contato, navbar }: any) => {
               </div>
             </div>
           </div>
+
+          {/* Formulário de Contato */}
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="lg:w-1/3 md:w-1/2 bg-white flex flex-col md:ml-auto w-full md:py-8 mt-8 md:mt-0"
@@ -115,8 +111,10 @@ const CONTATOS = ({ social, contato, navbar }: any) => {
               Contate-nos
             </h2>
             <p className="leading-relaxed mb-5 text-gray-600">
-              para saber ou ter mais informações sobre o pnp envie-nos um email
+              Para saber ou ter mais informações sobre o PNP, envie-nos um email
             </p>
+
+            {/* Campo Nome */}
             <div className="relative mb-4">
               <label htmlFor="name" className="leading-7 text-sm text-gray-600">
                 Nome
@@ -125,12 +123,14 @@ const CONTATOS = ({ social, contato, navbar }: any) => {
                 type="text"
                 id="name"
                 className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                {...register("name", { required: true })}
+                {...register("name", { required: "Nome é obrigatório" })}
               />
               {errors.name && (
-                <span className="text-red-500">*Este campo é obrigatorio</span>
+                <span className="text-red-500">{errors.name.message}</span>
               )}
             </div>
+
+            {/* Campo Email */}
             <div className="relative mb-4">
               <label
                 htmlFor="email"
@@ -142,12 +142,14 @@ const CONTATOS = ({ social, contato, navbar }: any) => {
                 type="email"
                 id="email"
                 className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-                {...register("email", { required: true })}
+                {...register("email", { required: "Email é obrigatório" })}
               />
               {errors.email && (
-                <span className="text-red-500">*Este campo é obrigatorio</span>
+                <span className="text-red-500">{errors.email.message}</span>
               )}
             </div>
+
+            {/* Campo Mensagem */}
             <div className="relative mb-4">
               <label
                 htmlFor="message"
@@ -158,59 +160,53 @@ const CONTATOS = ({ social, contato, navbar }: any) => {
               <textarea
                 id="message"
                 className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 h-32 text-base outline-none text-gray-700 py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out"
-                {...register("message", { required: true })}
+                {...register("message", { required: "Mensagem é obrigatória" })}
               ></textarea>
               {errors.message && (
-                <span className="text-red-500">*Este campo é obrigatorio</span>
+                <span className="text-red-500">{errors.message.message}</span>
               )}
             </div>
+
+            {/* Botão de Envio */}
             <button
               type="submit"
-              className="text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg"
+              className="text-white bg-yellow-600 border-0 py-2 px-6 focus:outline-none hover:bg-yellow-500 rounded text-lg"
             >
               Enviar
             </button>
+
+            {/* Mensagem de Status */}
+            {statusMessage && (
+              <p className="text-xs mt-3 text-gray-500">{statusMessage}</p>
+            )}
+
             <p className="text-xs text-gray-500 mt-3">
-              *os seus dados são privados e será protegido
+              *Os seus dados são privados e serão protegidos.
             </p>
           </form>
         </div>
       </section>
     </Layout>
-  );
-};
+  )
+}
 
-export default CONTATOS;
+export default CONTATOS
 
-// This gets called on every request
+// Função para buscar dados do servidor
 export async function getServerSideProps() {
-  // Fetch data from external API
+  const rsocials = await fetcher(`${api_link}/api/redes-social?populate=*`)
+  const contato = await fetcher(`${api_link}/api/contato`)
+  const navbar = await fetcher(`${api_link}/api/menus?populate=deep`)
 
-  // GET: links para as redes sociais
-  const rsocials = await fetcher(`${api_link}/api/redes-social?populate=*`);
-
-  // GET: dados para contatos
-  const contato = await fetcher(`${api_link}/api/contato`);
-  // GET: dados para banners
-  const banners = await fetcher(`${api_link}/api/banners?populate=deep`);
-  // GET: dados do navbar
-  const navbar = await fetcher(`${api_link}/api/menus?populate=deep`);
-  //get links for menu
-  let dlink: any = [];
+  let dlink: any = []
   navbar.data.map((value: any) => {
-    value.attributes.items.data.map((value: any, index: any) => {
-      // value.attributes.title;
-      // value.attributes.url;
-      // console.log(value);
+    value.attributes.items.data.map((item: any, index: any) => {
       dlink[index] = {
-        name: value.attributes.title,
-        link: value.attributes.url,
-      };
-    });
-  });
+        name: item.attributes.title,
+        link: item.attributes.url,
+      }
+    })
+  })
 
-  // console.log(banners.attributes);
-
-  // Pass data to the page via props
-  return { props: { social: rsocials, contato, banners, navbar: dlink } };
+  return { props: { social: rsocials, contato, navbar: dlink } }
 }
