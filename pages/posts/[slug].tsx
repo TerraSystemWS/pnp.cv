@@ -47,7 +47,7 @@ const PostDetail = ({
 
           {/* Subtítulo e Data de Publicação */}
           <div className="text-lg text-gray-500 mb-8">
-            <span className="italic">{subtitulo}</span> - Publicado em:{" "}
+            <span className="italic">{subtitulo}</span>Publicado em:{" "}
             <span className="font-medium">{formatDateTime(publishedAt)}</span>
           </div>
 
