@@ -72,7 +72,6 @@ const PostList = ({ social, contato, posts, navbar }: any) => {
                         width={300}
                         height={200}
                         className="w-full h-auto rounded-lg object-cover"
-                        loading="lazy"
                       />
                     </Link>
                   </div>
