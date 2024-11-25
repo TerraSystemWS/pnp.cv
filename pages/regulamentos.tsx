@@ -97,7 +97,7 @@ const Regulamentos = ({ social, contato, edicao, navbar }: any) => {
             </h2>
 
             <ul className="space-y-3">
-              {Categoria.map((category) => (
+              {Categoria.map((category: any) => (
                 <li key={category.id} className="group relative">
                   <a
                     href={`#${category.slug}`}
@@ -114,7 +114,7 @@ const Regulamentos = ({ social, contato, edicao, navbar }: any) => {
           {/* Seção principal com conteúdo das categorias */}
           <div className="w-full">
             <div className="divide-y-4 divide-gray-300">
-              {Categoria.map((category) => (
+              {Categoria.map((category: any) => (
                 <div
                   key={category.id}
                   className="py-16 flex flex-wrap md:flex-nowrap gap-12"
