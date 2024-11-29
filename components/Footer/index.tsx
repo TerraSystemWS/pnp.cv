@@ -85,7 +85,7 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato }) => {
   const year = d.getFullYear()
 
   return (
-    <footer style={{ position: "relative", zIndex: 10 }}>
+    <footer style={{ position: "relative", zIndex: 999 }}>
       <Toaster position="bottom-right" reverseOrder={false} />
       <div className="p-10 bg-black text-yellow-500">
         <div className="max-w-7xl mx-auto">
