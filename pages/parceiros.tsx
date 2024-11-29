@@ -4,6 +4,7 @@ import Link from "next/link"
 import Head from "next/head"
 import { useFetchUser } from "../lib/authContext"
 import { getStrapiMedia } from "../lib/utils"
+import HeroSection from "../components/HeroSection"
 
 // Link para a URL do API
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
@@ -111,6 +112,13 @@ const Parceiros = ({ social, contato, parceiros, navbar }: any) => {
         <title>Parceiros - Prémio Nacional De Publicidade</title>
         <meta name="description" content={heading} />
       </Head>
+
+      <HeroSection
+        title={"Parceiros"}
+        subtitle={"Conheça tudo sobre os nossos apoiadores"}
+      />
+
+      <div className="mt-5"></div>
 
       {/* Organizadores Section */}
       <section className="text-gray-600 body-font">

@@ -6,6 +6,7 @@ import { StrapiImage } from "../../components/custom/StrapiImage"
 import { useFetchUser } from "../../lib/authContext"
 import { formatDateTime } from "../../lib/utils"
 import { useState } from "react"
+import HeroSection from "../../components/HeroSection"
 
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
 
@@ -43,15 +44,10 @@ const PostList = ({ social, contato, posts, navbar }: any) => {
         />
       </Head>
 
-      {/* Titulo - noticias */}
-      <section className="bg-gradient-to-r from-[#e6e2d8] via-white to-[#e6e2d8] py-12 text-center rounded-lg shadow-xl">
-        <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600 tracking-tight transform transition duration-500 hover:scale-105 hover:text-yellow-500">
-          Notícias
-        </h1>
-        <p className="mt-4 text-xl text-gray-600 opacity-80">
-          Fique por dentro das últimas atualizações e novidades!
-        </p>
-      </section>
+      <HeroSection
+        title={"Notícias"}
+        subtitle={"Fique por dentro das últimas atualizações e novidades!"}
+      />
 
       <section className="bg-white dark:bg-gray-900 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">

@@ -4,8 +4,9 @@ import showdown from "showdown"
 import Head from "next/head"
 import { useFetchUser } from "../lib/authContext"
 import qs from "qs"
-import { useEffect } from "react"
+// import { useEffect } from "react"
 import CategBox from "../components/CategBox"
+import HeroSection from "../components/HeroSection"
 
 // link to API URL
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
@@ -49,10 +50,15 @@ const Regulamentos = ({ social, contato, edicao, navbar }: any) => {
         <meta name="description" content={Regulamentos[0]?.titulo || " "} />
       </Head>
 
+      <HeroSection
+        title={Regulamentos[0]?.titulo}
+        subtitle={"Tudo sobre  a recente edição do PNP"}
+      />
+
       <section className="bg-gradient-to-r from-[#e6e2d8] via-[#dbdbdb] to-[#e6e2d8] py-12 px-6 sm:px-12 ">
-        <h2 className="text-3xl sm:text-4xl font-serif font-extrabold text-transparent mb-8 text-center leading-tight bg-gradient-to-r from-yellow-500 to-orange-500 bg-clip-text">
-          <span>{Regulamentos[0]?.titulo}</span>
-        </h2>
+        {/* <h2 className="text-3xl sm:text-4xl font-serif font-extrabold text-transparent mb-8 text-center leading-tight bg-gradient-to-r from-yellow-500 to-orange-500 bg-clip-text">
+          <span></span>
+        </h2> */}
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="py-8">

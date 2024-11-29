@@ -4,6 +4,7 @@ import { useForm, SubmitHandler } from "react-hook-form"
 import Head from "next/head"
 import { useFetchUser } from "../lib/authContext"
 import { useState } from "react"
+import HeroSection from "../components/HeroSection"
 // link para a URL do API
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
 
@@ -63,6 +64,11 @@ const CONTATOS = ({ social, contato, navbar }: any) => {
         <title>Contatos - Prémio Nacional De Publicidade</title>
         <meta name="description" content="Página de contatos" />
       </Head>
+
+      <HeroSection
+        title={"Contatos"}
+        subtitle={"Não tenha medo de perguntar, fale conosco!"}
+      />
 
       <section className="text-gray-600 body-font relative mt-5">
         <div className="container px-5 py-24 mx-auto flex sm:flex-nowrap flex-wrap">
