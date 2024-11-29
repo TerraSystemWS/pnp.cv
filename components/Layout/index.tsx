@@ -36,7 +36,7 @@ const Layout = ({
         <NavBar navbar={navbar} />{" "}
       </header>
 
-      <div className="mt-26">{children}</div>
+      <div className="mt-28">{children}</div>
       {/* @ts-ignore */}
       <Footer rsocial={rsocial} contato={contato} />
     </div>
