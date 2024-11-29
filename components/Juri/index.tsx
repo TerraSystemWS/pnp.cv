@@ -53,23 +53,27 @@ const Juri = ({ dados }: { dados: any[] }) => {
         {/* Organizando em grupos de 3 */}
         <div className="flex flex-col items-center gap-8 mb-6 lg:mb-16">
           {groupItems(dados).map((group, groupIndex) => (
-            <div key={groupIndex} className="flex justify-center gap-8 w-full">
+            <div
+              key={groupIndex}
+              className="flex flex-wrap justify-center gap-8 w-full"
+            >
               {group.map((value, index) => (
                 <div
                   key={value.idd}
-                  className="flex flex-col items-center bg-gray-50 rounded-lg shadow sm:flex-row dark:bg-gray-800 dark:border-gray-700 w-[30rem]"
+                  className="flex flex-col items-center bg-gray-50 rounded-lg shadow sm:flex-row dark:bg-gray-800 dark:border-gray-700 w-full sm:w-[30rem] lg:w-[25rem]"
                 >
                   <Link href={`/juris/${value.idd}?edicao=${value.edicao}`}>
+                    {/* Imagem com 200x100 pixels */}
                     <StrapiImage
-                      className="w-full rounded-lg sm:rounded-none sm:rounded-l-lg"
+                      className="w-[512px] h-[250px] object-cover sm:object-cover xs:object-fill rounded-lg sm:rounded-none sm:rounded-l-lg"
                       src={value.j_foto}
                       alt={value.j_nome}
-                      height={300}
-                      width={300}
+                      height={100}
+                      width={200}
                     />
                   </Link>
-                  <div className="p-5">
-                    <h3 className="text-xl font-bold tracking-tight text-amarelo-ouro dark:text-white">
+                  <div className="p-5 flex flex-col justify-between h-full">
+                    <h3 className="text-xl font-bold tracking-tight text-amarelo-ouro dark:text-white truncate">
                       <Link href={`/juris/${value.idd}?edicao=${value.edicao}`}>
                         {value.j_nome}
                       </Link>
