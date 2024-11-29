@@ -72,7 +72,7 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
 
       <Banner dados={bannerData} />
 
-      <div className="py-12 bg-gradient-to-r from-[#e6e2d8] via-white to-[#e6e2d8]">
+      <div className="py-32 bg-gradient-to-r from-[#e6e2d8] via-white to-[#e6e2d8]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <h2 className="text-3xl sm:text-4xl text-center font-extrabold tracking-tight text-white mb-8">
             <span className="block text-[rgb(194,161,43)]">
