@@ -48,7 +48,7 @@ const Layout = ({
           <LoadingSpinner />
         ) : (
           // Exibe o conteúdo real depois que o carregamento termina
-          <div className="mt-28">{children}</div>
+          <div {{ marginTop: "5.88rem" }}>{children}</div>
         )}
 
         <Footer rsocial={rsocial} contato={contato} />
