@@ -832,7 +832,7 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
                           <option key={0} selected>
                             Escolha uma Categoria
                           </option>
-                          {Categoria.map((value, index) => (
+                          {Categoria.map((value: any, index: any) => (
                             <option key={index + 1} value={value.titulo}>
                               {value.titulo}
                             </option>
