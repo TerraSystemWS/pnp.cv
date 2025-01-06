@@ -926,7 +926,7 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
                       "editor",
                       "autor_jingle",
                       "designer",
-                    ].map((field, index) => (
+                    ].map((field: any, index: any) => (
                       <div key={index} className="col-span-6 sm:col-span-4">
                         <label
                           htmlFor={field}
@@ -971,7 +971,7 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
                           "Data da sua apresentação pública (se trabalho universitário)",
                         name: "data_apresentacao_publica",
                       },
-                    ].map((field, index) => (
+                    ].map((field: any, index: any) => (
                       <div key={index} className="col-span-6 sm:col-span-4">
                         <label
                           htmlFor={field.name}
