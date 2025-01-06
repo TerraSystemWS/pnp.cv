@@ -7,7 +7,7 @@ const qs = require("qs")
 import toast, { Toaster } from "react-hot-toast"
 import { Table } from "flowbite-react"
 import { IoTrashOutline } from "react-icons/io5"
-import { useS3Upload } from "next-s3-upload"
+// import { useS3Upload } from "next-s3-upload"
 import { useState } from "react"
 import { useFetchUser } from "../../lib/authContext"
 import HeroSection from "../../components/HeroSection"
@@ -283,129 +283,369 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
    * 
    */
 
-  const deleteFile = async () => {
-    alert("deleteFile")
+  let deleteFile = async (fileId: string) => {
+    // alert("O arquivo vai ser apadago!")
+    // try {
+    //   // 1. Deletar o arquivo usando o ID fornecido
+    //   const deleteRes = await fetch(`${api_link}/api/upload/files/${fileId}`, {
+    //     method: "DELETE",
+    //   })
+    //   if (!deleteRes.ok) {
+    //     throw new Error("Erro ao deletar o arquivo.")
+    //   }
+    //   const deleteData = await deleteRes.json()
+    //   alert("Arquivo deletado com sucesso:")
+    //   // 2. Obter os dados atuais da inscrição (buscar fileLink)
+    //   const inscricaoRes = await fetch(
+    //     `${api_link}/api/inscricoes/${cid}?populate[fileLink][populate][ficheiro][fields]=id`,
+    //     {
+    //       method: "GET",
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //       },
+    //     }
+    //   )
+    //   if (!inscricaoRes.ok) {
+    //     throw new Error("Erro ao recuperar a inscrição.")
+    //   }
+    //   const inscricaoData = await inscricaoRes.json()
+    //   const currentFileLinks = inscricaoData.data.attributes.fileLink || []
+    //   console.log("inscricaoData", inscricaoData)
+    //   console.log("currentFileLinks", currentFileLinks)
+    //   // 3. Filtrar o fileLink para remover o arquivo deletado
+    //   const updatedFileLinks = currentFileLinks.filter(
+    //     (link: any) => link.id !== fileId
+    //   )
+    //   console.log("currentFileLinks2", currentFileLinks)
+    //   // 4. Atualizar a inscrição com o novo fileLink
+    //   const updateRes = await fetch(`${api_link}/api/inscricoes/${cid}`, {
+    //     method: "PUT",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify({
+    //       data: {
+    //         fileLink: updatedFileLinks, // Atualizando com os links de arquivos restantes
+    //       },
+    //     }),
+    //   })
+    //   if (!updateRes.ok) {
+    //     throw new Error("Erro ao atualizar a inscrição.")
+    //   }
+    //   const updateData = await updateRes.json()
+    //   // console.log("Inscrição atualizada com sucesso:", updateData)
+    //   // 5. Atualizar o estado local (remover o arquivo deletado da lista de arquivos)
+    //   setFiles((prevFiles) =>
+    //     prevFiles.filter((file: any) => file.id !== fileId)
+    //   )
+    // } catch (error) {
+    //   // console.error("Erro ao deletar o arquivo:", error)
+    //   alert("Erro ao deletar o arquivo. Tente novamente.")
+    // }
   }
 
   const Atualizar = () => {
     router.reload()
   }
 
-  // submit files
-  let { uploadToS3, files } = useS3Upload()
-  let [link, setLink] = useState("")
+  // ${api_link}/api/inscricoes/${cid}
 
-  // let [doc, setDoc] = useState([]);
+  let [files, setFiles] = useState<File[]>([]) // Store files locally
 
   let handleFileChange = async (event: any) => {
-    // alert("terrq");
-    // setLink("");
-    let file = event.target.files[0]
+    let selectedFiles = event.target.files
+    console.log("Selected files:", selectedFiles)
+    setFiles(event.target.files)
 
-    // console.log("fikle");
-    // console.log(file.name);
-
-    let { url } = await uploadToS3(file)
-    setLink(url)
-
-    // if (url) {
-    let doc = []
-
-    doc[0] = {
-      // @ts-ignore
-      titulo: file?.name,
-      file_link: url,
-    }
-    // }
-
-    // console.log("doc");
-    // console.log(doc);
-
-    // guardar o link e fileName no DB (strapi)
     try {
-      // get all the old data
-      const res_old: any = await fetch(
-        `${api_link}/api/inscricoes/${cid}?populate=deep`,
-        {
-          method: "GET",
+      // Criar FormData e adicionar arquivos
+      const formData = new FormData()
+
+      // Usando diretamente o selectedFiles em vez de "files" (que pode não ter sido atualizado)
+      Array.from(selectedFiles).forEach((file) => {
+        formData.append("files", file) // Adicionando cada arquivo
+      })
+
+      // Enviar requisição para o Strapi e obter os arquivos carregados
+      const uploadRes = await fetch(`${api_link}/api/upload`, {
+        method: "POST",
+        body: formData,
+      })
+
+      if (!uploadRes.ok) {
+        throw new Error("Erro ao fazer o upload dos arquivos")
+      }
+
+      const uploadData = await uploadRes.json()
+      console.log("uploadData", uploadData)
+
+      if (uploadData) {
+        // Obter os dados atuais da inscrição
+        const inscricaoRes = await fetch(
+          `${api_link}/api/inscricoes/${cid}?populate[fileLink][populate][ficheiro][fields]=name,width,height,hash,ext,mime,size,url,provider`
+        )
+        const inscricaoData = await inscricaoRes.json()
+        console.log("inscricaoData", inscricaoData)
+
+        // Atualizar a lista de arquivos, mantendo os antigos e adicionando os novos
+        const existingFiles = inscricaoData.data.attributes.fileLink || []
+        console.log("existingFiles", existingFiles)
+
+        const fileIds = [
+          ...existingFiles.map((file: any) => ({
+            titulo: file.titulo, // Nome do arquivo
+            publico: file.publico,
+            ficheiro: {
+              id: file.ficheiro.data.id, // ID do arquivo
+            },
+          })),
+          ...uploadData.map((file: any) => ({
+            titulo: file.name, // Nome do arquivo
+            publico: false,
+            ficheiro: {
+              id: file.id, // ID do arquivo
+            },
+          })),
+        ]
+
+        // Preparar o objeto de dados para atualizar a inscrição
+        const data = {
+          data: {
+            fileLink: fileIds, // Associando arquivos à inscrição
+          },
+        }
+
+        //return
+        // Atualizar a inscrição com os arquivos carregados
+        const res = await fetch(`${api_link}/api/inscricoes/${cid}`, {
+          method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
+          body: JSON.stringify(data),
+        })
+
+        if (!res.ok) {
+          throw new Error("Erro ao associar os arquivos à inscrição")
         }
-      )
 
-      const data_old = await res_old.json()
-
-      // console.log("docs 0");
-
-      // console.log(doc);
-
-      // let docs: any[];
-
-      data_old.data.attributes.fileLink.map((value: string, index: number) => {
-        console.log("data_old")
-        console.log(index)
-        // @ts-ignore
-        doc[index + 1] = {
-          // @ts-ignore
-          titulo: value.titulo,
-          // @ts-ignore
-          file_link: value.file_link,
-        }
-      })
-
-      // console.log("docs lasts");
-      // console.log(doc);
-      // console.log(doc[0].titulo);
-      // console.log("Antes New docs");
-
-      // let old_swap_new_docs: string[] = [];
-      // old_swap_new_docs = data_old.data.fileLink;
-      // console.log("old swap New docs");
-      // console.log(old_swap_new_docs);
-      // let new_docs = old_swap_new_docs.push(doc);
-      // console.log("New docs");
-      // console.log(new_docs);
-
-      // return;
-      const res: any = await fetch(`${api_link}/api/inscricoes/${cid}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          data: {
-            fileLink: doc,
-          },
-        }),
-      })
-
-      const data = await res.json()
-
-      // console.log("controle de uploads");
-      // console.log("res");
-      // console.log(res);
-      // // =================
-      // console.log("data");
-      // console.log(data);
-
-      // listen de promise
-      let myPromise = new Promise(function (myResolve, myReject) {
-        if (res.status == 200) {
-          myResolve(true)
-        } else {
-          myReject(false)
-        }
-      })
-
-      // triguer the toast
-      toast.promise(myPromise, {
-        loading: "Guardando...",
-        success: "DOCUMENTO SUBMETIDO COM SUCESSO",
-        error: "ERRRO NA FICHA DE EQUIPA",
-      })
-    } catch (error) {}
+        const responseData = await res.json()
+        console.log("Resposta de atualização:", responseData)
+        // setResponse(responseData) // Exibir a resposta com os dados atualizados
+      } else {
+        throw new Error("Dados de arquivo não foram retornados corretamente.")
+      }
+    } catch (error) {
+      console.error("Error uploading files:", error)
+      alert("Erro ao enviar os arquivos. Por favor, tente novamente.")
+    }
   }
+
+  // let handleFileChange = async (event: any) => {
+  //   let selectedFiles = event.target.files
+
+  //   console.log("Selected files:")
+  //   console.log(selectedFiles)
+
+  //   let doc = []
+
+  //   // Loop over the files and create an object for each file
+  //   for (let i = 0; i < selectedFiles.length; i++) {
+  //     let file = selectedFiles[i]
+  //     console.log("file:", file.name)
+
+  //     // Create a local link (this could be a path, data URL, or similar if needed)
+  //     let fileLink = URL.createObjectURL(file) // This will generate a local URL for the file
+
+  //     // Add file information to the doc array
+  //     doc.push({
+  //       titulo: file.name,
+  //       file_link: fileLink,
+  //     })
+  //   }
+
+  //   // Optionally, store the files in state
+  //   setFiles(selectedFiles)
+  //   setLinks(doc.map((file) => file.file_link)) // Store all links
+
+  //   // Attempt to send the files to the Strapi backend
+  //   try {
+  //     // Get existing data to update
+  //     const res_old: any = await fetch(
+  //       `${api_link}/api/inscricoes/${cid}?populate=deep`,
+  //       {
+  //         method: "GET",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //       }
+  //     )
+  //     const data_old = await res_old.json()
+
+  //     console.log("data_old")
+  //     console.log(data_old)
+
+  //     // Add new files to the old ones
+  //     data_old.data.attributes.fileLink.map((value: string, index: number) => {
+  //       doc.push({
+  //         titulo: value?.titulo,
+  //         file_link: value?.file_link,
+  //       })
+  //     })
+
+  //     // Update the database with new file links
+  //     const res: any = await fetch(`${api_link}/api/inscricoes/${cid}`, {
+  //       method: "PUT",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         data: {
+  //           fileLink: doc,
+  //         },
+  //       }),
+  //     })
+
+  //     const data = await res.json()
+
+  //     // Promise to trigger success or error messages
+  //     let myPromise = new Promise(function (myResolve, myReject) {
+  //       if (res.status == 200) {
+  //         myResolve(true)
+  //       } else {
+  //         myReject(false)
+  //       }
+  //     })
+
+  //     // Trigger the toast notification
+  //     toast.promise(myPromise, {
+  //       loading: "Guardando...",
+  //       success: "DOCUMENTO SUBMETIDO COM SUCESSO",
+  //       error: "ERRO NA FICHA DE EQUIPA",
+  //     })
+  //   } catch (error) {
+  //     console.error("Error uploading files:", error)
+  //   }
+  // }
+
+  // submit files
+  //   let { uploadToS3, files } = useS3Upload()
+  //   let [link, setLink] = useState("")
+
+  //   // let [doc, setDoc] = useState([]);
+
+  //   let handleFileChange = async (event: any) => {
+  //     // alert("terrq");
+  //     // setLink("");
+  //     let file = event.target.files[0]
+
+  //     console.log("file:")
+  //     console.log(file.name)
+
+  //     let { url } = await uploadToS3(file)
+  //     setLink(url)
+
+  //     console.log("url:")
+  //     console.log(url)
+
+  //     // if (url) {
+  //     let doc = []
+
+  //     doc[0] = {
+  //       // @ts-ignore
+  //       titulo: file?.name,
+  //       file_link: url,
+  //     }
+  //     // }
+
+  //     // console.log("doc");
+  //     // console.log(doc);
+
+  //     // guardar o link e fileName no DB (strapi)
+  //     try {
+  //       // get all the old data
+  //       const res_old: any = await fetch(
+  //         `${api_link}/api/inscricoes/${cid}?populate=deep`,
+  //         {
+  //           method: "GET",
+  //           headers: {
+  //             "Content-Type": "application/json",
+  //           },
+  //         }
+  //       )
+
+  //       const data_old = await res_old.json()
+
+  //       // console.log("docs 0");
+
+  //       // console.log(doc);
+
+  //       // let docs: any[];
+
+  //       data_old.data.attributes.fileLink.map((value: string, index: number) => {
+  //         console.log("data_old")
+  //         console.log(index)
+  //         // @ts-ignore
+  //         doc[index + 1] = {
+  //           // @ts-ignore
+  //           titulo: value.titulo,
+  //           // @ts-ignore
+  //           file_link: value.file_link,
+  //         }
+  //       })
+
+  //       // console.log("docs lasts");
+  //       // console.log(doc);
+  //       // console.log(doc[0].titulo);
+  //       // console.log("Antes New docs");
+
+  //       // let old_swap_new_docs: string[] = [];
+  //       // old_swap_new_docs = data_old.data.fileLink;
+  //       // console.log("old swap New docs");
+  //       // console.log(old_swap_new_docs);
+  //       // let new_docs = old_swap_new_docs.push(doc);
+  //       // console.log("New docs");
+  //       // console.log(new_docs);
+
+  //       // return;
+  //       const res: any = await fetch(`${api_link}/api/inscricoes/${cid}`, {
+  //         method: "PUT",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify({
+  //           data: {
+  //             fileLink: doc,
+  //           },
+  //         }),
+  //       })
+
+  //       const data = await res.json()
+
+  //       // console.log("controle de uploads");
+  //       // console.log("res");
+  //       // console.log(res);
+  //       // // =================
+  //       // console.log("data");
+  //       // console.log(data);
+
+  //       // listen de promise
+  //       let myPromise = new Promise(function (myResolve, myReject) {
+  //         if (res.status == 200) {
+  //           myResolve(true)
+  //         } else {
+  //           myReject(false)
+  //         }
+  //       })
+
+  //       // triguer the toast
+  //       toast.promise(myPromise, {
+  //         loading: "Guardando...",
+  //         success: "DOCUMENTO SUBMETIDO COM SUCESSO",
+  //         error: "ERRRO NA FICHA DE EQUIPA",
+  //       })
+  //     } catch (error) {}
+  //   }
 
   return (
     <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
@@ -811,17 +1051,17 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
                           </Table.Cell>
                           <Table.Cell className="py-3 px-4">
                             <a
-                              href={value.file_link}
+                              href={`${api_link}${value.ficheiro.data.attributes.url}`}
                               target="_blank"
                               className="text-blue-600 hover:text-blue-800 font-medium hover:underline transition-all duration-200"
                               rel="noreferrer"
                             >
-                              {value.file_link}
+                              {value.ficheiro.data.attributes.hash}
                             </a>
                           </Table.Cell>
                           <Table.Cell className="py-3 px-4">
                             <span
-                              onClick={() => deleteFile(value.file_link)}
+                              onClick={() => deleteFile(value.id)}
                               className="cursor-pointer text-red-600 hover:text-red-800 transition-all duration-300"
                             >
                               <IoTrashOutline />
@@ -877,9 +1117,93 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
               </div>
             </div>
 
+            {/* <div className="mt-5 md:col-span-2 md:mt-0">
+              <div>
+                <label
+                  htmlFor="file-upload"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Documentos (<span className="text-red-500 font-bold">*</span>)
+                  – só é permitido documentos dos tipos imagem (
+                  <span className="text-red-500 font-bold">png</span>,{" "}
+                  <span className="text-red-500 font-bold">jpg</span>,{" "}
+                  <span className="text-red-500 font-bold">jpeg</span>,{" "}
+                  <span className="text-red-500 font-bold">gif</span>),{" "}
+                  <span className="text-red-500 font-bold">pdf</span>, áudio (
+                  <span className="text-red-500 font-bold">mp3</span>,{" "}
+                  <span className="text-red-500 font-bold">aac</span>), vídeos (
+                  <span className="text-red-500 font-bold">mp4</span>).
+                </label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Outros tipos de documentos não serão submetidos (o progresso
+                  ficará a 0%).
+                </label>
+
+                <div className="mt-1 flex justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6">
+                  <div className="space-y-1 text-center">
+                    <svg
+                      className="mx-auto h-12 w-12 text-gray-400"
+                      stroke="currentColor"
+                      fill="none"
+                      viewBox="0 0 48 48"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                        strokeWidth={2}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    <div>
+                      {/* <input
+                        onChange={handleFileChange}
+                        type="file"
+                        className="w-full py-2 px-4 border border-gray-300 rounded-md"
+                      /> * /}
+                      <input
+                        onChange={handleFileChange}
+                        type="file"
+                        accept=".png,.jpg,.jpeg,.gif,.pdf,.mp3,.aac,.mp4"
+                        className="w-full py-2 px-4 border border-gray-300 rounded-md"
+                      />
+
+                      <div className="pt-8">
+                        {files.map((file, index) => (
+                          <div key={index}>
+                            Ficheiro #{index} progress:{" "}
+                            {Math.round(file.progress)}% ::{" "}
+                            <a
+                              href={file?.link} // Make sure `file.link` is the correct link to the file
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-blue-500 underline"
+                            >
+                              link do documento
+                            </a>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div>
+                        <button
+                          className="bg-amarelo-ouro text-branco hover:text-branco font-[Poppins] py-2 px-6 rounded mt-10 hover:bg-castanho-claro duration-500"
+                          onClick={Atualizar}
+                        >
+                          Confirmar
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div> */}
             <div className="mt-5 md:col-span-2 md:mt-0">
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="file-upload"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Documentos (<span className="text-red-500 font-bold">*</span>)
                   – só é permitido documentos dos tipos imagem (
                   <span className="text-red-500 font-bold">png</span>,{" "}
@@ -914,26 +1238,40 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
                     </svg>
                     <div>
                       <input
+                        id="file-upload"
                         onChange={handleFileChange}
                         type="file"
+                        accept=".png,.jpg,.jpeg,.gif,.pdf,.mp3,.aac,.mp4"
                         className="w-full py-2 px-4 border border-gray-300 rounded-md"
+                        multiple
                       />
 
                       <div className="pt-8">
-                        {files.map((file, index) => (
-                          <div key={index}>
-                            Ficheiro #{index} progress:{" "}
-                            {Math.round(file.progress)}% ::{" "}
-                            <a
-                              href={file.link} // Make sure `file.link` is the correct link to the file
-                              target="_blank"
-                              rel="noreferrer"
-                              className="text-blue-500 underline"
-                            >
-                              link do documento
-                            </a>
-                          </div>
-                        ))}
+                        {/* Exibindo a lista de arquivos com seu progresso */}
+                        {/* {files.length > 0 &&
+                          files.map((file, index) => (
+                            <div key={index} className="mb-4">
+                              <div className="font-medium text-gray-800">
+                                Ficheiro #{index + 1}
+                              </div>
+                              <div className="text-sm text-gray-600">
+                                <strong>Progresso:</strong>{" "}
+                                {Math.round(file.progress)}%
+                              </div>
+                              {file.link && (
+                                <div>
+                                  <a
+                                    href={file.link}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="text-blue-500 underline"
+                                  >
+                                    Ver documento
+                                  </a>
+                                </div>
+                              )}
+                            </div>
+                          ))} */}
                       </div>
 
                       <div>
