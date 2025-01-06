@@ -60,9 +60,9 @@ const Regulamentos = ({ social, contato, edicao, navbar }: any) => {
           <span></span>
         </h2> */}
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="py-8">
-            <div className="leading-relaxed text-xl text-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+          <div className="py-6 sm:py-8 md:py-12">
+            <div className="leading-relaxed text-lg sm:text-xl md:text-2xl text-gray-800 font-merriweather">
               <span dangerouslySetInnerHTML={Regulamentos[0]?.descricao} />
             </div>
           </div>
@@ -84,10 +84,10 @@ const Regulamentos = ({ social, contato, edicao, navbar }: any) => {
               {Categoria.map((category: any) => (
                 <div
                   key={category.id}
-                  className="py-16 flex flex-wrap md:flex-nowrap gap-12"
+                  className="py-16 flex flex-wrap gap-12" // Default flex-wrap for mobile
                 >
-                  <div className="md:flex-grow bg-white p-12 rounded-xl shadow-xl hover:shadow-2xl transition-shadow duration-300 ease-in-out">
-                    <h2 className="text-4xl font-bold text-transparent title-font mb-4 text-center tracking-wide bg-gradient-to-r from-yellow-500 to-orange-500 bg-clip-text">
+                  <div className="w-full bg-white p-12 rounded-xl shadow-xl hover:shadow-2xl transition-shadow duration-300 ease-in-out">
+                    <h2 className="text-3xl font-bold text-transparent title-font mb-4 text-center tracking-wide bg-gradient-to-r from-yellow-500 to-orange-500 bg-clip-text">
                       <a
                         id={category.slug}
                         className="hover:text-amarelo-ouro transition-colors duration-300"

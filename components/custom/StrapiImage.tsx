@@ -25,6 +25,8 @@ export function StrapiImage({
 }: Readonly<StrapiImageProps>) {
   if (!src) return null
   const imageUrl = getStrapiMedia(src)
+  console.log("imageUrl: ")
+  console.log(imageUrl)
   const imageFallback = `https://placehold.co/${width}x${height}`
 
   // console.log("imageUrl dento strapiImage");
