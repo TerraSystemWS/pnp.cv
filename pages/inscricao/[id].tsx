@@ -585,7 +585,7 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
             if (xhr.status === 200) {
               //. Quando o upload do arquivo for concluído com sucesso
               const uploadData = JSON.parse(xhr.responseText)
-              console.log("uploadData", uploadData)
+              // console.log("uploadData", uploadData)
 
               //. Após o upload, associar os arquivos à inscrição
               if (uploadData) {
@@ -593,11 +593,11 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
                   `${api_link}/api/inscricoes/${cid}?populate[fileLink][populate][ficheiro][fields]=name,width,height,hash,ext,mime,size,url,provider`
                 )
                 const inscricaoData = await inscricaoRes.json()
-                console.log("inscricaoData", inscricaoData)
+                // console.log("inscricaoData", inscricaoData)
 
                 const existingFiles =
                   inscricaoData.data.attributes.fileLink || []
-                console.log("existingFiles", existingFiles)
+                // console.log("existingFiles", existingFiles)
 
                 const fileIds = [
                   ...existingFiles.map((file: any) => ({
@@ -635,14 +635,14 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
                 }
 
                 const responseData = await res.json()
-                console.log("Resposta de atualização:", responseData)
+                // console.log("Resposta de atualização:", responseData)
               } else {
                 throw new Error(
                   "Dados de arquivo não foram retornados corretamente."
                 )
               }
             } else {
-              console.error("Erro no upload:", xhr.status, xhr.statusText)
+              // console.error("Erro no upload:", xhr.status, xhr.statusText)
             }
           }
         }
