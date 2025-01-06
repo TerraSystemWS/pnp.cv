@@ -569,7 +569,7 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
         const updateProgress = (event: any) => {
           if (event.lengthComputable) {
             const percent = Math.round((event.loaded * 100) / event.total)
-            setFiles((prevFiles) => {
+            setFiles((prevFiles: any) => {
               const newFiles = [...prevFiles] //. Copia do estado atual
               newFiles[index] = { ...newFiles[index], progress: percent } //. Atualiza o progresso do arquivo específico
               return newFiles //. Retorna o novo estado com o progresso atualizado
