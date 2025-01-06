@@ -1041,34 +1041,36 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
                   </Table.Head>
                   <Table.Body className="divide-y divide-gray-200">
                     {inscricao.data.attributes.fileLink &&
-                      inscricao.data.attributes.fileLink.map((value, index) => (
-                        <Table.Row
-                          key={index}
-                          className="bg-white hover:bg-gray-50 transition-all duration-300"
-                        >
-                          <Table.Cell className="whitespace-nowrap py-3 px-4 text-gray-900 font-medium">
-                            {value.titulo}
-                          </Table.Cell>
-                          <Table.Cell className="py-3 px-4">
-                            <a
-                              href={`${api_link}${value.ficheiro.data.attributes.url}`}
-                              target="_blank"
-                              className="text-blue-600 hover:text-blue-800 font-medium hover:underline transition-all duration-200"
-                              rel="noreferrer"
-                            >
-                              {value.ficheiro.data.attributes.hash}
-                            </a>
-                          </Table.Cell>
-                          <Table.Cell className="py-3 px-4">
-                            <span
-                              onClick={() => deleteFile(value.id)}
-                              className="cursor-pointer text-red-600 hover:text-red-800 transition-all duration-300"
-                            >
-                              <IoTrashOutline />
-                            </span>
-                          </Table.Cell>
-                        </Table.Row>
-                      ))}
+                      inscricao.data.attributes.fileLink.map(
+                        (value: any, index: any) => (
+                          <Table.Row
+                            key={index}
+                            className="bg-white hover:bg-gray-50 transition-all duration-300"
+                          >
+                            <Table.Cell className="whitespace-nowrap py-3 px-4 text-gray-900 font-medium">
+                              {value.titulo}
+                            </Table.Cell>
+                            <Table.Cell className="py-3 px-4">
+                              <a
+                                href={`${api_link}${value.ficheiro.data.attributes.url}`}
+                                target="_blank"
+                                className="text-blue-600 hover:text-blue-800 font-medium hover:underline transition-all duration-200"
+                                rel="noreferrer"
+                              >
+                                {value.ficheiro.data.attributes.hash}
+                              </a>
+                            </Table.Cell>
+                            <Table.Cell className="py-3 px-4">
+                              <span
+                                onClick={() => deleteFile(value.id)}
+                                className="cursor-pointer text-red-600 hover:text-red-800 transition-all duration-300"
+                              >
+                                <IoTrashOutline />
+                              </span>
+                            </Table.Cell>
+                          </Table.Row>
+                        )
+                      )}
                   </Table.Body>
                 </Table>
               </div>
