@@ -362,7 +362,7 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
       const formData = new FormData()
 
       // Usando diretamente o selectedFiles em vez de "files" (que pode não ter sido atualizado)
-      Array.from(selectedFiles).forEach((file) => {
+      Array.from(selectedFiles).forEach((file: any) => {
         formData.append("files", file) // Adicionando cada arquivo
       })
 
