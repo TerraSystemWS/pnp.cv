@@ -5,7 +5,7 @@ import Head from "next/head"
 // import { Card } from "flowbite-react";
 // import { IoCall } from "react-icons/io5";
 import { useState } from "react"
-import { Table } from "flowbite-react"
+// import { Table } from "flowbite-react"
 import { useForm, SubmitHandler } from "react-hook-form"
 import Swal from "sweetalert2"
 const qs = require("qs")

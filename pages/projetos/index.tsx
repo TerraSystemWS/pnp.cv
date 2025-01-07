@@ -78,7 +78,7 @@ const Vpublica = ({
         <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
           <HeroSection
             title={`Projetos Concorentes a ${edicaoMaisRecente.N_Edicao}ª Edição`}
-            subtitle={"Disponível somente no período de votação"}
+            subtitle={"Inscrições abertas de 1 a 31 de Janeiro de 2025"}
           />
 
           {/* Lista de Categorias com Inscrições */}
