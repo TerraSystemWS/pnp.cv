@@ -11,7 +11,7 @@ import { IoTrashOutline } from "react-icons/io5"
 import { useState } from "react"
 import { useFetchUser } from "../../lib/authContext"
 import HeroSection from "../../components/HeroSection"
-import { sendStatusCode } from "next/dist/server/api-utils"
+// import { sendStatusCode } from "next/dist/server/api-utils"
 
 //import Fileupload from "../../components/Fileupload";
 //import FileList from "../../components/FileList";
@@ -100,8 +100,10 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
   })
   // dados de categorias
   let Categoria: any = []
+  console.log("edicao")
+  console.log(edicao)
   // create cateoria lists
-  edicao.data?.attributes.categoria.map((categs: any, index: any) => {
+  edicao.data[0]?.attributes.categoria.map((categs: any, index: any) => {
     Categoria[index] = {
       id: index,
       titulo: categs.titulo,
@@ -353,196 +355,6 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
 
   let [files, setFiles] = useState<File[]>([]) // Store files locally
   const [isUploading, setIsUploading] = useState(true) // Estado para controlar se o upload está em andamento
-
-  // let handleFileChange = async (event: any) => {
-  //   let selectedFiles = event.target.files
-  //   console.log("Selected files:", selectedFiles)
-  //   setFiles(event.target.files)
-
-  //   try {
-  //     // Criar FormData e adicionar arquivos
-  //     const formData = new FormData()
-
-  //     // Usando diretamente o selectedFiles em vez de "files" (que pode não ter sido atualizado)
-  //     Array.from(selectedFiles).forEach((file: any) => {
-  //       formData.append("files", file) // Adicionando cada arquivo
-  //     })
-
-  //     // Enviar requisição para o Strapi e obter os arquivos carregados
-  //     const uploadRes = await fetch(`${api_link}/api/upload`, {
-  //       method: "POST",
-  //       body: formData,
-  //     })
-
-  //     if (!uploadRes.ok) {
-  //       throw new Error("Erro ao fazer o upload dos arquivos")
-  //     }
-
-  //     const uploadData = await uploadRes.json()
-  //     console.log("uploadData", uploadData)
-
-  //     if (uploadData) {
-  //       // Obter os dados atuais da inscrição
-  //       const inscricaoRes = await fetch(
-  //         `${api_link}/api/inscricoes/${cid}?populate[fileLink][populate][ficheiro][fields]=name,width,height,hash,ext,mime,size,url,provider`
-  //       )
-  //       const inscricaoData = await inscricaoRes.json()
-  //       console.log("inscricaoData", inscricaoData)
-
-  //       // Atualizar a lista de arquivos, mantendo os antigos e adicionando os novos
-  //       const existingFiles = inscricaoData.data.attributes.fileLink || []
-  //       console.log("existingFiles", existingFiles)
-
-  //       const fileIds = [
-  //         ...existingFiles.map((file: any) => ({
-  //           titulo: file.titulo, // Nome do arquivo
-  //           publico: file.publico,
-  //           ficheiro: {
-  //             id: file.ficheiro.data.id, // ID do arquivo
-  //           },
-  //         })),
-  //         ...uploadData.map((file: any) => ({
-  //           titulo: file.name, // Nome do arquivo
-  //           publico: false,
-  //           ficheiro: {
-  //             id: file.id, // ID do arquivo
-  //           },
-  //         })),
-  //       ]
-
-  //       // Preparar o objeto de dados para atualizar a inscrição
-  //       const data = {
-  //         data: {
-  //           fileLink: fileIds, // Associando arquivos à inscrição
-  //         },
-  //       }
-
-  //       //return
-  //       // Atualizar a inscrição com os arquivos carregados
-  //       const res = await fetch(`${api_link}/api/inscricoes/${cid}`, {
-  //         method: "PUT",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify(data),
-  //       })
-
-  //       if (!res.ok) {
-  //         throw new Error("Erro ao associar os arquivos à inscrição")
-  //       }
-
-  //       const responseData = await res.json()
-  //       console.log("Resposta de atualização:", responseData)
-  //       // setResponse(responseData) // Exibir a resposta com os dados atualizados
-  //     } else {
-  //       throw new Error("Dados de arquivo não foram retornados corretamente.")
-  //     }
-  //   } catch (error) {
-  //     console.error("Error uploading files:", error)
-  //     alert("Erro ao enviar os arquivos. Por favor, tente novamente.")
-  //   }
-  // }
-
-  // let handleFileChange = async (event: any) => {
-  //   let selectedFiles = event.target.files
-  //   console.log("Selected files:", selectedFiles)
-
-  //   const updatedFiles = Array.from(selectedFiles).map((file: any) => ({
-  //     ...file,
-  //     progress: 0, // Inicializando o progresso como 0
-  //   }))
-
-  //   // Atualizando o estado dos arquivos para refletir os novos arquivos
-  //   setFiles(updatedFiles)
-
-  //   try {
-  //     // Criar FormData e adicionar arquivos
-  //     const formData = new FormData()
-
-  //     // Usando diretamente o selectedFiles em vez de "files"
-  //     Array.from(selectedFiles).forEach((file: any) => {
-  //       formData.append("files", file)
-  //     })
-
-  //     // Função para atualizar o progresso do upload
-  //     const updateProgress = (event: any, fileIndex: number) => {
-  //       if (event.lengthComputable) {
-  //         const percent = Math.round((event.loaded * 100) / event.total)
-  //         const newFiles = [...files]
-  //         newFiles[fileIndex].progress = percent
-  //         setFiles(newFiles) // Atualiza o progresso na UI
-  //       }
-  //     }
-
-  //     // Usando a fetch API com progress
-  //     const uploadRes = await fetch(`${api_link}/api/upload`, {
-  //       method: "POST",
-  //       body: formData,
-  //     })
-
-  //     if (!uploadRes.ok) {
-  //       throw new Error("Erro ao fazer o upload dos arquivos")
-  //     }
-
-  //     const uploadData = await uploadRes.json()
-  //     console.log("uploadData", uploadData)
-
-  //     if (uploadData) {
-  //       // Continuar com a lógica de associar os arquivos à inscrição
-  //       const inscricaoRes = await fetch(
-  //         `${api_link}/api/inscricoes/${cid}?populate[fileLink][populate][ficheiro][fields]=name,width,height,hash,ext,mime,size,url,provider`
-  //       )
-  //       const inscricaoData = await inscricaoRes.json()
-  //       console.log("inscricaoData", inscricaoData)
-
-  //       const existingFiles = inscricaoData.data.attributes.fileLink || []
-  //       console.log("existingFiles", existingFiles)
-
-  //       const fileIds = [
-  //         ...existingFiles.map((file: any) => ({
-  //           titulo: file.titulo,
-  //           publico: file.publico,
-  //           ficheiro: {
-  //             id: file.ficheiro.data.id,
-  //           },
-  //         })),
-  //         ...uploadData.map((file: any) => ({
-  //           titulo: file.name,
-  //           publico: false,
-  //           ficheiro: {
-  //             id: file.id,
-  //           },
-  //         })),
-  //       ]
-
-  //       const data = {
-  //         data: {
-  //           fileLink: fileIds,
-  //         },
-  //       }
-
-  //       const res = await fetch(`${api_link}/api/inscricoes/${cid}`, {
-  //         method: "PUT",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify(data),
-  //       })
-
-  //       if (!res.ok) {
-  //         throw new Error("Erro ao associar os arquivos à inscrição")
-  //       }
-
-  //       const responseData = await res.json()
-  //       console.log("Resposta de atualização:", responseData)
-  //     } else {
-  //       throw new Error("Dados de arquivo não foram retornados corretamente.")
-  //     }
-  //   } catch (error) {
-  //     console.error("Error uploading files:", error)
-  //     alert("Erro ao enviar os arquivos. Por favor, tente novamente.")
-  //   }
-  // }
 
   let handleFileChange = async (event: any) => {
     let selectedFiles = event.target.files
@@ -1231,7 +1043,7 @@ export async function getServerSideProps({ query }: any) {
 
   const queri = qs.stringify(
     {
-      sort: ["N_Edicao:asc"],
+      sort: ["N_Edicao:desc"],
     },
     { encodeValuesOnly: true } // prettify URL
   )
@@ -1241,7 +1053,7 @@ export async function getServerSideProps({ query }: any) {
     const [rsocials, contato, edicao, navbar, inscricao] = await Promise.all([
       fetcher(`${api_link}/api/redes-social?populate=*`),
       fetcher(`${api_link}/api/contato`),
-      fetcher(`${api_link}/api/edicoes/1?populate=deep&${queri}`),
+      fetcher(`${api_link}/api/edicoes?populate=deep&${queri}`),
       fetcher(`${api_link}/api/menus?populate=deep`),
       fetcher(`${api_link}/api/inscricoes/${cid}?populate=deep`),
     ])

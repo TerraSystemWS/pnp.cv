@@ -8,6 +8,8 @@ import { useState } from "react"
 import { Table } from "flowbite-react"
 import { useForm, SubmitHandler } from "react-hook-form"
 import Swal from "sweetalert2"
+const qs = require("qs")
+import HeroSection from "../../components/HeroSection"
 
 // primereact tools
 import { Dialog } from "primereact/dialog"
@@ -30,7 +32,13 @@ const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
 //   nomeVota: string;
 // };
 
-const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
+const VpublicaDetalhes = ({
+  edicoes,
+  social,
+  contato,
+  inscricao,
+  navbar,
+}: any) => {
   // console.log("detalhes inscritos");
   // console.log(inscricao);
   const InscritosValues: any = {
@@ -66,6 +74,8 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
     watch,
     formState: { errors },
   } = useForm()
+
+  const edicaoMaisRecente = edicoes.data[0]?.attributes.N_Edicao
 
   const onVotar = async (data: any) => {
     // teste de confetti
@@ -225,7 +235,7 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
           content={inscricao.data.attributes.con_criativo}
         />
       </Head>
-      <div className="">
+      {/* <div className="">
         <div className="bg-gray-200">
           <div className="mx-auto max-w-7xl py-12 px-4 sm:px-6">
             <h2 className="text-2xl text-center mb-8 font-bold tracking-tight text-gray-900 sm:text-4xl">
@@ -234,16 +244,20 @@ const VpublicaDetalhes = ({ social, contato, inscricao, navbar }: any) => {
               </span>
               {/* <span className="block ">
 								Inscrição aberta apartir do dia 1 a 31 de Janero 2023
-							</span> */}
+							</span> * /}
             </h2>
             {/* <div className="font-light text-gray-500 lg:mb-16 sm:text-xl dark:text-gray-400">
               Fotografias, videos, regulamento, os vencedores dos Prémios
               Palmeira e respetivos discursos de vitória… Aqui encontra tudo
               sobre as anteriores edições do PNP.
-            </div> */}
+            </div> * /}
           </div>
         </div>
-      </div>
+      </div> */}
+      <HeroSection
+        title={inscricao.data.attributes.nome_projeto}
+        subtitle={`Concorente da ${edicaoMaisRecente}ª edição`}
+      />
 
       <div className="p-11">
         {/* Inicio dos detalhes de cada projeto */}
@@ -1239,6 +1253,17 @@ export async function getServerSideProps({ params, query }: any) {
   // console.log(query);
   const { id } = query
 
+  const queri = qs.stringify(
+    {
+      sort: ["N_Edicao:desc"], // Ordena pela edição mais recente
+    },
+    { encodeValuesOnly: true }
+  )
+
+  // GET: links das edicoes
+  const edicoes = await fetcher(
+    `${api_link}/api/edicoes?populate[categoria][fields]=titulo,id&[populate][inscricoes][fields]=titulo&${queri}`
+  )
   // GET: links para as redes sociais
   const rsocials = await fetcher(`${api_link}/api/redes-social?populate=*`)
   // GET: dados para contatos
@@ -1268,6 +1293,7 @@ export async function getServerSideProps({ params, query }: any) {
   // Pass data to the page via props
   return {
     props: {
+      edicoes,
       social: rsocials,
       contato,
       navbar: dlink,

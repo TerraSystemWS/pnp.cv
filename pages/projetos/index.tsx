@@ -2,17 +2,67 @@ import Layout from "../../components/Layout"
 import { fetcher } from "../../lib/api"
 import Link from "next/link"
 import Head from "next/head"
-import { Alert } from "flowbite-react"
-import { IoCall } from "react-icons/io5"
-import { HiInformationCircle } from "react-icons/hi"
-import Image from "next/image"
 import { useFetchUser } from "../../lib/authContext"
+import HeroSection from "../../components/HeroSection"
+const qs = require("qs")
 
-// link to API endpoint
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
 
-const Vpublica = ({ social, contato, inscritos, navbar }: any) => {
+const Vpublica = ({
+  edicoes,
+  social,
+  contato,
+  navbar,
+  inscritos,
+  totalPages,
+  currentPage,
+}: any) => {
   const { user, loading } = useFetchUser()
+
+  // Ordena as edições pela mais recente (assumindo que N_Edicao representa o número da edição)
+  const edicaoMaisRecente = edicoes[0]?.attributes
+
+  console.log("edicaoMaisRecente")
+  console.log(edicaoMaisRecente)
+
+  // Se não houver edições, exibe uma mensagem
+  if (!edicaoMaisRecente) {
+    return (
+      <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
+        <Head>
+          <title>Trabalhos Concorentes - Prémio Nacional De Publicidade</title>
+          <meta
+            name="description"
+            content="Projetos Concorentes aos Premios - Prémio Nacional De Publicidade"
+          />
+        </Head>
+        <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
+          <HeroSection
+            title="Sem Edições Disponíveis"
+            subtitle="Não há edições de concursos disponíveis no momento."
+          />
+        </div>
+      </Layout>
+    )
+  }
+
+  // Mapeamento das inscrições por edição
+  const inscricoesPorEdicao = inscritos.reduce((acc: any, inscricao: any) => {
+    // Certifique-se de que o id da edição está sendo acessado corretamente
+    const edicaoId = inscricao.attributes.edicoes?.data?.id
+
+    if (!edicaoId) return acc
+
+    if (!acc[edicaoId]) {
+      acc[edicaoId] = []
+    }
+
+    acc[edicaoId].push(inscricao)
+    return acc
+  }, {})
+
+  console.log("inscricoesPorEdicao")
+  console.log(inscricoesPorEdicao)
 
   return (
     <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
@@ -26,77 +76,91 @@ const Vpublica = ({ social, contato, inscritos, navbar }: any) => {
 
       <section className="bg-white dark:bg-gray-900">
         <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
-          {/* Conditional User Display */}
-          <div className="mx-auto max-w-screen-md text-center lg:mb-16 mb-8">
-            <h2 className="mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold text-amarelo-ouro dark:text-white">
-              {user ? "Avaliação Dos Jurados" : "Votação Pública"}
-            </h2>
-            <p className="font-light text-justify text-gray-500 sm:text-xl dark:text-gray-400">
-              O Prémio Público de Publicidade é uma das categorias do Prémio
-              Nacional de Publicidade (PNP) em que a votação é feita somente
-              pelo público, através da Internet. Trata-se de um prémio da
-              responsabilidade do PNP, com regulamento próprio, sem avaliação do
-              júri, baseado apenas no critério de popularidade.
-            </p>
-          </div>
+          <HeroSection
+            title={`Projetos Concorentes a ${edicaoMaisRecente.N_Edicao}ª Edição`}
+            subtitle={"Disponível somente no período de votação"}
+          />
 
-          {/* Competitor Projects Header */}
-          <div className="mx-auto max-w-screen-md text-center lg:mb-16 mb-8">
-            <h2 className="mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold text-amarelo-ouro dark:text-white">
-              Projetos Concorentes a {"?"} Edição
-            </h2>
-          </div>
+          {/* Lista de Categorias com Inscrições */}
+          <div className="mt-4 ">
+            <div className="bg-gray-200 p-4 rounded-lg">
+              {/* <h3 className="text-2xl font-semibold mb-4">
+                Edição {edicaoMaisRecente.N_Edicao}
+              </h3> */}
+              {edicaoMaisRecente.categoria.map((categoria: any) => {
+                // Filtra as inscrições da categoria específica
+                const inscricoesCategoria = inscritos.filter(
+                  (inscricao: any) =>
+                    inscricao.attributes.categoria === categoria.titulo
+                )
 
-          {/* Alert for Voting Period */}
-          <div className="mx-auto max-w-screen-md text-center lg:mb-16 mb-8">
-            <Alert color="warning" icon={HiInformationCircle}>
-              <span>
-                <span className="font-medium">Info!</span> Disponível somente no
-                período de votação.
-              </span>
-            </Alert>
-          </div>
+                return (
+                  <div key={categoria.id} className="mb-8">
+                    {/* Título da categoria */}
+                    <h4 className="text-2xl font-semibold text-gray-800 mb-4">
+                      {categoria.titulo}
+                    </h4>
 
-          {/* Project Cards Display */}
-          <div className="grid grid-row md:grid-cols-2 gap-4">
-            {inscritos.data.map((value: any, index: number) => (
-              <div
-                key={index}
-                className="flex font-sans shadow-2xl border-b border-slate-200"
-              >
-                <form className="flex-auto p-6">
-                  {/* Project Info */}
-                  <div className="flex flex-wrap">
-                    <Link href={`/projetos/${value.id}`}>
-                      <h1 className="flex-auto text-lg font-semibold text-slate-900">
-                        {value.attributes.nome_projeto}
-                      </h1>
-                    </Link>
-                    <div className="w-full flex-none text-sm font-medium text-slate-700 mt-2">
-                      {value.attributes.nome_completo}
-                      <p>
-                        <IoCall /> {value.attributes.telefone}
+                    {/* Se houver inscrições na categoria */}
+                    {inscricoesCategoria.length > 0 ? (
+                      <div className="flex flex-wrap gap-4 justify-start">
+                        {inscricoesCategoria.map((inscricao: any) => (
+                          <Link
+                            key={inscricao.id}
+                            href={`/projetos/${inscricao.id}`}
+                            className="block max-w-[18rem] rounded-lg bg-white text-left text-surface shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 dark:bg-surface-dark dark:text-white"
+                          >
+                            <div className="p-6">
+                              {/* Nome do projeto */}
+                              <h6 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white leading-tight transition-colors duration-300">
+                                {inscricao.attributes.nome_projeto}
+                              </h6>
+                              {/* Adiciona uma breve descrição (caso tenha) ou algum outro detalhe */}
+                              <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                                Breve descrição ou informação adicional sobre o
+                                projeto.
+                              </p>
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-gray-500">
+                        Nenhuma inscrição encontrada para esta categoria.
                       </p>
-                    </div>
+                    )}
                   </div>
+                )
+              })}
+            </div>
 
-                  {/* Creative Concept */}
-                  <div className="flex items-baseline mt-4 mb-6 pb-6 border-b border-slate-200">
-                    <p>{value.attributes?.con_criativo?.substring(0, 536)}</p>
-                  </div>
+            {/* Paginação */}
+            <div className="flex justify-between items-center mt-8 py-6 px-6 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-lg shadow-lg">
+              {/* Botão de Próxima Página */}
+              {currentPage < totalPages && (
+                <Link
+                  href={`?page=${currentPage + 1}`}
+                  className="px-8 py-3 text-xl font-semibold text-white bg-yellow-600 rounded-full hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-50 transition-all duration-300"
+                >
+                  Página Anterior
+                </Link>
+              )}
 
-                  {/* Action Button */}
-                  <div className="flex space-x-4 mb-6 text-sm font-medium">
-                    <Link
-                      href={`/projetos/${value.id}`}
-                      className="bg-amarelo-ouro text-branco hover:text-branco font-[Poppins] py-2 px-6 rounded md:ml-8 hover:bg-castanho-claro duration-500"
-                    >
-                      Detalhes
-                    </Link>
-                  </div>
-                </form>
-              </div>
-            ))}
+              {/* Exibição de Página Atual */}
+              <span className="text-xl font-semibold text-white">
+                Página {currentPage} de {totalPages}
+              </span>
+
+              {/* Botão de Página Anterior */}
+              {currentPage > 1 && (
+                <Link
+                  href={`?page=${currentPage - 1}`}
+                  className="px-8 py-3 text-xl font-semibold text-white bg-yellow-600 rounded-full hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-50 transition-all duration-300"
+                >
+                  Próxima Página
+                </Link>
+              )}
+            </div>
           </div>
         </div>
       </section>
@@ -106,28 +170,70 @@ const Vpublica = ({ social, contato, inscritos, navbar }: any) => {
 
 export default Vpublica
 
-// Server-Side Data Fetching
-export async function getServerSideProps() {
-  // Fetch data from external API
+// Server-Side Data Fetching with Pagination Logic
+export async function getServerSideProps({ query }: any) {
+  const page = query.page || 1 // Default to first page
+  const pageSize = 1 // Show only one edition per page
 
-  // GET: Social media links
-  const rsocials = await fetcher(`${api_link}/api/redes-social?populate=*`)
-  // GET: Contact data
-  const contato = await fetcher(`${api_link}/api/contato`)
-  // GET: Navbar data
-  const navbar = await fetcher(`${api_link}/api/menus?populate=deep`)
-  // GET: Registered projects for competition
-  const inscritos = await fetcher(`${api_link}/api/inscricoes`)
+  const queri = qs.stringify(
+    {
+      sort: ["N_Edicao:desc"], // Ordena pela edição mais recente
+      pagination: {
+        page, // Current page
+        pageSize, // Number of editions per page
+      },
+    },
+    { encodeValuesOnly: true }
+  )
 
-  // Parse Navbar items into an array of links
-  const dlink =
-    navbar.data?.flatMap((menuItem: any) =>
-      menuItem.attributes.items.data.map((linkItem: any) => ({
-        name: linkItem.attributes.title,
-        link: linkItem.attributes.url,
-      }))
-    ) || []
+  try {
+    // Fetch data concurrently
+    const [edicoes, rsocials, contato, navbar, inscritos] = await Promise.all([
+      fetcher(
+        `${api_link}/api/edicoes?populate[categoria][fields]=titulo,id&[populate][inscricoes][fields]=titulo&${queri}`
+      ),
+      fetcher(`${api_link}/api/redes-social?populate=*`),
+      fetcher(`${api_link}/api/contato`),
+      fetcher(`${api_link}/api/menus?populate=deep`),
+      fetcher(`${api_link}/api/inscricoes?populate=*`), // Certifique-se de que as inscrições também estão sendo populadas
+    ])
 
-  // Return the data as props
-  return { props: { social: rsocials, contato, navbar: dlink, inscritos } }
+    const totalPages = Math.ceil(edicoes.meta.pagination.total / pageSize)
+    const currentPage = edicoes.meta.pagination.page
+
+    // Navbar parsing
+    const dlink =
+      navbar?.data?.flatMap(
+        (menuItem: any) =>
+          menuItem?.attributes?.items?.data?.map((linkItem: any) => ({
+            name: linkItem?.attributes?.title ?? "Unnamed",
+            link: linkItem?.attributes?.url ?? "#",
+          })) || []
+      ) || []
+
+    return {
+      props: {
+        edicoes: edicoes.data,
+        totalPages, // Add total pages for pagination
+        currentPage, // Add current page
+        social: rsocials,
+        contato,
+        navbar: dlink,
+        inscritos: inscritos.data,
+      },
+    }
+  } catch (error) {
+    console.error("Error fetching server-side data:", error)
+    return {
+      props: {
+        edicoes: [],
+        social: [],
+        contato: {},
+        navbar: [],
+        inscritos: [],
+        totalPages: 1,
+        currentPage: 1,
+      },
+    }
+  }
 }
