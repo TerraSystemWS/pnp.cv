@@ -302,7 +302,7 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
 
       <HeroSection
         title={"PRÉMIO NACIONAL DE PUBLICIDADE"}
-        subtitle={"Inscrição estará aberta por um certo periúdo de tempo"}
+        subtitle={"Inscrições abertas de 1 a 31 de Janeiro de 2025"}
       />
 
       <div className="p-11">
