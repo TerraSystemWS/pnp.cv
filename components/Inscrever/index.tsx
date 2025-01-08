@@ -10,7 +10,7 @@ const Inscrever = () => {
             <h2 className="text-3xl font-semibold tracking-tight text-gray-900 sm:text-4xl text-center lg:text-left">
               <span className="block">Pronto para se inscrever?</span>
               <span className="block text-amarelo-ouro text-lg font-semibold mt-2">
-                Inscrições abertas de 1 a 31 de Janeiro de 2025
+                Inscrições abertas de 1 a 31 de janeiro de 2025
               </span>
             </h2>
 
@@ -32,7 +32,7 @@ const Inscrever = () => {
                   href="/regulamentos"
                   className="inline-flex items-center justify-center rounded-md bg-white text-indigo-600 font-medium text-lg py-3 px-8 transition duration-300 ease-in-out transform hover:bg-indigo-50 hover:scale-105"
                 >
-                  Regulamentos
+                  Regulamento
                 </Link>
               </div>
             </div>

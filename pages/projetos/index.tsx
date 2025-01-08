@@ -30,10 +30,10 @@ const Vpublica = ({
     return (
       <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
         <Head>
-          <title>Trabalhos Concorentes - Prémio Nacional De Publicidade</title>
+          <title>Trabalhos concorrentes - Prémio Nacional De Publicidade</title>
           <meta
             name="description"
-            content="Projetos Concorentes aos Premios - Prémio Nacional De Publicidade"
+            content="Projetos concorrentes aos Premios - Prémio Nacional De Publicidade"
           />
         </Head>
         <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
@@ -67,17 +67,17 @@ const Vpublica = ({
   return (
     <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
       <Head>
-        <title>Trabalhos Concorentes - Prémio Nacional De Publicidade</title>
+        <title>Trabalhos concorrentes - Prémio Nacional De Publicidade</title>
         <meta
           name="description"
-          content="Projetos Concorentes aos Premios - Prémio Nacional De Publicidade"
+          content="Projetos concorrentes aos Premios - Prémio Nacional De Publicidade"
         />
       </Head>
 
       <section className="bg-white dark:bg-gray-900">
         <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
           <HeroSection
-            title={`Projetos Concorentes a ${edicaoMaisRecente.N_Edicao}ª Edição`}
+            title={`Projetos concorrentes à ${edicaoMaisRecente.N_Edicao}ª edição`}
             subtitle={"Inscrições abertas de 1 a 31 de Janeiro de 2025"}
           />
 
@@ -142,7 +142,7 @@ const Vpublica = ({
                   href={`?page=${currentPage + 1}`}
                   className="px-8 py-3 text-xl font-semibold text-white bg-yellow-600 rounded-full hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-50 transition-all duration-300"
                 >
-                  Página Anterior
+                  Edição Anterior
                 </Link>
               )}
 
@@ -157,7 +157,7 @@ const Vpublica = ({
                   href={`?page=${currentPage - 1}`}
                   className="px-8 py-3 text-xl font-semibold text-white bg-yellow-600 rounded-full hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-50 transition-all duration-300"
                 >
-                  Próxima Página
+                  Próxima Edição
                 </Link>
               )}
             </div>
