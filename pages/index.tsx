@@ -86,10 +86,10 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
             </span>{" "}
             tem como objetivo promover a atividade publicitária através do
             reconhecimento da qualidade dos trabalhos publicitários e
-            institucionais veiculados. Este prêmio é dedicado a premiar aqueles
-            que, com sua criatividade e originalidade, contribuem de forma
-            significativa para o desenvolvimento do mercado publicitário em Cabo
-            Verde.
+            institucionais veiculados. Este prémio é dedicado a galardoar
+            aqueles que, com sua criatividade e originalidade, contribuem de
+            forma significativa para o desenvolvimento do mercado publicitário
+            em Cabo Verde.
           </div>
         </div>
       </div>

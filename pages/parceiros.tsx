@@ -62,7 +62,7 @@ const Parceiros = ({ social, contato, parceiros, navbar }: any) => {
   // const parceirosApoio = processPartners(parceiros.data, 'parceiros_apoio');
   const parceirosMedia = processPartners(parceiros.data, "media_parteners")
   const heading =
-    parceirosOrganizacao.length > 1 ? "Organizadores" : "Organizador"
+    parceirosOrganizacao.length > 1 ? "Organizadores" : "Organizadora"
 
   // Componente para o card de patrocinador h-96
   const PartnerCard = ({ partner }: any) => (
@@ -115,7 +115,7 @@ const Parceiros = ({ social, contato, parceiros, navbar }: any) => {
 
       <HeroSection
         title={"Parceiros"}
-        subtitle={"Conheça tudo sobre os nossos apoiadores"}
+        subtitle={"Saiba mais sobre aqueles que nos impulsionam"}
       />
 
       <div className="mt-5"></div>

@@ -141,7 +141,7 @@ const PostList = ({ social, contato, posts, navbar }: any) => {
                   </p>
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-gray-500 dark:text-gray-400">
-                      Publicado em:{" "}
+                      Publicada em:{" "}
                       {formatDateTime(post.attributes.publishedAt)}
                     </span>
                     <Link

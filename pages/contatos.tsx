@@ -67,7 +67,7 @@ const CONTATOS = ({ social, contato, navbar }: any) => {
 
       <HeroSection
         title={"Contatos"}
-        subtitle={"Não tenha medo de perguntar, fale conosco!"}
+        subtitle={"Não hesite em perguntar, fale connosco!"}
       />
 
       <section className="text-gray-600 body-font relative mt-5">

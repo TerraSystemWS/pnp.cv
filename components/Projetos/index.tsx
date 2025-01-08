@@ -14,8 +14,8 @@ const Projetos = () => {
             </h1>
             <p className="text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto text-justify">
               O Prémio Público de Publicidade é uma categoria do Prémio Nacional
-              de Publicidade (PNP), onde a votação é feita exclusivamente pelo
-              público, através da internet. Este prémio é de responsabilidade do
+              de Publicidade (PNP) em que a votação é feita exclusivamente pelo
+              público, através da internet. Este prémio é da responsabilidade do
               PNP, com regulamento próprio, sem avaliação do júri, sendo baseado
               unicamente na popularidade. A votação online torna este prémio
               mais inclusivo e acessível para todos os cidadãos, incentivando a
@@ -42,7 +42,7 @@ const Projetos = () => {
               href="/projetos"
               className="inline-block bg-[#ffb74d] text-white font-semibold text-xl py-3 px-8 rounded-lg shadow-md hover:bg-[#f4a261] hover:scale-105 transition-all duration-300"
             >
-              Veja os Projetos
+              Descubra os projetos em competição
             </Link>
           </div>
         </div>

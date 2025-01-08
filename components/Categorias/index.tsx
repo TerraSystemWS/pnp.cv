@@ -9,10 +9,10 @@ const Categorias = (props: any) => {
       <div className="container mx-auto px-6">
         <div className="text-center mb-12">
           <h1 className="sm:text-4xl text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600 mb-6">
-            CATEGORIAS DE PRÉMIOS
+            CATEGORIAS DE PRÉMIO
           </h1>
           <p className="text-lg text-gray-600">
-            Explore as categorias e descubra o que está esperando por você!
+            Explore as categorias e descubra o que está esperando por si!
           </p>
         </div>
 
