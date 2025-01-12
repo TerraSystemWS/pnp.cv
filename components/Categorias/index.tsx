@@ -47,14 +47,18 @@ const Categorias = (props: any) => {
                   }`}
                 >
                   <p className="text-gray-600 mt-2">{value.description}</p>
-                  <Link
-                    href={`/regulamentos#${value.slug}`}
-                    className="text-yellow-500 font-medium mt-2 inline-block"
-                  >
-                    Saiba Mais
-                  </Link>
                 </div>
               </Link>
+
+              {/* Link "Saiba Mais" fixo no rodapé */}
+              <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2">
+                <Link
+                  href={`/regulamentos#${value.slug}`}
+                  className="text-yellow-500 font-medium inline-block"
+                >
+                  Saiba Mais
+                </Link>
+              </div>
             </div>
           ))}
         </div>
