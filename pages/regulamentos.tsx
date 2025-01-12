@@ -4,17 +4,15 @@ import showdown from "showdown"
 import Head from "next/head"
 import { useFetchUser } from "../lib/authContext"
 import qs from "qs"
-// import { useEffect } from "react"
 import CategBox from "../components/CategBox"
 import HeroSection from "../components/HeroSection"
+import { useState } from "react"
 
-// link to API URL
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
 
 const Regulamentos = ({ social, contato, edicao, navbar }: any) => {
   const { user, loading } = useFetchUser()
 
-  // Markdown converter function
   const createMarkup = (content: string) => {
     if (typeof content !== "string") {
       console.error("Error: Content is not a string.")
@@ -24,7 +22,6 @@ const Regulamentos = ({ social, contato, edicao, navbar }: any) => {
     return { __html: converter.makeHtml(content) }
   }
 
-  // Map Regulations
   const Regulamentos = edicao.attributes.regulamentos.map(
     (regulamento: any, index: number) => ({
       id: index,
@@ -33,7 +30,6 @@ const Regulamentos = ({ social, contato, edicao, navbar }: any) => {
     })
   )
 
-  // Map Categories
   const Categoria = edicao.attributes.categoria.map(
     (categoria: any, index: number) => ({
       id: index,
@@ -41,6 +37,11 @@ const Regulamentos = ({ social, contato, edicao, navbar }: any) => {
       slug: categoria.titulo.replace(/ /g, "_"),
       descricao: createMarkup(categoria.descricao),
     })
+  )
+
+  // Estado para controlar a aba ativa
+  const [activeTab, setActiveTab] = useState<"regulamentos" | "categorias">(
+    "regulamentos"
   )
 
   return (
@@ -52,57 +53,77 @@ const Regulamentos = ({ social, contato, edicao, navbar }: any) => {
 
       <HeroSection
         title={Regulamentos[0]?.titulo}
-        subtitle={"Tudo sobre  a recente edição do PNP"}
+        subtitle={"Tudo sobre a recente edição do PNP"}
       />
 
-      <section className="bg-gradient-to-r from-[#e6e2d8] via-[#dbdbdb] to-[#e6e2d8] py-12 px-6 sm:px-12 ">
-        {/* <h2 className="text-3xl sm:text-4xl font-serif font-extrabold text-transparent mb-8 text-center leading-tight bg-gradient-to-r from-yellow-500 to-orange-500 bg-clip-text">
-          <span></span>
-        </h2> */}
-
+      <section className="bg-gradient-to-r from-[#f2f0eb] via-[#e3e3e3] to-[#f2f0eb] py-12 px-6 sm:px-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
           <div className="py-6 sm:py-8 md:py-12">
-            <div className="leading-relaxed text-lg sm:text-xl md:text-2xl text-gray-800 font-merriweather">
-              <span dangerouslySetInnerHTML={Regulamentos[0]?.descricao} />
+            <div className="flex justify-center mb-6">
+              <button
+                className={`px-6 py-3 text-lg font-semibold rounded-md ${
+                  activeTab === "regulamentos"
+                    ? "bg-yellow-500 text-white"
+                    : "bg-gray-200 text-gray-700"
+                }`}
+                onClick={() => setActiveTab("regulamentos")}
+              >
+                Regulamentos
+              </button>
+              <button
+                className={`px-6 py-3 text-lg font-semibold rounded-md ml-4 ${
+                  activeTab === "categorias"
+                    ? "bg-yellow-500 text-white"
+                    : "bg-gray-200 text-gray-700"
+                }`}
+                onClick={() => setActiveTab("categorias")}
+              >
+                Categorias
+              </button>
             </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Categories Section */}
-      <section className="bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 text-gray-600 body-font">
-        <h1 className="mb-10 text-5xl font-extrabold text-gray-800 text-center mt-6 bg-gradient-to-r from-yellow-500 to-orange-500 text-transparent bg-clip-text pt-10">
-          Categorias de Prémios
-        </h1>
+            {activeTab === "regulamentos" && (
+              <div className="leading-relaxed text-lg sm:text-xl md:text-2xl text-gray-800 font-serif">
+                <span dangerouslySetInnerHTML={Regulamentos[0]?.descricao} />
+              </div>
+            )}
 
-        <div className="bg-white shadow max-w-7xl mx-auto px-6 sm:px-12 py-24 flex">
-          <CategBox dados={Categoria} />
-
-          {/* Seção principal com conteúdo das categorias */}
-          <div className="w-full">
-            <div className="divide-y-4 divide-gray-300">
-              {Categoria.map((category: any) => (
-                <div
-                  key={category.id}
-                  className="py-16 flex flex-wrap gap-12" // Default flex-wrap for mobile
-                >
-                  <div className="w-full bg-white p-12 rounded-xl shadow-xl hover:shadow-2xl transition-shadow duration-300 ease-in-out">
-                    <h2 className="text-3xl font-bold text-transparent title-font mb-4 text-center tracking-wide bg-gradient-to-r from-yellow-500 to-orange-500 bg-clip-text">
-                      <a
-                        id={category.slug}
-                        className="hover:text-amarelo-ouro transition-colors duration-300"
+            {activeTab === "categorias" && (
+              <div className="rounded-xl max-w-7xl mx-auto px-6 sm:px-12 py-24 flex flex-wrap gap-12">
+                <div className="w-full">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-12 px-4 sm:px-6 lg:px-8">
+                    {Categoria.map((category: any) => (
+                      <div
+                        key={category.id}
+                        className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out transform hover:scale-105"
                       >
-                        {category.titulo}
-                      </a>
-                    </h2>
+                        <h2 className="text-2xl sm:text-3xl font-bold text-transparent title-font mb-6 text-center tracking-wide bg-gradient-to-r from-yellow-500 to-orange-500 bg-clip-text">
+                          <a
+                            id={category.slug}
+                            className="hover:text-orange-600 transition-colors duration-300"
+                          >
+                            {category.titulo}
+                          </a>
+                        </h2>
 
-                    <div className="leading-relaxed text-lg text-gray-800">
-                      <span dangerouslySetInnerHTML={category.descricao} />
-                    </div>
+                        <div className="leading-relaxed text-lg text-gray-700 mb-4">
+                          <span dangerouslySetInnerHTML={category.descricao} />
+                        </div>
+
+                        {/* <div className="text-center">
+                          <a
+                            href={`#${category.slug}`}
+                            className="inline-block px-6 py-3 mt-4 text-sm font-semibold text-white bg-gradient-to-r from-yellow-500 to-orange-500 rounded-lg shadow-md hover:bg-orange-600 hover:shadow-lg transition-all duration-300 ease-in-out"
+                          >
+                            Ver Mais
+                          </a>
+                        </div> */}
+                      </div>
+                    ))}
                   </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            )}
           </div>
         </div>
       </section>
