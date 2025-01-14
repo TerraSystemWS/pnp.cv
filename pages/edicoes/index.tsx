@@ -1,41 +1,81 @@
-import { Timeline } from "flowbite-react"
-import { HiCalendar, HiArrowNarrowRight } from "react-icons/hi"
-import Layout from "../../components/Layout"
+import React, { useState } from "react"
 import { fetcher } from "../../lib/api"
-// import Image from "next/image";
-import Link from "next/link"
+import Layout from "../../components/Layout"
 import Head from "next/head"
-// import { Button } from "flowbite-react";
-import ImageViewer from "awesome-image-viewer"
-// import { Carousel, Button } from "flowbite-react";
-import { useFetchUser } from "../../lib/authContext"
+import HeroSection from "../../components/HeroSection"
 import { StrapiImage } from "../../components/custom/StrapiImage"
-import Galery from "../../components/custom/galery"
-import { getStrapiMedia } from "../../lib/utils"
-import React from "react"
-// import SimpleModal from "../../components/custom/pdfModal";
+import Link from "next/link"
+import { useFetchUser } from "../../lib/authContext"
 
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
 
 const Edicoes = ({ social, contato, edicao, navbar }: any) => {
-  const { user, loading } = useFetchUser()
+  const { user } = useFetchUser()
+  const [currentPage, setCurrentPage] = useState(0)
 
-  const Verimg = (url: any) => {
-    new ImageViewer({
-      images: url,
-    })
+  // Agrupando os jurados por edição
+  const Juris = edicao.data.map((edicaoItem: any) => ({
+    edicaoNumero: edicaoItem.attributes.N_Edicao,
+    jurados: edicaoItem.attributes.juri.map((jurado: any) => ({
+      id: jurado.id,
+      nome: jurado.nome,
+      titulo: jurado.titulo,
+      descricao: jurado.descricao,
+      foto: {
+        url: jurado.foto.data?.attributes.formats.small.url,
+        width: jurado.foto.data?.attributes.formats.small.width,
+        height: jurado.foto.data?.attributes.formats.small.height,
+      },
+    })),
+  }))
+
+  // Agrupando as galerias, vídeos e documentos por edição
+  const galeria = edicao.data.map((edicaoItem: any) => ({
+    edicaoNumero: edicaoItem.attributes.N_Edicao,
+    galeria: edicaoItem.attributes.galeria.map((galeria: any) => ({
+      titulo: galeria.titulo,
+      imagens: galeria.imagens.data.map((imagem: any) => ({
+        url: imagem.attributes.formats.medium.url,
+        width: imagem.attributes.formats.medium.width,
+        height: imagem.attributes.formats.medium.height,
+      })),
+    })),
+  }))
+
+  const videos = edicao.data.map((edicaoItem: any) => ({
+    edicaoNumero: edicaoItem.attributes.N_Edicao,
+    videos: edicaoItem.attributes.videos.map((video: any) => ({
+      titulo: video.titulo,
+      url: video.video.data?.attributes.url,
+    })),
+  }))
+
+  const documents = edicao.data.map((edicaoItem: any) => ({
+    edicaoNumero: edicaoItem.attributes.N_Edicao,
+    documents: edicaoItem.attributes.documents.map((document: any) => ({
+      titulo: document.titulo,
+      url: document.ficheiro.data?.attributes.url,
+    })),
+  }))
+
+  // Função para ir para a próxima página (próxima edição)
+  const nextPage = () => {
+    if (currentPage < Juris.length - 1) {
+      setCurrentPage(currentPage + 1)
+    }
   }
 
-  // const [isModalOpen, setIsModalOpen] = useState(false);
-  // // const pdfSrc = "/path/to/your/pdf.pdf"; // Replace with the actual path to your PDF file
+  // Função para voltar para a página anterior (edição anterior)
+  const prevPage = () => {
+    if (currentPage > 0) {
+      setCurrentPage(currentPage - 1)
+    }
+  }
 
-  // const openModal = () => {
-  // 	setIsModalOpen(true);
-  // };
+  // Edição atual a ser exibida
+  const currentEdition = Juris[currentPage]
 
-  // const closeModal = () => {
-  // 	setIsModalOpen(false);
-  // };
+  console.log(galeria)
 
   return (
     <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
@@ -43,296 +83,259 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
         <title>Edições - Prémio Nacional De Publicidade</title>
         <meta
           name="description"
-          content="Fotografias, videos, regulamento, os vencedores dos Prémios
-          Palmeira e respetivos discursos de vitória… Aqui encontra tudo
-          sobre as anteriores edições do PNP."
+          content="Fotografias, vídeos, regulamento, os vencedores dos Prémios Palmeira e respetivos discursos de vitória… Aqui encontra tudo sobre as anteriores edições do PNP."
         />
       </Head>
-      <div className="container mx-auto">
-        <div className="bg-gray-50 py-12 px-4 sm:px-6">
-          <h2 className="text-2xl text-center mb-8 font-bold tracking-tight text-gray-900 sm:text-4xl">
-            <span className="block text-amarelo-ouro">
-              EDIÇÕES DO PRÉMIO NACIONAL DE PUBLICIDADE
-            </span>
-          </h2>
-          <div className="font-light text-gray-500 sm:text-xl dark:text-gray-400">
-            Fotografias, videos, regulamento, os vencedores dos Prémios Palmeira
-            e respetivos discursos de vitória… Aqui encontra tudo sobre as
-            anteriores edições do PNP.
+
+      <HeroSection
+        title={`${currentEdition.edicaoNumero}ª EDIÇÃO DO PRÉMIO NACIONAL DE PUBLICIDADE`}
+        subtitle={
+          "Fotografias, vídeos, regulamento, os vencedores dos Prémios Palmeira e respetivos discursos de vitória… Aqui encontra tudo sobre as anteriores edições do PNP."
+        }
+      />
+
+      <div className="container mx-auto py-6">
+        {/* Jurados Section */}
+        <div className="my-6">
+          <h1 className="text-4xl font-extrabold text-center text-amarelo-ouro dark:text-white tracking-tight my-4">
+            Jurados
+          </h1>
+
+          <div className="flex flex-wrap justify-center gap-6">
+            {currentEdition.jurados.map((jurado: any) => (
+              <div
+                key={jurado.nome}
+                className="flex flex-col items-center bg-gray-50 rounded-lg shadow sm:flex-row dark:bg-gray-800 dark:border-gray-700 w-full sm:w-[20rem] md:w-[22rem] lg:w-[24rem]"
+              >
+                <Link
+                  href={`/juris/${jurado.id}?edicao=${currentEdition.edicaoNumero}`}
+                >
+                  <StrapiImage
+                    className="w-[200px] h-[200px] object-cover rounded-lg sm:rounded-none sm:rounded-l-lg"
+                    src={jurado.foto?.url || "/default-avatar.png"}
+                    alt={jurado.nome}
+                    height={200}
+                    width={200}
+                  />
+                </Link>
+                <div className="p-5 flex flex-col justify-between h-full">
+                  <h3 className="text-lg font-medium text-amarelo-ouro dark:text-white">
+                    <Link
+                      href={`/juris/${jurado.id}?edicao=${currentEdition.edicaoNumero}`}
+                    >
+                      {jurado.nome}
+                    </Link>
+                  </h3>
+                  <span className="text-sm text-gray-800 dark:text-gray-400">
+                    {jurado.titulo}
+                  </span>
+                  <p className="mt-3 mb-4 font-light text-gray-500 dark:text-gray-400">
+                    {/* Renderizando a descrição truncada, se disponível */}
+
+                    {/* <span
+                      dangerouslySetInnerHTML={{
+                        __html:
+                          jurado.descricao.slice(0, 112) +
+                          (jurado.descricao.length > 112 ? "..." : ""),
+                      }}
+                    /> */}
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
-      </div>
 
-      <div className="container mx-auto">
-        {/* @ts-ignore */}
-        <Timeline>
-          {edicao.data.map((value: any, index: any) => (
-            <Timeline.Item key={index}>
-              <Timeline.Point icon={HiCalendar} />
-              <Timeline.Content>
-                <Timeline.Time>{value.attributes.publishedAt}</Timeline.Time>
-                <Timeline.Title>
-                  PNP {value.attributes.N_Edicao}ª Edição
-                </Timeline.Title>
-                <Timeline.Body>
-                  {/* Júrados section */}
-                  <div key={index} id="juri">
-                    <section className="text-gray-600 body-font">
-                      <div className="container px-5 py-24 mx-auto">
-                        <div className="flex flex-col w-full mb-5">
-                          <h1 className="sm:text-3xl text-2xl font-medium title-font text-gray-900">
-                            Jurados
-                          </h1>
-                          {/* <p className="lg:w-2/3 mx-auto leading-relaxed text-base">
-														Whatever cardigan tote bag tumblr hexagon brooklyn
-														asymmetrical gentrify, subway tile poke
-														farm-to-table. Franzen you probably havent heard of
-														them.
-													</p> */}
-                        </div>
-                        <div className="flex flex-wrap -m-2">
-                          {value.attributes.juri.map(
-                            (value2: any, index: any) => (
-                              <Link
-                                href={`/juris/${value2.id}?edicao=${value.attributes.N_Edicao}`}
-                                key={index}
-                                className="p-2 lg:w-1/3 md:w-1/2 w-full"
-                              >
-                                <div className="h-full flex items-center border-gray-200 border p-4 rounded-lg">
-                                  {/* <Link href={`/juris/${value2.id}?edicao=${value2.attributes.N_Edicao}`}> */}
-                                  {/* @ts-ignore */}
-                                  <StrapiImage
-                                    key={index}
-                                    alt="team"
-                                    className="w-16 h-16 bg-gray-100 object-cover object-center flex-shrink-0 rounded-full mr-4"
-                                    src={
-                                      value2.foto.data?.attributes.formats
-                                        .thumbnail.url || "/"
-                                    }
-                                    width={
-                                      value2.foto.data?.attributes.formats
-                                        .thumbnail.width
-                                    }
-                                    height={
-                                      value2.foto.data?.attributes.formats
-                                        .thumbnail.height
-                                    }
-                                  />
-                                  {/* </Link> */}
-                                  <div className="flex-grow">
-                                    <h2 className="text-gray-900 title-font font-medium">
-                                      {value2.nome}
-                                    </h2>
-                                  </div>
-                                </div>
-                              </Link>
-                            )
-                          )}
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                  {/* Gallery section */}
-                  <div id="galeria">
-                    <div className="flex flex-col w-full mb-5">
-                      <h1 className="sm:text-3xl text-2xl font-medium title-font text-gray-900">
-                        Galeria
-                      </h1>
-                      {/* <p className="lg:w-2/3 mx-auto leading-relaxed text-base">
-														Whatever cardigan tote bag tumblr hexagon brooklyn
-														asymmetrical gentrify, subway tile poke
-														farm-to-table. Franzen you probably havent heard of
-														them.
-													</p> */}
-                    </div>
-
-                    {/* <div className="flex flex-wrap justify-between gap-4 sm:gap-8 xl:gap-12 2xl:gap-16">
-											{value.attributes.galeria
-												.slice(0, 10)
-												.map((item: any) => (
-													<div key={item.id}>
-														<div>
-															<h1 className="">
-																{item.titulo}
-															</h1>
-														</div>
-														<div className="">
-															{/* @ts-ignore * /}
-															<Galery
-																imageUrls={item.imagens.data
-																	.slice(
-																		0,
-																		10
-																	)
-																	.map(
-																		(
-																			img: any
-																		) =>
-																			img
-																				.attributes
-																				.url
-																	)}
-															/>
-														</div>
-													</div>
-												))}
-										</div> */}
-                    <div className="flex flex-wrap justify-between gap-4 sm:gap-8 xl:gap-12 2xl:gap-16">
-                      {value.attributes.galeria
-                        .slice(0, 10)
-                        .map((item: any, index: number) => (
-                          <div key={item.id}>
-                            <div>
-                              <h1 className="">{item.titulo}</h1>
-                            </div>
-                            <div className="">
-                              {/* @ts-ignore */}
-                              <Galery
-                                imageUrls={item.imagens.data
-                                  .slice(0, 10)
-                                  .map((img: any) => img.attributes.url)}
-                              />
-                            </div>
-                          </div>
-                        ))}
-                      <div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 p-2">
-                        <Link
-                          href={`/galeria?edicao=${value.attributes.N_Edicao}`}
-                          className="hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500 group w-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-slate-300 text-sm leading-6 text-slate-900 font-medium py-3"
-                        >
+        {/* Galeria Section */}
+        <div className="my-6">
+          <h1 className="text-3xl font-extrabold text-center text-yellow-400 mb-4">
+            Galeria
+          </h1>
+          {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"> */}
+          {galeria
+            .find(
+              (item: any) => item.edicaoNumero === currentEdition.edicaoNumero
+            )
+            ?.galeria.slice(0, 1) // Pega a galeria mais recente
+            .map((galeriaItem: any) => (
+              <div key={galeriaItem.titulo} className="w-full">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {/* Exibindo até 5 imagens da galeria mais recente */}
+                  {galeriaItem.imagens
+                    .slice(0, 6)
+                    .map((image: any, index: number) => (
+                      <div key={index} className="relative">
+                        <StrapiImage
+                          className="w-full h-full object-cover rounded-lg"
+                          src={image?.url || "/default-avatar.png"}
+                          alt={galeriaItem.titulo}
+                          height={200}
+                          width={200}
+                        />
+                        {/* Magnifier Icon (zoom) */}
+                        <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
                           <svg
-                            className="group-hover:text-blue-500 mb-1 text-slate-400"
-                            width="20"
-                            height="20"
-                            fill="currentColor"
-                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            className="w-12 h-12 text-white"
                           >
-                            <path d="M10 5a1 1 0 0 1 1 1v3h3a1 1 0 1 1 0 2h-3v3a1 1 0 1 1-2 0v-3H6a1 1 0 1 1 0-2h3V6a1 1 0 0 1 1-1Z" />
-                          </svg>
-                          Ver mais fotos na galeria
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                  {/* Videos section */}
-                  <div id="videos">
-                    <div className="flex flex-col w-full mb-5">
-                      <h1 className="sm:text-3xl text-2xl font-medium title-font text-gray-900">
-                        Videos
-                      </h1>
-                      {/* <p className="lg:w-2/3 mx-auto leading-relaxed text-base">
-														Whatever cardigan tote bag tumblr hexagon brooklyn
-														asymmetrical gentrify, subway tile poke
-														farm-to-table. Franzen you probably havent heard of
-														them.
-											</p> */}
-                    </div>
-                    <section className="grid grid-cols-2 gap-4">
-                      {value.attributes.videos.map((value3: any) => (
-                        <div
-                          key={value3.id}
-                          className="relative aspect-w-16 aspect-h-9"
-                        >
-                          <video
-                            className="absolute inset-0 w-full h-full object-cover"
-                            controls
-                          >
-                            <source
-                              src={
-                                getStrapiMedia(
-                                  value3.video.data.attributes.url
-                                ) || " "
-                              }
-                              type="video/mp4"
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M11 6a5 5 0 0110 0 5 5 0 01-10 0zM4.93 4.93a9 9 0 1112.73 12.73M13.8 14.8l4.69 4.69"
                             />
-                            Your browser does not support the video tag.
-                          </video>
-                        </div>
-                      ))}
-                    </section>
-                  </div>
-                  {/* Catalogs section */}
-                  <div id="catalogos">
-                    <div className="flex flex-col w-full mb-5">
-                      <h1 className="sm:text-3xl text-2xl font-medium title-font text-gray-900">
-                        Catálogos
-                      </h1>
-                      {/* <p className="lg:w-2/3 mx-auto leading-relaxed text-base">
-												Whatever cardigan tote bag
-												tumblr hexagon brooklyn
-												asymmetrical gentrify, subway
-												tile poke farm-to-table. Franzen
-												you probably havent heard of
-												them.
-											</p> */}
-                    </div>
-                    {value.attributes.documents.map((value: any) => (
-                      <div key={value.id} className="m-5">
-                        <div>
-                          <div className="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-                            {/* <svg
-																className="w-7 h-7 text-gray-500 dark:text-gray-400 mb-3"
-																aria-hidden="true"
-																xmlns="http://www.w3.org/2000/svg"
-																fill="currentColor"
-																viewBox="0 0 20 20"
-															>
-																<path d="M18 5h-.7c.229-.467.349-.98.351-1.5a3.5 3.5 0 0 0-3.5-3.5c-1.717 0-3.215 1.2-4.331 2.481C8.4.842 6.949 0 5.5 0A3.5 3.5 0 0 0 2 3.5c.003.52.123 1.033.351 1.5H2a2 2 0 0 0-2 2v3a1 1 0 0 0 1 1h18a1 1 0 0 0 1-1V7a2 2 0 0 0-2-2ZM8.058 5H5.5a1.5 1.5 0 0 1 0-3c.9 0 2 .754 3.092 2.122-.219.337-.392.635-.534.878Zm6.1 0h-3.742c.933-1.368 2.371-3 3.739-3a1.5 1.5 0 0 1 0 3h.003ZM11 13H9v7h2v-7Zm-4 0H2v5a2 2 0 0 0 2 2h3v-7Zm6 0v7h3a2 2 0 0 0 2-2v-5h-5Z" />
-															</svg> */}
-                            <a
-                              href={
-                                getStrapiMedia(
-                                  value.ficheiro.data.attributes.url
-                                ) || " "
-                              }
-                              target="_blank"
-                              rel="noreferrer"
-                            >
-                              <h5 className="mb-2 text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">
-                                {value.titulo}
-                              </h5>
-                            </a>
-
-                            {/* <a
-																href={
-																	getStrapiMedia(
-																		value
-																			.ficheiro
-																			.data
-																			.attributes
-																			.url
-																	) || " "
-																}
-																className="inline-flex font-medium items-center text-blue-600 hover:underline"
-																target="_blank"
-															>
-																Abrir
-																<svg
-																	className="w-3 h-3 ms-2.5 rtl:rotate-[270deg]"
-																	aria-hidden="true"
-																	xmlns="http://www.w3.org/2000/svg"
-																	fill="none"
-																	viewBox="0 0 18 18"
-																>
-																	<path
-																		stroke="currentColor"
-																		stroke-linecap="round"
-																		stroke-linejoin="round"
-																		stroke-width="2"
-																		d="M15 11v4.833A1.166 1.166 0 0 1 13.833 17H2.167A1.167 1.167 0 0 1 1 15.833V4.167A1.166 1.166 0 0 1 2.167 3h4.618m4.447-2H17v5.768M9.111 8.889l7.778-7.778"
-																	/>
-																</svg>
-															</a> */}
-                          </div>
+                          </svg>
                         </div>
                       </div>
                     ))}
+
+                  {/* Se houver mais de 5 imagens, mostra um link na última posição */}
+                  {galeriaItem.imagens.length > 5 && (
+                    <div className="col-span-1 sm:col-span-2 lg:col-span-3 bg-gray-200 p-6 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out flex items-center justify-center">
+                      <Link
+                        href="/galerias"
+                        className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-400 transition-colors duration-300"
+                      >
+                        Ver mais galerias
+                      </Link>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          {/* </div> */}
+        </div>
+
+        {/* Videos Section */}
+        <div className="my-6">
+          <h1 className="text-3xl font-extrabold text-center text-yellow-400 mb-4">
+            Vídeos
+          </h1>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {videos
+              .find(
+                (item: any) => item.edicaoNumero === currentEdition.edicaoNumero
+              )
+              ?.videos.slice(0, 5) // Exibe até 5 vídeos
+              .map((video: any, index: any) => (
+                <div
+                  key={video.titulo}
+                  className="bg-gray-200 p-6 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out"
+                >
+                  <h2 className="text-xl font-extrabold text-center text-yellow-500 mb-4">
+                    {video.titulo}
+                  </h2>
+                  {/* Video player */}
+                  <div className="flex justify-center">
+                    <video
+                      width={320}
+                      height={240}
+                      controls
+                      className="rounded-lg"
+                    >
+                      <source
+                        src={`${api_link}${video.url}`}
+                        type="video/mp4"
+                      />
+                      Seu navegador não suporta o elemento de vídeo.
+                    </video>
                   </div>
-                </Timeline.Body>
-              </Timeline.Content>
-            </Timeline.Item>
-          ))}
-        </Timeline>
+                </div>
+              ))}
+            {/* Adiciona o box de link para a página de vídeos, caso haja mais de 5 vídeos */}
+            {videos.find(
+              (item: any) => item.edicaoNumero === currentEdition.edicaoNumero
+            )?.videos.length > 5 && (
+              <div className="bg-gray-200 p-6 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out">
+                <h2 className="text-xl font-extrabold text-center text-yellow-500 mb-4">
+                  Veja mais vídeos
+                </h2>
+                <div className="flex justify-center">
+                  <a
+                    href="/pagina-de-videos" // Substitua pelo link correto para a página de vídeos
+                    className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-400 transition-colors duration-300"
+                  >
+                    Acessar Página de Vídeos
+                  </a>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Documents Section */}
+        <div className="my-6">
+          <h1 className="text-3xl font-extrabold text-center text-yellow-400 mb-4">
+            Documentos
+          </h1>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {documents
+              .find(
+                (item: any) => item.edicaoNumero === currentEdition.edicaoNumero
+              )
+              ?.documents.map((document: any) => (
+                <a
+                  key={document.titulo}
+                  href={`${api_link}${document.url}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out transform hover:scale-105">
+                    <h2 className="text-xl font-extrabold text-center text-yellow-500 mb-4">
+                      {document.titulo}
+                    </h2>
+                    <div className="w-full h-48 bg-gray-200 rounded-lg flex items-center justify-center relative overflow-hidden">
+                      <img
+                        src="https://placehold.co/150x200.png?text=Abrir+PDF" // Aqui você pode colocar uma URL para uma capa de PDF ou miniatura
+                        alt="Capa do documento"
+                        className="object-cover w-full h-full"
+                      />
+                      <div className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-50">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          className="w-12 h-12 text-white"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M10 14l2 2 4-4m0 0l-4-4-2 2m4 4H6"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                    <p className="mt-4 text-gray-600 text-center text-sm">
+                      Clique para abrir o documento
+                    </p>
+                  </div>
+                </a>
+              ))}
+          </div>
+        </div>
+
+        {/* Pagination Section */}
+        <div className="mt-6 flex justify-between">
+          <button
+            onClick={prevPage}
+            className="px-4 py-2 bg-gray-200 rounded-md text-gray-700 disabled:opacity-50"
+            disabled={currentPage === 0}
+          >
+            Anterior
+          </button>
+          <button
+            onClick={nextPage}
+            className="px-4 py-2 bg-gray-200 rounded-md text-gray-700 disabled:opacity-50"
+            disabled={currentPage === Juris.length - 1}
+          >
+            Próximo
+          </button>
+        </div>
       </div>
     </Layout>
   )
@@ -349,9 +352,6 @@ export async function getServerSideProps() {
     fetcher(`${api_link}/api/edicoes?populate=deep&${query.toString()}`),
     fetcher(`${api_link}/api/menus?populate=deep`),
   ])
-
-  // console.log("edicao");
-  // console.log(edicao.data[0].attributes);
 
   const dlink = navbar.data.flatMap((value: any) =>
     value.attributes.items.data.map((item: any) => ({
