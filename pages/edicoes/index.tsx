@@ -20,9 +20,9 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
       titulo: jurado.titulo,
       descricao: jurado.descricao,
       foto: {
-        url: jurado.foto.data.attributes.formats.small.url,
-        width: jurado.foto.data.attributes.formats.small.width,
-        height: jurado.foto.data.attributes.formats.small.height,
+        url: jurado.foto.data?.attributes.formats.small.url,
+        width: jurado.foto.data?.attributes.formats.small.width,
+        height: jurado.foto.data?.attributes.formats.small.height,
       },
     })),
   }))
@@ -44,7 +44,7 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
     edicaoNumero: edicaoItem.attributes.N_Edicao,
     videos: edicaoItem.attributes.videos.map((video: any) => ({
       titulo: video.titulo,
-      url: video.video.data.attributes.url,
+      url: video.video.data?.attributes.url,
     })),
   }))
 
@@ -52,7 +52,7 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
     edicaoNumero: edicaoItem.attributes.N_Edicao,
     documents: edicaoItem.attributes.documents.map((document: any) => ({
       titulo: document.titulo,
-      url: document.ficheiro.data.attributes.url,
+      url: document.ficheiro.data?.attributes.url,
     })),
   }))
 
@@ -185,8 +185,11 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
           </h1>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {videos
-              .find((item) => item.edicaoNumero === currentEdition.edicaoNumero)
-              ?.videos.map((video) => (
+              .find(
+                (item: any) => item.edicaoNumero === currentEdition.edicaoNumero
+              )
+              ?.videos.slice(0, 5) // Exibe até 5 vídeos
+              .map((video: any, index: any) => (
                 <div
                   key={video.titulo}
                   className="bg-gray-200 p-6 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out"
@@ -211,6 +214,24 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
                   </div>
                 </div>
               ))}
+            {/* Adiciona o box de link para a página de vídeos, caso haja mais de 5 vídeos */}
+            {videos.find(
+              (item) => item.edicaoNumero === currentEdition.edicaoNumero
+            )?.videos.length > 5 && (
+              <div className="bg-gray-200 p-6 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out">
+                <h2 className="text-xl font-extrabold text-center text-yellow-500 mb-4">
+                  Veja mais vídeos
+                </h2>
+                <div className="flex justify-center">
+                  <a
+                    href="/pagina-de-videos" // Substitua pelo link correto para a página de vídeos
+                    className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-400 transition-colors duration-300"
+                  >
+                    Acessar Página de Vídeos
+                  </a>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
