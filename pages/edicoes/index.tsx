@@ -5,10 +5,12 @@ import Head from "next/head"
 import HeroSection from "../../components/HeroSection"
 import { StrapiImage } from "../../components/custom/StrapiImage"
 import Link from "next/link"
+import { useFetchUser } from "../../lib/authContext"
 
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
 
 const Edicoes = ({ social, contato, edicao, navbar }: any) => {
+  const { user } = useFetchUser()
   const [currentPage, setCurrentPage] = useState(0)
 
   // Agrupando os jurados por edição
