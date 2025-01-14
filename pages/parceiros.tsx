@@ -106,7 +106,7 @@ const Parceiros = ({ social, contato, parceiros, navbar }: ParceirosProps) => {
     parceiros.data,
     "parceiros_operacionais"
   )
-  const parceirosApoio = processPartners(parceiros.data, "parceiros_apoio")
+  const parceirosApoio = processPartners(parceiros.data, "parceiros_opoios")
   const parceirosMedia = processPartners(parceiros.data, "media_parteners")
 
   const heading =
