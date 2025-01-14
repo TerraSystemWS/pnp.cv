@@ -76,7 +76,7 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
   console.log(galeria)
 
   return (
-    <Layout rsocial={social} contato={contato} navbar={navbar}>
+    <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
       <Head>
         <title>Edições - Prémio Nacional De Publicidade</title>
         <meta
