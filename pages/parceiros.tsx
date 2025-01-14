@@ -57,7 +57,7 @@ const processPartners = (data: any, category: string): Partner[] => {
 const PartnerCard = ({ partner }: { partner: Partner }) => (
   <div className="p-2 lg:w-1/3 md:w-1/2 w-full">
     <div className="h-full flex flex-col items-center p-4 justify-center">
-      <Link href={partner.link} target="_blank" rel="noreferrer">
+      <Link href={partner.link ?? "#"} target="_blank" rel="noreferrer">
         <div className="flex justify-center items-center rounded">
           <img
             alt={partner.title}
