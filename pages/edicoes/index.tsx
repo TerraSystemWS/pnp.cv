@@ -130,11 +130,13 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
                   <p className="mt-3 mb-4 font-light text-gray-500 dark:text-gray-400">
                     {/* Renderizando a descrição truncada, se disponível */}
 
-                    <span
+                    {/* <span
                       dangerouslySetInnerHTML={{
-                        __html: jurado.descricao,
+                        __html:
+                          jurado.descricao.slice(0, 112) +
+                          (jurado.descricao.length > 112 ? "..." : ""),
                       }}
-                    />
+                    /> */}
                   </p>
                 </div>
               </div>
@@ -149,7 +151,9 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
           </h1>
           {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"> */}
           {galeria
-            .find((item) => item.edicaoNumero === currentEdition.edicaoNumero)
+            .find(
+              (item: any) => item.edicaoNumero === currentEdition.edicaoNumero
+            )
             ?.galeria.slice(0, 1) // Pega a galeria mais recente
             .map((galeriaItem: any) => (
               <div key={galeriaItem.titulo} className="w-full">
@@ -241,7 +245,7 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
               ))}
             {/* Adiciona o box de link para a página de vídeos, caso haja mais de 5 vídeos */}
             {videos.find(
-              (item) => item.edicaoNumero === currentEdition.edicaoNumero
+              (item: any) => item.edicaoNumero === currentEdition.edicaoNumero
             )?.videos.length > 5 && (
               <div className="bg-gray-200 p-6 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out">
                 <h2 className="text-xl font-extrabold text-center text-yellow-500 mb-4">
@@ -273,17 +277,40 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
               ?.documents.map((document: any) => (
                 <a
                   key={document.titulo}
-                  href={document.url}
+                  href={`${api_link}${document.url}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <div className="bg-gray-200 p-6 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out">
-                    <h2 className="text-xl font-extrabold text-center text-yellow-500">
+                  <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out transform hover:scale-105">
+                    <h2 className="text-xl font-extrabold text-center text-yellow-500 mb-4">
                       {document.titulo}
                     </h2>
-                    <div className="w-full h-64 bg-gray-300 rounded-lg flex items-center justify-center">
-                      <span className="text-white">PDF</span>
+                    <div className="w-full h-48 bg-gray-200 rounded-lg flex items-center justify-center relative overflow-hidden">
+                      <img
+                        src="https://placehold.co/150x200.png?text=Abrir+PDF" // Aqui você pode colocar uma URL para uma capa de PDF ou miniatura
+                        alt="Capa do documento"
+                        className="object-cover w-full h-full"
+                      />
+                      <div className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-50">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          className="w-12 h-12 text-white"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M10 14l2 2 4-4m0 0l-4-4-2 2m4 4H6"
+                          />
+                        </svg>
+                      </div>
                     </div>
+                    <p className="mt-4 text-gray-600 text-center text-sm">
+                      Clique para abrir o documento
+                    </p>
                   </div>
                 </a>
               ))}
