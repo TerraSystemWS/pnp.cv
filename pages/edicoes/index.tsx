@@ -73,6 +73,8 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
   // Edição atual a ser exibida
   const currentEdition = Juris[currentPage]
 
+  console.log(galeria)
+
   return (
     <Layout rsocial={social} contato={contato} navbar={navbar}>
       <Head>
@@ -145,37 +147,60 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
           <h1 className="text-3xl font-extrabold text-center text-yellow-400 mb-4">
             Galeria
           </h1>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {galeria
-              .find(
-                (item: any) => item.edicaoNumero === currentEdition.edicaoNumero
-              )
-              ?.galeria.map((galeriaItem: any) => (
-                <Link
-                  key={galeriaItem.titulo}
-                  href={`/galeria/${galeriaItem.titulo}`}
-                >
-                  <div className="bg-gray-200 p-6 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out">
-                    <h2 className="text-xl font-extrabold text-center text-yellow-500">
-                      {galeriaItem.titulo}
-                    </h2>
-                    <div className="w-full h-64 bg-gray-300 rounded-lg flex items-center justify-center">
-                      {galeriaItem.imagens[0] && (
+          {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"> */}
+          {galeria
+            .find((item) => item.edicaoNumero === currentEdition.edicaoNumero)
+            ?.galeria.slice(0, 1) // Pega a galeria mais recente
+            .map((galeriaItem: any) => (
+              <div key={galeriaItem.titulo} className="w-full">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {/* Exibindo até 5 imagens da galeria mais recente */}
+                  {galeriaItem.imagens
+                    .slice(0, 6)
+                    .map((image: any, index: number) => (
+                      <div key={index} className="relative">
                         <StrapiImage
                           className="w-full h-full object-cover rounded-lg"
-                          src={
-                            galeriaItem.imagens[0]?.url || "/default-avatar.png"
-                          }
+                          src={image?.url || "/default-avatar.png"}
                           alt={galeriaItem.titulo}
                           height={200}
                           width={200}
                         />
-                      )}
+                        {/* Magnifier Icon (zoom) */}
+                        <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            className="w-12 h-12 text-white"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M11 6a5 5 0 0110 0 5 5 0 01-10 0zM4.93 4.93a9 9 0 1112.73 12.73M13.8 14.8l4.69 4.69"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                    ))}
+
+                  {/* Se houver mais de 5 imagens, mostra um link na última posição */}
+                  {galeriaItem.imagens.length > 5 && (
+                    <div className="col-span-1 sm:col-span-2 lg:col-span-3 bg-gray-200 p-6 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out flex items-center justify-center">
+                      <Link
+                        href="/galerias"
+                        className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-400 transition-colors duration-300"
+                      >
+                        Ver mais galerias
+                      </Link>
                     </div>
-                  </div>
-                </Link>
-              ))}
-          </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          {/* </div> */}
         </div>
 
         {/* Videos Section */}
