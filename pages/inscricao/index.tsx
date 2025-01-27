@@ -239,7 +239,7 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
             // To set two dates to two variables
             //isso tem q vir do DB
             // data_inicio & data_fim
-            var data_inicio = new Date(01/01/2025)
+            var data_inicio = new Date("01/01/2025")
             var data_fim = new Date("01/01/2025")
 
             // To calculate the time difference of two dates
