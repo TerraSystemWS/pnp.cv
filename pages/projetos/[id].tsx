@@ -210,18 +210,18 @@ const VpublicaDetalhes = ({
 
   const { user, loading } = useFetchUser()
 
-  const excluirPrivados = (title: String): boolean => {
-    let title_clean: boolean = false
-    const substr = ["nif", "pagamento", "comprovativo pagamento"]
-    for (let index = 0; index < substr.length; index++) {
-      title_clean = title.toLowerCase().includes(substr[index].toLowerCase())
-      if (title_clean) {
-        break
-      }
-    }
+  // const excluirPrivados = (title: String): boolean => {
+  //   let title_clean: boolean = false
+  //   const substr = ["nif", "pagamento", "comprovativo pagamento"]
+  //   for (let index = 0; index < substr.length; index++) {
+  //     title_clean = title.toLowerCase().includes(substr[index].toLowerCase())
+  //     if (title_clean) {
+  //       break
+  //     }
+  //   }
 
-    return title_clean
-  }
+  //   return title_clean
+  // }
 
   return (
     <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
@@ -691,66 +691,55 @@ const VpublicaDetalhes = ({
         {/* fim dos detalhes de cada projeto */}
         {/* lista de documentos submetidos */}
         <div className="mt-10 sm:mt-0">
+          {/** Private Documents Section */}
           <div className="md:grid md:grid-cols-3 md:gap-6">
             <div className="md:col-span-1">
               <div className="px-4 sm:px-0">
                 <h3 className="text-lg font-medium leading-6 text-gray-900">
-                  Documentos Privados:.
+                  Documentos Privados
                 </h3>
                 <div className="mt-1 text-sm text-gray-600">
                   <p className="mb-2">
                     <span className="text-red-500 font-bold text-lg pointer">
                       {/* <IoTrashOutline /> */}
                     </span>{" "}
-                    {/* remove um ficheiro */}
+                    {/* Remove a file */}
                   </p>
                 </div>
               </div>
             </div>
+
             <div className="mt-5 md:col-span-2 md:mt-0">
               <div>
                 <Accordion activeIndex={0}>
-                  {/* loop para o array */}
+                  {inscricao.data.attributes.fileLink?.map(
+                    (value: any, index: number) => {
+                      // Filtra apenas documentos privados (publico: false)
+                      if (value.publico !== false) return null
 
-                  {inscricao.data.attributes.fileLink &&
-                    inscricao.data.attributes.fileLink.map(
-                      (value: any, index: number) => {
-                        // pergar so as ultimas 4 letras do link ex(.pdf)
-                        const string_bruto: string = value.file_link.substr(
-                          value.file_link.length - 4
-                        )
+                      const fileExtension = value.titulo
+                        ?.slice(-4)
+                        .toLowerCase() // Obtém a extensão do arquivo
 
-                        let op: String
-                        // passar pelo filtro para excluir ficeiros privados
-                        const isPrivate = excluirPrivados(value.titulo)
-                        if (isPrivate) {
-                          op = "..."
-                        } else {
-                          op = string_bruto
-                        }
-
-                        switch (op) {
+                      const renderFilePreview = () => {
+                        switch (fileExtension) {
                           case ".pdf":
                             return (
-                              <AccordionTab key={index} header={value.titulo}>
-                                <p className="m-0">
-                                  <a
-                                    href={value.file_link}
-                                    target="_blank"
-                                    className="hover:text-blue-500 hover:underline"
-                                    rel="noreferrer"
-                                  >
-                                    [Abrir Link]
-                                  </a>
-                                </p>
-                              </AccordionTab>
+                              <p className="m-0">
+                                <a
+                                  href={value.file_link}
+                                  target="_blank"
+                                  className="hover:text-blue-500 hover:underline"
+                                  rel="noreferrer"
+                                >
+                                  [Abrir Link]
+                                </a>
+                              </p>
                             )
-
-                            break
 
                           case ".mp3":
                             return (
-                              <AccordionTab key={index} header={value.titulo}>
+                              <>
                                 <p className="m-0">
                                   <a
                                     href={value.file_link}
@@ -769,14 +758,12 @@ const VpublicaDetalhes = ({
                                   Your browser does not support the audio
                                   element.
                                 </audio>
-                              </AccordionTab>
+                              </>
                             )
-
-                            break
 
                           case ".mp4":
                             return (
-                              <AccordionTab key={index} header={value.titulo}>
+                              <>
                                 <p className="m-0">
                                   <a
                                     href={value.file_link}
@@ -794,14 +781,14 @@ const VpublicaDetalhes = ({
                                   />
                                   Your browser does not support the video tag.
                                 </video>
-                              </AccordionTab>
+                              </>
                             )
 
-                            break
-
-                          case ".png" || ".jpg" || ".jpeg":
+                          case ".png":
+                          case ".jpg":
+                          case ".jpeg":
                             return (
-                              <AccordionTab key={index} header={value.titulo}>
+                              <>
                                 <p className="m-0">
                                   <a
                                     href={value.file_link}
@@ -820,16 +807,21 @@ const VpublicaDetalhes = ({
                                     preview
                                   />
                                 </div>
-                              </AccordionTab>
+                              </>
                             )
 
-                            break
-
                           default:
-                            break
+                            return null // Ignora tipos de arquivo não suportados
                         }
                       }
-                    )}
+
+                      return (
+                        <AccordionTab key={index} header={value.titulo}>
+                          {renderFilePreview()}
+                        </AccordionTab>
+                      )
+                    }
+                  )}
                 </Accordion>
               </div>
             </div>
@@ -843,67 +835,55 @@ const VpublicaDetalhes = ({
         </div>
 
         <div className="mt-10 sm:mt-0">
-          {/**privados */}
+          {/** Public Documents Section */}
           <div className="md:grid md:grid-cols-3 md:gap-6">
             <div className="md:col-span-1">
               <div className="px-4 sm:px-0">
                 <h3 className="text-lg font-medium leading-6 text-gray-900">
-                  Documentos Publicos:.
+                  Documentos Públicos
                 </h3>
                 <div className="mt-1 text-sm text-gray-600">
                   <p className="mb-2">
                     <span className="text-red-500 font-bold text-lg pointer">
                       {/* <IoTrashOutline /> */}
                     </span>{" "}
-                    {/* remove um ficheiro */}
+                    {/* Remove a file */}
                   </p>
                 </div>
               </div>
             </div>
+
             <div className="mt-5 md:col-span-2 md:mt-0">
               <div>
                 <Accordion activeIndex={0}>
-                  {/* loop para o array */}
+                  {inscricao.data.attributes.fileLink?.map(
+                    (value: any, index: number) => {
+                      // Filtra apenas documentos públicos (publico: true)
+                      if (value.publico !== true) return null
 
-                  {inscricao.data.attributes.fileLink &&
-                    inscricao.data.attributes.fileLink.map(
-                      (value: any, index: number) => {
-                        // pergar so as ultimas 4 letras do link ex(.pdf)
-                        const string_bruto: string = value.file_link.substr(
-                          value.file_link.length - 4
-                        )
+                      const fileExtension = value.file_link
+                        ?.slice(-4)
+                        .toLowerCase() // Obtém a extensão do arquivo
 
-                        let op: String
-                        // passar pelo filtro para excluir ficeiros privados
-                        const isPrivate = excluirPrivados(value.titulo)
-                        if (isPrivate) {
-                          op = "..."
-                        } else {
-                          op = string_bruto
-                        }
-
-                        switch (op) {
+                      const renderFilePreview = () => {
+                        switch (fileExtension) {
                           case ".pdf":
                             return (
-                              <AccordionTab key={index} header={value.titulo}>
-                                <p className="m-0">
-                                  <a
-                                    href={value.file_link}
-                                    target="_blank"
-                                    className="hover:text-blue-500 hover:underline"
-                                    rel="noreferrer"
-                                  >
-                                    [Abrir Link]
-                                  </a>
-                                </p>
-                              </AccordionTab>
+                              <p className="m-0">
+                                <a
+                                  href={value.file_link}
+                                  target="_blank"
+                                  className="hover:text-blue-500 hover:underline"
+                                  rel="noreferrer"
+                                >
+                                  [Abrir Link]
+                                </a>
+                              </p>
                             )
-
-                            break
 
                           case ".mp3":
                             return (
-                              <AccordionTab key={index} header={value.titulo}>
+                              <>
                                 <p className="m-0">
                                   <a
                                     href={value.file_link}
@@ -922,14 +902,12 @@ const VpublicaDetalhes = ({
                                   Your browser does not support the audio
                                   element.
                                 </audio>
-                              </AccordionTab>
+                              </>
                             )
-
-                            break
 
                           case ".mp4":
                             return (
-                              <AccordionTab key={index} header={value.titulo}>
+                              <>
                                 <p className="m-0">
                                   <a
                                     href={value.file_link}
@@ -947,14 +925,14 @@ const VpublicaDetalhes = ({
                                   />
                                   Your browser does not support the video tag.
                                 </video>
-                              </AccordionTab>
+                              </>
                             )
 
-                            break
-
-                          case ".png" || ".jpg" || ".jpeg":
+                          case ".png":
+                          case ".jpg":
+                          case ".jpeg":
                             return (
-                              <AccordionTab key={index} header={value.titulo}>
+                              <>
                                 <p className="m-0">
                                   <a
                                     href={value.file_link}
@@ -973,16 +951,21 @@ const VpublicaDetalhes = ({
                                     preview
                                   />
                                 </div>
-                              </AccordionTab>
+                              </>
                             )
 
-                            break
-
                           default:
-                            break
+                            return null // Ignora tipos de arquivo não suportados
                         }
                       }
-                    )}
+
+                      return (
+                        <AccordionTab key={index} header={value.titulo}>
+                          {renderFilePreview()}
+                        </AccordionTab>
+                      )
+                    }
+                  )}
                 </Accordion>
               </div>
             </div>
