@@ -731,7 +731,7 @@ const VpublicaDetalhes = ({
                             return (
                               <p className="m-0">
                                 <a
-                                  href={value.ficheiro?.data?.attributes?.url}
+                                  href={`${api_link}${value.ficheiro?.data?.attributes?.url}`}
                                   target="_blank"
                                   className="hover:text-blue-500 hover:underline"
                                   rel="noreferrer"
@@ -746,7 +746,7 @@ const VpublicaDetalhes = ({
                               <>
                                 <p className="m-0">
                                   <a
-                                    href={value.ficheiro?.data?.attributes?.url}
+                                    href={`${api_link}${value.ficheiro?.data?.attributes?.url}`}
                                     target="_blank"
                                     className="hover:text-blue-500 hover:underline"
                                     rel="noreferrer"
@@ -756,7 +756,7 @@ const VpublicaDetalhes = ({
                                 </p>
                                 <audio controls>
                                   <source
-                                    src={value.ficheiro?.data?.attributes?.url}
+                                    src={`${api_link}${value.ficheiro?.data?.attributes?.url}`}
                                     type="audio/mpeg"
                                   />
                                   Your browser does not support the audio
@@ -770,7 +770,7 @@ const VpublicaDetalhes = ({
                               <>
                                 <p className="m-0">
                                   <a
-                                    href={value.ficheiro?.data?.attributes?.url}
+                                    href={`${api_link}${value.ficheiro?.data?.attributes?.url}`}
                                     target="_blank"
                                     className="hover:text-blue-500 hover:underline"
                                     rel="noreferrer"
@@ -780,7 +780,7 @@ const VpublicaDetalhes = ({
                                 </p>
                                 <video width="500" height="300" controls>
                                   <source
-                                    src={value.ficheiro?.data?.attributes?.url}
+                                    src={`${api_link}${value.ficheiro?.data?.attributes?.url}`}
                                     type="video/mp4"
                                   />
                                   Your browser does not support the video tag.
@@ -795,7 +795,7 @@ const VpublicaDetalhes = ({
                               <>
                                 <p className="m-0">
                                   <a
-                                    href={value.ficheiro?.data?.attributes?.url}
+                                    href={`${api_link}${value.ficheiro?.data?.attributes?.url}`}
                                     target="_blank"
                                     className="hover:text-blue-500 hover:underline"
                                     rel="noreferrer"
@@ -805,7 +805,7 @@ const VpublicaDetalhes = ({
                                 </p>
                                 <div className="card flex justify-content-center">
                                   <Image
-                                    src={value.ficheiro?.data?.attributes?.url}
+                                    src={`${api_link}${value.ficheiro?.data?.attributes?.url}`}
                                     alt={value.titulo}
                                     width="500"
                                     preview
@@ -866,7 +866,7 @@ const VpublicaDetalhes = ({
                       if (value.publico !== true) return null
 
                       const fileExtension =
-                        value.ficheiro?.data?.attributes?.url
+                        `${api_link}${value.ficheiro?.data?.attributes?.url}`
                           ?.slice(-4)
                           .toLowerCase() // Obtém a extensão do arquivo
 
@@ -876,7 +876,7 @@ const VpublicaDetalhes = ({
                             return (
                               <p className="m-0">
                                 <a
-                                  href={value.ficheiro?.data?.attributes?.url}
+                                  href={`${api_link}${value.ficheiro?.data?.attributes?.url}`}
                                   target="_blank"
                                   className="hover:text-blue-500 hover:underline"
                                   rel="noreferrer"
@@ -891,7 +891,7 @@ const VpublicaDetalhes = ({
                               <>
                                 <p className="m-0">
                                   <a
-                                    href={value.ficheiro?.data?.attributes?.url}
+                                    href={`${api_link}${value.ficheiro?.data?.attributes?.url}`}
                                     target="_blank"
                                     className="hover:text-blue-500 hover:underline"
                                     rel="noreferrer"
@@ -901,7 +901,7 @@ const VpublicaDetalhes = ({
                                 </p>
                                 <audio controls>
                                   <source
-                                    src={value.ficheiro?.data?.attributes?.url}
+                                    src={`${api_link}${value.ficheiro?.data?.attributes?.url}`}
                                     type="audio/mpeg"
                                   />
                                   Your browser does not support the audio
@@ -915,7 +915,7 @@ const VpublicaDetalhes = ({
                               <>
                                 <p className="m-0">
                                   <a
-                                    href={value.ficheiro?.data?.attributes?.url}
+                                    href={`${api_link}${value.ficheiro?.data?.attributes?.url}`}
                                     target="_blank"
                                     className="hover:text-blue-500 hover:underline"
                                     rel="noreferrer"
@@ -925,7 +925,7 @@ const VpublicaDetalhes = ({
                                 </p>
                                 <video width="500" height="300" controls>
                                   <source
-                                    src={value.ficheiro?.data?.attributes?.url}
+                                    src={`${api_link}${value.ficheiro?.data?.attributes?.url}`}
                                     type="video/mp4"
                                   />
                                   Your browser does not support the video tag.
@@ -940,7 +940,7 @@ const VpublicaDetalhes = ({
                               <>
                                 <p className="m-0">
                                   <a
-                                    href={value.ficheiro?.data?.attributes?.url}
+                                    href={`${api_link}${value.ficheiro?.data?.attributes?.url}`}
                                     target="_blank"
                                     className="hover:text-blue-500 hover:underline"
                                     rel="noreferrer"
@@ -950,7 +950,7 @@ const VpublicaDetalhes = ({
                                 </p>
                                 <div className="card flex justify-content-center">
                                   <Image
-                                    src={value.ficheiro?.data?.attributes?.url}
+                                    src={`${api_link}${value.ficheiro?.data?.attributes?.url}`}
                                     alt={value.titulo}
                                     width="500"
                                     preview
