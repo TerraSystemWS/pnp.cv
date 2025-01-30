@@ -91,7 +91,9 @@ const VotacaoPublicaStatus = ({ social, contato, Vpublica, navbar }: Props) => {
   const exportPdf = () => {
     import("jspdf").then((jsPDF) => {
       import("jspdf-autotable").then(() => {
+        // @ts-ignore
         const doc = new jsPDF.default(0, 0)
+        // @ts-ignore
         doc.autoTable(exportColumns, products)
         doc.save("VotacaoPublica.pdf")
       })
