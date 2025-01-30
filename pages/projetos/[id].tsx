@@ -23,7 +23,6 @@ import { useFetchUser } from "../../lib/authContext"
 import { Image } from "primereact/image"
 import JSConfetti from "js-confetti"
 import Votacao from "../../components/Votacao"
-import { getStrapiMedia } from "../../lib/utils"
 
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
