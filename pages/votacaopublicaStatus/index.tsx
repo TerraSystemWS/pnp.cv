@@ -13,34 +13,32 @@ import { Button } from "primereact/button"
 import { Tooltip } from "primereact/tooltip"
 
 // Define types
-interface SocialMedia {
-  data: any
-}
+// interface SocialMedia {
+//   data: any
+// }
 
-interface Contact {
-  data: any
-}
+// interface Contact {
+//   data: any
+// }
 
-interface NavbarItem {
-  name: string
-  link: string
-}
+// interface NavbarItem {
+//   name: string
+//   link: string
+// }
 
-interface VotacaoPublica {
-  data: any[]
-}
+// interface VotacaoPublica {
+//   data: any[]
+// }
 
-interface Props {
-  social: SocialMedia
-  contato: Contact
-  Vpublica: VotacaoPublica
-  navbar: NavbarItem[]
-}
+// interface Props {
+//   contato: Contact
+//   Vpublica: VotacaoPublica
+// }
 
 // API base URL
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
 
-const VotacaoPublicaStatus = ({ social, contato, Vpublica, navbar }: Props) => {
+const VotacaoPublicaStatus = ({ social, contato, Vpublica, navbar }: any) => {
   const { user, loading } = useFetchUser()
   const [products, setProducts] = useState<any[]>([])
   const [selectedProducts, setSelectedProducts] = useState<any[]>([])
@@ -57,7 +55,7 @@ const VotacaoPublicaStatus = ({ social, contato, Vpublica, navbar }: Props) => {
 
   // Transform Vpublica data into products
   useEffect(() => {
-    const ProductService = Vpublica.data?.map((value) => ({
+    const ProductService = Vpublica.data?.map((value: any) => ({
       id: value.id,
       nome_completo: value.attributes.nome_completo,
       categoria: value.attributes.categoria,
