@@ -23,6 +23,7 @@ import { useFetchUser } from "../../lib/authContext"
 import { Image } from "primereact/image"
 import JSConfetti from "js-confetti"
 import Votacao from "../../components/Votacao"
+import { getStrapiMedia } from "../../lib/utils"
 
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
@@ -717,6 +718,9 @@ const VpublicaDetalhes = ({
                       // Filtra apenas documentos privados (publico: false)
                       if (value.publico !== false) return null
 
+                      console.log("inscricao.data.attributes.fileLink")
+                      console.log(inscricao.data.attributes.fileLink)
+
                       const fileExtension = value.titulo
                         ?.slice(-4)
                         .toLowerCase() // Obtém a extensão do arquivo
@@ -727,7 +731,7 @@ const VpublicaDetalhes = ({
                             return (
                               <p className="m-0">
                                 <a
-                                  href={value.file_link}
+                                  href={value.ficheiro?.data?.attributes?.url}
                                   target="_blank"
                                   className="hover:text-blue-500 hover:underline"
                                   rel="noreferrer"
@@ -742,7 +746,7 @@ const VpublicaDetalhes = ({
                               <>
                                 <p className="m-0">
                                   <a
-                                    href={value.file_link}
+                                    href={value.ficheiro?.data?.attributes?.url}
                                     target="_blank"
                                     className="hover:text-blue-500 hover:underline"
                                     rel="noreferrer"
@@ -752,7 +756,7 @@ const VpublicaDetalhes = ({
                                 </p>
                                 <audio controls>
                                   <source
-                                    src={value.file_link}
+                                    src={value.ficheiro?.data?.attributes?.url}
                                     type="audio/mpeg"
                                   />
                                   Your browser does not support the audio
@@ -766,7 +770,7 @@ const VpublicaDetalhes = ({
                               <>
                                 <p className="m-0">
                                   <a
-                                    href={value.file_link}
+                                    href={value.ficheiro?.data?.attributes?.url}
                                     target="_blank"
                                     className="hover:text-blue-500 hover:underline"
                                     rel="noreferrer"
@@ -776,7 +780,7 @@ const VpublicaDetalhes = ({
                                 </p>
                                 <video width="500" height="300" controls>
                                   <source
-                                    src={value.file_link}
+                                    src={value.ficheiro?.data?.attributes?.url}
                                     type="video/mp4"
                                   />
                                   Your browser does not support the video tag.
@@ -791,7 +795,7 @@ const VpublicaDetalhes = ({
                               <>
                                 <p className="m-0">
                                   <a
-                                    href={value.file_link}
+                                    href={value.ficheiro?.data?.attributes?.url}
                                     target="_blank"
                                     className="hover:text-blue-500 hover:underline"
                                     rel="noreferrer"
@@ -801,7 +805,7 @@ const VpublicaDetalhes = ({
                                 </p>
                                 <div className="card flex justify-content-center">
                                   <Image
-                                    src={value.file_link}
+                                    src={value.ficheiro?.data?.attributes?.url}
                                     alt={value.titulo}
                                     width="500"
                                     preview
@@ -861,9 +865,10 @@ const VpublicaDetalhes = ({
                       // Filtra apenas documentos públicos (publico: true)
                       if (value.publico !== true) return null
 
-                      const fileExtension = value.file_link
-                        ?.slice(-4)
-                        .toLowerCase() // Obtém a extensão do arquivo
+                      const fileExtension =
+                        value.ficheiro?.data?.attributes?.url
+                          ?.slice(-4)
+                          .toLowerCase() // Obtém a extensão do arquivo
 
                       const renderFilePreview = () => {
                         switch (fileExtension) {
@@ -871,7 +876,7 @@ const VpublicaDetalhes = ({
                             return (
                               <p className="m-0">
                                 <a
-                                  href={value.file_link}
+                                  href={value.ficheiro?.data?.attributes?.url}
                                   target="_blank"
                                   className="hover:text-blue-500 hover:underline"
                                   rel="noreferrer"
@@ -886,7 +891,7 @@ const VpublicaDetalhes = ({
                               <>
                                 <p className="m-0">
                                   <a
-                                    href={value.file_link}
+                                    href={value.ficheiro?.data?.attributes?.url}
                                     target="_blank"
                                     className="hover:text-blue-500 hover:underline"
                                     rel="noreferrer"
@@ -896,7 +901,7 @@ const VpublicaDetalhes = ({
                                 </p>
                                 <audio controls>
                                   <source
-                                    src={value.file_link}
+                                    src={value.ficheiro?.data?.attributes?.url}
                                     type="audio/mpeg"
                                   />
                                   Your browser does not support the audio
@@ -910,7 +915,7 @@ const VpublicaDetalhes = ({
                               <>
                                 <p className="m-0">
                                   <a
-                                    href={value.file_link}
+                                    href={value.ficheiro?.data?.attributes?.url}
                                     target="_blank"
                                     className="hover:text-blue-500 hover:underline"
                                     rel="noreferrer"
@@ -920,7 +925,7 @@ const VpublicaDetalhes = ({
                                 </p>
                                 <video width="500" height="300" controls>
                                   <source
-                                    src={value.file_link}
+                                    src={value.ficheiro?.data?.attributes?.url}
                                     type="video/mp4"
                                   />
                                   Your browser does not support the video tag.
@@ -935,7 +940,7 @@ const VpublicaDetalhes = ({
                               <>
                                 <p className="m-0">
                                   <a
-                                    href={value.file_link}
+                                    href={value.ficheiro?.data?.attributes?.url}
                                     target="_blank"
                                     className="hover:text-blue-500 hover:underline"
                                     rel="noreferrer"
@@ -945,7 +950,7 @@ const VpublicaDetalhes = ({
                                 </p>
                                 <div className="card flex justify-content-center">
                                   <Image
-                                    src={value.file_link}
+                                    src={value.ficheiro?.data?.attributes?.url}
                                     alt={value.titulo}
                                     width="500"
                                     preview
@@ -1255,7 +1260,7 @@ export async function getServerSideProps({ params, query }: any) {
   const navbar = await fetcher(`${api_link}/api/menus?populate=deep`)
   // GET: dados dos projetos inscritos
   const inscritos = await fetcher(
-    `${api_link}/api/inscricoes/${id}?populate=fileLink`
+    `${api_link}/api/inscricoes/${id}?populate[fileLink][populate][ficheiro][fields]=url`
   )
   //get links for menu
   let dlink: any = []
