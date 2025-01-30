@@ -76,26 +76,26 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
     formState: { errors },
   } = useForm<Inputs>({
     defaultValues: {
-      nome_completo: inscricao.data.attributes.nome_completo,
-      email: inscricao.data.attributes.email,
-      sede: inscricao.data.attributes.sede,
+      nome_completo: inscricao.data?.attributes.nome_completo,
+      email: inscricao.data?.attributes.email,
+      sede: inscricao.data?.attributes.sede,
       nif: inscricao.data?.attributes.NIF,
       telefone: inscricao.data?.attributes.telefone,
-      nome_projeto: inscricao.data.attributes.nome_projeto,
-      categoria: inscricao.data.attributes.categoria,
-      con_criativo: inscricao.data.attributes.con_criativo,
-      coord_prod: inscricao.data.attributes.coord_prod,
-      dir_foto: inscricao.data.attributes.dir_foto,
-      dir_art: inscricao.data.attributes.dir_art,
-      realizador: inscricao.data.attributes.realizador,
-      editor: inscricao.data.attributes.editor,
-      autor_jingle: inscricao.data.attributes.autor_jingle,
-      designer: inscricao.data.attributes.designer,
-      outras_consideracoes: inscricao.data.attributes.outras_consideracoes,
-      data_producao: inscricao.data.attributes.data_producao,
-      data_divulgacao: inscricao.data.attributes.data_divulgacao,
+      nome_projeto: inscricao.data?.attributes.nome_projeto,
+      categoria: inscricao.data?.attributes.categoria,
+      con_criativo: inscricao.data?.attributes.con_criativo,
+      coord_prod: inscricao.data?.attributes.coord_prod,
+      dir_foto: inscricao.data?.attributes.dir_foto,
+      dir_art: inscricao.data?.attributes.dir_art,
+      realizador: inscricao.data?.attributes.realizador,
+      editor: inscricao.data?.attributes.editor,
+      autor_jingle: inscricao.data?.attributes.autor_jingle,
+      designer: inscricao.data?.attributes.designer,
+      outras_consideracoes: inscricao.data?.attributes.outras_consideracoes,
+      data_producao: inscricao.data?.attributes.data_producao,
+      data_divulgacao: inscricao.data?.attributes.data_divulgacao,
       data_apresentacao_publica:
-        inscricao.data.attributes.data_apresentacao_publica,
+        inscricao.data?.attributes.data_apresentacao_publica,
     },
   })
   // dados de categorias
@@ -229,10 +229,12 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
     }
   }
 
+  let dadosTry: any = null
   const onSubmitEquipa: SubmitHandler<Inputs> = async (data: any) => {
     // console.log("submeter ficha de dados de equipa");
     // console.log(data);
     let dados = data
+    dadosTry = data
     try {
       // c5e2576e41ab25094ae9b666d78e4658d8565738943bf689cf6507457e4a0ae926bc3e326d54c42bb6381cfa680d2402c32077d9f5208c7687e3a50aa1ba08fb8e3662070d721f90929b7779144010cf14d8559bf664f92de2374b83829d78a9c764481a2b35b3d513a2d24ad428d73ad10b1fe4d509b0fd1eb503176b97d647
       // console.log(api_link + "/inscricoes");
@@ -872,8 +874,8 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
                     </Table.HeadCell>
                   </Table.Head>
                   <Table.Body className="divide-y divide-gray-200">
-                    {inscricao.data.attributes.fileLink &&
-                      inscricao.data.attributes.fileLink.map(
+                    {inscricao.data?.attributes.fileLink &&
+                      inscricao.data?.attributes.fileLink.map(
                         (value: any, index: any) => (
                           <Table.Row
                             key={index}
@@ -884,12 +886,12 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
                             </Table.Cell>
                             <Table.Cell className="py-3 px-4">
                               <a
-                                href={`${api_link}${value.ficheiro.data.attributes.url}`}
+                                href={`${api_link}${value.ficheiro.data?.attributes.url}`}
                                 target="_blank"
                                 className="text-blue-600 hover:text-blue-800 font-medium hover:underline transition-all duration-200"
                                 rel="noreferrer"
                               >
-                                {value.ficheiro.data.attributes.hash}
+                                {value.ficheiro.data?.attributes.hash}
                               </a>
                             </Table.Cell>
                             <Table.Cell className="py-3 px-4">
@@ -1038,27 +1040,39 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
 
 export default Inscrever
 
+// Função para buscar dados no servidor
 export async function getServerSideProps({ query }: any) {
   const { cid } = query
 
-  const queri = qs.stringify(
-    {
-      sort: ["N_Edicao:desc"],
-    },
-    { encodeValuesOnly: true } // prettify URL
-  )
+  // Verificar se o cid é um número válido
+  if (!cid || isNaN(Number(cid))) {
+    return {
+      notFound: true, // Redireciona para a página 404
+    }
+  }
 
   try {
-    // Fetch data from external APIs concurrently
-    const [rsocials, contato, edicao, navbar, inscricao] = await Promise.all([
+    // Buscar dados da inscrição
+    const inscricao = await fetcher(
+      `${api_link}/api/inscricoes/${cid}?populate=deep`
+    )
+
+    // Se a inscrição não for encontrada, redirecionar para 404
+    if (!inscricao.data) {
+      return {
+        notFound: true,
+      }
+    }
+
+    // Buscar outros dados necessários
+    const [rsocials, contato, edicao, navbar] = await Promise.all([
       fetcher(`${api_link}/api/redes-social?populate=*`),
       fetcher(`${api_link}/api/contato`),
-      fetcher(`${api_link}/api/edicoes?populate=deep&${queri}`),
+      fetcher(`${api_link}/api/edicoes?populate=deep`),
       fetcher(`${api_link}/api/menus?populate=deep`),
-      fetcher(`${api_link}/api/inscricoes/${cid}?populate=deep`),
     ])
 
-    // Process navbar data into the desired format
+    // Processar links do navbar
     const navbarLinks = navbar.data.flatMap((menu: any) =>
       menu.attributes.items.data.map((item: any) => ({
         name: item.attributes.title,
@@ -1066,7 +1080,6 @@ export async function getServerSideProps({ query }: any) {
       }))
     )
 
-    // Return data as props
     return {
       props: {
         social: rsocials,
@@ -1077,16 +1090,9 @@ export async function getServerSideProps({ query }: any) {
       },
     }
   } catch (error) {
-    console.error("Error fetching data:", error)
-    // Return default or error state if something fails
+    console.error("Erro ao buscar dados:", error)
     return {
-      props: {
-        social: [],
-        contato: {},
-        edicao: null,
-        navbar: [],
-        inscricao: null,
-      },
+      notFound: true, // Redireciona para a página 404 em caso de erro
     }
   }
 }
