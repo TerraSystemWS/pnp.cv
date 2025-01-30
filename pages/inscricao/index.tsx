@@ -97,7 +97,7 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
 
   // Função para criar nova inscrição
   const onSubmitncode: SubmitHandler<Inputs> = async (data) => {
-    const { calc } = data
+    const { calc }: any = data
 
     // Verificar cálculo
     if (calc - 10 !== num1) {
