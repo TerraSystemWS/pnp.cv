@@ -1044,6 +1044,13 @@ export default Inscrever
 export async function getServerSideProps({ query }: any) {
   const { cid } = query
 
+  const queri = qs.stringify(
+    {
+      sort: ["N_Edicao:desc"],
+    },
+    { encodeValuesOnly: true } // prettify URL
+  )
+
   // Verificar se o cid é um número válido
   if (!cid || isNaN(Number(cid))) {
     return {
@@ -1068,7 +1075,7 @@ export async function getServerSideProps({ query }: any) {
     const [rsocials, contato, edicao, navbar] = await Promise.all([
       fetcher(`${api_link}/api/redes-social?populate=*`),
       fetcher(`${api_link}/api/contato`),
-      fetcher(`${api_link}/api/edicoes?populate=deep`),
+      fetcher(`${api_link}/api/edicoes?populate=deep&${queri}`),
       fetcher(`${api_link}/api/menus?populate=deep`),
     ])
 
