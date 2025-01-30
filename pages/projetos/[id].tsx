@@ -23,7 +23,6 @@ import { useFetchUser } from "../../lib/authContext"
 import { Image } from "primereact/image"
 import JSConfetti from "js-confetti"
 import Votacao from "../../components/Votacao"
-import { getStrapiMedia } from "../../lib/utils"
 
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
@@ -691,146 +690,152 @@ const VpublicaDetalhes = ({
 
         {/* fim dos detalhes de cada projeto */}
         {/* lista de documentos submetidos */}
-        <div className="mt-10 sm:mt-0">
-          {/** Private Documents Section */}
-          <div className="md:grid md:grid-cols-3 md:gap-6">
-            <div className="md:col-span-1">
-              <div className="px-4 sm:px-0">
-                <h3 className="text-lg font-medium leading-6 text-gray-900">
-                  Documentos Privados
-                </h3>
-                <div className="mt-1 text-sm text-gray-600">
-                  <p className="mb-2">
-                    <span className="text-red-500 font-bold text-lg pointer">
-                      {/* <IoTrashOutline /> */}
-                    </span>{" "}
-                    {/* Remove a file */}
-                  </p>
+        {!loading &&
+          (user ? (
+            <div className="mt-10 sm:mt-0">
+              {/** Private Documents Section */}
+              <div className="md:grid md:grid-cols-3 md:gap-6">
+                <div className="md:col-span-1">
+                  <div className="px-4 sm:px-0">
+                    <h3 className="text-lg font-medium leading-6 text-gray-900">
+                      Documentos Privados
+                    </h3>
+                    <div className="mt-1 text-sm text-gray-600">
+                      <p className="mb-2">
+                        <span className="text-red-500 font-bold text-lg pointer">
+                          {/* <IoTrashOutline /> */}
+                        </span>{" "}
+                        {/* Remove a file */}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-5 md:col-span-2 md:mt-0">
+                  <div>
+                    <Accordion activeIndex={0}>
+                      {inscricao.data.attributes.fileLink?.map(
+                        (value: any, index: number) => {
+                          // Filtra apenas documentos privados (publico: false)
+                          if (value.publico !== false) return null
+
+                          console.log("inscricao.data.attributes.fileLink")
+                          console.log(inscricao.data.attributes.fileLink)
+
+                          const fileExtension = value.titulo
+                            ?.slice(-4)
+                            .toLowerCase() // Obtém a extensão do arquivo
+
+                          const renderFilePreview = () => {
+                            switch (fileExtension) {
+                              case ".pdf":
+                                return (
+                                  <p className="m-0">
+                                    <a
+                                      href={`${api_link}${value.ficheiro?.data?.attributes?.url}`}
+                                      target="_blank"
+                                      className="hover:text-blue-500 hover:underline"
+                                      rel="noreferrer"
+                                    >
+                                      [Abrir Link]
+                                    </a>
+                                  </p>
+                                )
+
+                              case ".mp3":
+                                return (
+                                  <>
+                                    <p className="m-0">
+                                      <a
+                                        href={`${api_link}${value.ficheiro?.data?.attributes?.url}`}
+                                        target="_blank"
+                                        className="hover:text-blue-500 hover:underline"
+                                        rel="noreferrer"
+                                      >
+                                        [Abrir Link]
+                                      </a>
+                                    </p>
+                                    <audio controls>
+                                      <source
+                                        src={`${api_link}${value.ficheiro?.data?.attributes?.url}`}
+                                        type="audio/mpeg"
+                                      />
+                                      Your browser does not support the audio
+                                      element.
+                                    </audio>
+                                  </>
+                                )
+
+                              case ".mp4":
+                                return (
+                                  <>
+                                    <p className="m-0">
+                                      <a
+                                        href={`${api_link}${value.ficheiro?.data?.attributes?.url}`}
+                                        target="_blank"
+                                        className="hover:text-blue-500 hover:underline"
+                                        rel="noreferrer"
+                                      >
+                                        [Abrir Link]
+                                      </a>
+                                    </p>
+                                    <video width="500" height="300" controls>
+                                      <source
+                                        src={`${api_link}${value.ficheiro?.data?.attributes?.url}`}
+                                        type="video/mp4"
+                                      />
+                                      Your browser does not support the video
+                                      tag.
+                                    </video>
+                                  </>
+                                )
+
+                              case ".png":
+                              case ".jpg":
+                              case ".jpeg":
+                                return (
+                                  <>
+                                    <p className="m-0">
+                                      <a
+                                        href={`${api_link}${value.ficheiro?.data?.attributes?.url}`}
+                                        target="_blank"
+                                        className="hover:text-blue-500 hover:underline"
+                                        rel="noreferrer"
+                                      >
+                                        [Abrir Link]
+                                      </a>
+                                    </p>
+                                    <div className="card flex justify-content-center">
+                                      <Image
+                                        src={`${api_link}${value.ficheiro?.data?.attributes?.url}`}
+                                        alt={value.titulo}
+                                        width="500"
+                                        preview
+                                      />
+                                    </div>
+                                  </>
+                                )
+
+                              default:
+                                return null // Ignora tipos de arquivo não suportados
+                            }
+                          }
+
+                          return (
+                            <AccordionTab key={index} header={value.titulo}>
+                              {renderFilePreview()}
+                            </AccordionTab>
+                          )
+                        }
+                      )}
+                    </Accordion>
+                  </div>
                 </div>
               </div>
             </div>
-
-            <div className="mt-5 md:col-span-2 md:mt-0">
-              <div>
-                <Accordion activeIndex={0}>
-                  {inscricao.data.attributes.fileLink?.map(
-                    (value: any, index: number) => {
-                      // Filtra apenas documentos privados (publico: false)
-                      if (value.publico !== false) return null
-
-                      console.log("inscricao.data.attributes.fileLink")
-                      console.log(inscricao.data.attributes.fileLink)
-
-                      const fileExtension = value.titulo
-                        ?.slice(-4)
-                        .toLowerCase() // Obtém a extensão do arquivo
-
-                      const renderFilePreview = () => {
-                        switch (fileExtension) {
-                          case ".pdf":
-                            return (
-                              <p className="m-0">
-                                <a
-                                  href={value.ficheiro?.data?.attributes?.url}
-                                  target="_blank"
-                                  className="hover:text-blue-500 hover:underline"
-                                  rel="noreferrer"
-                                >
-                                  [Abrir Link]
-                                </a>
-                              </p>
-                            )
-
-                          case ".mp3":
-                            return (
-                              <>
-                                <p className="m-0">
-                                  <a
-                                    href={value.ficheiro?.data?.attributes?.url}
-                                    target="_blank"
-                                    className="hover:text-blue-500 hover:underline"
-                                    rel="noreferrer"
-                                  >
-                                    [Abrir Link]
-                                  </a>
-                                </p>
-                                <audio controls>
-                                  <source
-                                    src={value.ficheiro?.data?.attributes?.url}
-                                    type="audio/mpeg"
-                                  />
-                                  Your browser does not support the audio
-                                  element.
-                                </audio>
-                              </>
-                            )
-
-                          case ".mp4":
-                            return (
-                              <>
-                                <p className="m-0">
-                                  <a
-                                    href={value.ficheiro?.data?.attributes?.url}
-                                    target="_blank"
-                                    className="hover:text-blue-500 hover:underline"
-                                    rel="noreferrer"
-                                  >
-                                    [Abrir Link]
-                                  </a>
-                                </p>
-                                <video width="500" height="300" controls>
-                                  <source
-                                    src={value.ficheiro?.data?.attributes?.url}
-                                    type="video/mp4"
-                                  />
-                                  Your browser does not support the video tag.
-                                </video>
-                              </>
-                            )
-
-                          case ".png":
-                          case ".jpg":
-                          case ".jpeg":
-                            return (
-                              <>
-                                <p className="m-0">
-                                  <a
-                                    href={value.ficheiro?.data?.attributes?.url}
-                                    target="_blank"
-                                    className="hover:text-blue-500 hover:underline"
-                                    rel="noreferrer"
-                                  >
-                                    [Abrir Link]
-                                  </a>
-                                </p>
-                                <div className="card flex justify-content-center">
-                                  <Image
-                                    src={value.ficheiro?.data?.attributes?.url}
-                                    alt={value.titulo}
-                                    width="500"
-                                    preview
-                                  />
-                                </div>
-                              </>
-                            )
-
-                          default:
-                            return null // Ignora tipos de arquivo não suportados
-                        }
-                      }
-
-                      return (
-                        <AccordionTab key={index} header={value.titulo}>
-                          {renderFilePreview()}
-                        </AccordionTab>
-                      )
-                    }
-                  )}
-                </Accordion>
-              </div>
-            </div>
-          </div>
-        </div>
+          ) : (
+            <></>
+          ))}
 
         <div className="hidden sm:block" aria-hidden="true">
           <div className="py-5">
@@ -866,7 +871,7 @@ const VpublicaDetalhes = ({
                       if (value.publico !== true) return null
 
                       const fileExtension =
-                        value.ficheiro?.data?.attributes?.url
+                        `${api_link}${value.ficheiro?.data?.attributes?.url}`
                           ?.slice(-4)
                           .toLowerCase() // Obtém a extensão do arquivo
 
@@ -876,7 +881,7 @@ const VpublicaDetalhes = ({
                             return (
                               <p className="m-0">
                                 <a
-                                  href={value.ficheiro?.data?.attributes?.url}
+                                  href={`${api_link}${value.ficheiro?.data?.attributes?.url}`}
                                   target="_blank"
                                   className="hover:text-blue-500 hover:underline"
                                   rel="noreferrer"
@@ -891,7 +896,7 @@ const VpublicaDetalhes = ({
                               <>
                                 <p className="m-0">
                                   <a
-                                    href={value.ficheiro?.data?.attributes?.url}
+                                    href={`${api_link}${value.ficheiro?.data?.attributes?.url}`}
                                     target="_blank"
                                     className="hover:text-blue-500 hover:underline"
                                     rel="noreferrer"
@@ -901,7 +906,7 @@ const VpublicaDetalhes = ({
                                 </p>
                                 <audio controls>
                                   <source
-                                    src={value.ficheiro?.data?.attributes?.url}
+                                    src={`${api_link}${value.ficheiro?.data?.attributes?.url}`}
                                     type="audio/mpeg"
                                   />
                                   Your browser does not support the audio
@@ -915,7 +920,7 @@ const VpublicaDetalhes = ({
                               <>
                                 <p className="m-0">
                                   <a
-                                    href={value.ficheiro?.data?.attributes?.url}
+                                    href={`${api_link}${value.ficheiro?.data?.attributes?.url}`}
                                     target="_blank"
                                     className="hover:text-blue-500 hover:underline"
                                     rel="noreferrer"
@@ -925,7 +930,7 @@ const VpublicaDetalhes = ({
                                 </p>
                                 <video width="500" height="300" controls>
                                   <source
-                                    src={value.ficheiro?.data?.attributes?.url}
+                                    src={`${api_link}${value.ficheiro?.data?.attributes?.url}`}
                                     type="video/mp4"
                                   />
                                   Your browser does not support the video tag.
@@ -940,7 +945,7 @@ const VpublicaDetalhes = ({
                               <>
                                 <p className="m-0">
                                   <a
-                                    href={value.ficheiro?.data?.attributes?.url}
+                                    href={`${api_link}${value.ficheiro?.data?.attributes?.url}`}
                                     target="_blank"
                                     className="hover:text-blue-500 hover:underline"
                                     rel="noreferrer"
@@ -950,7 +955,7 @@ const VpublicaDetalhes = ({
                                 </p>
                                 <div className="card flex justify-content-center">
                                   <Image
-                                    src={value.ficheiro?.data?.attributes?.url}
+                                    src={`${api_link}${value.ficheiro?.data?.attributes?.url}`}
                                     alt={value.titulo}
                                     width="500"
                                     preview

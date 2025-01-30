@@ -1,6 +1,6 @@
 import Layout from "../../components/Layout"
 import { fetcher } from "../../lib/api"
-const qs = require("qs")
+import qs from "qs"
 import Head from "next/head"
 import { useForm, SubmitHandler } from "react-hook-form"
 import { useRouter } from "next/router"
@@ -8,10 +8,12 @@ import { v4 as uuidv4 } from "uuid"
 import Swal from "sweetalert2"
 import { useFetchUser } from "../../lib/authContext"
 import HeroSection from "../../components/HeroSection"
+import { useEffect } from "react"
 
-// link para a url do api
+// URL da API
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
 
+// Tipos para os dados do formulário
 type Inputs = {
   code: string
   ncode: string
@@ -21,36 +23,30 @@ type Inputs = {
 const Inscreve = ({ social, contato, edicao, navbar }: any) => {
   const { user, loading } = useFetchUser()
   const router = useRouter()
-  // const [vnum, setVnum] = useState();
-  //   console.log(router);
-  //valor final do calculo
-  let num1 = 5
 
+  // Valor final do cálculo
+  const num1 = 5
+
+  // Configuração do react-hook-form
   const {
     register,
     handleSubmit,
-    watch,
-    setValue,
     formState: { errors },
   } = useForm<Inputs>({
     defaultValues: {
-      ncode: "pnp-i", //pnp-p0 + ID
+      ncode: "pnp-i", // Código padrão
     },
   })
 
-  const onSubmitcode: SubmitHandler<Inputs> = async (data: any) => {
-    const { code, ncode } = data
-
-    // Exibir o código
-    alert(code)
-    alert(ncode)
-
-    // Extrair ID do código
-    const swap = code.split("i")
-    const id = swap[1]
+  // Função para buscar inscrição pelo código
+  const onSubmitcode: SubmitHandler<Inputs> = async (data) => {
+    const { code } = data
 
     try {
-      // Fazer a solicitação para obter dados
+      // Extrair ID do código
+      const id = code.split("i")[1]
+
+      // Buscar dados da inscrição
       const res = await fetch(`${api_link}/api/inscricoes/${id}`, {
         method: "GET",
         headers: {
@@ -58,25 +54,17 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
         },
       })
 
-      // Verificar se a resposta foi bem-sucedida
       if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`)
+        throw new Error(`Erro HTTP! Status: ${res.status}`)
       }
 
-      // Analisar a resposta JSON
       const dados = await res.json()
-      console.log("============== Get Inscrições  ===============")
-      console.log(dados)
-      console.log("============== Get submit Data  ===============")
-      console.log(data)
-      console.log(dados.data.attributes.url)
 
-      // Exibir o SweetAlert2
-      //@ts-ignore
-      let timerInterval
+      // Exibir loading com SweetAlert2
+      let timerInterval: any
       Swal.fire({
-        title: "...procurando inscrição...",
-        html: `pesquisando o id #pnp-i<b></b>...`,
+        title: "Procurando inscrição...",
+        html: `Pesquisando o ID #pnp-i<b></b>...`,
         timer: 2000,
         timerProgressBar: true,
         didOpen: () => {
@@ -84,18 +72,16 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
           const b = Swal.getHtmlContainer()?.querySelector("b")
           if (b) {
             timerInterval = setInterval(() => {
-              //@ts-ignore
-              b.textContent = Swal.getTimerLeft() || ""
+              b.textContent = Swal.getTimerLeft()?.toString() || ""
             }, 100)
           }
         },
         willClose: () => {
-          //@ts-ignore
           clearInterval(timerInterval)
         },
       })
 
-      // Navegar para a página de inscrição usando router.push
+      // Redirecionar para a página de inscrição
       router.push(
         `/inscricao/${dados.data.attributes.url}?cd=${code}&cid=${id}`
       )
@@ -104,199 +90,131 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
       Swal.fire({
         icon: "error",
         title: "Erro",
-        text: "Erro ao buscar inscrição",
+        text: "Erro ao buscar inscrição. Verifique o código e tente novamente.",
       })
     }
   }
 
-  const onSubmitncode: SubmitHandler<Inputs> = async (data: any) => {
-    let ncode = data.ncode
+  // Função para criar nova inscrição
+  const onSubmitncode: SubmitHandler<Inputs> = async (data) => {
+    const { calc }: any = data
 
-    let calculo = data.calc - 10
-    if (calculo != num1) {
+    // Verificar cálculo
+    if (calc - 10 !== num1) {
       Swal.fire({
         icon: "error",
         title: "Erro",
-        text: "O Valor pode estar errado",
+        text: "O valor está incorreto. Tente novamente.",
       })
-    } else {
-      Swal.fire({
-        title: "Prémio Nacional De Publicidade",
-        text: "Antes de iniciar a candidatura leia os regulamentos do concurso.",
-        footer: '<a href="/regulamentos">Regulamentos</a>',
-        imageUrl:
-          "https://res.cloudinary.com/dkz8fcpla/image/upload/v1672960467/Captura_de_ecra_de_2023_01_05_22_13_23_ae07a3a795.png?updated_at=2023-01-05T23:14:27.822Z",
-        imageWidth: 400,
-        imageHeight: 200,
-        imageAlt: "pnp gala",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#c2a12b",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "sim, inscrever",
-      }).then(async (result) => {
-        if (result.isConfirmed) {
-          let code: any
-          let id: any
-          let uurl = uuidv4()
-          let Status: number = 0
-
-          try {
-            const res: any = await fetch(`${api_link}/api/inscricoes`, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                data: {
-                  code: ncode,
-                  url: uurl,
-                  publishedAt: null,
-                },
-              }),
-            })
-
-            /*	const data = await res.json();
-
-						console.log(
-							"================ data 2024 ================="
-						);
-						console.log(data);
-						Status = data.error.status;
-						console.log(
-							"================ error status ================="
-						);
-						console.log(data.error.status);
-						code = ncode + data.data.id; // id da nova inscricao
-						console.log(
-							"================ code ID 2024 ================="
-						);
-						console.log("ncode: " + data.data.id);
-						id = data.data.id;*/
-
-            const data = await res.json()
-
-            console.log("================ data 2024 =================")
-            console.log(data)
-
-            // Verifica se `data` possui a propriedade `data` e se ela tem um `id`
-            if (data.data && data.data.id) {
-              //Status = "Não disponível";// por algum motivo nao ha status code
-              console.log("================ data ID =================")
-              console.log(data.data.id)
-              code = ncode + data.data.id // id da nova inscrição
-              console.log("================ code ID 2024 =================")
-              console.log("ncode: " + data.data.id)
-              id = data.data.id
-              Status = 200 // encontrado
-            } else {
-              //console.error("Data ID not available");
-              Swal.fire({
-                icon: "error",
-                title: "Erro",
-                text: "Dados não encontrados",
-              })
-              Status = 404 // nao encontrado
-            }
-          } catch (err) {
-            //console.log("erro:" + err);
-            Swal.fire({
-              icon: "error",
-              title: "Erro",
-              text: "erro:" + err,
-            })
-          }
-
-          // console.log("====== status ======");
-          // console.log(Status);
-
-          let timerInterval: any
-          if (Status == 200) {
-            Swal.fire({
-              title: "Criando sua inscrição",
-              html: `criando id de incrição ${ncode}<b></b>...`,
-              timer: 2000,
-              timerProgressBar: true,
-              didOpen: () => {
-                Swal.showLoading(Swal.getDenyButton()!)
-                // @ts-ignore
-                const b =
-                  // @ts-ignore
-                  Swal.getHtmlContainer().querySelector("b")
-                timerInterval = setInterval(() => {
-                  // @ts-ignore
-                  b.textContent = Swal.getTimerLeft()
-                }, 100)
-              },
-              willClose: () => {
-                clearInterval(timerInterval)
-              },
-            })
-
-            //await setTimeout(5000);
-            // calculation of no. of days between two date
-
-            // To set two dates to two variables
-            //isso tem q vir do DB
-            // data_inicio & data_fim
-            var data_inicio = new Date("01/01/2025")
-            var data_fim = new Date("01/01/2025")
-
-            // To calculate the time difference of two dates
-            var Difference_In_Time = data_fim.getTime() - data_inicio.getTime()
-
-            // To calculate the no. of days between two dates
-            var Difference_In_Days = Math.round(
-              Difference_In_Time / (1000 * 3600 * 24)
-            )
-
-            setTimeout(() => {
-              Swal.fire(
-                "Incrito",
-                `A sua incrição foi efetuada com sucesso, tem ${Difference_In_Days} dias para finalizar o processo`,
-                "success"
-              )
-            }, 2500)
-
-            if (code) {
-              router.push(`/inscricao/${uurl}?cd=${code}&cid=${id}`)
-            }
-          } else {
-            setTimeout(() => {
-              Swal.fire(
-                "ERRO",
-                `O tempo para a candidatura terminou`,
-                "warning"
-              )
-            }, 2500)
-          }
-        }
-      })
+      return
     }
 
-    //   console.log(watch("ncode")); // watch input value by passing the name of it
-    //   console.log(watch("code")); // watch input value by passing the name of it
-    // dados de categorias
-    let Categoria: any = []
-    // create cateoria lists
-    edicao.data?.attributes.categoria.map((categs: any, index: any) => {
-      Categoria[index] = {
-        id: index,
-        titulo: categs.titulo,
-        slug: categs.titulo.replace(/ /g, "_"),
-        descricao: categs.descricao,
-      }
+    // Exibir confirmação com SweetAlert2
+    const result = await Swal.fire({
+      title: "Prémio Nacional De Publicidade",
+      text: "Antes de iniciar a candidatura, leia os regulamentos do concurso.",
+      footer: '<a href="/regulamentos">Regulamentos</a>',
+      imageUrl:
+        "https://res.cloudinary.com/dkz8fcpla/image/upload/v1672960467/Captura_de_ecra_de_2023_01_05_22_13_23_ae07a3a795.png?updated_at=2023-01-05T23:14:27.822Z",
+      imageWidth: 400,
+      imageHeight: 200,
+      imageAlt: "PNP Gala",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#c2a12b",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sim, inscrever",
     })
+
+    if (result.isConfirmed) {
+      const uurl = uuidv4()
+
+      try {
+        // Criar nova inscrição
+        const res = await fetch(`${api_link}/api/inscricoes`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            data: {
+              code: data.ncode,
+              url: uurl,
+              publishedAt: null,
+            },
+          }),
+        })
+
+        const responseData = await res.json()
+
+        if (!responseData.data || !responseData.data.id) {
+          throw new Error("Dados da inscrição não encontrados.")
+        }
+
+        const code = data.ncode + responseData.data.id
+        const id = responseData.data.id
+
+        // Exibir loading com SweetAlert2
+        let timerInterval: any
+        Swal.fire({
+          title: "Criando sua inscrição",
+          html: `Criando ID de inscrição ${data.ncode}<b></b>...`,
+          timer: 2000,
+          timerProgressBar: true,
+          didOpen: () => {
+            Swal.showLoading()
+            const b = Swal.getHtmlContainer()?.querySelector("b")
+            if (b) {
+              timerInterval = setInterval(() => {
+                b.textContent = Swal.getTimerLeft()?.toString() || ""
+              }, 100)
+            }
+          },
+          willClose: () => {
+            clearInterval(timerInterval)
+          },
+        })
+
+        // Calcular diferença de dias
+        const dataInicio = new Date("2025-01-01") // Data de início
+        const dataFim = new Date("2025-01-31") // Data de término
+        const dataAtual = new Date() // Data atual
+
+        // Calcular a diferença de tempo entre a data atual e a data final
+        const diffTime = dataFim.getTime() - dataAtual.getTime()
+
+        // Calcular o número de dias restantes
+        const diffDays = Math.ceil(diffTime / (1000 * 3600 * 24)) // Usar Math.ceil para arredondar para cima
+
+        // Exibir mensagem de sucesso
+        setTimeout(() => {
+          Swal.fire(
+            "Inscrito",
+            `Sua inscrição foi efetuada com sucesso. Você tem ${diffDays} dias para finalizar o processo.`,
+            "success"
+          )
+        }, 2500)
+
+        // Redirecionar para a página de inscrição
+        router.push(`/inscricao/${uurl}?cd=${code}&cid=${id}`)
+      } catch (err) {
+        console.error("Erro ao criar inscrição:", err)
+        Swal.fire({
+          icon: "error",
+          title: "Erro",
+          text: "Erro ao criar inscrição. Tente novamente.",
+        })
+      }
+    }
   }
+
   return (
     <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
       <Head>
         <title>Inscrição - Prémio Nacional De Publicidade</title>
         <meta
           name="description"
-          content="Para aceder a sua inscrição introduza o codigo que foi criado
-          como participante do PNP, use esse codigo para verificar a sua
-          inscrição e ou fazer alterações"
+          content="Para acessar sua inscrição, insira o código que foi criado como participante do PNP. Use esse código para verificar ou fazer alterações na sua inscrição."
         />
       </Head>
 
@@ -306,65 +224,66 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
       />
 
       <div className="p-11">
+        {/* Formulário para acessar inscrição existente */}
         <div className="mt-10 sm:mt-0">
           <div className="md:grid md:grid-cols-3 md:gap-6">
             <div className="md:col-span-1">
               <div className="px-4 sm:px-0">
                 <h3 className="text-lg font-medium leading-6 text-gray-900">
-                  Aceder a sua inscrição
+                  Acessar sua inscrição
                 </h3>
-
                 <p className="mt-1 text-sm text-gray-600">
-                  Para aceder a sua inscrição introduza o codigo que foi criado
-                  como participante do PNP, use esse codigo para verificar a sua
-                  inscrição e ou fazer alterações
+                  Insira o código que foi criado como participante do PNP para
+                  acessar sua inscrição.
                 </p>
               </div>
             </div>
             <div className="mt-5 md:col-span-2 md:mt-0">
               <form onSubmit={handleSubmit(onSubmitcode)}>
-                <div className="">
-                  <div className="bg-white px-4 py-5 sm:p-6">
-                    <div className="grid grid-cols-6 gap-6">
-                      <div className="col-span-6 sm:col-span-3 lg:col-span-2">
-                        <label
-                          htmlFor="code"
-                          className="block text-sm font-medium text-gray-700 mb-2"
-                        >
-                          Codigo de acesso
-                        </label>
-                        <input
-                          id="code"
-                          autoComplete="code"
-                          className="focus:ring-2 focus:ring-blue-500 focus:outline-none appearance-none w-full text-sm leading-6 text-slate-900 placeholder-slate-400 rounded-md py-2 pl-10 ring-1 ring-slate-200 shadow-sm"
-                          {...register("code")}
-                        />
-                        {errors.code && (
-                          <span>o codigo de acesso é obrigatoria</span>
-                        )}
-                      </div>
+                <div className="bg-white px-4 py-5 sm:p-6">
+                  <div className="grid grid-cols-6 gap-6">
+                    <div className="col-span-6 sm:col-span-3 lg:col-span-2">
+                      <label
+                        htmlFor="code"
+                        className="block text-sm font-medium text-gray-700 mb-2"
+                      >
+                        Código de acesso
+                      </label>
+                      <input
+                        id="code"
+                        autoComplete="code"
+                        className="focus:ring-2 focus:ring-blue-500 focus:outline-none appearance-none w-full text-sm leading-6 text-slate-900 placeholder-slate-400 rounded-md py-2 pl-10 ring-1 ring-slate-200 shadow-sm"
+                        {...register("code", { required: false })}
+                      />
+                      {errors.code && (
+                        <span className="text-red-500">
+                          O código de acesso é obrigatório.
+                        </span>
+                      )}
                     </div>
                   </div>
-                  <div className="bg-gray-50 px-4 py-3 sm:px-6">
-                    <button
-                      type="submit"
-                      className="inline-flex justify-center rounded-md border border-transparent bg-amarelo-ouro py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-amarelo-escuro focus:outline-none focus:ring-2 focus:ring-amarelo-escuro focus:ring-offset-2"
-                    >
-                      Confirmar
-                    </button>
-                  </div>
+                </div>
+                <div className="bg-gray-50 px-4 py-3 sm:px-6">
+                  <button
+                    type="submit"
+                    className="inline-flex justify-center rounded-md border border-transparent bg-amarelo-ouro py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-amarelo-escuro focus:outline-none focus:ring-2 focus:ring-amarelo-escuro focus:ring-offset-2"
+                  >
+                    Confirmar
+                  </button>
                 </div>
               </form>
             </div>
           </div>
         </div>
 
+        {/* Divisor */}
         <div className="hidden sm:block" aria-hidden="true">
           <div className="py-5">
             <div className="border-t border-gray-200" />
           </div>
         </div>
 
+        {/* Formulário para nova inscrição */}
         <div>
           <div className="md:grid md:grid-cols-3 md:gap-6">
             <div className="md:col-span-1">
@@ -373,7 +292,7 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
                   Iniciar uma inscrição
                 </h3>
                 <p className="mt-1 text-sm text-gray-600">
-                  Crie a sua inscrição para o prémio nacional publicidade
+                  Crie sua inscrição para o Prémio Nacional de Publicidade.
                 </p>
               </div>
             </div>
@@ -384,35 +303,33 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
                   <div className="grid grid-cols-6 gap-6">
                     <div className="col-span-6 sm:col-span-3 lg:col-span-2">
                       <label
-                        htmlFor="code"
+                        htmlFor="calc"
                         className="block text-sm font-medium text-gray-700 mb-2"
                       >
                         Qual o valor?
                       </label>
-                      <p>{num1} + 10 </p>
+                      <p>{num1} + 10</p>
                       <input
-                        id="code"
-                        autoComplete="code"
+                        id="calc"
+                        autoComplete="calc"
                         className="focus:ring-2 focus:ring-blue-500 focus:outline-none appearance-none w-full text-sm leading-6 text-slate-900 placeholder-slate-400 rounded-md py-2 pl-10 ring-1 ring-slate-200 shadow-sm"
-                        {...register("calc")}
+                        {...register("calc", { required: false })}
                       />
-                      {errors.code && (
-                        <span>o codigo de acesso é obrigatoria</span>
+                      {errors.calc && (
+                        <span className="text-red-500">
+                          O valor é obrigatório.
+                        </span>
                       )}
                     </div>
                   </div>
                 </div>
-                <div className="shadow sm:overflow-hidden sm:rounded-md">
-                  <div className="space-y-6 bg-white px-4 py-5 sm:p-6">
-                    <div className="col-span-6 sm:col-span-4">
-                      <button
-                        type="submit"
-                        className="inline-flex justify-center rounded-md border border-transparent bg-amarelo-ouro py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-amarelo-escuro focus:outline-none focus:ring-2 focus:ring-amarelo-escuro focus:ring-offset-2"
-                      >
-                        Abrir inscrição
-                      </button>
-                    </div>
-                  </div>
+                <div className="bg-gray-50 px-4 py-3 sm:px-6">
+                  <button
+                    type="submit"
+                    className="inline-flex justify-center rounded-md border border-transparent bg-amarelo-ouro py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-amarelo-escuro focus:outline-none focus:ring-2 focus:ring-amarelo-escuro focus:ring-offset-2"
+                  >
+                    Abrir inscrição
+                  </button>
                 </div>
               </form>
             </div>
@@ -425,53 +342,49 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
 
 export default Inscreve
 
-// This gets called on every request
+// Função para buscar dados no servidor
 export async function getServerSideProps() {
-  // Fetch data from external API
-
   const query = qs.stringify(
     {
       sort: ["N_Edicao:asc"],
     },
     {
-      encodeValuesOnly: true, // prettify URL
+      encodeValuesOnly: true,
     }
   )
 
-  // GET: links para as redes sociais
-  const rsocials = await fetcher(`${api_link}/api/redes-social?populate=*`)
-  // GET: dados para contatos
-  const contato = await fetcher(`${api_link}/api/contato`)
-  // GET: dados para banners
-  // const banners = await fetcher(`${api_link}/banners?populate=deep`);
-  // GET: dados dos juris, categorias
-  /**
-   * tem que muda keli urgenti
-   */
-  const edicao = await fetcher(
-    `${api_link}/api/edicoes/1?populate=deep&${query}`
-  )
-  // GET: dados dos parceiros
-  // const parceiros = await fetcher(`${api_link}/parceiros?populate=deep`);
-  // GET: dados do navbar
-  const navbar = await fetcher(`${api_link}/api/menus?populate=deep`)
-  //get links for menu
-  let dlink: any = []
-  navbar.data.map((value: any) => {
-    value.attributes.items.data.map((value: any, index: any) => {
-      // value.attributes.title;
-      // value.attributes.url;
-      // console.log(value);
-      dlink[index] = {
-        name: value.attributes.title,
-        link: value.attributes.url,
-      }
-    })
-  })
+  try {
+    const [rsocials, contato, edicao, navbar] = await Promise.all([
+      fetcher(`${api_link}/api/redes-social?populate=*`),
+      fetcher(`${api_link}/api/contato`),
+      fetcher(`${api_link}/api/edicoes/1?populate=deep&${query}`),
+      fetcher(`${api_link}/api/menus?populate=deep`),
+    ])
 
-  // console.log("edicoesTT");
-  // console.log(edicao);
+    const dlink = navbar.data.flatMap((value: any) =>
+      value.attributes.items.data.map((item: any) => ({
+        name: item.attributes.title,
+        link: item.attributes.url,
+      }))
+    )
 
-  // Pass data to the page via props
-  return { props: { social: rsocials, contato, edicao, navbar: dlink } }
+    return {
+      props: {
+        social: rsocials,
+        contato,
+        edicao,
+        navbar: dlink,
+      },
+    }
+  } catch (error) {
+    console.error("Erro ao buscar dados:", error)
+    return {
+      props: {
+        social: { data: null },
+        contato: { data: null },
+        edicao: { data: null },
+        navbar: [],
+      },
+    }
+  }
 }
