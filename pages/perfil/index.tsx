@@ -91,7 +91,7 @@ const Perfil = ({
                     ></img>
                     <h1 className="text-xl font-bold">{user}</h1>
                     {/* <p className="text-gray-700">Software Developer</p> */}
-                    <div className="mt-6 flex flex-wrap gap-4 justify-center">
+                    {/* <div className="mt-6 flex flex-wrap gap-4 justify-center">
                       <a
                         href="#"
                         className="bg-yellow-500 hover:bg-blue-600 text-white py-2 px-4 rounded"
@@ -104,14 +104,14 @@ const Perfil = ({
                       >
                         Projetos
                       </a>
-                    </div>
+                    </div> */}
                   </div>
                   <hr className="my-6 border-t border-gray-300" />
                   <div className="flex flex-col  p-4 w-64 h-screen">
                     <span className="text-yellow-500 uppercase font-bold tracking-wider mb-6">
-                      Categorias de Projetos
+                      Projeto Vencedor
                     </span>
-                    <ul className="space-y-4">
+                    {/* <ul className="space-y-4">
                       <li className="flex items-center mb-2">
                         <a
                           href="#javascript"
@@ -152,7 +152,7 @@ const Perfil = ({
                           Tailwind CSS
                         </a>
                       </li>
-                    </ul>
+                    </ul> */}
                   </div>
                 </div>
               </div>
