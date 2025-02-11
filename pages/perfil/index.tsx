@@ -5,9 +5,10 @@ import Head from "next/head"
 import { StrapiImage } from "../../components/custom/StrapiImage"
 import { useFetchUser } from "../../lib/authContext"
 import { formatDateTime } from "../../lib/utils"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import qs from "qs"
 import HeroSection from "../../components/HeroSection"
+import { useRouter } from "next/router"
 
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
 
@@ -21,6 +22,20 @@ const Perfil = ({
   currentPage,
 }: any) => {
   const { user, loading } = useFetchUser()
+  const router = useRouter()
+
+  // Verifica se o usuário está logado e redireciona para a home caso contrário
+  useEffect(() => {
+    if (!loading && !user) {
+      // Redirecionar para a página inicial (home)
+      router.push("/")
+    }
+  }, [user, loading, router])
+
+  // Evita renderização até que o status de login seja verificado
+  //   if (loading || !user) {
+  //     return <div>Loading...</div> // ou qualquer componente de carregamento
+  //   }
 
   // Ordena as edições pela mais recente (assumindo que N_Edicao representa o número da edição)
   const edicaoMaisRecente = edicoes[0]?.attributes
