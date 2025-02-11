@@ -120,7 +120,7 @@ const Nav = ({ navbar }: any) => {
             {!loading && user && (
               <li className="md:ml-8 text-xl md:my-0 my-7">
                 <Link
-                  href="/profile"
+                  href="/perfil"
                   className="text-branco hover:text-amarelo-ouro duration-500"
                 >
                   [{user}]
