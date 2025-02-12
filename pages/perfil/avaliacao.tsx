@@ -69,6 +69,7 @@ const Avaliacao = ({
   const inscricoesPorEdicao = inscritos.reduce((acc: any, inscricao: any) => {
     // Certifique-se de que o id da edição está sendo acessado corretamente
     const edicaoId = inscricao.attributes.edicoes?.data?.id
+    // let inscricaoId = inscricao.id
 
     if (!edicaoId) return acc
 
@@ -80,8 +81,8 @@ const Avaliacao = ({
     return acc
   }, {})
 
-  console.log("inscricoesPorEdicao")
-  console.log(inscricoesPorEdicao)
+  //   console.log("inscricoesPorEdicao")
+  //   console.log(inscricoesPorEdicao)
 
   return (
     <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>

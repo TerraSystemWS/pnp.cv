@@ -22,8 +22,8 @@ const Vpublica = ({
   // Ordena as edições pela mais recente (assumindo que N_Edicao representa o número da edição)
   const edicaoMaisRecente = edicoes[0]?.attributes
 
-  console.log("edicaoMaisRecente")
-  console.log(edicaoMaisRecente)
+  // console.log("edicaoMaisRecente")
+  // console.log(edicaoMaisRecente)
 
   // Se não houver edições, exibe uma mensagem
   if (!edicaoMaisRecente) {

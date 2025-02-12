@@ -4,7 +4,7 @@ import { fetcher } from "../../lib/api"
 import Head from "next/head"
 // import { Card } from "flowbite-react";
 // import { IoCall } from "react-icons/io5";
-import { useState } from "react"
+import { useState, useEffect } from "react"
 // import { Table } from "flowbite-react"
 import { useForm, SubmitHandler } from "react-hook-form"
 import Swal from "sweetalert2"
@@ -23,7 +23,7 @@ import { useFetchUser } from "../../lib/authContext"
 import { Image } from "primereact/image"
 import JSConfetti from "js-confetti"
 import Votacao from "../../components/Votacao"
-import { getTokenFromLocalCookie } from "../../lib/auth"
+import { getTokenFromLocalCookie, getIdFromLocalCookie } from "../../lib/auth"
 
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
@@ -43,26 +43,26 @@ const VpublicaDetalhes = ({
   // console.log("detalhes inscritos");
   // console.log(inscricao);
   const InscritosValues: any = {
-    nome_completo: inscricao.data.attributes.nome_completo,
-    email: inscricao.data.attributes.email,
-    sede: inscricao.data.attributes.sede,
-    nif: inscricao.data?.attributes.NIF,
-    telefone: inscricao.data?.attributes.telefone,
-    nome_projeto: inscricao.data.attributes.nome_projeto,
-    categoria: inscricao.data.attributes.categoria,
-    con_criativo: inscricao.data.attributes.con_criativo,
-    coord_prod: inscricao.data.attributes.coord_prod,
-    dir_foto: inscricao.data.attributes.dir_foto,
-    dir_art: inscricao.data.attributes.dir_art,
-    realizador: inscricao.data.attributes.realizador,
-    editor: inscricao.data.attributes.editor,
-    autor_jingle: inscricao.data.attributes.autor_jingle,
-    designer: inscricao.data.attributes.designer,
-    outras_consideracoes: inscricao.data.attributes.outras_consideracoes,
-    data_producao: inscricao.data.attributes.data_producao,
-    data_divulgacao: inscricao.data.attributes.data_divulgacao,
+    nome_completo: inscricao.data.attributes.nome_completo || "",
+    email: inscricao.data.attributes.email || "",
+    sede: inscricao.data.attributes.sede || "",
+    nif: inscricao.data?.attributes.NIF || "",
+    telefone: inscricao.data?.attributes.telefone || "",
+    nome_projeto: inscricao.data.attributes.nome_projeto || "",
+    categoria: inscricao.data.attributes.categoria || "",
+    con_criativo: inscricao.data.attributes.con_criativo || "",
+    coord_prod: inscricao.data.attributes.coord_prod || "",
+    dir_foto: inscricao.data.attributes.dir_foto || "",
+    dir_art: inscricao.data.attributes.dir_art || "",
+    realizador: inscricao.data.attributes.realizador || "",
+    editor: inscricao.data.attributes.editor || "",
+    autor_jingle: inscricao.data.attributes.autor_jingle || "",
+    designer: inscricao.data.attributes.designer || "",
+    outras_consideracoes: inscricao.data.attributes.outras_consideracoes || "",
+    data_producao: inscricao.data.attributes.data_producao || "",
+    data_divulgacao: inscricao.data.attributes.data_divulgacao || "",
     data_apresentacao_publica:
-      inscricao.data.attributes.data_apresentacao_publica,
+      inscricao.data.attributes.data_apresentacao_publica || "",
   }
 
   // const [cor, setCor] = useState(false)
@@ -208,6 +208,27 @@ const VpublicaDetalhes = ({
 
   const { user, loading } = useFetchUser()
 
+  const [nhaId, setNhaId] = useState(null) // State to hold the ID
+  // const [loading, setLoading] = useState(true); // State to track loading status
+
+  useEffect(() => {
+    const fetchNhaId = async () => {
+      const id = await getIdFromLocalCookie() // Await the promise
+      setNhaId(id) // Set the resolved value
+      // setLoading(false); // Set loading to false after the value is fetched
+    }
+
+    fetchNhaId()
+  }, []) // Empty dependency array means this effect runs only once after the initial render
+
+  // return <p>{nhaId || "No ID found"}</p>
+  // const userId = user?.id // Get the userId from the fetched user
+  // const nhaId: any = getIdFromLocalCookie()
+
+  // if (loading) return <div>Loading...</div>
+
+  // return <div>User ID: {userId}</div>
+  // const jwt = getTokenFromLocalCookie()
   // const excluirPrivados = (title: String): boolean => {
   //   let title_clean: boolean = false
   //   const substr = ["nif", "pagamento", "comprovativo pagamento"]
@@ -717,8 +738,8 @@ const VpublicaDetalhes = ({
                           // Filtra apenas documentos privados (publico: false)
                           if (value.publico !== false) return null
 
-                          console.log("inscricao.data.attributes.fileLink")
-                          console.log(inscricao.data.attributes.fileLink)
+                          // console.log("inscricao.data.attributes.fileLink")
+                          // console.log(inscricao.data.attributes.fileLink)
 
                           const fileExtension = value.titulo
                             ?.slice(-4)
@@ -1010,11 +1031,19 @@ const VpublicaDetalhes = ({
                   </div>
                   <div className="mt-5 md:col-span-2 md:mt-0">
                     <div className="mb-5 font-bold text-gray-500">
-                      <h1>Categoria: {categoria_pnp}</h1>
+                      <h1>
+                        Categoria:
+                        {inscricao.data.attributes.categoria}
+                      </h1>
                     </div>
                     <div>
                       {/* aqui vica o code da nova votação */}
-                      <Votacao edicaoId={7} inscricaoId={286} userId={1} />
+                      <Votacao
+                        edicaoId={edicoes.data[0]?.id}
+                        inscricaoId={inscricao.data.id}
+                        userId={nhaId}
+                      />
+                      <p>{nhaId}</p>
                     </div>
                   </div>
                 </div>
