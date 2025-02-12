@@ -1,5 +1,6 @@
 import React from "react"
 import { usePathname } from "next/navigation" // Import usePathname from Next.js
+import Link from "next/link"
 
 const UserProfileCard = ({ user }: any) => {
   const pathname = usePathname() // Get the current path using usePathname from Next.js
@@ -27,7 +28,7 @@ const UserProfileCard = ({ user }: any) => {
           </span>
           <ul className="space-y-4">
             <li className="flex items-center mb-2">
-              <a
+              <Link
                 href="/perfil"
                 className={`flex items-center transition duration-200 ${
                   isActive("/perfil")
@@ -36,10 +37,10 @@ const UserProfileCard = ({ user }: any) => {
                 }`}
               >
                 Perfil
-              </a>
+              </Link>
             </li>
             <li className="flex items-center mb-2">
-              <a
+              <Link
                 href="/perfil/avaliacao"
                 className={`flex items-center transition duration-200 ${
                   isActive("/perfil/avaliacao")
@@ -48,10 +49,10 @@ const UserProfileCard = ({ user }: any) => {
                 }`}
               >
                 Avaliação dos Juris
-              </a>
+              </Link>
             </li>
             <li className="flex items-center mb-2">
-              <a
+              <Link
                 href="/perfil/votacaopublicaStatus"
                 className={`flex items-center transition duration-200 ${
                   isActive("/perfil/votacaopublicaStatus")
@@ -60,7 +61,7 @@ const UserProfileCard = ({ user }: any) => {
                 }`}
               >
                 Votação Publica
-              </a>
+              </Link>
             </li>
           </ul>
         </div>
