@@ -86,7 +86,7 @@ const VpublicaDetalhes = ({
     // console.log("============== DATA ==================");
     // console.log(data.nomeVota);
     // console.log(data.emailVota);
-    const email = await verificarEmail(data.email)
+    // const email = await verificarEmail(data.email)
 
     // console.log("Nha email")
     // console.log(data)
@@ -95,16 +95,16 @@ const VpublicaDetalhes = ({
     // console.log("verifica emil foooraaaa")
     // console.log(email.status)
 
-    // return
+    // // return
 
-    if (email.status != "valid") {
-      Swal.fire({
-        icon: "warning",
-        title: "AVISO",
-        text: "Há um problema com este email use outro",
-      })
-      return
-    }
+    // if (email.status != "valid") {
+    //   Swal.fire({
+    //     icon: "warning",
+    //     title: "AVISO",
+    //     text: "Há um problema com este email use outro",
+    //   })
+    //   return
+    // }
 
     try {
       const res = await fetcher(`${api_link}/api/votacao-publicas`, {
