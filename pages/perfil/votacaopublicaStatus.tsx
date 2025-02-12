@@ -4,6 +4,7 @@ import Head from "next/head"
 import { useFetchUser } from "../../lib/authContext"
 import Router from "next/router"
 import qs from "qs"
+import UserProfileCard from "../../components/custom/sidemenu"
 
 // PrimeReact components
 import React, { useState, useEffect, useRef } from "react"
@@ -161,32 +162,62 @@ const VotacaoPublicaStatus = ({ social, contato, Vpublica, navbar }: any) => {
         </title>
       </Head>
 
-      <section className="bg-white dark:bg-gray-900">
-        <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
-          <div className="mx-auto max-w-screen-md text-center lg:mb-16 mb-8">
-            <h2 className="mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold text-amarelo-ouro dark:text-white">
-              Votação Pública
-            </h2>
-            <p className="font-light text-center text-gray-500 sm:text-xl dark:text-gray-400">
-              Contagem dos votos feitos na plataforma
-            </p>
-          </div>
-          <div className="card">
-            <Tooltip target=".export-buttons>button" position="bottom" />
-            <DataTable
-              ref={dt}
-              value={products}
-              header={header}
-              dataKey="id"
-              responsiveLayout="scroll"
-              selectionMode="multiple"
-              selection={selectedProducts}
-              onSelectionChange={onSelectionChange}
-            >
-              {cols.map((col, index) => (
-                <Column key={index} field={col.field} header={col.header} />
-              ))}
-            </DataTable>
+      <section>
+        <div className="bg-gray-100">
+          <div className="container mx-auto py-8">
+            <div className="grid grid-cols-4 sm:grid-cols-12 gap-6 px-4">
+              {/* component de side meu */}
+              <UserProfileCard user={user} />
+              <div className="col-span-4 sm:col-span-9">
+                <div className="bg-white shadow rounded-lg p-6">
+                  {/* inicio do section */}
+                  <h2 className="text-xl font-bold mb-4">Área do Utilizador</h2>
+                  {/* <HeroSection
+                    title={`Projetos concorrentes à ${edicaoMaisRecente.N_Edicao}ª edição`}
+                    subtitle={"Inscrições abertas de 1 a 31 de Janeiro de 2025"}
+                  /> */}
+                  {/* <p>area de dados</p> */}
+                  <div className="bg-white dark:bg-gray-900">
+                    <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
+                      <div className="mx-auto max-w-screen-md text-center lg:mb-16 mb-8">
+                        <h2 className="mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold text-amarelo-ouro dark:text-white">
+                          Votação Pública
+                        </h2>
+                        <p className="font-light text-center text-gray-500 sm:text-xl dark:text-gray-400">
+                          Contagem dos votos feitos na plataforma
+                        </p>
+                      </div>
+                      <div className="card">
+                        <Tooltip
+                          target=".export-buttons>button"
+                          position="bottom"
+                        />
+                        <DataTable
+                          ref={dt}
+                          value={products}
+                          header={header}
+                          dataKey="id"
+                          responsiveLayout="scroll"
+                          selectionMode="multiple"
+                          selection={selectedProducts}
+                          onSelectionChange={onSelectionChange}
+                        >
+                          {cols.map((col, index) => (
+                            <Column
+                              key={index}
+                              field={col.field}
+                              header={col.header}
+                            />
+                          ))}
+                        </DataTable>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* fim do section */}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>

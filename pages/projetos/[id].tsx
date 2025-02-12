@@ -23,6 +23,7 @@ import { useFetchUser } from "../../lib/authContext"
 import { Image } from "primereact/image"
 import JSConfetti from "js-confetti"
 import Votacao from "../../components/Votacao"
+import { getTokenFromLocalCookie } from "../../lib/auth"
 
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
@@ -78,6 +79,7 @@ const VpublicaDetalhes = ({
   const edicaoMaisRecente = edicoes.data[0]?.attributes.N_Edicao
 
   const onVotar = async (data: any) => {
+    const jwt = getTokenFromLocalCookie()
     // teste de confetti
     const jsConfetti = new JSConfetti()
     // console.log("============== DATA ==================");
@@ -85,23 +87,19 @@ const VpublicaDetalhes = ({
     // console.log(data.emailVota);
 
     try {
-      const res = await fetcher(
-        `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/votacao-publicas`,
-        {
-          //@ts-ignore
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
+      const res = await fetcher(`${api_link}/api/votacao-publicas`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          data: {
+            nome_completo: data.nomeVota,
+            email: data.emailVota,
+            inscricoe: [inscricao.data.id],
           },
-          body: JSON.stringify({
-            data: {
-              nome_completo: data.nomeVota,
-              email: data.emailVota,
-              inscricoe: [inscricao.data.id],
-            },
-          }),
-        }
-      )
+        }),
+      })
 
       console.log("=========== response ====================")
       console.log(res)
@@ -178,17 +176,17 @@ const VpublicaDetalhes = ({
     setVisible(true)
   }
 
-  const categoria_pnp: string = "Publicidade Internet"
-  const avaliacao: any = [
-    { title: "Conceito Criativo", nota: 0 },
-    { title: "Design", nota: 0 },
-    { title: "Interatividade", nota: 0 },
-    { title: "Alcance Pago", nota: 0 },
-    { title: "Soluçao Tecnologica", nota: 0 },
-    { title: "Redaçao", nota: 0 },
-    { title: "Aspetos Administrativos", nota: 0 },
-    { title: "Pontuacao Geral", nota: 0 },
-  ]
+  // const categoria_pnp: string = "Publicidade Internet"
+  // const avaliacao: any = [
+  //   { title: "Conceito Criativo", nota: 0 },
+  //   { title: "Design", nota: 0 },
+  //   { title: "Interatividade", nota: 0 },
+  //   { title: "Alcance Pago", nota: 0 },
+  //   { title: "Soluçao Tecnologica", nota: 0 },
+  //   { title: "Redaçao", nota: 0 },
+  //   { title: "Aspetos Administrativos", nota: 0 },
+  //   { title: "Pontuacao Geral", nota: 0 },
+  // ]
 
   // const Avalicao: any = [
   //   {
@@ -1016,7 +1014,7 @@ const VpublicaDetalhes = ({
                     </div>
                     <div>
                       {/* aqui vica o code da nova votação */}
-                      <Votacao />
+                      <Votacao edicaoId={7} inscricaoId={286} userId={1} />
                     </div>
                   </div>
                 </div>
