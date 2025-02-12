@@ -1063,7 +1063,6 @@ const VpublicaDetalhes = ({
                         inscricaoId={inscricao.data.id}
                         userId={nhaId}
                       />
-                      <p>{nhaId}</p>
                     </div>
                   </div>
                 </div>
