@@ -24,6 +24,7 @@ import { Image } from "primereact/image"
 import JSConfetti from "js-confetti"
 import Votacao from "../../components/Votacao"
 import { getTokenFromLocalCookie, getIdFromLocalCookie } from "../../lib/auth"
+import { verificarEmail } from "../../lib/utils"
 
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
@@ -85,6 +86,24 @@ const VpublicaDetalhes = ({
     // console.log("============== DATA ==================");
     // console.log(data.nomeVota);
     // console.log(data.emailVota);
+    const email = await verificarEmail(data.emailVota)
+
+    console.log("Nha email")
+    console.log(data)
+
+    console.log("verifica emil foooraaaa")
+    console.log(email.status)
+
+    // return
+
+    if (email.status != "valid") {
+      Swal.fire({
+        icon: "warning",
+        title: "AVISO",
+        text: "Há um problema com este email use outro",
+      })
+      return
+    }
 
     try {
       const res = await fetcher(`${api_link}/api/votacao-publicas`, {
@@ -1054,212 +1073,106 @@ const VpublicaDetalhes = ({
                   <div className="border-t border-gray-200" />
                 </div>
               </div>
-
-              <div id="votacaoPublica" className="mt-10 sm:mt-0">
-                <div className="md:grid md:grid-cols-3 md:gap-6">
-                  <div className="md:col-span-1">
-                    <div className="px-4 sm:px-0">
-                      <h3 className="text-lg font-medium leading-6 text-gray-900">
-                        Votaçao Publica
-                      </h3>
-                      <div className="mt-1 text-sm text-gray-600">
-                        <p className="mb-2">
-                          <span className="text-red-500 font-bold text-lg">
-                            *
-                          </span>{" "}
-                          Votaçao publica por parte do publico
-                        </p>
-                        <p className="mb-2">
-                          <span className="text-red-500 font-bold text-lg">
-                            *
-                          </span>{" "}
-                          Apos fornecer o email use o botao de &quot;votar&quot;
-                          para enviar o seu voto
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-5 md:col-span-2 md:mt-0">
-                    <form className="" onSubmit={handleSubmit(onVotar)}>
-                      <div>
-                        <label
-                          htmlFor="email"
-                          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                        >
-                          Nome Completo
-                        </label>
-                        <input
-                          type="text"
-                          id="nome"
-                          className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                          placeholder="Sr. premio nacional de publicidade"
-                          {...register("nome", {
-                            required: true,
-                          })}
-                        />
-                        {errors.email && (
-                          <span className="text-red-500">
-                            O email é obrigatorio!
-                          </span>
-                        )}
-                      </div>
-                      <div>
-                        <label
-                          htmlFor="email"
-                          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                        >
-                          Email
-                        </label>
-                        <input
-                          type="email"
-                          id="email"
-                          className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                          placeholder="exemplo@pnp.cv"
-                          {...register("email", {
-                            required: true,
-                          })}
-                        />
-                        {errors.email && (
-                          <span className="text-red-500">
-                            O email é obrigatorio!
-                          </span>
-                        )}
-                      </div>
-
-                      <button
-                        type="submit"
-                        className="mt-5 w-full text-white bg-amarelo-ouro hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                      >
-                        Votar
-                        <svg
-                          width="20"
-                          height="20"
-                          fill={cor}
-                          aria-hidden="true"
-                          className="ml-2"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            clipRule="evenodd"
-                            d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
-                          />
-                        </svg>
-                      </button>
-                    </form>
-                  </div>
-                </div>
-              </div>
             </>
           ) : (
-            <div id="votacaoPublica" className="mt-10 sm:mt-0">
-              <div className="md:grid md:grid-cols-3 md:gap-6">
-                <div className="md:col-span-1">
-                  <div className="px-4 sm:px-0">
-                    <h3 className="text-lg font-medium leading-6 text-gray-900">
-                      Votaçao Publica
-                    </h3>
-                    <div className="mt-1 text-sm text-gray-600">
-                      <p className="mb-2">
-                        <span className="text-red-500 font-bold text-lg">
-                          *
-                        </span>{" "}
-                        Votação pública por parte do público
-                      </p>
-                      <p className="mb-2">
-                        <span className="text-red-500 font-bold text-lg">
-                          *
-                        </span>{" "}
-                        Após digitar o seu email use o botao de
-                        &quot;votar&quot; para enviar o seu voto
-                      </p>
-                      <p className="mb-2">
-                        <span className="text-red-500 font-bold text-lg">
-                          *
-                        </span>{" "}
-                        A votação só pode ser feita uma única vez
-                      </p>
-                      <p className="mb-2">
-                        <span className="text-red-500 font-bold text-lg">
-                          *
-                        </span>{" "}
-                        E-mails inválidos não serão contabilizados
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-5 md:col-span-2 md:mt-0">
-                  <form className="" onSubmit={handleSubmit(onVotar)}>
-                    <div>
-                      <label
-                        htmlFor="email"
-                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                      >
-                        Nome Completo
-                      </label>
-                      <input
-                        type="text"
-                        id="nome"
-                        className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        placeholder="Sr. premio nacional de publicidade"
-                        {...register("nomeVota", {
-                          required: true,
-                        })}
-                      />
-                      {errors.email && (
-                        <span className="text-red-500">
-                          O email é obrigatorio!
-                        </span>
-                      )}
-                    </div>
-                    <div>
-                      <label
-                        htmlFor="email"
-                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                      >
-                        Email
-                      </label>
-                      <input
-                        type="email"
-                        id="email"
-                        className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        placeholder="exemplo@pnp.cv"
-                        {...register("emailVota", {
-                          required: true,
-                        })}
-                      />
-                      {errors.email && (
-                        <span className="text-red-500">
-                          O email é obrigatorio!
-                        </span>
-                      )}
-                    </div>
-
-                    <button
-                      id="votaPublico"
-                      type="submit"
-                      className={`mt-5 w-full text-white ${blockCor} hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800`}
-                      disabled={isBlock}
-                    >
-                      Votar
-                      <svg
-                        width="20"
-                        height="20"
-                        fill={cor}
-                        aria-hidden="true"
-                        className="ml-2"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          clipRule="evenodd"
-                          d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
-                        />
-                      </svg>
-                    </button>
-                  </form>
+            <></>
+          ))}
+        <div id="votacaoPublica" className="mt-10 sm:mt-0">
+          <div className="md:grid md:grid-cols-3 md:gap-6">
+            <div className="md:col-span-1">
+              <div className="px-4 sm:px-0">
+                <h3 className="text-lg font-medium leading-6 text-gray-900">
+                  Votaçao Publica
+                </h3>
+                <div className="mt-1 text-sm text-gray-600">
+                  <p className="mb-2">
+                    <span className="text-red-500 font-bold text-lg">*</span>{" "}
+                    Votação pública por parte do público
+                  </p>
+                  <p className="mb-2">
+                    <span className="text-red-500 font-bold text-lg">*</span>{" "}
+                    Após digitar o seu email use o botao de &quot;votar&quot;
+                    para enviar o seu voto
+                  </p>
+                  <p className="mb-2">
+                    <span className="text-red-500 font-bold text-lg">*</span> A
+                    votação só pode ser feita uma única vez
+                  </p>
+                  <p className="mb-2">
+                    <span className="text-red-500 font-bold text-lg">*</span>{" "}
+                    E-mails inválidos não serão contabilizados
+                  </p>
                 </div>
               </div>
             </div>
-          ))}
+            <div className="mt-5 md:col-span-2 md:mt-0">
+              <form className="" onSubmit={handleSubmit(onVotar)}>
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >
+                    Nome Completo
+                  </label>
+                  <input
+                    type="text"
+                    id="nome"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    placeholder="Sr. premio nacional de publicidade"
+                    {...register("terra", {
+                      required: true,
+                    })}
+                  />
+                  {errors.email && (
+                    <span className="text-red-500">O email é obrigatorio!</span>
+                  )}
+                </div>
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  >
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    placeholder="exemplo@pnp.cv"
+                    {...register("emailVota", {
+                      required: true,
+                    })}
+                  />
+                  {errors.email && (
+                    <span className="text-red-500">O email é obrigatorio!</span>
+                  )}
+                </div>
+
+                <button
+                  id="votaPublico"
+                  type="submit"
+                  className={`mt-5 w-full text-white ${blockCor} hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800`}
+                  disabled={isBlock}
+                >
+                  Votar
+                  <svg
+                    width="20"
+                    height="20"
+                    fill={cor}
+                    aria-hidden="true"
+                    className="ml-2"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      clipRule="evenodd"
+                      d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                    />
+                  </svg>
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
       </div>
     </Layout>
   )
