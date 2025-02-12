@@ -1,5 +1,3 @@
-// pages/index.tsx
-
 import { useForm, SubmitHandler } from "react-hook-form"
 import { useState } from "react"
 import JSConfetti from "js-confetti"
@@ -9,7 +7,9 @@ interface FormValues {
   criteria1: string
 }
 
-const Votacao = () => {
+const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
+
+const Votacao = ({ edicaoId, inscricaoId, userId }: any) => {
   const {
     register,
     handleSubmit,
@@ -22,7 +22,7 @@ const Votacao = () => {
 
   // Mapeamento dos números para palavras, cores e classes
   const numberToWord: Record<number, string> = {
-    1: "Insuficiente",
+    1: "insuficiente",
     2: "Insuficiente",
     3: "Suficiente",
     4: "Bom",
@@ -48,7 +48,7 @@ const Votacao = () => {
   // Obtenha o valor selecionado em tempo real
   const selectedValue = watch("criteria1")
 
-  const onSubmit: SubmitHandler<FormValues> = (data: any) => {
+  const onSubmit: SubmitHandler<FormValues> = async (data: any) => {
     const jsConfetti = new JSConfetti()
 
     const value = parseInt(data.criteria1)
@@ -56,46 +56,71 @@ const Votacao = () => {
     const resultText = `<span class="${colorClass} text-white p-2 rounded">${numberToWord[value]}</span>`
     setResult(resultText)
 
-    // Make POSt submit to criar uma votacao
-    // usando fetch
+    console.log("user_ids: " + userId)
 
-    if (true) {
-      setBlock(true)
-      setBlockCor("bg-gray-500")
+    console.log("inscricoe: " + inscricaoId)
+    console.log("value: " + value)
+    console.log("Nota: " + numberToWord[value])
+    console.log("comentario:" + numberToText[value])
 
-      jsConfetti.addConfetti({
-        emojis: ["🌈", "⚡️", "💥", "✨", "💫", "🌸"],
-        emojiSize: 10,
-        confettiNumber: 500,
+    // Enviar a avaliação para a API do Strapiavaliacaos
+    // Enviar a avaliação para a API do Strapiavaliacaos teste
+    try {
+      const response = await fetch(`${api_link}/api/avaliacaos`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          // Caso você tenha autenticação JWT, pode incluir o token de autorização aqui
+          // 'Authorization': `Bearer ${yourToken}`
+        },
+        body: JSON.stringify({
+          data: {
+            notas: numberToWord[value], // Envia o nome da avaliação, ex: "Insuficiente", "Suficiente", etc.
+            comentario: numberToText[value],
+            // Aqui, você precisa ajustar para passar os IDs do usuário e da inscrição
+            user_id: userId, // ID do usuário jurado (exemplo, coloque o ID real do usuário)
+            inscricoe: inscricaoId, // ID da inscrição (exemplo, coloque o ID real da inscrição)
+          },
+        }),
       })
+
+      console.log("response")
+      console.log(response)
+      if (response.ok) {
+        setBlock(true)
+        setBlockCor("bg-gray-500")
+        jsConfetti.addConfetti({
+          emojis: ["🌈", "⚡️", "💥", "✨", "💫", "🌸"],
+          emojiSize: 10,
+          confettiNumber: 500,
+        })
+
+        Swal.fire({
+          icon: "success",
+          title: "Votação Concluída",
+          text: "Sua avaliação foi registrada com sucesso!",
+        })
+      } else {
+        throw new Error("Erro ao criar a avaliação.")
+      }
+    } catch (error) {
+      console.error("Erro ao enviar votação:", error)
       Swal.fire({
-        icon: "success",
-        title: "Concluida",
-        text: "",
-      })
-    } else {
-      Swal.fire({
-        icon: "warning",
-        title: "AVISO",
-        text: "So Pode Votar Uma Unica Vez",
+        icon: "error",
+        title: "Erro",
+        text: "Não foi possível enviar sua avaliação. Tente novamente.",
       })
     }
   }
 
   return (
-    <div className=" mx-auto p-6 bg-white shadow-md rounded-lg">
+    <div className="mx-auto p-6 bg-white shadow-md rounded-lg">
       <h1 className="text-2xl font-bold mb-6 text-center">Avaliação</h1>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div>
-          {/* <label
-						htmlFor="criteria1"
-						className="block text-lg font-medium mb-2"
-					>
-						Critério 1
-					</label> */}
           {errors.criteria1 && (
             <span className="text-red-500">
-              Escolha do numero é obrigatorio!
+              Escolha do número é obrigatória!
             </span>
           )}
           <div className="flex space-x-4">
@@ -105,12 +130,9 @@ const Votacao = () => {
                   type="radio"
                   id={`c1-${value}`}
                   value={value}
-                  {...register("criteria1", {
-                    required: true,
-                  })}
+                  {...register("criteria1", { required: true })}
                   className="hidden"
                 />
-
                 <span
                   className={`cursor-pointer text-2xl w-12 h-12 flex items-center justify-center text-white font-bold rounded-full ${
                     numberToColor[value]
@@ -134,7 +156,6 @@ const Votacao = () => {
         <button
           type="submit"
           className="w-full py-2 bg-amarelo-ouro text-white font-bold rounded-lg hover:bg-yellow-500"
-          // className="mt-5 w-full text-white bg-amarelo-ouro hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
         >
           Enviar Avaliação
         </button>
