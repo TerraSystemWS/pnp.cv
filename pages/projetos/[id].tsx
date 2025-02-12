@@ -86,13 +86,14 @@ const VpublicaDetalhes = ({
     // console.log("============== DATA ==================");
     // console.log(data.nomeVota);
     // console.log(data.emailVota);
-    const email = await verificarEmail(data.emailVota)
+    const email = await verificarEmail(data.email)
 
-    console.log("Nha email")
-    console.log(data)
+    // console.log("Nha email")
+    // console.log(data)
+    // console.log(inscricao.data.id)
 
-    console.log("verifica emil foooraaaa")
-    console.log(email.status)
+    // console.log("verifica emil foooraaaa")
+    // console.log(email.status)
 
     // return
 
@@ -113,9 +114,9 @@ const VpublicaDetalhes = ({
         },
         body: JSON.stringify({
           data: {
-            nome_completo: data.nomeVota,
-            email: data.emailVota,
-            inscricoe: [inscricao.data.id],
+            nome_completo: data.nome,
+            email: data.email,
+            inscricoe: inscricao.data.id,
           },
         }),
       })
@@ -1087,20 +1088,12 @@ const VpublicaDetalhes = ({
                 <div className="mt-1 text-sm text-gray-600">
                   <p className="mb-2">
                     <span className="text-red-500 font-bold text-lg">*</span>{" "}
-                    Votação pública por parte do público
+                    Votaçao publica por parte do publico
                   </p>
                   <p className="mb-2">
                     <span className="text-red-500 font-bold text-lg">*</span>{" "}
-                    Após digitar o seu email use o botao de &quot;votar&quot;
-                    para enviar o seu voto
-                  </p>
-                  <p className="mb-2">
-                    <span className="text-red-500 font-bold text-lg">*</span> A
-                    votação só pode ser feita uma única vez
-                  </p>
-                  <p className="mb-2">
-                    <span className="text-red-500 font-bold text-lg">*</span>{" "}
-                    E-mails inválidos não serão contabilizados
+                    Apos fornecer o email use o botao de &quot;votar&quot; para
+                    enviar o seu voto
                   </p>
                 </div>
               </div>
@@ -1119,7 +1112,7 @@ const VpublicaDetalhes = ({
                     id="nome"
                     className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="Sr. premio nacional de publicidade"
-                    {...register("terra", {
+                    {...register("nome", {
                       required: true,
                     })}
                   />
@@ -1139,7 +1132,7 @@ const VpublicaDetalhes = ({
                     id="email"
                     className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="exemplo@pnp.cv"
-                    {...register("emailVota", {
+                    {...register("email", {
                       required: true,
                     })}
                   />
@@ -1149,10 +1142,8 @@ const VpublicaDetalhes = ({
                 </div>
 
                 <button
-                  id="votaPublico"
                   type="submit"
-                  className={`mt-5 w-full text-white ${blockCor} hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800`}
-                  disabled={isBlock}
+                  className="mt-5 w-full text-white bg-amarelo-ouro hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                 >
                   Votar
                   <svg
