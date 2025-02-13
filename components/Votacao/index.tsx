@@ -58,6 +58,7 @@ const Votacao = ({ edicaoId, inscricaoId, userId }: any) => {
   // console.log("value: " + value)
   // console.log("Nota: " + numberToWord[value])
   // console.log("comentario:" + numberToText[value])
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false)
 
   const onSubmit: SubmitHandler<FormValues> = async (data: any) => {
     const jsConfetti = new JSConfetti()
@@ -67,8 +68,7 @@ const Votacao = ({ edicaoId, inscricaoId, userId }: any) => {
     const resultText = `<span class="${colorClass} text-white p-2 rounded">${numberToWord[value]}</span>`
     setResult(resultText)
 
-    // Enviar a avaliação para a API do Strapiavaliacaos
-    //   // Enviar a avaliação para a API do Strapiavaliacaos teste
+    // Enviar a avaliação para a API do Strapi
     try {
       const response = await fetch(`${api_link}/api/avaliacaos`, {
         method: "POST",
@@ -81,15 +81,13 @@ const Votacao = ({ edicaoId, inscricaoId, userId }: any) => {
           data: {
             notas: numberToWord[value], // Envia o nome da avaliação, ex: "Insuficiente", "Suficiente", etc.
             comentario: numberToText[value],
-            // Aqui, você precisa ajustar para passar os IDs do usuário e da inscrição
-            user_id: userId, // ID do usuário jurado (exemplo, coloque o ID real do usuário)
-            inscricoe: inscricaoId, // ID da inscrição (exemplo, coloque o ID real da inscrição)
+            // Ajustar para passar os IDs do usuário e da inscrição
+            user_id: userId, // ID do usuário jurado
+            inscricoe: inscricaoId, // ID da inscrição
           },
         }),
       })
 
-      // console.log("response")
-      // console.log(response)
       if (response.ok) {
         const registrada: string = "criada"
         setBlock(true)
@@ -105,11 +103,13 @@ const Votacao = ({ edicaoId, inscricaoId, userId }: any) => {
           title: "Votação Concluída",
           text: `Sua avaliação foi ${registrada} com sucesso!`,
         })
+
+        // Desabilitar o botão após o primeiro envio
+        setIsButtonDisabled(true)
       } else {
         throw new Error("Erro ao criar a avaliação.")
       }
     } catch (error) {
-      // console.error("Erro ao enviar votação:", error)
       Swal.fire({
         icon: "error",
         title: "Erro",
@@ -161,6 +161,7 @@ const Votacao = ({ edicaoId, inscricaoId, userId }: any) => {
         <button
           type="submit"
           className="w-full py-2 bg-amarelo-ouro text-white font-bold rounded-lg hover:bg-yellow-500"
+          disabled={isButtonDisabled}
         >
           Enviar Avaliação
         </button>
