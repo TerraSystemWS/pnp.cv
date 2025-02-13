@@ -2,6 +2,7 @@ import { useForm, SubmitHandler } from "react-hook-form"
 import { useState } from "react"
 import JSConfetti from "js-confetti"
 import Swal from "sweetalert2"
+import { getTokenFromLocalCookie } from "../../lib/auth"
 
 interface FormValues {
   criteria1: string
@@ -10,6 +11,8 @@ interface FormValues {
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
 
 const Votacao = ({ edicaoId, inscricaoId, userId }: any) => {
+  const jwt = getTokenFromLocalCookie()
+
   const {
     register,
     handleSubmit,
@@ -48,6 +51,15 @@ const Votacao = ({ edicaoId, inscricaoId, userId }: any) => {
   // Obtenha o valor selecionado em tempo real
   const selectedValue = watch("criteria1")
 
+  // console.log("User Token: " + jwt)
+  // console.log("user_ids: " + userId)
+
+  // console.log("inscricoe: " + inscricaoId)
+  // console.log("value: " + value)
+  // console.log("Nota: " + numberToWord[value])
+  // console.log("comentario:" + numberToText[value])
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false)
+
   const onSubmit: SubmitHandler<FormValues> = async (data: any) => {
     const jsConfetti = new JSConfetti()
 
@@ -56,37 +68,28 @@ const Votacao = ({ edicaoId, inscricaoId, userId }: any) => {
     const resultText = `<span class="${colorClass} text-white p-2 rounded">${numberToWord[value]}</span>`
     setResult(resultText)
 
-    console.log("user_ids: " + userId)
-
-    console.log("inscricoe: " + inscricaoId)
-    console.log("value: " + value)
-    console.log("Nota: " + numberToWord[value])
-    console.log("comentario:" + numberToText[value])
-
-    // Enviar a avaliação para a API do Strapiavaliacaos
-    // Enviar a avaliação para a API do Strapiavaliacaos teste
+    // Enviar a avaliação para a API do Strapi
     try {
       const response = await fetch(`${api_link}/api/avaliacaos`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           // Caso você tenha autenticação JWT, pode incluir o token de autorização aqui
-          // 'Authorization': `Bearer ${yourToken}`
+          Authorization: `Bearer ${jwt}`,
         },
         body: JSON.stringify({
           data: {
             notas: numberToWord[value], // Envia o nome da avaliação, ex: "Insuficiente", "Suficiente", etc.
             comentario: numberToText[value],
-            // Aqui, você precisa ajustar para passar os IDs do usuário e da inscrição
-            user_id: userId, // ID do usuário jurado (exemplo, coloque o ID real do usuário)
-            inscricoe: inscricaoId, // ID da inscrição (exemplo, coloque o ID real da inscrição)
+            // Ajustar para passar os IDs do usuário e da inscrição
+            user_id: userId, // ID do usuário jurado
+            inscricoe: inscricaoId, // ID da inscrição
           },
         }),
       })
 
-      console.log("response")
-      console.log(response)
       if (response.ok) {
+        const registrada: string = "criada"
         setBlock(true)
         setBlockCor("bg-gray-500")
         jsConfetti.addConfetti({
@@ -98,13 +101,15 @@ const Votacao = ({ edicaoId, inscricaoId, userId }: any) => {
         Swal.fire({
           icon: "success",
           title: "Votação Concluída",
-          text: "Sua avaliação foi registrada com sucesso!",
+          text: `Sua avaliação foi ${registrada} com sucesso!`,
         })
+
+        // Desabilitar o botão após o primeiro envio
+        setIsButtonDisabled(true)
       } else {
         throw new Error("Erro ao criar a avaliação.")
       }
     } catch (error) {
-      console.error("Erro ao enviar votação:", error)
       Swal.fire({
         icon: "error",
         title: "Erro",
@@ -156,6 +161,7 @@ const Votacao = ({ edicaoId, inscricaoId, userId }: any) => {
         <button
           type="submit"
           className="w-full py-2 bg-amarelo-ouro text-white font-bold rounded-lg hover:bg-yellow-500"
+          disabled={isButtonDisabled}
         >
           Enviar Avaliação
         </button>
