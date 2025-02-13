@@ -93,11 +93,11 @@ const VpublicaDetalhes = ({
     // console.log(inscricao.data.id)
 
     // console.log("verifica emil foooraaaa")
-    // console.log(email.status)
+    // // console.log(email.result)
 
-    // // return
+    // return
 
-    // if (email.status != "valid") {
+    // if (email.result != "deliverable") {
     //   Swal.fire({
     //     icon: "warning",
     //     title: "AVISO",

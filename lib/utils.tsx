@@ -31,14 +31,37 @@ export const formatDateTime = (dateTimeString: string): string => {
   return `${hours}:${minutes} ${day}-${month}-${year}`
 }
 
+// const email = 'example@example.com';
+// const apiKey = 'fa6b6859-5d0a-40b6-b65f-bfb0174dd4ad';
+
+// fetch(`https://api.mails.so/v1/validate?email=${email}`, {
+//   method: 'GET',
+//   headers: {
+//     'x-mails-api-key': apiKey
+//   }
+// })
+// .then(response => response.json())
+// .then(data => console.log(data))
+// .catch(error => console.error('Error:', error));
+
 // Função para verificar um e-mail usando a API Hunter
 export async function verificarEmail(email: any) {
-  const apiKey = "0eea5ef3ee42e576bc7e33feb1bd96b0995c96a3" // Sua chave da API
-  const url = `https://api.hunter.io/v2/email-verifier?email=${email}&api_key=${apiKey}`
+  const apiKey = "fa6b6859-5d0a-40b6-b65f-bfb0174dd4ad" // Sua chave da API
+  const url = `https://api.mails.so/v1/validate?email=${email}`
 
   try {
     // Fazendo a solicitação GET à API
-    const response = await fetch(url)
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "x-mails-api-key": apiKey,
+        "Access-Control-Allow-Credentials": "true",
+        "Access-Control-Allow-Origin": "*", // replace this your actual origin
+        "Access-Control-Allow-Methods": "GET",
+        "Access-Control-Allow-Headers":
+          "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version",
+      },
+    })
 
     // Verificando se a resposta foi bem-sucedida
     if (!response.ok) {
