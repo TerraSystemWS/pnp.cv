@@ -230,19 +230,18 @@ export async function getServerSideProps({ query }: any) {
 
   try {
     // Fetch data concurrently
-    const [edicoes, rsocials, contato, navbar, inscritos, avaliacaos] =
-      await Promise.all([
-        fetcher(
-          `${api_link}/api/edicoes?populate[categoria][fields]=titulo,id&[populate][inscricoes][fields]=titulo&${queri}`
-        ),
-        fetcher(`${api_link}/api/redes-social?populate=*`),
-        fetcher(`${api_link}/api/contato`),
-        fetcher(`${api_link}/api/menus?populate=deep`),
-        fetcher(`${api_link}/api/inscricoes?populate=*`), // Certifique-se de que as inscrições também estão sendo populadas
-        fetcher(
-          `${api_link}/api/avaliacaos?populate[user_id][fields]=id&[populate][inscricoe][fields]=id`
-        ),
-      ])
+    const [edicoes, rsocials, contato, navbar, inscritos] = await Promise.all([
+      fetcher(
+        `${api_link}/api/edicoes?populate[categoria][fields]=titulo,id&[populate][inscricoes][fields]=titulo&${queri}`
+      ),
+      fetcher(`${api_link}/api/redes-social?populate=*`),
+      fetcher(`${api_link}/api/contato`),
+      fetcher(`${api_link}/api/menus?populate=deep`),
+      fetcher(`${api_link}/api/inscricoes?populate=*`), // Certifique-se de que as inscrições também estão sendo populadas
+      // fetcher(
+      //   `${api_link}/api/avaliacaos?populate[user_id][fields]=id&[populate][inscricoe][fields]=id`
+      // ),
+    ])
 
     const totalPages = Math.ceil(edicoes.meta.pagination.total / pageSize)
     const currentPage = edicoes.meta.pagination.page
@@ -266,7 +265,7 @@ export async function getServerSideProps({ query }: any) {
         contato,
         navbar: dlink,
         inscritos: inscritos.data,
-        avaliacaos: avaliacaos.data,
+        // avaliacaos: avaliacaos.data,
       },
     }
   } catch (error) {
@@ -278,7 +277,7 @@ export async function getServerSideProps({ query }: any) {
         contato: {},
         navbar: [],
         inscritos: [],
-        avaliacaos: [],
+        // avaliacaos: [],
         totalPages: 1,
         currentPage: 1,
       },
