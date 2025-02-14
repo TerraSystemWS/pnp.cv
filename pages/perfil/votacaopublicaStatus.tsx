@@ -52,7 +52,7 @@ const VotacaoPublicaStatus = ({ social, contato, Vpublica, navbar }: any) => {
     }
   }, [user, loading])
 
-  console.log(Vpublica)
+  // console.log(Vpublica)
 
   // Transform Vpublica data into products
   useEffect(() => {
