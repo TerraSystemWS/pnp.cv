@@ -8,10 +8,36 @@ interface FormValues {
   criteria1: string
 }
 
+const getBackgroundColor = (nota: any) => {
+  switch (nota?.toLowerCase()) {
+    case "insuficiente":
+      return "bg-red-400"
+    case "suficiente":
+      return "bg-yellow-400"
+    case "bom":
+      return "bg-blue-400"
+    default:
+      return "bg-green-400"
+  }
+}
+
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
 
-const Votacao = ({ edicaoId, inscricaoId, userId }: any) => {
+const Votacao = ({ edicaoId, inscricaoId, userId, avaliacaos }: any) => {
   const jwt = getTokenFromLocalCookie()
+
+  const avaliacao = avaliacaos.find(
+    (avaliacao: any) =>
+      avaliacao.attributes.user_id?.data.id === userId && // Agora está comparando com o userId carregado
+      avaliacao.attributes.inscricoe?.data.id === inscricaoId
+  )
+
+  // if (avaliacao) {
+  //   console.log("avaliacao: ")
+  //   console.log(avaliacao.attributes.notas)
+  // } else {
+  //   console.log("Nao tem avaliacao: ")
+  // }
 
   const {
     register,
@@ -120,52 +146,86 @@ const Votacao = ({ edicaoId, inscricaoId, userId }: any) => {
 
   return (
     <div className="mx-auto p-6 bg-white shadow-md rounded-lg">
-      <h1 className="text-2xl font-bold mb-6 text-center">Avaliação</h1>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        <div>
-          {errors.criteria1 && (
-            <span className="text-red-500">
-              Escolha do número é obrigatória!
-            </span>
-          )}
-          <div className="flex space-x-4">
-            {[1, 2, 3, 4, 5].map((value) => (
-              <label key={value} className="flex items-center space-x-2">
-                <input
-                  type="radio"
-                  id={`c1-${value}`}
-                  value={value}
-                  {...register("criteria1", { required: true })}
-                  className="hidden"
-                />
-                <span
-                  className={`cursor-pointer text-2xl w-12 h-12 flex items-center justify-center text-white font-bold rounded-full ${
-                    numberToColor[value]
-                  } ${
-                    parseInt(selectedValue || "0") === value
-                      ? "ring-4 ring-black"
-                      : ""
-                  }`}
-                  onClick={() =>
-                    setResult(
-                      `<span class="${numberToColor[value]} text-white p-2 rounded">${numberToWord[value]}</span>`
-                    )
-                  }
-                >
-                  {value}
+      {avaliacao ? (
+        <>
+          <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">
+            Avaliação
+          </h1>
+
+          <div className="flex justify-center space-x-4">
+            <div className="flex flex-col items-center bg-white p-6 rounded-lg shadow-lg  w-full">
+              <div
+                className={`w-16 h-16 flex items-center justify-center rounded-full ${getBackgroundColor(
+                  avaliacao.attributes.notas
+                )}`}
+              >
+                <span className="text-white font-bold text-lg">
+                  {avaliacao.attributes.notas[0]}{" "}
+                  {/* Mostra apenas a primeira letra para ícones simples */}
                 </span>
-              </label>
-            ))}
+              </div>
+
+              <div className="mt-4 text-center">
+                <p className="text-xl font-semibold">
+                  {avaliacao.attributes.comentario}
+                </p>
+                <p className="text-gray-600 mt-2 text-lg">
+                  {avaliacao.attributes.notas}
+                </p>
+              </div>
+            </div>
           </div>
-        </div>
-        <button
-          type="submit"
-          className="w-full py-2 bg-amarelo-ouro text-white font-bold rounded-lg hover:bg-yellow-500"
-          disabled={isButtonDisabled}
-        >
-          Enviar Avaliação
-        </button>
-      </form>
+        </>
+      ) : (
+        <>
+          <h1 className="text-2xl font-bold mb-6 text-center">Avaliação</h1>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <div>
+              {errors.criteria1 && (
+                <span className="text-red-500">
+                  Escolha do número é obrigatória!
+                </span>
+              )}
+              <div className="flex space-x-4">
+                {[1, 2, 3, 4, 5].map((value) => (
+                  <label key={value} className="flex items-center space-x-2">
+                    <input
+                      type="radio"
+                      id={`c1-${value}`}
+                      value={value}
+                      {...register("criteria1", { required: true })}
+                      className="hidden"
+                    />
+                    <span
+                      className={`cursor-pointer text-2xl w-12 h-12 flex items-center justify-center text-white font-bold rounded-full ${
+                        numberToColor[value]
+                      } ${
+                        parseInt(selectedValue || "0") === value
+                          ? "ring-4 ring-black"
+                          : ""
+                      }`}
+                      onClick={() =>
+                        setResult(
+                          `<span class="${numberToColor[value]} text-white p-2 rounded">${numberToWord[value]}</span>`
+                        )
+                      }
+                    >
+                      {value}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </div>
+            <button
+              type="submit"
+              className="w-full py-2 bg-amarelo-ouro text-white font-bold rounded-lg hover:bg-yellow-500"
+              disabled={isButtonDisabled}
+            >
+              Enviar Avaliação
+            </button>
+          </form>
+        </>
+      )}
       {result && (
         <div className="mt-6 text-center">
           <p dangerouslySetInnerHTML={{ __html: result }} />
