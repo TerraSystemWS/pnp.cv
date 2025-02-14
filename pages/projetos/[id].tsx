@@ -40,6 +40,7 @@ const VpublicaDetalhes = ({
   contato,
   inscricao,
   navbar,
+  avaliacaos,
 }: any) => {
   // console.log("detalhes inscritos");
   // console.log(inscricao);
@@ -196,36 +197,6 @@ const VpublicaDetalhes = ({
     setVisible(true)
   }
 
-  // const categoria_pnp: string = "Publicidade Internet"
-  // const avaliacao: any = [
-  //   { title: "Conceito Criativo", nota: 0 },
-  //   { title: "Design", nota: 0 },
-  //   { title: "Interatividade", nota: 0 },
-  //   { title: "Alcance Pago", nota: 0 },
-  //   { title: "Soluçao Tecnologica", nota: 0 },
-  //   { title: "Redaçao", nota: 0 },
-  //   { title: "Aspetos Administrativos", nota: 0 },
-  //   { title: "Pontuacao Geral", nota: 0 },
-  // ]
-
-  // const Avalicao: any = [
-  //   {
-  //     id_inscricao: 1,
-  //     categoria: "Publicidade Internet",
-  //     juri: "Nome do Juri",
-  //     areas: [
-  //       { title: "Conceito Criativo", nota: 0 },
-  //       { title: "Design", nota: 0 },
-  //       { title: "Interatividade", nota: 0 },
-  //       { title: "Alcance Pago", nota: 0 },
-  //       { title: "Soluçao Tecnologica", nota: 0 },
-  //       { title: "Redaçao", nota: 0 },
-  //       { title: "Aspetos Administrativos", nota: 0 },
-  //       { title: "Pontuacao Geral", nota: 0 },
-  //     ],
-  //   },
-  // ];
-
   const { user, loading } = useFetchUser()
 
   const [nhaId, setNhaId] = useState(null) // State to hold the ID
@@ -240,27 +211,6 @@ const VpublicaDetalhes = ({
 
     fetchNhaId()
   }, []) // Empty dependency array means this effect runs only once after the initial render
-
-  // return <p>{nhaId || "No ID found"}</p>
-  // const userId = user?.id // Get the userId from the fetched user
-  // const nhaId: any = getIdFromLocalCookie()
-
-  // if (loading) return <div>Loading...</div>
-
-  // return <div>User ID: {userId}</div>
-  // const jwt = getTokenFromLocalCookie()
-  // const excluirPrivados = (title: String): boolean => {
-  //   let title_clean: boolean = false
-  //   const substr = ["nif", "pagamento", "comprovativo pagamento"]
-  //   for (let index = 0; index < substr.length; index++) {
-  //     title_clean = title.toLowerCase().includes(substr[index].toLowerCase())
-  //     if (title_clean) {
-  //       break
-  //     }
-  //   }
-
-  //   return title_clean
-  // }
 
   return (
     <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
@@ -1062,6 +1012,7 @@ const VpublicaDetalhes = ({
                         edicaoId={edicoes.data[0]?.id}
                         inscricaoId={inscricao.data.id}
                         userId={nhaId}
+                        avaliacaos={avaliacaos}
                       />
                     </div>
                   </div>
@@ -1197,6 +1148,11 @@ export async function getServerSideProps({ params, query }: any) {
   const inscritos = await fetcher(
     `${api_link}/api/inscricoes/${id}?populate[fileLink][populate][ficheiro][fields]=url`
   )
+
+  const avaliacaos = await fetcher(
+    `${api_link}/api/avaliacaos?populate[user_id][fields]=id&[populate][inscricoe][fields]=id`
+  )
+
   //get links for menu
   let dlink: any = []
   navbar.data.map((value: any) => {
@@ -1221,6 +1177,7 @@ export async function getServerSideProps({ params, query }: any) {
       contato,
       navbar: dlink,
       inscricao: inscritos,
+      avaliacaos: avaliacaos.data,
     },
   }
 }
