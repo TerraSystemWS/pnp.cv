@@ -100,8 +100,8 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: any) => {
   })
   // dados de categorias
   let Categoria: any = []
-  console.log("edicao")
-  console.log(edicao)
+  // console.log("edicao")
+  // console.log(edicao)
   // create cateoria lists
   edicao.data[0]?.attributes.categoria.map((categs: any, index: any) => {
     Categoria[index] = {
