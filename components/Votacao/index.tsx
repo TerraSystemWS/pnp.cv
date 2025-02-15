@@ -23,14 +23,17 @@ const getBackgroundColor = (nota: any) => {
 
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
 
-const Votacao = ({ edicaoId, inscricaoId, userId, avaliacaos }: any) => {
+const Votacao = ({ edicaoId, inscricaoId, userId, avaliacao }: any) => {
   const jwt = getTokenFromLocalCookie()
 
-  const avaliacao = avaliacaos.find(
-    (avaliacao: any) =>
-      avaliacao.attributes.user_id?.data.id === userId && // Agora está comparando com o userId carregado
-      avaliacao.attributes.inscricoe?.data.id === inscricaoId
-  )
+  // const avaliacao = avaliacaos.find(
+  //   (avaliacao: any) =>
+  //     avaliacao.attributes.user_id?.data.id === userId && // Agora está comparando com o userId carregado
+  //     avaliacao.attributes.inscricoe?.data.id === inscricaoId
+  // )
+
+  console.log("avaliacao: ")
+  console.log(avaliacao)
 
   // if (avaliacao) {
   //   console.log("avaliacao: ")
@@ -146,32 +149,28 @@ const Votacao = ({ edicaoId, inscricaoId, userId, avaliacaos }: any) => {
 
   return (
     <div className="mx-auto p-6 bg-white shadow-md rounded-lg">
-      {avaliacao ? (
+      {avaliacao && avaliacao.sim ? (
         <>
           <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">
             Avaliação
           </h1>
 
           <div className="flex justify-center space-x-4">
-            <div className="flex flex-col items-center bg-white p-6 rounded-lg shadow-lg  w-full">
+            <div className="flex flex-col items-center bg-white p-6 rounded-lg shadow-lg w-full">
               <div
                 className={`w-16 h-16 flex items-center justify-center rounded-full ${getBackgroundColor(
-                  avaliacao.attributes.notas
+                  avaliacao.notas
                 )}`}
               >
                 <span className="text-white font-bold text-lg">
-                  {avaliacao.attributes.notas[0]}{" "}
+                  {avaliacao.notas[0]}{" "}
                   {/* Mostra apenas a primeira letra para ícones simples */}
                 </span>
               </div>
 
               <div className="mt-4 text-center">
-                <p className="text-xl font-semibold">
-                  {avaliacao.attributes.comentario}
-                </p>
-                <p className="text-gray-600 mt-2 text-lg">
-                  {avaliacao.attributes.notas}
-                </p>
+                <p className="text-xl font-semibold">{avaliacao.comentario}</p>
+                <p className="text-gray-600 mt-2 text-lg">{avaliacao.notas}</p>
               </div>
             </div>
           </div>
@@ -226,6 +225,7 @@ const Votacao = ({ edicaoId, inscricaoId, userId, avaliacaos }: any) => {
           </form>
         </>
       )}
+
       {result && (
         <div className="mt-6 text-center">
           <p dangerouslySetInnerHTML={{ __html: result }} />

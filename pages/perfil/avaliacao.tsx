@@ -4,7 +4,7 @@ import Link from "next/link"
 import Head from "next/head"
 import { StrapiImage } from "../../components/custom/StrapiImage"
 import { useFetchUser } from "../../lib/authContext"
-import { formatDateTime } from "../../lib/utils"
+import { formatDateTime, getAvaliacaos } from "../../lib/utils"
 import { useState, useEffect } from "react"
 import qs from "qs"
 import HeroSection from "../../components/HeroSection"
@@ -29,6 +29,7 @@ const Avaliacao = ({
 
   // Estado para armazenar o userId
   const [userId, setUserId] = useState<string | null>(null)
+  const [avaliacoes, setAvaliacoes] = useState<any[]>([])
 
   // Recupera o userId quando o componente for montado
   useEffect(() => {
@@ -43,20 +44,31 @@ const Avaliacao = ({
   // Verifica se o usuário está logado e redireciona para a home caso contrário
   useEffect(() => {
     if (!loading && !user) {
-      // Redirecionar para a página inicial (home)
       router.push("/")
     }
   }, [user, loading, router])
 
-  // Se o userId ainda não foi carregado, evita a renderização
-  if (loading || userId === null) {
-    return <div>Loading...</div> // ou qualquer componente de carregamento
-  }
-
-  // Ordena as edições pela mais recente (assumindo que N_Edicao representa o número da edição)
-  const edicaoMaisRecente = edicoes[0]?.attributes
+  // Fetch de avaliações baseado em inscrições e userId
+  useEffect(() => {
+    if (userId && inscritos.length > 0) {
+      const fetchAvaliacoes = async () => {
+        const results = await Promise.all(
+          inscritos.map(async (inscricao: any) => {
+            const avaliacao = await getAvaliacaos(inscricao.id, Number(userId))
+            return {
+              inscricaoId: inscricao.id,
+              avaliacao: avaliacao || null,
+            }
+          })
+        )
+        setAvaliacoes(results)
+      }
+      fetchAvaliacoes()
+    }
+  }, [userId, inscritos]) // Recarregar as avaliações quando userId ou inscritos mudarem
 
   // Se não houver edições, exibe uma mensagem
+  const edicaoMaisRecente = edicoes[0]?.attributes
   if (!edicaoMaisRecente) {
     return (
       <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
@@ -120,45 +132,10 @@ const Avaliacao = ({
                               {inscricoesCategoria.length > 0 ? (
                                 <div className="flex flex-wrap gap-4 justify-start">
                                   {inscricoesCategoria.map((inscricao: any) => {
-                                    // Filtra as avaliações com base no user_id do usuário logado e no id da inscrição
-                                    // console.log("avaliacaos: ")
-                                    // console.log(avaliacaos)
-                                    const avaliacao = avaliacaos.find(
-                                      (avaliacao: any) =>
-                                        avaliacao.attributes.user_id?.data
-                                          .id === userId && // Agora está comparando com o userId carregado
-                                        avaliacao.attributes.inscricoe?.data
-                                          .id === inscricao.id
-                                    )
-
-                                    // const avaliacao = avaliacaos.find(
-                                    //   (avaliacao) =>
-                                    //     avaliacao.attributes.user_id?.data.id === userId && // Acessando 'user_id' corretamente dentro de 'attributes'
-                                    //     avaliacao.attributes.inscricoe?.data.id === inscricao.id // Acessando 'inscricoe' corretamente dentro de 'attributes'
-                                    // );
-
-                                    // console.log("avaliacaos: ")
-                                    // console.log(avaliacaos)
-
-                                    // console.log("avaliacao filtrada: ")
-                                    // console.log(avaliacao)
-
-                                    // console.log("userId: ")
-                                    // console.log(userId)
-
-                                    // console.log("avaliacao: ")
-                                    // console.log(avaliacao)
-
-                                    // console.log("userId:", userId)
-                                    // console.log("inscricao.id:", inscricao.id)
-                                    // console.log(
-                                    //   "avaliacao.user_id?.data.id:",
-                                    //   avaliacao?.user_id?.data?.id
-                                    // )
-                                    // console.log(
-                                    //   "avaliacao.inscricoe?.data.id:",
-                                    //   avaliacao?.inscricoe?.data?.id
-                                    // )
+                                    // Busca a avaliação para a inscrição atual
+                                    const avaliacao = avaliacoes.find(
+                                      (a) => a.inscricaoId === inscricao.id
+                                    )?.avaliacao
 
                                     return (
                                       <Link
@@ -172,41 +149,33 @@ const Avaliacao = ({
                                           </h6>
 
                                           {/* Exibindo faixa de avaliação */}
-
                                           {avaliacao ? (
                                             <div className="mt-2 flex space-x-4">
                                               <p>
                                                 <span
                                                   className={`p-2 rounded-full text-white ${
-                                                    avaliacao.attributes
-                                                      .notas ===
+                                                    avaliacao.notas ===
                                                       "insuficiente" ||
-                                                    avaliacao.attributes
-                                                      .notas === "Insuficiente"
+                                                    avaliacao.notas ===
+                                                      "Insuficiente"
                                                       ? "bg-red-400"
-                                                      : avaliacao.attributes
-                                                          .notas ===
+                                                      : avaliacao.notas ===
                                                         "Suficiente"
                                                       ? "bg-yellow-400"
-                                                      : avaliacao.attributes
-                                                          .notas === "Bom"
+                                                      : avaliacao.notas ===
+                                                        "Bom"
                                                       ? "bg-blue-400"
                                                       : "bg-green-400"
                                                   }`}
                                                 >
-                                                  {avaliacao.attributes.notas
+                                                  {avaliacao.notas
                                                     .charAt(0)
                                                     .toUpperCase() +
-                                                    avaliacao.attributes.notas.slice(
-                                                      1
-                                                    )}
+                                                    avaliacao.notas.slice(1)}
                                                 </span>
                                               </p>
                                               <p className="text-sm text-gray-600">
-                                                {
-                                                  avaliacao.attributes
-                                                    .comentario
-                                                }
+                                                {avaliacao.comentario}
                                               </p>
                                             </div>
                                           ) : (
@@ -261,19 +230,18 @@ export async function getServerSideProps({ query }: any) {
 
   try {
     // Fetch data concurrently
-    const [edicoes, rsocials, contato, navbar, inscritos, avaliacaos] =
-      await Promise.all([
-        fetcher(
-          `${api_link}/api/edicoes?populate[categoria][fields]=titulo,id&[populate][inscricoes][fields]=titulo&${queri}`
-        ),
-        fetcher(`${api_link}/api/redes-social?populate=*`),
-        fetcher(`${api_link}/api/contato`),
-        fetcher(`${api_link}/api/menus?populate=deep`),
-        fetcher(`${api_link}/api/inscricoes?populate=*`), // Certifique-se de que as inscrições também estão sendo populadas
-        fetcher(
-          `${api_link}/api/avaliacaos?populate[user_id][fields]=id&[populate][inscricoe][fields]=id`
-        ),
-      ])
+    const [edicoes, rsocials, contato, navbar, inscritos] = await Promise.all([
+      fetcher(
+        `${api_link}/api/edicoes?populate[categoria][fields]=titulo,id&[populate][inscricoes][fields]=titulo&${queri}`
+      ),
+      fetcher(`${api_link}/api/redes-social?populate=*`),
+      fetcher(`${api_link}/api/contato`),
+      fetcher(`${api_link}/api/menus?populate=deep`),
+      fetcher(`${api_link}/api/inscricoes?populate=*`), // Certifique-se de que as inscrições também estão sendo populadas
+      // fetcher(
+      //   `${api_link}/api/avaliacaos?populate[user_id][fields]=id&[populate][inscricoe][fields]=id`
+      // ),
+    ])
 
     const totalPages = Math.ceil(edicoes.meta.pagination.total / pageSize)
     const currentPage = edicoes.meta.pagination.page
@@ -297,7 +265,7 @@ export async function getServerSideProps({ query }: any) {
         contato,
         navbar: dlink,
         inscritos: inscritos.data,
-        avaliacaos: avaliacaos.data,
+        // avaliacaos: avaliacaos.data,
       },
     }
   } catch (error) {
@@ -309,7 +277,7 @@ export async function getServerSideProps({ query }: any) {
         contato: {},
         navbar: [],
         inscritos: [],
-        avaliacaos: [],
+        // avaliacaos: [],
         totalPages: 1,
         currentPage: 1,
       },

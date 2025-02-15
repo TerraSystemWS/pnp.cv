@@ -90,3 +90,47 @@ export async function verificarEmail(email: any) {
 // // Exemplo de uso
 // const email = 'patrick@stripe.com'; // Substitua pelo e-mail que deseja verificar
 // verificarEmail(email);
+
+export async function getAvaliacaos(inscricaoId: number, userId: number) {
+  // const url = `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/avaliacaos?populate[user_id][fields]=id&[populate][inscricoe][fields]=id`
+  const url = `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/avaliacaos?populate[user_id][fields]=id&[populate][inscricoe][fields]=id&pagination[page]=1&pagination[pageSize]=200`
+
+  try {
+    // Fazendo a solicitação GET à API
+    const response = await fetch(url, {
+      method: "GET",
+    })
+
+    // Verificando se a resposta foi bem-sucedida
+    if (!response.ok) {
+      throw new Error("Erro ao pegar avaliações")
+    }
+
+    // Convertendo a resposta para JSON
+    const data = await response.json()
+
+    // Filtrando as avaliações para encontrar a que corresponde ao userId e inscricaoId
+    const avaliacao = data.data.find((avaliacao: any) => {
+      // Garantindo que user_id e inscricao.id sejam comparados corretamente
+      const avaliacaoUserId = avaliacao.attributes.user_id.data.id
+      const avaliacaoInscricaoId = avaliacao.attributes.inscricoe.data.id
+
+      return avaliacaoUserId === userId && avaliacaoInscricaoId === inscricaoId
+    })
+
+    // Se uma avaliação for encontrada, retornamos os dados necessários
+    if (avaliacao) {
+      return {
+        sim: true,
+        notas: avaliacao.attributes.notas,
+        comentario: avaliacao.attributes.comentario,
+      }
+    } else {
+      // Caso nenhuma avaliação seja encontrada, podemos retornar um valor adequado
+      return null
+    }
+  } catch (error) {
+    console.error("Erro na requisição:", error)
+    return null
+  }
+}
