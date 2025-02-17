@@ -7,6 +7,12 @@ interface UserProfileCardProps {
   user: string
 }
 
+type AccessLink = {
+  href: string
+  icon: JSX.Element
+  label: string
+}
+
 const UserProfileCard = ({ user }: UserProfileCardProps) => {
   const router = useRouter()
   const pathname = router.pathname
@@ -19,8 +25,8 @@ const UserProfileCard = ({ user }: UserProfileCardProps) => {
     user
   )}&background=0D8ABC&color=fff&size=200`
 
-  // Access Links
-  const accessLinks = [
+  // Access Links (define the type explicitly)
+  const accessLinks: (AccessLink | null)[] = [
     {
       href: "/perfil",
       icon: <FaUserAlt className="mr-3 text-xl" />,
@@ -45,7 +51,12 @@ const UserProfileCard = ({ user }: UserProfileCardProps) => {
           label: "Resultado da Avaliação do Jurados",
         }
       : null,
-  ].filter(Boolean) // Remove any null entries
+  ]
+
+  // Filter out null values
+  const filteredLinks = accessLinks.filter(
+    (link): link is AccessLink => link !== null
+  )
 
   return (
     <div className="col-span-4 sm:col-span-3">
@@ -64,7 +75,7 @@ const UserProfileCard = ({ user }: UserProfileCardProps) => {
             Links de Acesso
           </span>
           <ul className="space-y-6">
-            {accessLinks.map((link, index) => (
+            {filteredLinks.map((link, index) => (
               <li key={index} className="flex items-center mb-4">
                 <Link
                   href={link.href}
