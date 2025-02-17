@@ -80,8 +80,8 @@ const Avaliacao = ({
     return acc
   }, {})
 
-  console.log("inscricoesPorEdicao")
-  console.log(inscricoesPorEdicao)
+  // console.log("inscricoesPorEdicao")
+  // console.log(inscricoesPorEdicao)
 
   return (
     <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>

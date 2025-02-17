@@ -134,6 +134,11 @@ const VotacaoPublicaStatus = ({ social, contato, Vpublica, navbar }: any) => {
     return null // Redirect is handled in useEffect
   }
 
+  if (user != "ailton" || user != "soniarosa") {
+    // so para teste mudar isso urgente
+    Router.push("/perfil")
+  }
+
   // Table header with export buttons
   const header = (
     <div className="flex align-items-center export-buttons">
