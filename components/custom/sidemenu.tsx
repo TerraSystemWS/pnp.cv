@@ -56,19 +56,38 @@ const UserProfileCard = ({ user }: any) => {
               </Link>
             </li>
             {user == "soniarosa" || user == "ailton" ? (
-              <li className="flex items-center mb-4">
-                <Link
-                  href="/perfil/votacaopublicaStatus"
-                  className={`flex items-center p-3 rounded-lg transition duration-300 ease-in-out ${
-                    isActive("/perfil/votacaopublicaStatus")
-                      ? "bg-yellow-500 text-white shadow-lg"
-                      : "hover:bg-yellow-100 hover:text-yellow-500"
-                  }`}
-                >
-                  <FaVoteYea className="mr-3 text-xl" />
-                  <span className="text-sm font-semibold">Votação Pública</span>
-                </Link>
-              </li>
+              <>
+                <li className="flex items-center mb-4">
+                  <Link
+                    href="/perfil/votacaopublicaStatus"
+                    className={`flex items-center p-3 rounded-lg transition duration-300 ease-in-out ${
+                      isActive("/perfil/votacaopublicaStatus")
+                        ? "bg-yellow-500 text-white shadow-lg"
+                        : "hover:bg-yellow-100 hover:text-yellow-500"
+                    }`}
+                  >
+                    <FaVoteYea className="mr-3 text-xl" />
+                    <span className="text-sm font-semibold">
+                      Resultado da Votação Pública
+                    </span>
+                  </Link>
+                </li>
+                <li className="flex items-center mb-4">
+                  <Link
+                    href="/perfil/avaliacaoStatus"
+                    className={`flex items-center p-3 rounded-lg transition duration-300 ease-in-out ${
+                      isActive("/perfil/avaliacaoStatus")
+                        ? "bg-yellow-500 text-white shadow-lg"
+                        : "hover:bg-yellow-100 hover:text-yellow-500"
+                    }`}
+                  >
+                    <FaVoteYea className="mr-3 text-xl" />
+                    <span className="text-sm font-semibold">
+                      Resultado da Avaliação do Jurados
+                    </span>
+                  </Link>
+                </li>
+              </>
             ) : (
               <></>
             )}
