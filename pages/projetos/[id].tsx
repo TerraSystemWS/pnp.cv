@@ -12,7 +12,7 @@ const qs = require("qs")
 import HeroSection from "../../components/HeroSection"
 
 // primereact tools
-import { Dialog } from "primereact/dialog"
+// import { Dialog } from "primereact/dialog"
 import { Button } from "primereact/button"
 import "primereact/resources/themes/lara-light-indigo/theme.css" //theme
 import "primereact/resources/primereact.min.css" //core css
@@ -24,7 +24,8 @@ import { Image } from "primereact/image"
 import JSConfetti from "js-confetti"
 import Votacao from "../../components/Votacao"
 import { getTokenFromLocalCookie, getIdFromLocalCookie } from "../../lib/auth"
-import { verificarEmail } from "../../lib/utils"
+// import { verificarEmail } from "../../lib/utils"
+// import Avaliacao from "../perfil"
 
 // link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
@@ -121,8 +122,8 @@ const VpublicaDetalhes = ({
         }),
       })
 
-      console.log("=========== response ====================")
-      console.log(res)
+      // console.log("=========== response ====================")
+      // console.log(res)
       if (res.data) {
         setCor("red")
         // alert("Gostei, tem meu voto!");
@@ -170,8 +171,8 @@ const VpublicaDetalhes = ({
   const [visible, setVisible] = useState(false)
   const [position, setPosition] = useState("center")
   // forms
-  const [email, setEmail] = useState("")
-  const [pass, setPass] = useState("")
+  // const [email, setEmail] = useState("")
+  // const [pass, setPass] = useState("")
 
   const footerContent = (
     <div>
