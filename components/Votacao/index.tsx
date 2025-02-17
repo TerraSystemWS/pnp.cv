@@ -1,8 +1,10 @@
 import { useForm, SubmitHandler } from "react-hook-form"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import JSConfetti from "js-confetti"
 import Swal from "sweetalert2"
+// import Votacao from "../../components/Votacao"
 import { getTokenFromLocalCookie } from "../../lib/auth"
+import { getAvaliacaos } from "../../lib/utils"
 
 interface FormValues {
   criteria1: string
@@ -23,8 +25,28 @@ const getBackgroundColor = (nota: any) => {
 
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
 
-const Votacao = ({ edicaoId, inscricaoId, userId, avaliacao }: any) => {
+const Votacao = ({ edicaoId, inscricaoId, userId }: any) => {
   const jwt = getTokenFromLocalCookie()
+  // gaurdar para usal mais tarde
+  const [avaliacao, setAvaliacao] = useState<any>(null)
+
+  // getAvaliacaos(inscricaoId, userId)
+  // .then(avaliacao => {
+  //   console.log(avaliacao);  // Access the resolved data
+  // })
+  // .catch(error => {
+  //   console.error("Error fetching data:", error);  // Handle any errors
+  // });
+
+  useEffect(() => {
+    getAvaliacaos(inscricaoId, userId)
+      .then((avaliacao2) => {
+        setAvaliacao(avaliacao2) // Atualize o estado com a avaliação
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error)
+      })
+  }, [inscricaoId, userId]) // Dependências para chamar novamente se mudar
 
   // const avaliacao = avaliacaos.find(
   //   (avaliacao: any) =>
@@ -32,8 +54,8 @@ const Votacao = ({ edicaoId, inscricaoId, userId, avaliacao }: any) => {
   //     avaliacao.attributes.inscricoe?.data.id === inscricaoId
   // )
 
-  console.log("avaliacao: ")
-  console.log(avaliacao)
+  // Estado para armazenar o userId
+  // const [userId, setUserId] = useState<string | null>(null)
 
   // if (avaliacao) {
   //   console.log("avaliacao: ")
@@ -152,9 +174,8 @@ const Votacao = ({ edicaoId, inscricaoId, userId, avaliacao }: any) => {
       {avaliacao && avaliacao.sim ? (
         <>
           <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">
-            Avaliação
+            Avaliado
           </h1>
-
           <div className="flex justify-center space-x-4">
             <div className="flex flex-col items-center bg-white p-6 rounded-lg shadow-lg w-full">
               <div
