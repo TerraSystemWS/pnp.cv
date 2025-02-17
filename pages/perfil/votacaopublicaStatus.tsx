@@ -14,28 +14,6 @@ import { Button } from "primereact/button"
 import { Tooltip } from "primereact/tooltip"
 
 // Define types
-// interface SocialMedia {
-//   data: any
-// }
-
-// interface Contact {
-//   data: any
-// }
-
-// interface NavbarItem {
-//   name: string
-//   link: string
-// }
-
-// interface VotacaoPublica {
-//   data: any[]
-// }
-
-// interface Props {
-//   contato: Contact
-//   Vpublica: VotacaoPublica
-// }
-
 // API base URL
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
 
@@ -52,7 +30,12 @@ const VotacaoPublicaStatus = ({ social, contato, Vpublica, navbar }: any) => {
     }
   }, [user, loading])
 
-  // console.log(Vpublica)
+  // Verificar se o usuário é permitido (depois de carregado)
+  useEffect(() => {
+    if (!loading && user && user !== "ailton" && user !== "soniarosa") {
+      Router.push("/perfil")
+    }
+  }, [user, loading])
 
   // Transform Vpublica data into products
   useEffect(() => {
@@ -130,8 +113,8 @@ const VotacaoPublicaStatus = ({ social, contato, Vpublica, navbar }: any) => {
   }
 
   // Render only if user is authenticated
-  if (!user) {
-    return null // Redirect is handled in useEffect
+  if (!user || loading) {
+    return null // Redirecionamento é tratado no useEffect
   }
 
   // Table header with export buttons
@@ -166,17 +149,11 @@ const VotacaoPublicaStatus = ({ social, contato, Vpublica, navbar }: any) => {
         <div className="bg-gray-100">
           <div className="container mx-auto py-8">
             <div className="grid grid-cols-4 sm:grid-cols-12 gap-6 px-4">
-              {/* component de side meu */}
+              {/* componente de side menu */}
               <UserProfileCard user={user} />
               <div className="col-span-4 sm:col-span-9">
                 <div className="bg-white shadow rounded-lg p-6">
-                  {/* inicio do section */}
                   <h2 className="text-xl font-bold mb-4">Área do Utilizador</h2>
-                  {/* <HeroSection
-                    title={`Projetos concorrentes à ${edicaoMaisRecente.N_Edicao}ª edição`}
-                    subtitle={"Inscrições abertas de 1 a 31 de Janeiro de 2025"}
-                  /> */}
-                  {/* <p>area de dados</p> */}
                   <div className="bg-white dark:bg-gray-900">
                     <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
                       <div className="mx-auto max-w-screen-md text-center lg:mb-16 mb-8">
@@ -213,8 +190,6 @@ const VotacaoPublicaStatus = ({ social, contato, Vpublica, navbar }: any) => {
                       </div>
                     </div>
                   </div>
-
-                  {/* fim do section */}
                 </div>
               </div>
             </div>
