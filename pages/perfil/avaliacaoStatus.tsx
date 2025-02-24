@@ -1,17 +1,20 @@
 import Layout from "../../components/Layout"
 import { fetcher } from "../../lib/api"
-import Link from "next/link"
+// import Link from "next/link"
 import Head from "next/head"
-import { StrapiImage } from "../../components/custom/StrapiImage"
+// import { StrapiImage } from "../../components/custom/StrapiImage"
 import { useFetchUser } from "../../lib/authContext"
-import { formatDateTime } from "../../lib/utils"
+// import { formatDateTime } from "../../lib/utils"
 import { useState, useEffect } from "react"
 import qs from "qs"
-import HeroSection from "../../components/HeroSection"
+// import HeroSection from "../../components/HeroSection"
 import { useRouter } from "next/router"
 import UserProfileCard from "../../components/custom/sidemenu"
+import { getTokenFromLocalCookie } from "../../lib/auth"
 
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
+
+// import React, { useState, useEffect } from "react";
 
 const Avaliacao = ({
   edicoes,
@@ -19,69 +22,104 @@ const Avaliacao = ({
   contato,
   navbar,
   inscritos,
+  avaliacoes,
   totalPages,
   currentPage,
 }: any) => {
   const { user, loading } = useFetchUser()
   const router = useRouter()
 
+  // Estado para armazenar os nomes dos usuários
+  const [userNames, setUserNames] = useState<{ [key: number]: string }>({})
+
   // Verifica se o usuário está logado e redireciona para a home caso contrário
   useEffect(() => {
     if (!loading && !user) {
-      // Redirecionar para a página inicial (home)
-      router.push("/")
+      router.push("/") // Redirecionar para a página inicial (home)
     }
   }, [user, loading, router])
 
-  // Evita renderização até que o status de login seja verificado
-  //   if (loading || !user) {
-  //     return <div>Loading...</div> // ou qualquer componente de carregamento
-  //   }
+  // Função para pegar o nome do usuário com base no ID
+  const getUserNameById = async (userId: number) => {
+    const jwt = getTokenFromLocalCookie()
+    // alert(jwt)
 
-  // Ordena as edições pela mais recente (assumindo que N_Edicao representa o número da edição)
-  const edicaoMaisRecente = edicoes[0]?.attributes
-
-  // console.log("edicaoMaisRecente")
-  // console.log(edicaoMaisRecente)
-
-  // Se não houver edições, exibe uma mensagem
-  if (!edicaoMaisRecente) {
-    return (
-      <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
-        <Head>
-          <title>Trabalhos concorrentes - Prémio Nacional De Publicidade</title>
-          <meta
-            name="description"
-            content="Projetos concorrentes aos Premios - Prémio Nacional De Publicidade"
-          />
-        </Head>
-        <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
-          <HeroSection
-            title="Sem Edições Disponíveis"
-            subtitle="Não há edições de concursos disponíveis no momento."
-          />
-        </div>
-      </Layout>
-    )
-  }
-
-  // Mapeamento das inscrições por edição
-  const inscricoesPorEdicao = inscritos.reduce((acc: any, inscricao: any) => {
-    // Certifique-se de que o id da edição está sendo acessado corretamente
-    const edicaoId = inscricao.attributes.edicoes?.data?.id
-
-    if (!edicaoId) return acc
-
-    if (!acc[edicaoId]) {
-      acc[edicaoId] = []
+    if (!jwt) {
+      console.error("Token Bearer não encontrado.")
+      return null
     }
 
-    acc[edicaoId].push(inscricao)
-    return acc
-  }, {})
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/users/${userId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${jwt}`,
+          },
+        }
+      )
 
-  // console.log("inscricoesPorEdicao")
-  // console.log(inscricoesPorEdicao)
+      if (!response.ok) {
+        throw new Error("Erro ao buscar dados do usuário.")
+      }
+
+      const data = await response.json()
+
+      // console.log("response Username")
+      // console.log(data)
+      return data.username // Retorna o nome do usuário
+    } catch (error) {
+      console.error("Erro ao buscar nome do usuário:", error)
+      return null
+    }
+  }
+
+  // Atualiza os nomes dos usuários quando as avaliações são carregadas
+  useEffect(() => {
+    const fetchUserNames = async () => {
+      const names: { [key: number]: string } = {}
+
+      // Busca o nome de cada usuário nas avaliações
+      for (let categoria in categorias) {
+        for (let nomeProjeto in categorias[categoria]) {
+          for (let usuario of categorias[categoria][nomeProjeto].usuarios) {
+            if (!names[usuario.id]) {
+              const name = await getUserNameById(usuario.id)
+              names[usuario.id] = name || "Desconhecido" // Caso não tenha nome, marca como "Desconhecido"
+            }
+          }
+        }
+      }
+
+      setUserNames(names) // Atualiza o estado com os nomes encontrados
+    }
+
+    fetchUserNames()
+  }) // Dependência para buscar os nomes sempre que `categorias` mudar
+
+  // Agrupando avaliações por categoria e projeto
+  const categorias: any = {}
+  avaliacoes.data.forEach((avaliacao: any) => {
+    const nomeProjeto =
+      avaliacao.attributes.inscricoe.data.attributes.nome_projeto
+    const categoria = avaliacao.attributes.inscricoe.data.attributes.categoria
+
+    if (!categorias[categoria]) {
+      categorias[categoria] = {}
+    }
+
+    if (!categorias[categoria][nomeProjeto]) {
+      categorias[categoria][nomeProjeto] = {
+        usuarios: [],
+      }
+    }
+
+    categorias[categoria][nomeProjeto].usuarios.push({
+      id: avaliacao.attributes.user_id.data.id,
+      nota: avaliacao.attributes.notas,
+    })
+  })
 
   return (
     <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
@@ -96,21 +134,90 @@ const Avaliacao = ({
         <div className="bg-gray-100">
           <div className="container mx-auto py-8">
             <div className="grid grid-cols-4 sm:grid-cols-12 gap-6 px-4">
-              {/* component de side meu */}
               <UserProfileCard user={user} />
               <div className="col-span-4 sm:col-span-9">
                 <div className="bg-white shadow rounded-lg p-6">
-                  {/* inicio do section */}
                   <h2 className="text-xl font-bold mb-4">
                     Resultados das Avaliações
                   </h2>
-                  {/* <HeroSection
-                    title={`Projetos concorrentes à ${edicaoMaisRecente.N_Edicao}ª edição`}
-                    subtitle={"Inscrições abertas de 1 a 31 de Janeiro de 2025"}
-                  /> */}
-                  <p>Dados da avaliacao dos jurados</p>
+                  <section className="py-12 bg-gray-50">
+                    <div className="container mx-auto px-4">
+                      <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">
+                        Avaliações Realizadas
+                      </h2>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {Object.keys(categorias).map((categoria) => (
+                          <div key={categoria} className="mb-8">
+                            <h3 className="text-2xl font-semibold text-gray-800 mb-4">
+                              {categoria}
+                            </h3>
 
-                  {/* fim do section */}
+                            {Object.keys(categorias[categoria]).map(
+                              (nomeProjeto) => {
+                                const { usuarios } =
+                                  categorias[categoria][nomeProjeto]
+                                const totalUsuarios = usuarios.length
+
+                                return (
+                                  <div
+                                    key={nomeProjeto}
+                                    className="bg-white p-6 rounded-lg shadow-lg mb-6"
+                                  >
+                                    <h4 className="text-xl font-semibold mb-4">
+                                      {nomeProjeto}
+                                    </h4>
+
+                                    <p className="text-sm font-semibold mb-4 text-gray-500">
+                                      {totalUsuarios} Avaliações
+                                    </p>
+
+                                    <ul className="text-sm text-gray-600">
+                                      {usuarios.map(
+                                        (usuario: any, index: any) => {
+                                          const userName =
+                                            userNames[usuario.id] ||
+                                            "Carregando..." // Atraso no nome, pode mostrar "Carregando..."
+                                          return (
+                                            <li
+                                              key={index}
+                                              className="mb-2 flex justify-between items-center"
+                                            >
+                                              <span>
+                                                {/* ID: {usuario.id} - Usuário{" "} */}
+                                                Juri #{usuario.id}: {userName}
+                                              </span>
+
+                                              <span
+                                                className={`px-3 py-1  rounded-full text-white ${
+                                                  usuario.nota ===
+                                                    "insuficiente" ||
+                                                  usuario.nota ===
+                                                    "Insuficiente"
+                                                    ? "bg-red-400"
+                                                    : usuario.nota ===
+                                                      "Suficiente"
+                                                    ? "bg-yellow-400"
+                                                    : usuario.nota === "Bom"
+                                                    ? "bg-blue-400"
+                                                    : "bg-green-400"
+                                                }`}
+                                              >
+                                                {usuario.nota}
+                                              </span>
+                                            </li>
+                                          )
+                                        }
+                                      )}
+                                    </ul>
+                                  </div>
+                                )
+                              }
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </section>
                 </div>
               </div>
             </div>
@@ -141,15 +248,19 @@ export async function getServerSideProps({ query }: any) {
 
   try {
     // Fetch data concurrently
-    const [edicoes, rsocials, contato, navbar, inscritos] = await Promise.all([
-      fetcher(
-        `${api_link}/api/edicoes?populate[categoria][fields]=titulo,id&[populate][inscricoes][fields]=titulo&${queri}`
-      ),
-      fetcher(`${api_link}/api/redes-social?populate=*`),
-      fetcher(`${api_link}/api/contato`),
-      fetcher(`${api_link}/api/menus?populate=deep`),
-      fetcher(`${api_link}/api/inscricoes?populate=*`), // Certifique-se de que as inscrições também estão sendo populadas
-    ])
+    const [edicoes, rsocials, contato, navbar, inscritos, avaliacoes] =
+      await Promise.all([
+        fetcher(
+          `${api_link}/api/edicoes?populate[categoria][fields]=titulo,id&[populate][inscricoes][fields]=titulo&${queri}`
+        ),
+        fetcher(`${api_link}/api/redes-social?populate=*`),
+        fetcher(`${api_link}/api/contato`),
+        fetcher(`${api_link}/api/menus?populate=deep`),
+        fetcher(`${api_link}/api/inscricoes?populate=*`), // Certifique-se de que as inscrições também estão sendo populadas
+        fetcher(
+          `${api_link}/api/avaliacaos?populate[user_id][fields]=id&[populate][inscricoe][fields]=*&pagination[page]=1&pagination[pageSize]=500`
+        ),
+      ])
 
     const totalPages = Math.ceil(edicoes.meta.pagination.total / pageSize)
     const currentPage = edicoes.meta.pagination.page
@@ -173,6 +284,7 @@ export async function getServerSideProps({ query }: any) {
         contato,
         navbar: dlink,
         inscritos: inscritos.data,
+        avaliacoes,
       },
     }
   } catch (error) {
@@ -184,6 +296,7 @@ export async function getServerSideProps({ query }: any) {
         contato: {},
         navbar: [],
         inscritos: [],
+        avaliacoes: [],
         totalPages: 1,
         currentPage: 1,
       },
