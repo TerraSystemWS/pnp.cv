@@ -94,11 +94,11 @@ const Juris = ({ social, contato, edicao, navbar }: any) => {
 						<div className="flex flex-col sm:flex-row mt-10">
 							<div className="sm:w-1/3 text-center sm:pr-8 sm:py-8">
 								<div className=" ailton w-50 h-50 rounded-full inline-flex items-center justify-center bg-gray-200 text-gray-400">
-									<img
+									<Image
 										src={Juris[0].j_foto}
 										alt={Juris[0].j_nome}
-										width="150px"
-										height="150px"
+										width={150}
+										height={150}
 										className="w-50 h-50 rounded-full"
 									/>
 								</div>
@@ -137,12 +137,11 @@ const Juris = ({ social, contato, edicao, navbar }: any) => {
 									href={`/juris/${value.idd}?edicao=${value.edicao}`}
 								>
 									<div className="flex relative">
-										<img
+										<Image
 											alt="gallery"
-											className="absolute inset-0 w-full h-full object-cover object-center"
+											fill
+											className="absolute inset-0 object-cover object-center"
 											src={value.j_foto}
-											width="600px"
-											height="360px"
 										/>
 										<div className="px-8 py-10 relative z-10 w-full border-4 border-gray-200 bg-white opacity-0 hover:opacity-100">
 											<h2 className="tracking-widest text-sm title-font font-medium text-indigo-500 mb-1">

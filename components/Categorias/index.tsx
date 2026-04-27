@@ -1,3 +1,4 @@
+import Image from "next/image"
 import Link from "next/link"
 import React, { useState } from "react"
 
@@ -28,10 +29,12 @@ const Categorias = (props: any) => {
               <Link href={`/regulamentos#${value.slug}`}>
                 {/* Ícone ou imagem da categoria */}
                 <div className="flex justify-center mb-4">
-                  <img
+                  <Image
                     src={value.url || "https://placehold.co/500x500"}
                     alt={value.titulo}
-                    className="w-16 h-16 object-contain" // Usando object-contain para evitar truncamento
+                    width={64}
+                    height={64}
+                    className="w-16 h-16 object-contain"
                   />
                 </div>
 

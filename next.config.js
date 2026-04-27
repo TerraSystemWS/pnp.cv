@@ -5,12 +5,10 @@ const nextConfig = {
 	images: {
 		domains: [
 			"localhost",
-			"https://api.pnp.cv",
-			"https://pnp.cv",
-			"https://placehold.co",
-			"http://localhost:1337/",
+			"api.pnp.cv",
+			"pnp.cv",
+			"placehold.co",
 		],
-		// unoptimized: true,
 	},
 	// webpack(config) {
 	// 	config.module.rules.push({
