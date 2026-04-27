@@ -1,4 +1,5 @@
 import React, { useState } from "react"
+import Image from "next/image"
 import { fetcher } from "../../lib/api"
 import Layout from "../../components/Layout"
 import Head from "next/head"
@@ -288,10 +289,11 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
                       {document.titulo}
                     </h2>
                     <div className="w-full h-48 bg-gray-200 rounded-lg flex items-center justify-center relative overflow-hidden">
-                      <img
-                        src="https://placehold.co/150x200.png?text=Abrir+PDF" // Aqui você pode colocar uma URL para uma capa de PDF ou miniatura
+                      <Image
+                        src="https://placehold.co/150x200.png?text=Abrir+PDF"
                         alt="Capa do documento"
-                        className="object-cover w-full h-full"
+                        fill
+                        className="object-cover"
                       />
                       <div className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-50">
                         <svg

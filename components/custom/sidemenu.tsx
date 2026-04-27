@@ -1,4 +1,5 @@
 import React from "react"
+import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { FaUserAlt, FaStar, FaVoteYea } from "react-icons/fa"
@@ -62,10 +63,12 @@ const UserProfileCard = ({ user }: UserProfileCardProps) => {
     <div className="col-span-4 sm:col-span-3">
       <div className="bg-white shadow-xl rounded-lg p-6">
         <div className="flex flex-col items-center">
-          <img
+          <Image
             src={avatarUrl}
             className="w-32 h-32 bg-gray-300 rounded-full mb-4 border-4 border-yellow-500"
             alt={`Avatar de ${user}`}
+            width={128}
+            height={128}
           />
           <h1 className="text-2xl font-bold text-gray-900">{user}</h1>
         </div>

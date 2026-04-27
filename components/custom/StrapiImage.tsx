@@ -33,14 +33,12 @@ export function StrapiImage({
   // console.log(imageUrl);
   // console.log(imageFallback);
   return (
-    <img
-      // loader={imageLoader}// funciona mas retira a otimizaçao de imagens
+    <Image
+      loader={imageLoader}
       src={imageUrl ?? imageFallback}
       alt={alt}
-      // height={height}
-      // width={width}
-      height={`${height}px`}
-      width={`${width}px`}
+      height={height}
+      width={width}
       className={className}
     />
   )
