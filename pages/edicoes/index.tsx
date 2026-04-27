@@ -346,19 +346,32 @@ export default Edicoes
 export async function getServerSideProps() {
   const query = new URLSearchParams({ sort: "N_Edicao:desc" })
 
-  const [rsocials, contato, edicao, navbar] = await Promise.all([
-    fetcher(`${api_link}/api/redes-social?populate=*`),
-    fetcher(`${api_link}/api/contato`),
-    fetcher(`${api_link}/api/edicoes?populate=deep&${query.toString()}`),
-    fetcher(`${api_link}/api/menus?populate=deep`),
-  ])
+  try {
+    const [rsocials, contato, edicao, navbar] = await Promise.all([
+      fetcher(`${api_link}/api/redes-social?populate=*`),
+      fetcher(`${api_link}/api/contato`),
+      fetcher(`${api_link}/api/edicoes?populate=deep&${query.toString()}`),
+      fetcher(`${api_link}/api/menus?populate=deep`),
+    ])
 
-  const dlink = navbar.data.flatMap((value: any) =>
-    value.attributes.items.data.map((item: any) => ({
-      name: item.attributes.title,
-      link: item.attributes.url,
-    }))
-  )
+    const dlink =
+      navbar?.data?.flatMap((value: any) =>
+        value?.attributes?.items?.data?.map((item: any) => ({
+          name: item?.attributes?.title ?? "",
+          link: item?.attributes?.url ?? "#",
+        })) ?? []
+      ) ?? []
 
-  return { props: { social: rsocials, contato, edicao, navbar: dlink } }
+    return { props: { social: rsocials, contato, edicao, navbar: dlink } }
+  } catch (error) {
+    console.error("Error fetching edicoes data:", error)
+    return {
+      props: {
+        social: { data: null },
+        contato: { data: null },
+        edicao: { data: null },
+        navbar: [],
+      },
+    }
+  }
 }

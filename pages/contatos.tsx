@@ -200,19 +200,30 @@ export default CONTATOS
 
 // Função para buscar dados do servidor
 export async function getServerSideProps() {
-  const rsocials = await fetcher(`${api_link}/api/redes-social?populate=*`)
-  const contato = await fetcher(`${api_link}/api/contato`)
-  const navbar = await fetcher(`${api_link}/api/menus?populate=deep`)
+  try {
+    const [rsocials, contato, navbar] = await Promise.all([
+      fetcher(`${api_link}/api/redes-social?populate=*`),
+      fetcher(`${api_link}/api/contato`),
+      fetcher(`${api_link}/api/menus?populate=deep`),
+    ])
 
-  let dlink: any = []
-  navbar.data.map((value: any) => {
-    value.attributes.items.data.map((item: any, index: any) => {
-      dlink[index] = {
-        name: item.attributes.title,
-        link: item.attributes.url,
-      }
-    })
-  })
+    const dlink =
+      navbar?.data?.flatMap((value: any) =>
+        value?.attributes?.items?.data?.map((item: any) => ({
+          name: item?.attributes?.title ?? "",
+          link: item?.attributes?.url ?? "#",
+        })) ?? []
+      ) ?? []
 
-  return { props: { social: rsocials, contato, navbar: dlink } }
+    return { props: { social: rsocials, contato, navbar: dlink } }
+  } catch (error) {
+    console.error("Error fetching contatos data:", error)
+    return {
+      props: {
+        social: { data: null },
+        contato: { data: null },
+        navbar: [],
+      },
+    }
+  }
 }
