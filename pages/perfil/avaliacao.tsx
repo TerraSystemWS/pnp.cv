@@ -35,7 +35,7 @@ const Avaliacao = ({
   useEffect(() => {
     const fetchUserId = async () => {
       const id = await getIdFromLocalCookie()
-      setUserId(id)
+      setUserId(id ?? null)
     }
 
     fetchUserId()
