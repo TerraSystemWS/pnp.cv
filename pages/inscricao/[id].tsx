@@ -15,8 +15,8 @@ const qs = require("qs")
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
 
 interface Props {
-  social: unknown
-  contato: unknown
+  social: any
+  contato: any
   edicao: { data: { attributes: { categoria: Categoria[] } }[] }
   navbar: ParsedNavLink[]
   inscricao: { data: { id: number; attributes: Inscricao & { fileLink?: FileLink[] } } | null }
