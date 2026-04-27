@@ -33,6 +33,18 @@ const Avaliacao = ({
     }
   }, [user, loading, router])
 
+  const userb: any = "terra"
+  // user === "soniarosa" || user === "ailton" || user === "Solange Cesarovna"
+  //       ? {
+  //           href: "/perfil/avaliacaoStatus",
+  //           icon: <FaVoteYea className="mr-3 text-xl" />,
+  //           label: "Resultado da Avaliação do Jurados",
+  //         }
+
+  // if (userb != "soniarosa" || user != "ailton" || user != "Solange Cesarovna") {
+  //   router.push("/")
+  // } // try to make this work
+
   // Evita renderização até que o status de login seja verificado
   //   if (loading || !user) {
   //     return <div>Loading...</div> // ou qualquer componente de carregamento
