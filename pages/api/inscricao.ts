@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next"
+import { v4 as uuidv4 } from "uuid"
 
 interface FormData {
   ncode: string
@@ -18,12 +19,12 @@ export default async function handler(
     const { ncode, turnstileResponse }: FormData = req.body.data // Dados do formulário (incluindo 'turnstileResponse')
 
     // 1. Validar o CAPTCHA com a API do Cloudflare
-    const secretKey = process.env.CLOUDFLARE_SECRET_KEY || " " // Adicione sua chave secreta no arquivo .env.local
+    const secretKey = process.env.CLOUDFLARE_SECRET_KEY
+    if (!secretKey) {
+      return res.status(500).json({ error: { message: "Configuração do servidor incompleta." } })
+    }
     const verificationUrl =
       "https://challenges.cloudflare.com/turnstile/v0/siteverify"
-
-    console.log("#### secrete key ##: ")
-    console.log(secretKey)
 
     try {
       const response = await fetch(verificationUrl, {
@@ -37,20 +38,13 @@ export default async function handler(
 
       // 2. Verificar se o CAPTCHA foi validado com sucesso
       if (result.success) {
-        console.log("Captcha validado com sucesso!")
-
-        // Agora você pode processar a inscrição (ex: salvar no banco de dados)
-        // Aqui, estou apenas simulando o processo com um ID fictício
-        const userId = Math.floor(Math.random() * 10000) // ID fictício
-
         return res.status(200).json({
           data: {
-            id: userId,
+            id: uuidv4(),
             message: "Inscrição realizada com sucesso.",
           },
         })
       } else {
-        console.log("Falha na validação do CAPTCHA.")
         return res.status(400).json({
           error: {
             message: "Falha na validação do CAPTCHA.",
