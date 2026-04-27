@@ -8,11 +8,11 @@ import LoadingSpinner from "../LoadingSpinner"
 
 interface Props {
   children?: ReactNode
-  rsocial: ReactNode
+  rsocial: any
   contato: any
-  navbar: ReactNode
-  user: ReactNode
-  loading?: ReactNode
+  navbar: any
+  user: any
+  loading?: any
 }
 
 const Layout = ({

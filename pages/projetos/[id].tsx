@@ -229,13 +229,13 @@ const VpublicaDetalhes = ({
 
   const { user, loading } = useFetchUser()
 
-  const [nhaId, setNhaId] = useState(null) // State to hold the ID
+  const [nhaId, setNhaId] = useState<string | null>(null) // State to hold the ID
   // const [loading, setLoading] = useState(true); // State to track loading status
 
   useEffect(() => {
     const fetchNhaId = async () => {
       const id = await getIdFromLocalCookie() // Await the promise
-      setNhaId(id) // Set the resolved value
+      setNhaId(id ?? null) // Set the resolved value
       // setLoading(false); // Set loading to false after the value is fetched
     }
 
