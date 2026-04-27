@@ -1,5 +1,6 @@
 import Layout from "../../components/Layout"
 import { fetcher } from "../../lib/api"
+import { parseNavbar } from "../../lib/parseNavbar"
 import Link from "next/link"
 import Head from "next/head"
 import { StrapiImage } from "../../components/custom/StrapiImage"
@@ -114,13 +115,7 @@ export async function getServerSideProps(context: any) {
       fetcher(`${api_link}/api/menus?populate=deep`),
     ])
 
-    const dlink =
-      navbar?.data?.flatMap((value: any) =>
-        value?.attributes?.items?.data?.map((item: any) => ({
-          name: item?.attributes?.title ?? "",
-          link: item?.attributes?.url ?? "#",
-        })) ?? []
-      ) ?? []
+    const dlink = parseNavbar(navbar)
 
     // Fetch the previous and next posts
     const previousPost = await fetcher(
