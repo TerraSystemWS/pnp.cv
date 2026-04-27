@@ -107,7 +107,7 @@ const Nav = ({ navbar }: any) => {
               open ? "top-20" : "top-[-490px]"
             }`}
           >
-            {navbar.map((link: any) => (
+            {(navbar ?? []).map((link: any) => (
               <li key={link.name} className="md:ml-8 text-xl md:my-0 my-7">
                 <Link
                   href={link.link}

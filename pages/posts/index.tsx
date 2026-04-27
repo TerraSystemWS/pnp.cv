@@ -223,6 +223,6 @@ export async function getServerSideProps() {
     return { props: { social: rsocials, contato, posts, navbar: dlink } }
   } catch (error) {
     console.error("Error fetching data:", error)
-    return { props: { error: "Failed to fetch data" } }
+    return { props: { error: "Failed to fetch data", navbar: [] } }
   }
 }
