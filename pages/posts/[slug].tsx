@@ -114,12 +114,13 @@ export async function getServerSideProps(context: any) {
       fetcher(`${api_link}/api/menus?populate=deep`),
     ])
 
-    const dlink = navbar.data?.flatMap((value: any) =>
-      value.attributes.items.data.map((item: any) => ({
-        name: item.attributes.title,
-        link: item.attributes.url,
-      }))
-    )
+    const dlink =
+      navbar?.data?.flatMap((value: any) =>
+        value?.attributes?.items?.data?.map((item: any) => ({
+          name: item?.attributes?.title ?? "",
+          link: item?.attributes?.url ?? "#",
+        })) ?? []
+      ) ?? []
 
     // Fetch the previous and next posts
     const previousPost = await fetcher(

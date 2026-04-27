@@ -179,27 +179,34 @@ export async function getServerSideProps({ params, query }: any) {
 
 	const queries = new URLSearchParams({ sort: "N_Edicao:desc" });
 
-	const [rsocials, contato, edicao, navbar] = await Promise.all([
-		fetcher(`${api_link}/api/redes-social?populate=*`),
-		fetcher(`${api_link}/api/contato`),
-		fetcher(
-			`${api_link}/api/edicoes?populate=deep&${queries.toString()}&filters[N_Edicao][$eq]=${edicao_id}`
-		),
-		fetcher(`${api_link}/api/menus?populate=deep`),
-	]);
+	try {
+		const [rsocials, contato, edicao, navbar] = await Promise.all([
+			fetcher(`${api_link}/api/redes-social?populate=*`),
+			fetcher(`${api_link}/api/contato`),
+			fetcher(
+				`${api_link}/api/edicoes?populate=deep&${queries.toString()}&filters[N_Edicao][$eq]=${edicao_id}`
+			),
+			fetcher(`${api_link}/api/menus?populate=deep`),
+		]);
 
-	// console.log(`${api_link}/api/edicoes?populate=deep&${queries.toString()}`);
+		const dlink =
+			navbar?.data?.flatMap((value: any) =>
+				value?.attributes?.items?.data?.map((item: any) => ({
+					name: item?.attributes?.title ?? "",
+					link: item?.attributes?.url ?? "#",
+				})) ?? []
+			) ?? [];
 
-	// console.log(
-	// 	`${api_link}/api/edicoes?populate=deep&${queries.toString()}&filters[N_Edicao][$eq]=${edicao_id}`
-	// );
-
-	const dlink = navbar.data.flatMap((value: any) =>
-		value.attributes.items.data.map((item: any) => ({
-			name: item.attributes.title,
-			link: item.attributes.url,
-		}))
-	);
-
-	return { props: { social: rsocials, contato, edicao, navbar: dlink } };
+		return { props: { social: rsocials, contato, edicao, navbar: dlink } };
+	} catch (error) {
+		console.error("Error fetching galeria data:", error)
+		return {
+			props: {
+				social: { data: null },
+				contato: { data: null },
+				edicao: { data: null },
+				navbar: [],
+			},
+		}
+	}
 }

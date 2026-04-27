@@ -1080,12 +1080,13 @@ export async function getServerSideProps({ query }: any) {
     ])
 
     // Processar links do navbar
-    const navbarLinks = navbar.data.flatMap((menu: any) =>
-      menu.attributes.items.data.map((item: any) => ({
-        name: item.attributes.title,
-        link: item.attributes.url,
-      }))
-    )
+    const navbarLinks =
+      navbar?.data?.flatMap((menu: any) =>
+        menu?.attributes?.items?.data?.map((item: any) => ({
+          name: item?.attributes?.title ?? "",
+          link: item?.attributes?.url ?? "#",
+        })) ?? []
+      ) ?? []
 
     return {
       props: {

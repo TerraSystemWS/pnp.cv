@@ -139,30 +139,42 @@ export async function getServerSideProps() {
     { encodeValuesOnly: true }
   )
 
-  const [rsocials, contato, edicaoResponse, navbarResponse] = await Promise.all(
-    [
-      fetcher(`${api_link}/api/redes-social?populate=*`),
-      fetcher(`${api_link}/api/contato`),
-      fetcher(`${api_link}/api/edicoes?_limit=1&populate=deep&${query}`),
-      fetcher(`${api_link}/api/menus?populate=deep`),
-    ]
-  )
+  try {
+    const [rsocials, contato, edicaoResponse, navbarResponse] = await Promise.all(
+      [
+        fetcher(`${api_link}/api/redes-social?populate=*`),
+        fetcher(`${api_link}/api/contato`),
+        fetcher(`${api_link}/api/edicoes?_limit=1&populate=deep&${query}`),
+        fetcher(`${api_link}/api/menus?populate=deep`),
+      ]
+    )
 
-  const edicao = edicaoResponse?.data?.[0] || null
-  const navbar =
-    navbarResponse?.data?.flatMap((menu: any) =>
-      menu.attributes.items.data.map((item: any) => ({
-        name: item.attributes.title,
-        link: item.attributes.url,
-      }))
-    ) || []
+    const edicao = edicaoResponse?.data?.[0] ?? null
+    const navbar =
+      navbarResponse?.data?.flatMap((menu: any) =>
+        menu?.attributes?.items?.data?.map((item: any) => ({
+          name: item?.attributes?.title ?? "",
+          link: item?.attributes?.url ?? "#",
+        })) ?? []
+      ) ?? []
 
-  return {
-    props: {
-      social: rsocials,
-      contato,
-      edicao,
-      navbar,
-    },
+    return {
+      props: {
+        social: rsocials,
+        contato,
+        edicao,
+        navbar,
+      },
+    }
+  } catch (error) {
+    console.error("Error fetching regulamentos data:", error)
+    return {
+      props: {
+        social: { data: null },
+        contato: { data: null },
+        edicao: null,
+        navbar: [],
+      },
+    }
   }
 }
