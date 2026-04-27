@@ -1,16 +1,16 @@
-import { useState } from "react"
+import React, { useState } from "react"
 
 export default function UploadPage() {
-  const [files, setFiles] = useState([])
+  const [files, setFiles] = useState<File[]>([])
   const [isUploading, setIsUploading] = useState(false)
-  const [response, setResponse] = useState(null)
-  const [inscricaoId, setInscricaoId] = useState(2) // ID da inscrição que você quer atualizar
+  const [response, setResponse] = useState<unknown>(null)
+  const [inscricaoId] = useState(2)
 
-  const handleFileChange = (e) => {
-    setFiles(e.target.files) // Permite múltiplos arquivos
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFiles(Array.from(e.target.files ?? []))
   }
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     if (files.length === 0) {
@@ -65,7 +65,7 @@ export default function UploadPage() {
 
         const fileIds = [
           ...existingFiles, // Manter os arquivos existentes
-          ...uploadData.map((file) => ({
+          ...uploadData.map((file: { id: number; name: string }) => ({
             titulo: file.name, // Nome do arquivo
             publico: true,
             ficheiro: {
@@ -123,7 +123,7 @@ export default function UploadPage() {
         </button>
       </form>
 
-      {response && (
+      {response !== null && (
         <div>
           <h2>Resposta do Strapi:</h2>
           <pre>{JSON.stringify(response, null, 2)}</pre>
