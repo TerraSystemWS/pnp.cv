@@ -6,6 +6,10 @@ export class ApiError extends Error {
   }
 }
 
+export function getStrapiURL() {
+  return process.env.NEXT_PUBLIC_STRAPI_URL ?? "http://localhost:1337"
+}
+
 export async function fetcher(url: string, options: RequestInit = {}) {
   const response = await fetch(url, options)
 
@@ -19,4 +23,30 @@ export async function fetcher(url: string, options: RequestInit = {}) {
   }
 
   return response.json()
+}
+
+export const apiClient = {
+  get: (path: string, options: RequestInit = {}) =>
+    fetcher(`${getStrapiURL()}${path}`, options),
+
+  getWithAuth: (path: string, jwt: string, options: RequestInit = {}) =>
+    fetcher(`${getStrapiURL()}${path}`, {
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${jwt}`,
+        ...(options.headers ?? {}),
+      },
+    }),
+
+  post: (path: string, body: unknown, jwt?: string, options: RequestInit = {}) =>
+    fetcher(`${getStrapiURL()}${path}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(jwt ? { Authorization: `Bearer ${jwt}` } : {}),
+      },
+      body: JSON.stringify(body),
+      ...options,
+    }),
 }
