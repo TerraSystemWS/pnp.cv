@@ -2,7 +2,7 @@ import { Timeline } from "flowbite-react"
 import { HiCalendar, HiArrowNarrowRight } from "react-icons/hi"
 import Layout from "../../components/Layout"
 import { fetcher } from "../../lib/api"
-// import Image from "next/image";
+import Image from "next/image";
 import Link from "next/link"
 import Head from "next/head"
 // import { Button } from "flowbite-react";
@@ -98,9 +98,11 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
                 key={value2.id}
                 className="flex flex-col items-center border rounded-lg shadow-lg overflow-hidden mr-10"
               >
-                <img
+                <Image
                   src={value2.foto}
                   alt={value2.nome}
+                  width={400}
+                  height={192}
                   className="w-full h-48 object-cover"
                 />
                 <div className="p-4">

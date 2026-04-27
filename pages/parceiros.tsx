@@ -1,3 +1,4 @@
+import Image from "next/image"
 import Layout from "../components/Layout"
 import { fetcher } from "../lib/api"
 import Link from "next/link"
@@ -59,12 +60,12 @@ const PartnerCard = ({ partner }: { partner: Partner }) => (
     <div className="h-full flex flex-col items-center p-4 justify-center">
       <Link href={partner.link ?? "#"} target="_blank" rel="noreferrer">
         <div className="flex justify-center items-center rounded">
-          <img
+          <Image
             alt={partner.title}
             className="object-contain object-center"
             src={partner.foto}
-            width="300"
-            height="300"
+            width={300}
+            height={300}
           />
         </div>
       </Link>

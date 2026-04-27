@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 import { StrapiImage } from "../custom/StrapiImage";
 import { getStrapiMedia } from "../../lib/utils";
 
@@ -11,10 +12,12 @@ const Gallery: React.FC<GalleryProps> = ({ images }) => {
 		<div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-5">
 			{images.map((imageUrl, index) => (
 				<div key={index}>
-					<img
+					<Image
 						className="h-auto max-w-full rounded-lg"
-						src={getStrapiMedia(imageUrl) || " "}
+						src={getStrapiMedia(imageUrl) || "https://placehold.co/400x300"}
 						alt={`Image ${index}`}
+						width={400}
+						height={300}
 					/>
 					{/* <StrapiImage
 						src={imageUrl}
