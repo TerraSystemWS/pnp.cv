@@ -101,7 +101,7 @@ const Avaliacao = ({
 
   // Agrupando avaliações por categoria e projeto
   const categorias: any = {}
-  avaliacoes.data.forEach((avaliacao: any) => {
+  ;(avaliacoes ?? []).forEach((avaliacao: any) => {
     const nomeProjeto =
       avaliacao.attributes.inscricoe.data.attributes.nome_projeto
     const categoria = avaliacao.attributes.inscricoe.data.attributes.categoria

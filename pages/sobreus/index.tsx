@@ -16,7 +16,7 @@ const Sobreus = ({ social, contato, navbar, sobreus }: any) => {
     return { __html: html };
   };
 
-  const sobreUs: any = createMarkup(sobreus.data.attributes.sobrepnp);
+  const sobreUs: any = createMarkup(sobreus?.data?.attributes?.sobrepnp ?? "");
 
   return (
     <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>

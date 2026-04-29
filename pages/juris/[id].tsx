@@ -174,35 +174,25 @@ export async function getServerSideProps({ params, query }: any) {
 	// Fetch data from external API
 	console.log(query.edicao);
 
-	// GET: links para as redes sociais
-	const rsocials = await fetcher(`${api_link}/api/redes-social?populate=*`);
-	// GET: dados para contatos
-	const contato = await fetcher(`${api_link}/api/contato`);
-	// GET: dados para banners
-	const banners = await fetcher(`${api_link}/api/banners?populate=deep`);
-	// GET: dados dos juris, categorias
-	const edicao = await fetcher(`${api_link}/api/edicoes?populate=deep`);
-	// `${api_link}/edicoes/${query.edicao}?populate=deep`
-	// console.log("edicao");
-	// console.log(edicao);
-	// GET: dados do navbar
-	const navbar = await fetcher(`${api_link}/api/menus?populate=deep`);
-	//get links for menu
-	let dlink: any = [];
-	navbar.data.map((value: any) => {
-		value.attributes.items.data.map((value: any, index: any) => {
-			// value.attributes.title;
-			// value.attributes.url;
-			// console.log(value);
-			dlink[index] = {
-				name: value.attributes.title,
-				link: value.attributes.url,
-			};
-		});
-	});
+	const results = await Promise.allSettled([
+		fetcher(`${api_link}/api/contato`),
+		fetcher(`${api_link}/api/banners?populate=deep`),
+		fetcher(`${api_link}/api/edicoes?populate=deep`),
+		fetcher(`${api_link}/api/menus?populate=deep`),
+	])
+	const [contato, banners, edicao, menus] = results.map((r: any) => {
+		if (r.status === 'fulfilled') return r.value
+		console.error('Endpoint failed:', r.reason)
+		return null
+	})
 
-	// Pass data to the page via props
 	return {
-		props: { social: contato, banners, edicao, navbar: dlink },
+		props: {
+			social: parseNavbar(menus, "redes-social"),
+			contato: contato ?? null,
+			banners: banners ?? null,
+			edicao: edicao ?? null,
+			navbar: parseNavbar(menus, "menus"),
+		},
 	};
 }
