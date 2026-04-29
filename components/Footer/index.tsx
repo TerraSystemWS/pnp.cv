@@ -30,7 +30,8 @@ interface FooterProps {
   }
 }
 
-const Footer: React.FC<FooterProps> = ({ rsocial, contato }) => {
+const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
+  const contact = contato?.data?.attributes
   const {
     register,
     handleSubmit,
@@ -96,11 +97,11 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato }) => {
                 <Image src={logo} alt="logo" />
               </h4>
               <p className="text-gray-300">
-                {contato.data.attributes.Local}
+                {contact?.Local}
                 <br />
-                {contato.data.attributes.phone}
+                {contact?.phone}
                 <br />
-                {contato.data.attributes.email}
+                {contact?.email}
               </p>
             </div>
 
@@ -142,7 +143,7 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato }) => {
                 Subscreva A Nossa NewsLetter
               </h4>
               <p className="text-gray-300 pb-2">
-                {contato.data.attributes.newsletterTitle}
+                {contact?.newsletterTitle}
               </p>
               <form
                 onSubmit={handleSubmit(onSubmit)}
