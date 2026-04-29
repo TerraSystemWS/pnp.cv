@@ -14,16 +14,22 @@ import { useForm, SubmitHandler } from "react-hook-form"
 
 type Inputs = { email: string; password: string }
 
+const GOLD        = "#c2a12b"
+const GOLD_BRIGHT = "#f0d060"
+const DARK        = "#0a0805"
+const DARK_CARD   = "#100d07"
+
 const Nav = ({ navbar }: any) => {
   const { user, loading } = useUser()
   const [open, setOpen]       = useState(false)
   const [visible, setVisible] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [hovered, setHovered]   = useState<string | null>(null)
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 30)
-    window.addEventListener("scroll", onScroll, { passive: true })
-    return () => window.removeEventListener("scroll", onScroll)
+    const fn = () => setScrolled(window.scrollY > 20)
+    window.addEventListener("scroll", fn, { passive: true })
+    return () => window.removeEventListener("scroll", fn)
   }, [])
 
   useEffect(() => {
@@ -54,354 +60,306 @@ const Nav = ({ navbar }: any) => {
 
   return (
     <>
-      <style jsx global>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap');
+      {/* ── Global keyframes + PrimeReact dark override ── */}
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap');
 
-        /* ── PrimeReact Dialog dark override ── */
-        .p-dialog {
-          background: #0f0c07 !important;
-          border: 1px solid rgba(194,161,43,0.28) !important;
-          border-radius: 18px !important;
-          box-shadow: 0 40px 100px rgba(0,0,0,0.85), 0 0 0 1px rgba(194,161,43,0.06) !important;
+        @keyframes drawerSlide {
+          from { transform: translateX(100%); opacity: 0; }
+          to   { transform: translateX(0);    opacity: 1; }
+        }
+        @keyframes overlayFade {
+          from { opacity: 0; }
+          to   { opacity: 1; }
+        }
+        @keyframes goldPulse {
+          0%,100% { box-shadow: 0 0 0 0 rgba(194,161,43,0); }
+          50%      { box-shadow: 0 0 20px 4px rgba(194,161,43,0.25); }
+        }
+
+        /* PrimeReact dialog — force dark theme */
+        .pnp-login-dialog.p-dialog {
+          background: ${DARK_CARD} !important;
+          border: 1px solid ${GOLD}55 !important;
+          border-radius: 16px !important;
           overflow: hidden !important;
+          box-shadow: 0 40px 100px #000000cc !important;
         }
-        .p-dialog .p-dialog-header {
-          background: #0f0c07 !important;
-          border-bottom: 1px solid rgba(194,161,43,0.12) !important;
-          padding: 1.5rem 2rem 1.25rem !important;
+        .pnp-login-dialog .p-dialog-header {
+          background: ${DARK_CARD} !important;
+          border-bottom: 1px solid ${GOLD}22 !important;
+          padding: 1.5rem 2rem !important;
         }
-        .p-dialog .p-dialog-header .p-dialog-title {
+        .pnp-login-dialog .p-dialog-header .p-dialog-title {
           font-family: 'Cormorant Garamond', serif !important;
-          font-size: 1.4rem !important;
+          font-size: 1.5rem !important;
           font-weight: 300 !important;
           color: #f5e8b8 !important;
-          letter-spacing: 0.08em !important;
+          letter-spacing: 0.1em !important;
         }
-        .p-dialog .p-dialog-header-icon {
-          color: rgba(194,161,43,0.4) !important;
-          border-radius: 50% !important;
+        .pnp-login-dialog .p-dialog-header-icon {
+          color: ${GOLD}88 !important;
         }
-        .p-dialog .p-dialog-header-icon:hover {
-          color: #c2a12b !important;
-          background: rgba(194,161,43,0.1) !important;
+        .pnp-login-dialog .p-dialog-header-icon:hover {
+          color: ${GOLD} !important;
+          background: ${GOLD}18 !important;
         }
-        .p-dialog .p-dialog-content {
-          background: #0f0c07 !important;
-          padding: 1.75rem 2rem !important;
+        .pnp-login-dialog .p-dialog-content {
+          background: ${DARK_CARD} !important;
+          padding: 2rem !important;
         }
-        .p-dialog .p-dialog-footer {
-          background: #0f0c07 !important;
-          border-top: 1px solid rgba(194,161,43,0.1) !important;
+        .pnp-login-dialog .p-dialog-footer {
+          background: ${DARK_CARD} !important;
+          border-top: 1px solid ${GOLD}18 !important;
           padding: 1rem 2rem !important;
         }
-        .p-button.p-button-text {
-          color: rgba(194,161,43,0.5) !important;
+        .pnp-login-dialog .p-button.p-button-text {
+          color: ${GOLD}88 !important;
           font-family: 'DM Sans', sans-serif !important;
-          font-size: 0.78rem !important;
-          letter-spacing: 0.08em !important;
+          font-size: 0.75rem !important;
+          letter-spacing: 0.1em !important;
         }
-        .p-button.p-button-text:hover {
-          color: #c2a12b !important;
-          background: rgba(194,161,43,0.07) !important;
-        }
-
-        /* ── Navbar ── */
-        .nav-root {
-          position: fixed;
-          top: 0; left: 0; right: 0;
-          z-index: 100;
-          font-family: 'DM Sans', sans-serif;
-          background: rgba(8,6,4,0.82);
-          transition: background 0.4s ease, box-shadow 0.4s ease;
-        }
-        .nav-root.nav-scrolled {
-          background: rgba(6,5,3,0.95);
-          backdrop-filter: blur(18px);
-          -webkit-backdrop-filter: blur(18px);
-          box-shadow: 0 1px 0 rgba(194,161,43,0.13), 0 8px 32px rgba(0,0,0,0.5);
-        }
-        .nav-inner {
-          max-width: 1280px;
-          margin: 0 auto;
-          padding: 0 2rem;
-          height: 68px;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-        }
-
-        /* Desktop links */
-        .nav-desktop {
-          display: flex;
-          align-items: center;
-          gap: 2.25rem;
-        }
-        .nav-link {
-          position: relative;
-          font-size: 0.68rem;
-          letter-spacing: 0.16em;
-          text-transform: uppercase;
-          color: rgba(255,255,255,0.5);
-          text-decoration: none;
-          padding: 4px 0;
-          transition: color 0.3s;
-        }
-        .nav-link::after {
-          content: '';
-          position: absolute;
-          bottom: -1px; left: 0;
-          width: 0; height: 1px;
-          background: linear-gradient(90deg, #c2a12b, #f0d060);
-          transition: width 0.35s ease;
-        }
-        .nav-link:hover { color: #e8c84a; }
-        .nav-link:hover::after { width: 100%; }
-
-        .nav-user {
-          font-family: 'Cormorant Garamond', serif;
-          font-style: italic;
-          font-size: 1rem;
-          font-weight: 300;
-          color: #c2a12b;
-          text-decoration: none;
-          transition: color 0.3s;
-        }
-        .nav-user:hover { color: #f0d060; }
-
-        .nav-btn-login {
-          font-size: 0.65rem;
-          letter-spacing: 0.16em;
-          text-transform: uppercase;
-          color: #c2a12b;
-          border: 1px solid rgba(194,161,43,0.4);
-          border-radius: 100px;
-          padding: 7px 22px;
-          background: transparent;
-          cursor: pointer;
-          font-family: 'DM Sans', sans-serif;
-          transition: border-color 0.3s, background 0.3s, color 0.3s, box-shadow 0.3s;
-        }
-        .nav-btn-login:hover {
-          border-color: #c2a12b;
-          background: rgba(194,161,43,0.09);
-          color: #f0d060;
-          box-shadow: 0 0 16px rgba(194,161,43,0.15);
-        }
-
-        .nav-btn-logout {
-          font-size: 0.65rem;
-          letter-spacing: 0.16em;
-          text-transform: uppercase;
-          color: rgba(194,161,43,0.5);
-          border: 1px solid rgba(194,161,43,0.18);
-          border-radius: 100px;
-          padding: 7px 22px;
-          background: transparent;
-          cursor: pointer;
-          font-family: 'DM Sans', sans-serif;
-          transition: border-color 0.3s, color 0.3s;
-        }
-        .nav-btn-logout:hover {
-          border-color: rgba(194,161,43,0.45);
-          color: #c2a12b;
-        }
-
-        /* Hamburger */
-        .nav-burger {
-          display: none;
-          flex-direction: column;
-          gap: 5px;
-          background: transparent;
-          border: none;
-          cursor: pointer;
-          padding: 6px;
-        }
-        .nav-burger span {
-          display: block;
-          width: 22px; height: 1px;
-          background: rgba(194,161,43,0.75);
-          transition: transform 0.35s ease, opacity 0.35s ease, width 0.35s ease;
-          transform-origin: center;
-        }
-        .nav-burger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
-        .nav-burger.open span:nth-child(2) { opacity: 0; width: 0; }
-        .nav-burger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
-
-        /* Mobile overlay + drawer */
-        .nav-overlay {
-          position: fixed; inset: 0;
-          background: rgba(0,0,0,0.65);
-          backdrop-filter: blur(6px);
-          -webkit-backdrop-filter: blur(6px);
-          z-index: 98;
-          opacity: 0; pointer-events: none;
-          transition: opacity 0.4s ease;
-        }
-        .nav-overlay.open { opacity: 1; pointer-events: all; }
-
-        .nav-drawer {
-          position: fixed;
-          top: 0; right: 0;
-          width: min(300px, 82vw);
-          height: 100dvh;
-          background: #060503;
-          border-left: 1px solid rgba(194,161,43,0.18);
-          z-index: 99;
-          transform: translateX(100%);
-          transition: transform 0.45s cubic-bezier(0.4,0,0.2,1);
-          display: flex;
-          flex-direction: column;
-          padding: 5.5rem 2rem 2.5rem;
-        }
-        .nav-drawer.open { transform: translateX(0); }
-
-        .nav-drawer-link {
-          font-family: 'Cormorant Garamond', serif;
-          font-size: 1.55rem;
-          font-weight: 300;
-          color: rgba(240,216,144,0.5);
-          text-decoration: none;
-          padding: 0.65rem 0;
-          border-bottom: 1px solid rgba(194,161,43,0.07);
-          letter-spacing: 0.02em;
-          transition: color 0.3s, padding-left 0.3s;
-        }
-        .nav-drawer-link:hover { color: #e8c84a; padding-left: 10px; }
-
-        /* Login form inside dialog */
-        .nlf-label {
-          display: block;
-          font-size: 0.62rem;
-          letter-spacing: 0.18em;
-          text-transform: uppercase;
-          color: rgba(194,161,43,0.45);
-          margin-bottom: 7px;
-          font-family: 'DM Sans', sans-serif;
-        }
-        .nlf-input {
-          width: 100%;
-          background: rgba(194,161,43,0.05);
-          border: 1px solid rgba(194,161,43,0.2);
-          border-radius: 9px;
-          padding: 10px 14px;
-          font-size: 0.85rem;
-          color: #f0e0a0;
-          font-family: 'DM Sans', sans-serif;
-          transition: border-color 0.3s, background 0.3s, box-shadow 0.3s;
-          margin-bottom: 0.85rem;
-        }
-        .nlf-input::placeholder { color: rgba(194,161,43,0.22); }
-        .nlf-input:focus {
-          outline: none;
-          border-color: rgba(194,161,43,0.55);
-          background: rgba(194,161,43,0.08);
-          box-shadow: 0 0 0 3px rgba(194,161,43,0.07);
-        }
-        .nlf-err {
-          font-size: 0.7rem;
-          color: rgba(248,113,113,0.75);
-          margin-top: -0.6rem;
-          margin-bottom: 0.6rem;
-          font-family: 'DM Sans', sans-serif;
-        }
-        .nlf-submit {
-          width: 100%;
-          background: linear-gradient(135deg, #a8861a 0%, #c2a12b 30%, #e8c84a 60%, #c2a12b 100%);
-          background-size: 200% auto;
-          border: none;
-          border-radius: 9px;
-          padding: 12px;
-          font-family: 'DM Sans', sans-serif;
-          font-size: 0.72rem;
-          letter-spacing: 0.14em;
-          text-transform: uppercase;
-          color: #140f04;
-          font-weight: 500;
-          cursor: pointer;
-          margin-top: 0.4rem;
-          transition: background-position 0.5s, transform 0.2s, box-shadow 0.3s;
-        }
-        .nlf-submit:hover {
-          background-position: right center;
-          transform: translateY(-1px);
-          box-shadow: 0 8px 24px rgba(194,161,43,0.28);
-        }
-
-        @media (max-width: 768px) {
-          .nav-desktop { display: none; }
-          .nav-burger  { display: flex; }
+        .pnp-login-dialog .p-button.p-button-text:hover {
+          color: ${GOLD} !important;
+          background: ${GOLD}18 !important;
         }
       `}</style>
 
-      {/* Dark overlay */}
-      <div className={`nav-overlay ${open ? "open" : ""}`} onClick={() => setOpen(false)} />
+      {/* ── Overlay (mobile) ── */}
+      {open && (
+        <div
+          onClick={() => setOpen(false)}
+          style={{
+            position: "fixed", inset: 0,
+            background: "rgba(0,0,0,0.75)",
+            backdropFilter: "blur(6px)",
+            zIndex: 98,
+            animation: "overlayFade 0.3s ease",
+          }}
+        />
+      )}
 
-      {/* Mobile drawer */}
-      <div className={`nav-drawer ${open ? "open" : ""}`}>
+      {/* ── Mobile drawer ── */}
+      <div style={{
+        position: "fixed",
+        top: 0, right: 0,
+        width: "min(300px, 85vw)",
+        height: "100dvh",
+        background: DARK,
+        borderLeft: `1px solid ${GOLD}40`,
+        zIndex: 99,
+        transform: open ? "translateX(0)" : "translateX(100%)",
+        transition: "transform 0.45s cubic-bezier(0.4,0,0.2,1)",
+        display: "flex",
+        flexDirection: "column",
+        padding: "5.5rem 2rem 2.5rem",
+        fontFamily: "'Cormorant Garamond', serif",
+      }}>
+        {/* Ornament */}
+        <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.55rem", letterSpacing: "0.25em", color: `${GOLD}55`, textTransform: "uppercase", marginBottom: "1.5rem" }}>
+          ✦ &nbsp; Prémio Nacional de Publicidade
+        </p>
+
         {(navbar ?? []).map((link: any) => (
           <Link
             key={link.name}
             href={link.link}
             target={link.target ?? "_self"}
-            className="nav-drawer-link"
             onClick={() => setOpen(false)}
+            style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontSize: "1.7rem",
+              fontWeight: 300,
+              color: `${GOLD_BRIGHT}99`,
+              textDecoration: "none",
+              padding: "0.6rem 0",
+              borderBottom: `1px solid ${GOLD}15`,
+              letterSpacing: "0.02em",
+              transition: "color 0.25s, padding-left 0.25s",
+            }}
+            onMouseEnter={e => { (e.target as HTMLElement).style.color = GOLD_BRIGHT; (e.target as HTMLElement).style.paddingLeft = "10px" }}
+            onMouseLeave={e => { (e.target as HTMLElement).style.color = `${GOLD_BRIGHT}99`; (e.target as HTMLElement).style.paddingLeft = "0" }}
           >
             {link.name}
           </Link>
         ))}
         {!loading && user && (
-          <Link href="/perfil" className="nav-drawer-link" onClick={() => setOpen(false)}>
-            Perfil
+          <Link
+            href="/perfil"
+            onClick={() => setOpen(false)}
+            style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: "1.7rem", fontWeight: 300, color: GOLD, textDecoration: "none", padding: "0.6rem 0", borderBottom: `1px solid ${GOLD}15`, fontStyle: "italic" }}
+          >
+            {user}
           </Link>
         )}
-        <div style={{ marginTop: "auto", paddingTop: "2rem" }}>
+
+        <div style={{ marginTop: "auto" }}>
           {!loading && (user ? (
-            <button className="nav-btn-logout" style={{ width: "100%" }} onClick={() => { logout(); setOpen(false) }}>
+            <button
+              onClick={() => { logout(); setOpen(false) }}
+              style={{ width: "100%", background: "transparent", border: `1px solid ${GOLD}44`, borderRadius: "8px", padding: "10px", fontFamily: "'DM Sans',sans-serif", fontSize: "0.7rem", letterSpacing: "0.14em", textTransform: "uppercase", color: `${GOLD}99`, cursor: "pointer" }}
+            >
               Logout
             </button>
           ) : (
-            <button className="nav-btn-login" style={{ width: "100%" }} onClick={() => { setVisible(true); setOpen(false) }}>
+            <button
+              onClick={() => { setVisible(true); setOpen(false) }}
+              style={{ width: "100%", background: `linear-gradient(135deg, #a8861a, ${GOLD}, ${GOLD_BRIGHT}, ${GOLD})`, border: "none", borderRadius: "8px", padding: "11px", fontFamily: "'DM Sans',sans-serif", fontSize: "0.7rem", letterSpacing: "0.14em", textTransform: "uppercase", color: "#100d07", fontWeight: 600, cursor: "pointer" }}
+            >
               Login
             </button>
           ))}
         </div>
       </div>
 
-      {/* Navbar bar */}
-      <nav className={`nav-root ${scrolled ? "nav-scrolled" : ""}`}>
-        <div className="nav-inner">
+      {/* ── Navbar bar ── */}
+      <nav style={{
+        position: "fixed",
+        top: 0, left: 0, right: 0,
+        zIndex: 100,
+        background: scrolled ? `${DARK}f5` : `${DARK}dd`,
+        backdropFilter: scrolled ? "blur(20px)" : "none",
+        WebkitBackdropFilter: scrolled ? "blur(20px)" : "none",
+        borderBottom: `1px solid ${scrolled ? GOLD + "55" : GOLD + "25"}`,
+        transition: "background 0.4s, border-color 0.4s, backdrop-filter 0.4s",
+        /* Gold accent line at very top */
+        boxShadow: scrolled
+          ? `0 0 0 0 transparent, inset 0 3px 0 ${GOLD}`
+          : `inset 0 3px 0 ${GOLD}`,
+      }}>
+        <div style={{
+          maxWidth: "1280px",
+          margin: "0 auto",
+          padding: "0 2rem",
+          height: "68px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}>
+          {/* Logo */}
           <Link href="/" style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
-            <Image src={logo} alt="PNP" width={128} height={46} style={{ objectFit: "contain" }} />
+            <Image src={logo} alt="PNP" width={130} height={46} style={{ objectFit: "contain" }} />
           </Link>
 
-          <div className="nav-desktop">
+          {/* Desktop links */}
+          <div style={{ display: "flex", alignItems: "center", gap: "2rem" }} className="pnp-nav-desktop">
             {(navbar ?? []).map((link: any) => (
-              <Link key={link.name} href={link.link} target={link.target ?? "_self"} className="nav-link">
+              <Link
+                key={link.name}
+                href={link.link}
+                target={link.target ?? "_self"}
+                onMouseEnter={() => setHovered(link.name)}
+                onMouseLeave={() => setHovered(null)}
+                style={{
+                  fontFamily: "'DM Sans', sans-serif",
+                  fontSize: "0.68rem",
+                  letterSpacing: "0.16em",
+                  textTransform: "uppercase",
+                  color: hovered === link.name ? GOLD_BRIGHT : "rgba(240,224,180,0.65)",
+                  textDecoration: "none",
+                  transition: "color 0.25s",
+                  position: "relative",
+                }}
+              >
                 {link.name}
+                {hovered === link.name && (
+                  <span style={{
+                    position: "absolute", bottom: "-4px", left: 0, right: 0,
+                    height: "1px",
+                    background: `linear-gradient(90deg, ${GOLD}, ${GOLD_BRIGHT})`,
+                  }} />
+                )}
               </Link>
             ))}
+
             {!loading && user && (
-              <Link href="/perfil" className="nav-user">{user}</Link>
+              <Link
+                href="/perfil"
+                style={{ fontFamily: "'Cormorant Garamond',serif", fontStyle: "italic", fontSize: "1rem", fontWeight: 300, color: GOLD, textDecoration: "none" }}
+              >
+                {user}
+              </Link>
             )}
+
             {!loading && (user ? (
-              <button className="nav-btn-logout" onClick={logout}>Logout</button>
+              <button
+                onClick={logout}
+                style={{
+                  background: "transparent",
+                  border: `1px solid ${GOLD}55`,
+                  borderRadius: "100px",
+                  padding: "7px 22px",
+                  fontFamily: "'DM Sans',sans-serif",
+                  fontSize: "0.65rem",
+                  letterSpacing: "0.16em",
+                  textTransform: "uppercase",
+                  color: `${GOLD}bb`,
+                  cursor: "pointer",
+                }}
+              >
+                Logout
+              </button>
             ) : (
-              <button className="nav-btn-login" onClick={() => setVisible(true)}>Login</button>
+              <button
+                onClick={() => setVisible(true)}
+                style={{
+                  background: `linear-gradient(135deg, #a8861a 0%, ${GOLD} 40%, ${GOLD_BRIGHT} 70%, ${GOLD} 100%)`,
+                  backgroundSize: "200% auto",
+                  border: "none",
+                  borderRadius: "100px",
+                  padding: "8px 24px",
+                  fontFamily: "'DM Sans',sans-serif",
+                  fontSize: "0.65rem",
+                  letterSpacing: "0.16em",
+                  textTransform: "uppercase",
+                  color: "#0f0a02",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  animation: "goldPulse 3s ease-in-out infinite",
+                }}
+              >
+                Login
+              </button>
             ))}
           </div>
 
-          <button className={`nav-burger ${open ? "open" : ""}`} onClick={() => setOpen(!open)} aria-label="Menu">
-            <span /><span /><span />
+          {/* Hamburger */}
+          <button
+            onClick={() => setOpen(!open)}
+            aria-label="Menu"
+            style={{
+              display: "none",
+              flexDirection: "column",
+              gap: "5px",
+              background: "transparent",
+              border: "none",
+              cursor: "pointer",
+              padding: "6px",
+            }}
+            className="pnp-burger"
+          >
+            <span style={{ display: "block", width: "22px", height: "1px", background: GOLD, transition: "transform 0.35s", transform: open ? "translateY(6px) rotate(45deg)" : "none" }} />
+            <span style={{ display: "block", width: "16px", height: "1px", background: GOLD, transition: "opacity 0.35s, width 0.35s", opacity: open ? 0 : 1 }} />
+            <span style={{ display: "block", width: "22px", height: "1px", background: GOLD, transition: "transform 0.35s", transform: open ? "translateY(-6px) rotate(-45deg)" : "none" }} />
           </button>
         </div>
       </nav>
 
-      {/* Login Dialog */}
+      {/* Responsive burger show/hide */}
+      <style>{`
+        @media (max-width: 768px) {
+          .pnp-nav-desktop { display: none !important; }
+          .pnp-burger      { display: flex !important; }
+        }
+      `}</style>
+
+      {/* ── Login Dialog ── */}
       <Dialog
         header="Acesso"
         visible={visible}
         position="center"
         style={{ width: "min(420px, 92vw)" }}
+        className="pnp-login-dialog"
         onHide={() => setVisible(false)}
         footer={
           <Button label="Cancelar" icon="pi pi-times" onClick={() => setVisible(false)} className="p-button-text" />
@@ -410,25 +368,36 @@ const Nav = ({ navbar }: any) => {
         resizable={false}
       >
         <form onSubmit={handleSubmit(onSubmit)}>
-          <label className="nlf-label">Email</label>
+          {/* Email */}
+          <label style={{ display: "block", fontSize: "0.62rem", letterSpacing: "0.18em", textTransform: "uppercase", color: `${GOLD}77`, marginBottom: "7px", fontFamily: "'DM Sans',sans-serif" }}>
+            Email
+          </label>
           <input
             type="email"
             placeholder="nome@email.com"
-            className="nlf-input"
             {...register("email", { required: "Email obrigatório" })}
+            style={{ width: "100%", background: `${GOLD}0d`, border: `1px solid ${GOLD}33`, borderRadius: "9px", padding: "11px 14px", fontSize: "0.85rem", color: "#f0e0a0", fontFamily: "'DM Sans',sans-serif", outline: "none", marginBottom: "0.85rem", boxSizing: "border-box" }}
           />
-          {errors.email && <p className="nlf-err">{errors.email.message}</p>}
+          {errors.email && <p style={{ color: "#f87171cc", fontSize: "0.7rem", marginTop: "-0.6rem", marginBottom: "0.6rem" }}>{errors.email.message}</p>}
 
-          <label className="nlf-label">Password</label>
+          {/* Password */}
+          <label style={{ display: "block", fontSize: "0.62rem", letterSpacing: "0.18em", textTransform: "uppercase", color: `${GOLD}77`, marginBottom: "7px", fontFamily: "'DM Sans',sans-serif" }}>
+            Password
+          </label>
           <input
             type="password"
             placeholder="••••••••"
-            className="nlf-input"
             {...register("password", { required: "Password obrigatória" })}
+            style={{ width: "100%", background: `${GOLD}0d`, border: `1px solid ${GOLD}33`, borderRadius: "9px", padding: "11px 14px", fontSize: "0.85rem", color: "#f0e0a0", fontFamily: "'DM Sans',sans-serif", outline: "none", marginBottom: "1rem", boxSizing: "border-box" }}
           />
-          {errors.password && <p className="nlf-err">{errors.password.message}</p>}
+          {errors.password && <p style={{ color: "#f87171cc", fontSize: "0.7rem", marginTop: "-0.6rem", marginBottom: "0.6rem" }}>{errors.password.message}</p>}
 
-          <button type="submit" className="nlf-submit">Entrar</button>
+          <button
+            type="submit"
+            style={{ width: "100%", background: `linear-gradient(135deg, #a8861a, ${GOLD}, ${GOLD_BRIGHT})`, border: "none", borderRadius: "9px", padding: "12px", fontFamily: "'DM Sans',sans-serif", fontSize: "0.72rem", letterSpacing: "0.14em", textTransform: "uppercase", color: "#0f0a02", fontWeight: 600, cursor: "pointer" }}
+          >
+            Entrar
+          </button>
         </form>
       </Dialog>
     </>

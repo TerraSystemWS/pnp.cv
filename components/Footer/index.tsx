@@ -17,6 +17,11 @@ interface FooterProps {
   contato: { data: { attributes: Contact } } | null
 }
 
+const GOLD        = "#c2a12b"
+const GOLD_BRIGHT = "#f0d060"
+const DARK        = "#080604"
+const DARK_MID    = "#0d0a05"
+
 const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
   const contact = contato?.data?.attributes
   const { register, handleSubmit } = useForm<{ email: string }>()
@@ -36,197 +41,183 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
   }
 
   const usefulLinks = [
-    { name: "Sobre Nós",             link: "/sobreus" },
-    { name: "Termos de Serviço",     link: "/sobreus/terms" },
+    { name: "Sobre Nós",               link: "/sobreus" },
+    { name: "Termos de Serviço",       link: "/sobreus/terms" },
     { name: "Política de Privacidade", link: "/sobreus/policy" },
   ]
 
   const siteLinks = [
-    { name: "Home",          link: "/" },
-    { name: "Regulamentos",  link: "/regulamentos" },
-    { name: "Edições",       link: "/edicoes" },
-    { name: "Parceiros",     link: "/parceiros" },
-    { name: "Blog",          link: "/posts" },
-    { name: "Contatos",      link: "/contatos" },
+    { name: "Home",         link: "/" },
+    { name: "Regulamentos", link: "/regulamentos" },
+    { name: "Edições",      link: "/edicoes" },
+    { name: "Parceiros",    link: "/parceiros" },
+    { name: "Blog",         link: "/posts" },
+    { name: "Contatos",     link: "/contatos" },
   ]
 
   const year = new Date().getFullYear()
 
   return (
-    <footer style={{ position: "relative", zIndex: 50 }}>
-      <style jsx global>{`
-        .ft-root {
-          background: #070503;
-          border-top: 1px solid rgba(194,161,43,0.16);
-          font-family: 'DM Sans', sans-serif;
-        }
-        .ft-col-head {
-          font-size: 0.58rem;
-          letter-spacing: 0.22em;
-          text-transform: uppercase;
-          color: rgba(194,161,43,0.38);
-          margin-bottom: 1.4rem;
-          font-family: 'DM Sans', sans-serif;
-        }
-        .ft-link {
-          display: block;
-          font-size: 0.8rem;
-          color: rgba(240,216,144,0.32);
-          text-decoration: none;
-          padding: 4px 0;
-          letter-spacing: 0.02em;
-          transition: color 0.25s ease, padding-left 0.25s ease;
-          font-family: 'DM Sans', sans-serif;
-        }
-        .ft-link:hover { color: #c2a12b; padding-left: 7px; }
+    <footer style={{ position: "relative", zIndex: 50, fontFamily: "'DM Sans', sans-serif" }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap');
 
-        .ft-contact-text {
-          font-size: 0.78rem;
-          line-height: 2;
-          color: rgba(240,216,144,0.28);
-          font-family: 'DM Sans', sans-serif;
+        @keyframes ftNlBtnShimmer {
+          0%,100% { background-position: 0% 50%; }
+          50%      { background-position: 100% 50%; }
         }
 
-        .ft-nl-input {
-          flex: 1;
-          min-width: 0;
-          background: rgba(194,161,43,0.05);
-          border: 1px solid rgba(194,161,43,0.18);
-          border-right: none;
-          border-radius: 8px 0 0 8px;
-          padding: 9px 13px;
-          font-size: 0.78rem;
-          color: #f0e0a0;
-          font-family: 'DM Sans', sans-serif;
-          transition: border-color 0.3s, background 0.3s;
+        .ft-nl-input:focus {
+          border-color: ${GOLD}88 !important;
+          background: ${GOLD}12 !important;
           outline: none;
         }
-        .ft-nl-input::placeholder { color: rgba(194,161,43,0.22); }
-        .ft-nl-input:focus {
-          border-color: rgba(194,161,43,0.48);
-          background: rgba(194,161,43,0.08);
-        }
-        .ft-nl-btn {
-          background: linear-gradient(135deg, #a8861a 0%, #c2a12b 40%, #e8c84a 70%, #c2a12b 100%);
-          background-size: 200% auto;
-          border: none;
-          border-radius: 0 8px 8px 0;
-          padding: 9px 18px;
-          font-size: 0.63rem;
-          letter-spacing: 0.14em;
-          text-transform: uppercase;
-          color: #120e03;
-          font-weight: 500;
-          cursor: pointer;
-          font-family: 'DM Sans', sans-serif;
-          white-space: nowrap;
-          flex-shrink: 0;
-          transition: background-position 0.4s, box-shadow 0.3s;
-        }
-        .ft-nl-btn:hover {
-          background-position: right center;
-          box-shadow: 0 4px 18px rgba(194,161,43,0.28);
-        }
+        .ft-nl-input::placeholder { color: ${GOLD}44; }
 
-        .ft-nl-desc {
-          font-size: 0.76rem;
-          color: rgba(240,216,144,0.28);
-          line-height: 1.65;
-          margin-bottom: 1.1rem;
-          font-family: 'DM Sans', sans-serif;
-        }
-
-        .ft-bottom {
-          background: #040302;
-          border-top: 1px solid rgba(194,161,43,0.09);
-        }
-        .ft-bottom-inner {
-          max-width: 1280px;
-          margin: 0 auto;
-          padding: 1.1rem 2rem;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          flex-wrap: wrap;
-          gap: 0.75rem;
-        }
-        .ft-copy {
-          font-size: 0.65rem;
-          color: rgba(194,161,43,0.28);
-          letter-spacing: 0.08em;
-          font-family: 'DM Sans', sans-serif;
-        }
-        .ft-social {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          width: 32px; height: 32px;
-          border-radius: 50%;
-          border: 1px solid rgba(194,161,43,0.25);
-          color: rgba(194,161,43,0.5);
-          font-size: 0.68rem;
-          font-weight: 600;
-          text-decoration: none;
-          font-family: 'DM Sans', sans-serif;
-          transition: border-color 0.3s, color 0.3s, background 0.3s;
-        }
-        .ft-social:hover {
-          border-color: #c2a12b;
-          color: #f0d060;
-          background: rgba(194,161,43,0.1);
-        }
-
-        .ft-grid {
-          display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          gap: 2.5rem;
-        }
-        @media (max-width: 1024px) {
-          .ft-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-        @media (max-width: 640px) {
-          .ft-grid { grid-template-columns: 1fr; gap: 2rem; }
+        .ft-link-item:hover { color: ${GOLD_BRIGHT} !important; padding-left: 8px !important; }
+        .ft-social-pill:hover {
+          border-color: ${GOLD} !important;
+          color: ${GOLD_BRIGHT} !important;
+          background: ${GOLD}18 !important;
         }
       `}</style>
 
       <Toaster position="bottom-right" reverseOrder={false} />
 
-      <div className="ft-root">
-        <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "3.5rem 2rem 3rem" }}>
-          <div className="ft-grid">
+      {/* ── Gold accent line at top ── */}
+      <div style={{
+        height: "3px",
+        background: `linear-gradient(90deg, transparent, ${GOLD}88, ${GOLD_BRIGHT}, ${GOLD}88, transparent)`,
+      }} />
+
+      {/* ── Main footer body ── */}
+      <div style={{ background: DARK, borderTop: `1px solid ${GOLD}18` }}>
+        <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "4rem 2rem 3.5rem" }}>
+
+          {/* ── Ornament label ── */}
+          <p style={{
+            fontFamily: "'DM Sans', sans-serif",
+            fontSize: "0.52rem",
+            letterSpacing: "0.28em",
+            textTransform: "uppercase",
+            color: `${GOLD}50`,
+            textAlign: "center",
+            marginBottom: "3rem",
+          }}>
+            ✦ &nbsp; Prémio Nacional de Publicidade &nbsp; ✦
+          </p>
+
+          {/* ── 4-column grid ── */}
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(4, 1fr)",
+            gap: "2.5rem",
+          }} className="ft-grid-resp">
+            <style>{`
+              @media (max-width: 1024px) { .ft-grid-resp { grid-template-columns: repeat(2, 1fr) !important; } }
+              @media (max-width: 640px)  { .ft-grid-resp { grid-template-columns: 1fr !important; gap: 2.2rem !important; } }
+            `}</style>
 
             {/* Col 1 — Logo + contact */}
             <div>
-              <div style={{ marginBottom: "1.5rem" }}>
-                <Image src={logo} alt="PNP" width={118} height={42} style={{ objectFit: "contain", opacity: 0.88 }} />
+              <div style={{ marginBottom: "1.6rem" }}>
+                <Image src={logo} alt="PNP" width={120} height={44} style={{ objectFit: "contain", opacity: 0.9 }} />
               </div>
-              <p className="ft-contact-text">
-                {contact?.Local  && <>{contact.Local}<br /></>}
-                {contact?.phone  && <>{contact.phone}<br /></>}
-                {contact?.email  && <>{contact.email}</>}
-              </p>
+              <div style={{ fontSize: "0.76rem", lineHeight: 2.1, color: `${GOLD_BRIGHT}44`, fontFamily: "'DM Sans', sans-serif" }}>
+                {contact?.Local && <span style={{ display: "block" }}>{contact.Local}</span>}
+                {contact?.phone && <span style={{ display: "block" }}>{contact.phone}</span>}
+                {contact?.email && <span style={{ display: "block" }}>{contact.email}</span>}
+              </div>
             </div>
 
             {/* Col 2 — Links Úteis */}
             <div>
-              <p className="ft-col-head">Links Úteis</p>
+              <p style={{
+                fontFamily: "'Cormorant Garamond', serif",
+                fontSize: "0.95rem",
+                fontWeight: 300,
+                letterSpacing: "0.18em",
+                textTransform: "uppercase",
+                color: GOLD,
+                marginBottom: "1.4rem",
+              }}>
+                Links Úteis
+              </p>
               {usefulLinks.map((l) => (
-                <Link key={l.name} href={l.link} className="ft-link">{l.name}</Link>
+                <Link
+                  key={l.name}
+                  href={l.link}
+                  className="ft-link-item"
+                  style={{
+                    display: "block",
+                    fontFamily: "'DM Sans', sans-serif",
+                    fontSize: "0.78rem",
+                    color: `${GOLD_BRIGHT}40`,
+                    textDecoration: "none",
+                    padding: "5px 0",
+                    letterSpacing: "0.02em",
+                    transition: "color 0.25s, padding-left 0.25s",
+                  }}
+                >
+                  {l.name}
+                </Link>
               ))}
             </div>
 
             {/* Col 3 — Navegação */}
             <div>
-              <p className="ft-col-head">Navegação</p>
+              <p style={{
+                fontFamily: "'Cormorant Garamond', serif",
+                fontSize: "0.95rem",
+                fontWeight: 300,
+                letterSpacing: "0.18em",
+                textTransform: "uppercase",
+                color: GOLD,
+                marginBottom: "1.4rem",
+              }}>
+                Navegação
+              </p>
               {siteLinks.map((l) => (
-                <Link key={l.link} href={l.link} className="ft-link">{l.name}</Link>
+                <Link
+                  key={l.link}
+                  href={l.link}
+                  className="ft-link-item"
+                  style={{
+                    display: "block",
+                    fontFamily: "'DM Sans', sans-serif",
+                    fontSize: "0.78rem",
+                    color: `${GOLD_BRIGHT}40`,
+                    textDecoration: "none",
+                    padding: "5px 0",
+                    letterSpacing: "0.02em",
+                    transition: "color 0.25s, padding-left 0.25s",
+                  }}
+                >
+                  {l.name}
+                </Link>
               ))}
             </div>
 
             {/* Col 4 — Newsletter */}
             <div>
-              <p className="ft-col-head">Newsletter</p>
-              <p className="ft-nl-desc">
+              <p style={{
+                fontFamily: "'Cormorant Garamond', serif",
+                fontSize: "0.95rem",
+                fontWeight: 300,
+                letterSpacing: "0.18em",
+                textTransform: "uppercase",
+                color: GOLD,
+                marginBottom: "1.4rem",
+              }}>
+                Newsletter
+              </p>
+              <p style={{
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: "0.74rem",
+                lineHeight: 1.7,
+                color: `${GOLD_BRIGHT}38`,
+                marginBottom: "1.25rem",
+              }}>
                 {contact?.newsletterTitle || "Receba as últimas novidades do PNP directamente no seu email."}
               </p>
               <form onSubmit={handleSubmit(onSubmit)} style={{ display: "flex" }}>
@@ -235,23 +226,99 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
                   className="ft-nl-input"
                   placeholder="email@pnp.cv"
                   {...register("email", { required: true })}
+                  style={{
+                    flex: 1,
+                    minWidth: 0,
+                    background: `${GOLD}0a`,
+                    border: `1px solid ${GOLD}30`,
+                    borderRight: "none",
+                    borderRadius: "8px 0 0 8px",
+                    padding: "10px 13px",
+                    fontSize: "0.78rem",
+                    color: "#f0e0a0",
+                    fontFamily: "'DM Sans', sans-serif",
+                    transition: "border-color 0.3s, background 0.3s",
+                  }}
                 />
-                <button type="submit" className="ft-nl-btn">Subscrever</button>
+                <button
+                  type="submit"
+                  style={{
+                    background: `linear-gradient(135deg, #a8861a 0%, ${GOLD} 40%, ${GOLD_BRIGHT} 70%, ${GOLD} 100%)`,
+                    backgroundSize: "200% auto",
+                    border: "none",
+                    borderRadius: "0 8px 8px 0",
+                    padding: "10px 18px",
+                    fontSize: "0.62rem",
+                    letterSpacing: "0.14em",
+                    textTransform: "uppercase",
+                    color: "#0f0a02",
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    fontFamily: "'DM Sans', sans-serif",
+                    whiteSpace: "nowrap",
+                    flexShrink: 0,
+                    animation: "ftNlBtnShimmer 3s ease infinite",
+                  }}
+                >
+                  Subscrever
+                </button>
               </form>
             </div>
-
           </div>
+
+          {/* ── Gold divider ── */}
+          <div style={{
+            height: "1px",
+            background: `linear-gradient(90deg, transparent, ${GOLD}40, transparent)`,
+            margin: "3rem 0 0",
+          }} />
         </div>
 
-        {/* Bottom bar */}
-        <div className="ft-bottom">
-          <div className="ft-bottom-inner">
-            <span className="ft-copy">
+        {/* ── Bottom bar ── */}
+        <div style={{ background: DARK_MID, borderTop: `1px solid ${GOLD}12` }}>
+          <div style={{
+            maxWidth: "1280px",
+            margin: "0 auto",
+            padding: "1.1rem 2rem",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: "0.75rem",
+          }}>
+            <span style={{
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: "0.62rem",
+              color: `${GOLD}55`,
+              letterSpacing: "0.1em",
+            }}>
               PNP &copy; {year} · Todos os direitos reservados.
             </span>
+
             <div style={{ display: "flex", gap: "8px" }}>
               {(Array.isArray(rsocial) ? rsocial : []).map((s) => (
-                <Link key={s.name} href={s.link} target={s.target} className="ft-social" aria-label={s.name}>
+                <Link
+                  key={s.name}
+                  href={s.link}
+                  target={s.target}
+                  aria-label={s.name}
+                  className="ft-social-pill"
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: "34px",
+                    height: "34px",
+                    borderRadius: "50%",
+                    border: `1px solid ${GOLD}35`,
+                    color: `${GOLD}70`,
+                    fontSize: "0.7rem",
+                    fontWeight: 600,
+                    textDecoration: "none",
+                    fontFamily: "'DM Sans', sans-serif",
+                    transition: "border-color 0.3s, color 0.3s, background 0.3s",
+                  }}
+                >
                   {s.name.charAt(0).toUpperCase()}
                 </Link>
               ))}
