@@ -4,15 +4,12 @@ import { useForm, SubmitHandler } from "react-hook-form"
 import toast, { Toaster } from "react-hot-toast"
 import logo from "public/logo1.png"
 import {
-  IoLogoFacebook,
-  IoLogoInstagram,
-  IoLogoYoutube,
-  IoLogoTwitter,
   IoHome,
   IoDocumentText,
   IoPeople,
   IoNewspaper,
-} from "react-icons/io5" // Importing additional icons
+} from "react-icons/io5"
+import { NavLink } from "../../lib/parseNavbar"
 
 interface Contact {
   Local: string
@@ -22,12 +19,8 @@ interface Contact {
 }
 
 interface FooterProps {
-  rsocial: any // Define type for rsocial
-  contato: {
-    data: {
-      attributes: Contact
-    }
-  }
+  rsocial: NavLink[]
+  contato: { data: { attributes: Contact } } | null
 }
 
 const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
@@ -179,38 +172,17 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
 
           {/* Social Icons */}
           <div className="text-center text-xl mb-2">
-            <Link
-              href="https://www.facebook.com/PNPCaboVerde/"
-              target="_blank"
-              className="w-10 h-10 rounded-full bg-black hover:bg-yellow-600 mx-1 inline-block pt-1"
-              aria-label="Facebook"
-            >
-              <IoLogoFacebook />
-            </Link>
-            <Link
-              href="#"
-              target="_blank"
-              className="w-10 h-10 rounded-full bg-black hover:bg-yellow-600 mx-1 inline-block pt-1"
-              aria-label="Instagram"
-            >
-              <IoLogoInstagram />
-            </Link>
-            <Link
-              href="#"
-              target="_blank"
-              className="w-10 h-10 rounded-full bg-black hover:bg-yellow-600 mx-1 inline-block pt-1"
-              aria-label="YouTube"
-            >
-              <IoLogoYoutube />
-            </Link>
-            <Link
-              href="#"
-              target="_blank"
-              className="w-10 h-10 rounded-full bg-black hover:bg-yellow-600 mx-1 inline-block pt-1"
-              aria-label="Twitter"
-            >
-              <IoLogoTwitter />
-            </Link>
+            {(rsocial ?? []).map((s) => (
+              <Link
+                key={s.name}
+                href={s.link}
+                target={s.target}
+                className="w-10 h-10 rounded-full bg-black hover:bg-yellow-600 mx-1 inline-block pt-1"
+                aria-label={s.name}
+              >
+                <span className="text-sm font-bold">{s.name.charAt(0)}</span>
+              </Link>
+            ))}
           </div>
         </div>
       </div>

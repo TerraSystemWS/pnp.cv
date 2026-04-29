@@ -107,7 +107,6 @@ export async function getServerSideProps(context: any) {
   try {
     const { slug } = context.params
     const results = await Promise.allSettled([
-      fetcher(`${api_link}/api/redes-social?populate=*`),
       fetcher(`${api_link}/api/contato`),
       fetcher(
         `${api_link}/api/noticias/${slug}?populate[0]=noticias&populate[1]=capa`
@@ -115,13 +114,13 @@ export async function getServerSideProps(context: any) {
       fetcher(`${api_link}/api/menus?populate=deep`),
     ])
 
-    const [rsocials, contato, post, navbar] = results.map((r) => {
+    const [contato, post, menus] = results.map((r) => {
       if (r.status === "fulfilled") return r.value
       console.error("Endpoint failed:", (r as PromiseRejectedResult).reason)
       return null
     })
 
-    const dlink = parseNavbar(navbar)
+    const dlink = parseNavbar(menus, "menus")
 
     // Fetch the previous and next posts
     const previousPost = await fetcher(
@@ -133,7 +132,7 @@ export async function getServerSideProps(context: any) {
 
     return {
       props: {
-        social: rsocials ?? null,
+        social: parseNavbar(menus, "redes-social"),
         contato: contato ?? null,
         post,
         navbar: dlink,

@@ -111,6 +111,7 @@ const Nav = ({ navbar }: any) => {
               <li key={link.name} className="md:ml-8 text-xl md:my-0 my-7">
                 <Link
                   href={link.link}
+                  target={link.target ?? "_self"}
                   className="text-branco hover:text-amarelo-ouro duration-500"
                 >
                   {link.name}
