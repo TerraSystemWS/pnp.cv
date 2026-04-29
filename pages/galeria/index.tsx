@@ -195,9 +195,7 @@ export async function getServerSideProps({ params, query }: any) {
     })
 ;
 
-		const dlink = parseNavbar(menus, "menus");
-
-		return { props: { social: parseNavbar(menus, "redes-social"), edicao, navbar: parseNavbar(menus, "menus") } };
+		return { props: { social: parseNavbar(menus, "redes-social"), contato: contato ?? null, edicao, navbar: parseNavbar(menus, "menus") } };
 	} catch (error) {
 		console.error("Error fetching galeria data:", error)
 		return {

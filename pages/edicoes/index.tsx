@@ -362,9 +362,7 @@ export async function getServerSideProps() {
     })
 
 
-    const dlink = parseNavbar(menus, "menus")
-
-    return { props: { social: parseNavbar(menus, "redes-social"), edicao, navbar: parseNavbar(menus, "menus") } }
+    return { props: { social: parseNavbar(menus, "redes-social"), contato: contato ?? null, edicao, navbar: parseNavbar(menus, "menus") } }
   } catch (error) {
     console.error("Error fetching edicoes data:", error)
     return {

@@ -367,11 +367,10 @@ export async function getServerSideProps() {
     })
 
 
-    const dlink = parseNavbar(menus, "menus")
-
     return {
       props: {
         social: parseNavbar(menus, "redes-social"),
+        contato: contato ?? null,
         edicao: edicao ?? null,
         navbar: parseNavbar(menus, "menus"),
       },
