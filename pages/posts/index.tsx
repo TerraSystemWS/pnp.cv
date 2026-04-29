@@ -205,7 +205,6 @@ export default PostList
 export async function getServerSideProps() {
   try {
     const results = await Promise.allSettled([
-      fetcher(`${api_link}/api/redes-social?populate=*`),
       fetcher(`${api_link}/api/contato`),
       fetcher(
         `${api_link}/api/noticias?sort[0]=publishedAt:desc&populate[0]=noticias&populate[1]=capa`
@@ -213,13 +212,13 @@ export async function getServerSideProps() {
       fetcher(`${api_link}/api/menus?populate=deep`),
     ])
 
-    const [rsocials, contato, posts, navbar] = results.map((r) => {
+    const [contato, posts, menus] = results.map((r) => {
       if (r.status === "fulfilled") return r.value
       console.error("Endpoint failed:", (r as PromiseRejectedResult).reason)
       return null
     })
 
-    return { props: { social: rsocials ?? null, contato: contato ?? null, posts, navbar: parseNavbar(navbar) } }
+    return { props: { social: parseNavbar(menus, "redes-social"), contato: contato ?? null, posts, navbar: parseNavbar(menus, "menus") } }
   } catch (error) {
     console.error("Error fetching data:", error)
     return { props: { error: "Failed to fetch data", social: null, contato: null, navbar: [] } }
