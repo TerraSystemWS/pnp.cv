@@ -153,11 +153,11 @@ const Galeria = ({ social, contato, edicao, navbar }: any) => {
 			</div> */}
 
 			{/* <div className="grid grid-cols-2 md:grid-cols-4 gap-4"> */}
-			{edicao.data.map((value: any, index: any) =>
-				value.attributes.galeria.map((item: any, index: any) => (
+			{(edicao?.data ?? []).map((value: any, index: any) =>
+				(value.attributes?.galeria ?? []).map((item: any, i: any) => (
 					<Gallery
-						key={index}
-						images={item.imagens.data.map(
+						key={`${index}-${i}`}
+						images={(item.imagens?.data ?? []).map(
 							(img: any) => img.attributes.url
 						)}
 					/>
