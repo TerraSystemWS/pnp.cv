@@ -134,4 +134,95 @@
 
 ---
 
+---
+
+### [6] Regulamentos — Redesign Completo
+**Commit:** `68c2551` · **Data:** 2026-04-30  
+**Ficheiro:** `pages/regulamentos.tsx`
+
+**O que mudou:**
+- Removido `HeroSection` genérico; substituído por hero inline com grain texture e título Cormorant
+- Tabs "Regulamentos" | "Categorias" em barra sticky abaixo da navbar — borda dourada de 2px no tab activo
+- Conteúdo markdown estilizado via `.reg-content` CSS: `h1/h2/h3` em Cormorant gold, `p/li` em DM Sans escuro, `strong` dourado
+- Tab **Regulamentos**: texto com título em Cormorant + borda esquerda dourada, markdown renderizado abaixo
+- Tab **Categorias**: grid `auto-fill minmax(380px, 1fr)` de cards escuros com linha dourada no topo, título Cormorant e descrição markdown
+
+---
+
+### [7] Edições — Redesign Completo
+**Commit:** `68c2551` · **Data:** 2026-04-30  
+**Ficheiro:** `pages/edicoes/index.tsx`
+
+**O que mudou:**
+- Removido `HeroSection` genérico; hero inline com edição em destaque italic gold
+- **Selector de edições**: pills horizontais (uma por edição) com scroll — pill activo com fundo dourado sólido
+- **Tab bar** sticky: Júri | Galeria | Vídeos | Documentos — borda dourada no tab activo
+- **Júri**: scroll horizontal snap de cards de retrato (220px), hover com elevação e borda dourada
+- **Galeria**: grid `auto-fill minmax(260px, 1fr)`, aspect-ratio 16/10, hover scale + borda + linha dourada; link "Ver galeria completa" se >9 imagens
+- **Vídeos**: grid de cards escuros com título Cormorant + player nativo `<video>`
+- **Documentos**: grid de cards escuros com ícone 📄, título Cormorant, link "Abrir documento"
+- Componentes auxiliares `EmptyMsg` e `SectionHead` inline
+
+---
+
+### [8] Parceiros — Redesign Completo
+**Commit:** `68c2551` · **Data:** 2026-04-30  
+**Ficheiro:** `pages/parceiros.tsx`
+
+**O que mudou:**
+- Removido `HeroSection` e `PartnerCard` genéricos; redesenhados inline
+- Hero com grain texture e subtítulo em DM Sans
+- Cada grupo de parceiros separado por divider com título Cormorant centrado (linha — TÍTULO — linha)
+- Cards de parceiro (200px): fundo `DARK_CARD`, linha dourada no topo no hover, logo com `filter brightness/saturate`, nome em DM Sans, badge de tier (Diamante/Ouro/Prata/Bronze) como pill com borda colorida
+- Hover: elevação `translateY(-5px)` + `box-shadow` dourado + borda mais brilhante
+- Cores de tier: Diamante `#a8d8ea`, Ouro `#c2a12b`, Prata `#b0bec5`, Bronze `#a0785a`
+
+---
+
+### [9] Blog / Posts — Redesign Completo
+**Commit:** `68c2551` · **Data:** 2026-04-30  
+**Ficheiro:** `pages/posts/index.tsx`
+
+**O que mudou:**
+- Removido `HeroSection` genérico e `StrapiImage`; hero inline
+- Layout principal: grid `1fr 320px` — featured posts (2) à esquerda, sidebar (4) à direita
+- **Featured posts**: cards horizontais escuros com imagem, data em uppercase dourado, título Cormorant com hover `GOLD_BRIGHT`, snippet HTML, link "Ler mais →"
+- **Sidebar**: lista vertical com hover `padding-left` animado, título Cormorant, data discreta
+- **Posts paginados**: grid `auto-fill minmax(280px, 1fr)` de cards com imagem topo, hover via `onMouseEnter/Leave` inline
+- **Paginação**: botões circulares (36px), activo com fundo dourado sólido, hover com `${GOLD}15`
+
+---
+
+### [10] Sobre Nós — Redesign Completo
+**Commit:** `68c2551` · **Data:** 2026-04-30  
+**Ficheiro:** `pages/sobreus/index.tsx`
+
+**O que mudou:**
+- Hero inline com grain texture, título Cormorant e subtítulo DM Sans
+- Conteúdo markdown estilizado via `.sob-content`: headings em Cormorant gold, parágrafos DM Sans escuro, blockquote com borda esquerda dourada
+- Links rápidos no rodapé da secção: pills outline para "Termos de Serviço" e "Política de Privacidade" com hover via `onMouseEnter/Leave`
+
+---
+
+## Páginas por Redesenhar (análise do utilizador)
+
+As seguintes páginas existem no projecto mas **não** foram alteradas nesta ronda de redesign:
+
+| Página | Rota | Observações |
+|---|---|---|
+| Inscrição — Retomar/Nova | `/inscricao` | ✅ Já redesenhada (sessão anterior) |
+| Inscrição — Detalhe | `/inscricao/[id]` | Página de detalhe da inscrição existente |
+| Inscrição — Upload | `/inscricao/upload` | Upload de ficheiros para a inscrição |
+| Júri — Detalhe | `/juris/[id]` | Perfil detalhado de um membro do júri |
+| Projetos — Lista | `/projetos` | Listagem de projectos a votar (Prémio Público) |
+| Projetos — Detalhe | `/projetos/[id]` | Detalhe de um projecto em competição |
+| Galeria | `/galeria` | Galeria de imagens por edição |
+| Blog — Post | `/posts/[slug]` | Artigo individual do blog |
+| Perfil | `/perfil` | Área pessoal do utilizador autenticado |
+| Perfil — Avaliação | `/perfil/avaliacao` | Formulário de avaliação (júri) |
+| Perfil — Status Avaliação | `/perfil/avaliacaoStatus` | Estado das avaliações (júri) |
+| Perfil — Status Votação | `/perfil/votacaopublicaStatus` | Estado da votação pública |
+| Termos de Serviço | `/sobreus/terms` | Página de termos |
+| Política de Privacidade | `/sobreus/policy` | Página de política |
+
 *Próximas alterações serão registadas abaixo desta linha.*
