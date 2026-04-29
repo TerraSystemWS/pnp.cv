@@ -74,36 +74,38 @@ const CONTATOS = ({ social, contato, navbar }: any) => {
       <section className="text-gray-600 body-font relative mt-5">
         <div className="container px-5 py-24 mx-auto flex sm:flex-nowrap flex-wrap">
           <div className="lg:w-2/3 md:w-1/2 bg-gray-300 rounded-lg overflow-hidden sm:mr-10 p-10 flex items-end justify-start relative">
-            <iframe
-              width="100%"
-              height="100%"
-              className="absolute inset-0"
-              frameBorder="0"
-              title="map"
-              marginHeight={0}
-              marginWidth={0}
-              scrolling="no"
-              src={contato.data.attributes.mapa}
-            ></iframe>
+            {contato?.data?.attributes?.mapa && (
+              <iframe
+                width="100%"
+                height="100%"
+                className="absolute inset-0"
+                frameBorder="0"
+                title="map"
+                marginHeight={0}
+                marginWidth={0}
+                scrolling="no"
+                src={contato.data.attributes.mapa}
+              ></iframe>
+            )}
             <div className="bg-white relative flex flex-wrap py-6 rounded shadow-md">
               <div className="lg:w-1/2 px-6">
                 <h2 className="title-font font-semibold text-gray-900 tracking-widest text-xs">
                   ENDEREÇO
                 </h2>
-                <p className="mt-1">{contato.data.attributes.Local}</p>
+                <p className="mt-1">{contato?.data?.attributes?.Local}</p>
               </div>
               <div className="lg:w-1/2 px-6 mt-4 lg:mt-0">
                 <h2 className="title-font font-semibold text-gray-900 tracking-widest text-xs">
                   EMAIL
                 </h2>
                 <a className="text-indigo-500 leading-relaxed">
-                  {contato.data.attributes.email}
+                  {contato?.data?.attributes?.email}
                 </a>
                 <h2 className="title-font font-semibold text-gray-900 tracking-widest text-xs mt-4">
                   Contato
                 </h2>
                 <p className="leading-relaxed">
-                  {contato.data.attributes.phone}
+                  {contato?.data?.attributes?.phone}
                 </p>
               </div>
             </div>
@@ -213,9 +215,13 @@ export async function getServerSideProps() {
     })
 
 
-    const dlink = parseNavbar(menus, "menus")
-
-    return { props: { social: parseNavbar(menus, "redes-social"), navbar: parseNavbar(menus, "menus") } }
+    return {
+      props: {
+        social: parseNavbar(menus, "redes-social"),
+        contato: contato ?? null,
+        navbar: parseNavbar(menus, "menus"),
+      },
+    }
   } catch (error) {
     console.error("Error fetching contatos data:", error)
     return {
