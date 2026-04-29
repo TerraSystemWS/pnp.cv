@@ -78,12 +78,14 @@ describe("Nav component", () => {
       { name: "Projectos", link: "/projectos" },
     ]
     render(<Nav navbar={links} />)
-    expect(screen.getByText("Início")).toBeInTheDocument()
-    expect(screen.getByText("Projectos")).toBeInTheDocument()
+    // Links appear in both desktop nav and mobile drawer — at least one must exist
+    expect(screen.getAllByText("Início").length).toBeGreaterThan(0)
+    expect(screen.getAllByText("Projectos").length).toBeGreaterThan(0)
   })
 
   it("renders the login button when user is not authenticated", () => {
     render(<Nav navbar={[]} />)
-    expect(screen.getByText("Login")).toBeInTheDocument()
+    // Login appears in both desktop and mobile drawer
+    expect(screen.getAllByText("Login").length).toBeGreaterThan(0)
   })
 })
