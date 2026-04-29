@@ -7,9 +7,9 @@ Páginas que ainda não foram incluídas na reforma do design dark gold do PNP.
 ## Páginas Públicas
 
 - [ ] `/juris/[id]` — Perfil detalhado de um membro do júri
-- [ ] `/projetos` — Lista de projectos do Prémio Público
-- [ ] `/projetos/[id]` — Detalhe de um projecto em competição
-- [ ] `/galeria` — Galeria de imagens por edição
+- [x] `/projetos` — Lista de projectos do Prémio Público
+- [x] `/projetos/[id]` — Detalhe de um projecto em competição
+- [x] `/galeria` — Galeria de imagens por edição
 - [ ] `/posts/[slug]` — Artigo individual do blog
 - [x] `/sobreus/terms` — Termos de Serviço
 - [x] `/sobreus/policy` — Política de Privacidade
