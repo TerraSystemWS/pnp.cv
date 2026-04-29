@@ -15,7 +15,7 @@ const SobreusTerms = ({ social, contato, navbar, sobreus }: any) => {
     return { __html: html };
   };
 
-  const sobreUs: any = createMarkup(sobreus.data.attributes.termo_uso);
+  const sobreUs: any = createMarkup(sobreus?.data?.attributes?.termo_uso ?? "");
 
   const { user, loading } = useFetchUser();
   return (
