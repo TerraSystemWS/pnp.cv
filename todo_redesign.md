@@ -11,8 +11,8 @@ Páginas que ainda não foram incluídas na reforma do design dark gold do PNP.
 - [ ] `/projetos/[id]` — Detalhe de um projecto em competição
 - [ ] `/galeria` — Galeria de imagens por edição
 - [ ] `/posts/[slug]` — Artigo individual do blog
-- [ ] `/sobreus/terms` — Termos de Serviço
-- [ ] `/sobreus/policy` — Política de Privacidade
+- [x] `/sobreus/terms` — Termos de Serviço
+- [x] `/sobreus/policy` — Política de Privacidade
 - [ ] `/inscricao/[id]` — Detalhe / edição de inscrição existente
 - [ ] `/inscricao/upload` — Upload de ficheiros para inscrição
 
