@@ -1,119 +1,96 @@
 import Layout from "../../components/Layout"
 import { fetcher } from "../../lib/api"
 import { parseNavbar } from "../../lib/parseNavbar"
-// import Link from "next/link";
 import Head from "next/head"
-// import { Card } from "flowbite-react";
-// import { IoCall } from "react-icons/io5";
+import Link from "next/link"
 import { useState, useEffect } from "react"
-// import { Table } from "flowbite-react"
-import { useForm, SubmitHandler } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import Swal from "sweetalert2"
 const qs = require("qs")
-import HeroSection from "../../components/HeroSection"
-
-// primereact tools
-// import { Dialog } from "primereact/dialog"
-import { Button } from "primereact/button"
-import "primereact/resources/themes/lara-light-indigo/theme.css" //theme
-import "primereact/resources/primereact.min.css" //core css
-import "primeicons/primeicons.css" //icons
-import { Accordion, AccordionTab } from "primereact/accordion"
-import React from "react"
 import { useFetchUser } from "../../lib/authContext"
+import { getTokenFromLocalCookie, getIdFromLocalCookie } from "../../lib/auth"
+import { Accordion, AccordionTab } from "primereact/accordion"
+import { Button } from "primereact/button"
 import { Image } from "primereact/image"
+import "primereact/resources/themes/lara-dark-indigo/theme.css"
+import "primereact/resources/primereact.min.css"
+import "primeicons/primeicons.css"
 import JSConfetti from "js-confetti"
 import Votacao from "../../components/Votacao"
-import { getTokenFromLocalCookie, getIdFromLocalCookie } from "../../lib/auth"
-// import { verificarEmail } from "../../lib/utils"
-// import Avaliacao from "../perfil"
 
-// link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
 
-// type VotaInputs = {
-//   emailVota: string;
-//   nomeVota: string;
-// };
+const GOLD        = "#c2a12b"
+const GOLD_BRIGHT = "#f0d060"
+const DARK        = "#080604"
+const DARK_CARD   = "#100d07"
+const DARK_MID    = "#0d0a05"
 
-const VpublicaDetalhes = ({
-  edicoes,
-  social,
-  contato,
-  inscricao,
-  navbar,
-}: any) => {
-  // console.log("detalhes inscritos");
-  // console.log(inscricao);
-  const InscritosValues: any = {
-    nome_completo: inscricao.data.attributes.nome_completo || "",
-    email: inscricao.data.attributes.email || "",
-    sede: inscricao.data.attributes.sede || "",
-    nif: inscricao.data?.attributes.NIF || "",
-    telefone: inscricao.data?.attributes.telefone || "",
-    nome_projeto: inscricao.data.attributes.nome_projeto || "",
-    categoria: inscricao.data.attributes.categoria || "",
-    con_criativo: inscricao.data.attributes.con_criativo || "",
-    coord_prod: inscricao.data.attributes.coord_prod || "",
-    dir_foto: inscricao.data.attributes.dir_foto || "",
-    dir_art: inscricao.data.attributes.dir_art || "",
-    realizador: inscricao.data.attributes.realizador || "",
-    editor: inscricao.data.attributes.editor || "",
-    autor_jingle: inscricao.data.attributes.autor_jingle || "",
-    designer: inscricao.data.attributes.designer || "",
-    outras_consideracoes: inscricao.data.attributes.outras_consideracoes || "",
-    data_producao: inscricao.data.attributes.data_producao || "",
-    data_divulgacao: inscricao.data.attributes.data_divulgacao || "",
-    data_apresentacao_publica:
-      inscricao.data.attributes.data_apresentacao_publica || "",
+const SectionPanel = ({ title, subtitle, children }: { title: string; subtitle?: string; children: React.ReactNode }) => (
+  <div style={{ marginBottom: "3rem" }}>
+    <div style={{ display: "flex", alignItems: "flex-start", gap: "1rem", marginBottom: "1.75rem", paddingBottom: "1rem", borderBottom: `1px solid ${GOLD}18` }}>
+      <div style={{ width: "3px", height: "1.25rem", marginTop: "3px", background: `linear-gradient(180deg, ${GOLD}, ${GOLD_BRIGHT})`, borderRadius: "2px", flexShrink: 0 }} />
+      <div>
+        <h3 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: "1.3rem", fontWeight: 300, color: GOLD_BRIGHT, letterSpacing: "0.04em", margin: 0 }}>
+          {title}
+        </h3>
+        {subtitle && (
+          <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.72rem", color: `${GOLD}55`, margin: "0.25rem 0 0", letterSpacing: "0.06em" }}>
+            {subtitle}
+          </p>
+        )}
+      </div>
+    </div>
+    {children}
+  </div>
+)
+
+const Field = ({ label, value }: { label: string; value?: string }) => {
+  if (!value) return null
+  return (
+    <div style={{ marginBottom: "1.25rem" }}>
+      <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.62rem", letterSpacing: "0.16em", textTransform: "uppercase", color: `${GOLD}55`, margin: "0 0 0.3rem" }}>
+        {label}
+      </p>
+      <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.9rem", color: `${GOLD_BRIGHT}cc`, margin: 0, lineHeight: 1.6 }}>
+        {value}
+      </p>
+    </div>
+  )
+}
+
+const VpublicaDetalhes = ({ edicoes, social, contato, inscricao, navbar }: any) => {
+  const { user, loading } = useFetchUser()
+  const [cor, setCor] = useState("currentColor")
+  const [isBlock, setBlock] = useState(false)
+  const [nhaId, setNhaId] = useState<string | null>(null)
+  const { register, handleSubmit, formState: { errors } } = useForm()
+
+  useEffect(() => {
+    getIdFromLocalCookie()?.then((id) => setNhaId(id ?? null))
+  }, [])
+
+  if (!inscricao?.data) {
+    return (
+      <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
+        <div style={{ background: DARK, minHeight: "80vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <p style={{ fontFamily: "'DM Sans',sans-serif", color: `${GOLD}44`, fontSize: "0.9rem" }}>
+            Projeto não encontrado.
+          </p>
+        </div>
+      </Layout>
+    )
   }
 
-  // const [cor, setCor] = useState(false)
-  const [cor, setCor] = useState("CurrentColor")
-  const [isBlock, setBlock] = useState(false)
-  const [blockCor, setBlockCor] = useState("bg-amarelo-ouro")
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm()
-
-  const edicaoMaisRecente = edicoes.data[0]?.attributes.N_Edicao
+  const attr = inscricao.data.attributes
+  const edicaoNum = edicoes?.data?.[0]?.attributes?.N_Edicao
 
   const onVotar = async (data: any) => {
-    const jwt = getTokenFromLocalCookie()
-    // teste de confetti
     const jsConfetti = new JSConfetti()
-    // console.log("============== DATA ==================");
-    // console.log(data.nomeVota);
-    // console.log(data.emailVota);
-    // const email = await verificarEmail(data.email)
-
-    // console.log("Nha email")
-    // console.log(data)
-    // console.log(inscricao.data.id)
-
-    // console.log("verifica emil foooraaaa")
-    // // console.log(email.result)
-
-    // return
-
-    // if (email.result != "deliverable") {
-    //   Swal.fire({
-    //     icon: "warning",
-    //     title: "AVISO",
-    //     text: "Há um problema com este email use outro",
-    //   })
-    //   return
-    // }
-
     try {
       const res = await fetcher(`${api_link}/api/votacao-publicas`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           data: {
             nome_completo: data.nome,
@@ -122,1048 +99,270 @@ const VpublicaDetalhes = ({
           },
         }),
       })
-
-      // console.log("=========== response ====================")
-      // console.log(res)
       if (res.data) {
         setCor("red")
-        // alert("Gostei, tem meu voto!");
         setBlock(true)
-        setBlockCor("bg-gray-500")
-        jsConfetti.addConfetti({
-          emojis: ["🌈", "⚡️", "💥", "✨", "💫", "🌸"],
-          emojiSize: 10,
-          confettiNumber: 500,
-        })
-        Swal.fire({
-          icon: "success",
-          title: "Concluida",
-          text: "",
-        })
+        jsConfetti.addConfetti({ emojis: ["🌈", "⚡️", "💥", "✨", "💫", "🌸"], emojiSize: 10, confettiNumber: 500 })
+        Swal.fire({ icon: "success", title: "Voto registado!", text: "" })
       } else {
-        Swal.fire({
-          icon: "warning",
-          title: "AVISO",
-          text: "So Pode Votar Uma Unica Vez",
-        })
+        Swal.fire({ icon: "warning", title: "Aviso", text: "Só pode votar uma única vez." })
       }
-    } catch (error) {
-      // console.log("=========== dados Erros ====================");
-      // console.log(error);
-      Swal.fire({
-        icon: "error",
-        title: "Falhou",
-        text: "Não foi possivel votar",
-      })
+    } catch {
+      Swal.fire({ icon: "error", title: "Falhou", text: "Não foi possível votar." })
     }
   }
-
-  // Pass in the id of an element
-  // let confetti = new Confetti("demo");
-
-  // // Edit given parameters
-  // confetti.setCount(75);
-  // confetti.setSize(1);
-  // confetti.setPower(25);
-  // confetti.setFade(false);
-  // confetti.destroyTarget(true);
-
-  // primereact usecases
-  const [visible, setVisible] = useState(false)
-  const [position, setPosition] = useState("center")
-  // forms
-  // const [email, setEmail] = useState("")
-  // const [pass, setPass] = useState("")
-
-  const footerContent = (
-    <div>
-      <Button
-        label="Cancelar"
-        icon="pi pi-times"
-        onClick={() => setVisible(false)}
-        className="p-button-text"
-      />
-      {/* <Button
-          label="Login"
-          icon="pi pi-check"
-          onClick={() => setVisible(false)}
-          autoFocus
-          className="p-button-warning"
-        /> */}
-    </div>
-  )
-
-  const show = (position: any) => {
-    setPosition(position)
-    setVisible(true)
-  }
-
-  // const categoria_pnp: string = "Publicidade Internet"
-  // const avaliacao: any = [
-  //   { title: "Conceito Criativo", nota: 0 },
-  //   { title: "Design", nota: 0 },
-  //   { title: "Interatividade", nota: 0 },
-  //   { title: "Alcance Pago", nota: 0 },
-  //   { title: "Soluçao Tecnologica", nota: 0 },
-  //   { title: "Redaçao", nota: 0 },
-  //   { title: "Aspetos Administrativos", nota: 0 },
-  //   { title: "Pontuacao Geral", nota: 0 },
-  // ]
-
-  // const Avalicao: any = [
-  //   {
-  //     id_inscricao: 1,
-  //     categoria: "Publicidade Internet",
-  //     juri: "Nome do Juri",
-  //     areas: [
-  //       { title: "Conceito Criativo", nota: 0 },
-  //       { title: "Design", nota: 0 },
-  //       { title: "Interatividade", nota: 0 },
-  //       { title: "Alcance Pago", nota: 0 },
-  //       { title: "Soluçao Tecnologica", nota: 0 },
-  //       { title: "Redaçao", nota: 0 },
-  //       { title: "Aspetos Administrativos", nota: 0 },
-  //       { title: "Pontuacao Geral", nota: 0 },
-  //     ],
-  //   },
-  // ];
-
-  const { user, loading } = useFetchUser()
-
-  const [nhaId, setNhaId] = useState<string | null>(null) // State to hold the ID
-  // const [loading, setLoading] = useState(true); // State to track loading status
-
-  useEffect(() => {
-    const fetchNhaId = async () => {
-      const id = await getIdFromLocalCookie() // Await the promise
-      setNhaId(id ?? null) // Set the resolved value
-      // setLoading(false); // Set loading to false after the value is fetched
-    }
-
-    fetchNhaId()
-  }, []) // Empty dependency array means this effect runs only once after the initial render
-
-  // return <p>{nhaId || "No ID found"}</p>
-  // const userId = user?.id // Get the userId from the fetched user
-  // const nhaId: any = getIdFromLocalCookie()
-
-  // if (loading) return <div>Loading...</div>
-
-  // return <div>User ID: {userId}</div>
-  // const jwt = getTokenFromLocalCookie()
-  // const excluirPrivados = (title: String): boolean => {
-  //   let title_clean: boolean = false
-  //   const substr = ["nif", "pagamento", "comprovativo pagamento"]
-  //   for (let index = 0; index < substr.length; index++) {
-  //     title_clean = title.toLowerCase().includes(substr[index].toLowerCase())
-  //     if (title_clean) {
-  //       break
-  //     }
-  //   }
-
-  //   return title_clean
-  // }
 
   return (
     <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
       <Head>
-        <title>
-          {inscricao.data?.attributes?.nome_projeto} - Prémio Nacional De
-          Publicidade
-        </title>
-        <meta
-          name="description"
-          content={inscricao.data.attributes.con_criativo}
-        />
+        <title>{attr.nome_projeto} - Prémio Nacional De Publicidade</title>
+        <meta name="description" content={attr.con_criativo || "Projecto concorrente ao PNP"} />
       </Head>
-      {/* <div className="">
-        <div className="bg-gray-200">
-          <div className="mx-auto max-w-7xl py-12 px-4 sm:px-6">
-            <h2 className="text-2xl text-center mb-8 font-bold tracking-tight text-gray-900 sm:text-4xl">
-              <span className="block text-amarelo-ouro">
-                {inscricao.data.attributes.nome_projeto}
-              </span>
-              {/* <span className="block ">
-								Inscrição aberta apartir do dia 1 a 31 de Janero 2023
-							</span> * /}
-            </h2>
-            {/* <div className="font-light text-gray-500 lg:mb-16 sm:text-xl dark:text-gray-400">
-              Fotografias, videos, regulamento, os vencedores dos Prémios
-              Palmeira e respetivos discursos de vitória… Aqui encontra tudo
-              sobre as anteriores edições do PNP.
-            </div> * /}
-          </div>
+
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap');
+        @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+
+        /* PrimeReact Accordion overrides */
+        .p-accordion .p-accordion-header .p-accordion-header-link {
+          background: ${DARK_CARD} !important;
+          border: 1px solid ${GOLD}22 !important;
+          color: ${GOLD_BRIGHT}cc !important;
+          font-family: 'DM Sans', sans-serif !important;
+          font-size: 0.82rem !important;
+          letter-spacing: 0.06em !important;
+          padding: 0.9rem 1.25rem !important;
+          border-radius: 8px !important;
+        }
+        .p-accordion .p-accordion-header:not(.p-highlight):not(.p-disabled):hover .p-accordion-header-link {
+          background: ${GOLD}10 !important;
+          border-color: ${GOLD}44 !important;
+          color: ${GOLD} !important;
+        }
+        .p-accordion .p-accordion-header.p-highlight .p-accordion-header-link {
+          background: ${GOLD}15 !important;
+          border-color: ${GOLD}55 !important;
+          color: ${GOLD} !important;
+          border-bottom-left-radius: 0 !important;
+          border-bottom-right-radius: 0 !important;
+        }
+        .p-accordion .p-accordion-content {
+          background: ${DARK_CARD} !important;
+          border: 1px solid ${GOLD}22 !important;
+          border-top: none !important;
+          color: rgba(240,216,144,0.5) !important;
+          font-family: 'DM Sans', sans-serif !important;
+          font-size: 0.84rem !important;
+          border-bottom-left-radius: 8px !important;
+          border-bottom-right-radius: 8px !important;
+        }
+        .p-accordion .p-accordion-tab { margin-bottom: 0.6rem; }
+        .p-accordion-header-icon { color: ${GOLD}88 !important; }
+
+        .vote-input {
+          background: ${DARK_CARD} !important;
+          border: 1px solid ${GOLD}30 !important;
+          color: rgba(240,216,144,0.8) !important;
+          font-family: 'DM Sans', sans-serif !important;
+          font-size: 0.85rem !important;
+          border-radius: 8px !important;
+          padding: 0.75rem 1rem !important;
+          width: 100% !important;
+          outline: none !important;
+          transition: border-color 0.2s !important;
+        }
+        .vote-input:focus { border-color: ${GOLD}77 !important; }
+        .vote-input::placeholder { color: ${GOLD}33 !important; }
+      `}</style>
+
+      {/* ── Hero ── */}
+      <div style={{ background: DARK, paddingTop: "7rem", paddingBottom: "3.5rem", textAlign: "center", position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", inset: 0, opacity: 0.03, pointerEvents: "none", backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")` }} />
+        <div style={{ position: "absolute", inset: 0, pointerEvents: "none", background: `radial-gradient(ellipse 60% 40% at 50% 100%, ${GOLD}0a 0%, transparent 70%)` }} />
+
+        <div style={{ animation: "fadeUp 0.5s ease both", marginBottom: "1.5rem" }}>
+          <Link href="/projetos" style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.6rem", letterSpacing: "0.2em", textTransform: "uppercase", color: `${GOLD}55`, textDecoration: "none" }}>
+            ← Trabalhos Concorrentes
+          </Link>
         </div>
-      </div> */}
-      <HeroSection
-        title={inscricao.data.attributes.nome_projeto}
-        subtitle={`Concorente da ${edicaoMaisRecente}ª edição`}
-      />
 
-      <div className="p-11">
-        {/* Inicio dos detalhes de cada projeto */}
-        {!loading &&
-          (user ? (
-            <>
-              <div className="mt-10 sm:mt-0">
-                <div className="md:grid md:grid-cols-3 md:gap-6">
-                  <div className="md:col-span-1">
-                    <div className="px-4 sm:px-0">
-                      <h3 className="text-lg font-medium leading-6 text-gray-900">
-                        FICHA DE INSCRIÇÃO
-                      </h3>
-                      <p className="mt-1 text-sm text-gray-600">
-                        Concurso do Prémio Nacional de Publicidade
-                      </p>
-                    </div>
-                  </div>
-                  <div className="mt-5 md:col-span-2 md:mt-0">
-                    <div>
-                      <div className="overflow-hidden shadow sm:rounded-md">
-                        <div className="bg-white px-4 py-5 sm:p-6">
-                          <div className="grid grid-cols-6 gap-6">
-                            <div className="col-span-6 sm:col-span-3">
-                              <label
-                                htmlFor="fname"
-                                className="block text-sm font-medium text-gray-700"
-                              >
-                                Nome Completo (Empresa ou candidato individual)
-                              </label>
-                              <p className="font-bold text-amarelo-ouro">
-                                {InscritosValues.nome_completo}
-                              </p>
-                            </div>
+        <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.52rem", letterSpacing: "0.32em", textTransform: "uppercase", color: `${GOLD}66`, marginBottom: "1rem", animation: "fadeUp 0.6s ease 0.05s both" }}>
+          ✦ &nbsp; {attr.categoria || "Categoria"}
+        </p>
+        <h1 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: "clamp(2rem,5vw,3.8rem)", fontWeight: 300, color: "#f5e8b8", letterSpacing: "0.05em", margin: "0 auto 0.5rem", maxWidth: "800px", padding: "0 2rem", animation: "fadeUp 0.7s ease 0.1s both" }}>
+          {attr.nome_projeto}
+        </h1>
+        {edicaoNum && (
+          <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.75rem", color: `${GOLD}77`, animation: "fadeUp 0.8s ease 0.2s both" }}>
+            Concorrente da {edicaoNum}ª edição
+          </p>
+        )}
+        <div style={{ width: "48px", height: "1px", background: `linear-gradient(90deg, transparent, ${GOLD}, transparent)`, margin: "1.8rem auto 0" }} />
+      </div>
 
-                            <div className="col-span-6 sm:col-span-3">
-                              <label
-                                htmlFor="nif"
-                                className="block text-sm font-medium text-gray-700"
-                              >
-                                NIF
-                              </label>
-                              <p className="font-bold text-amarelo-ouro">
-                                {InscritosValues.nif}
-                              </p>
-                            </div>
+      {/* ── Content ── */}
+      <div style={{ background: DARK, padding: "4rem 2rem 6rem" }}>
+        <div style={{ maxWidth: "900px", margin: "0 auto" }}>
 
-                            <div className="col-span-6 sm:col-span-4">
-                              <label
-                                htmlFor="email"
-                                className="block text-sm font-medium text-gray-700"
-                              >
-                                Email
-                              </label>
-                              <p className="font-bold text-amarelo-ouro">
-                                {InscritosValues.email}
-                              </p>
-                            </div>
-
-                            <div className="col-span-6">
-                              <label
-                                htmlFor="street-address"
-                                className="block text-sm font-medium text-gray-700"
-                              >
-                                Sede ou Local de Residência
-                              </label>
-                              <p className="font-bold text-amarelo-ouro">
-                                {InscritosValues.sede}
-                              </p>
-                            </div>
-                            <div className="col-span-6 sm:col-span-3 lg:col-span-2">
-                              <label
-                                htmlFor="phone"
-                                className="block text-sm font-medium text-gray-700"
-                              >
-                                Telefone
-                              </label>
-                              <p className="font-bold text-amarelo-ouro">
-                                {InscritosValues.telefone}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                        {/* <div className="bg-gray-50 px-4 py-3 text-right sm:px-6">
-                    
-                    <button
-                      type="submit"
-                      className="inline-flex justify-center rounded-md border border-transparent bg-amarelo-ouro py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-amarelo-escuro focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                      // {  ? 'disabled' : ' '}
-                    >
-                      Guardar
-                    </button>
-                  </div> */}
-                      </div>
-                    </div>
-                  </div>
-                </div>
+          {/* Ficha de Inscrição — logged users only */}
+          {!loading && user && (
+            <SectionPanel title="Ficha de Inscrição" subtitle="Dados do participante">
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "0 2rem" }}>
+                <Field label="Nome Completo" value={attr.nome_completo} />
+                <Field label="NIF" value={attr.NIF} />
+                <Field label="Email" value={attr.email} />
+                <Field label="Sede / Residência" value={attr.sede} />
+                <Field label="Telefone" value={attr.telefone} />
               </div>
-              <div className="hidden sm:block" aria-hidden="true">
-                <div className="py-5">
-                  <div className="border-t border-gray-200" />
-                </div>
-              </div>
-            </>
-          ) : (
-            <></>
-          ))}
-        <div>
-          <div className="md:grid md:grid-cols-3 md:gap-6">
-            <div className="md:col-span-1">
-              <div className="px-4 sm:px-0">
-                <h3 className="text-lg font-medium leading-6 text-gray-900">
-                  FICHA TÉCNICA
-                </h3>
-                <p className="mt-1 text-sm text-gray-600">
-                  Especifica quais as categorias a concorrer e detalhes sobre o
-                  projeto
-                </p>
-              </div>
+            </SectionPanel>
+          )}
+
+          {/* Ficha Técnica — always visible */}
+          <SectionPanel title="Ficha Técnica" subtitle="Categoria e conceito criativo">
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "0 2rem" }}>
+              <Field label="Categoria" value={attr.categoria} />
+              <Field label="Nome do Projeto" value={attr.nome_projeto} />
             </div>
-            <div className="mt-5 md:col-span-2 md:mt-0">
-              <div>
-                <div className="shadow sm:overflow-hidden sm:rounded-md">
-                  <div className="space-y-6 bg-white px-4 py-5 sm:p-6">
-                    <div className="grid grid-cols-3 gap-6">
-                      <div className="col-span-3 sm:col-span-2">
-                        <label
-                          htmlFor="countries"
-                          className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                        >
-                          Categoria de Prémio a que concorre
-                        </label>
-                        <p className="font-bold text-amarelo-ouro">
-                          {InscritosValues.categoria}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="col-span-6 sm:col-span-4">
-                      <label
-                        htmlFor="proj_nome"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        Nome do Projeto
-                      </label>
-                      <p className="font-bold text-amarelo-ouro">
-                        {InscritosValues.nome_projeto}
-                      </p>
-                    </div>
-
-                    <div>
-                      <label
-                        htmlFor="about"
-                        className="block text-sm font-medium text-gray-700"
-                      >
-                        Conceito Criativo
-                      </label>
-                      <div className="mt-1">
-                        <p className="font-bold text-amarelo-ouro">
-                          {InscritosValues.con_criativo}
-                        </p>
-                      </div>
-                      {/* <p className="mt-2 text-sm text-gray-500">
-                        Breve descrição sobre seu projeto e outros observações
-                      </p> */}
-                    </div>
-
-                    {/* <div>
-											<label className="block text-sm font-medium text-gray-700">
-												Photo
-											</label>
-											<div className="mt-1 flex items-center">
-												<span className="inline-block h-12 w-12 overflow-hidden rounded-full bg-gray-100">
-													<svg
-														className="h-full w-full text-gray-300"
-														fill="currentColor"
-														viewBox="0 0 24 24"
-													>
-														<path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-													</svg>
-												</span>
-												<button
-													type="button"
-													className="ml-5 rounded-md border border-gray-300 bg-white py-2 px-3 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-												>
-													Change
-												</button>
-											</div>
-										</div> */}
-
-                    {/* <div>
-											<label className="block text-sm font-medium text-gray-700">
-												Cover photo
-											</label>
-											<div className="mt-1 flex justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6">
-												<div className="space-y-1 text-center">
-													<svg
-														className="mx-auto h-12 w-12 text-gray-400"
-														stroke="currentColor"
-														fill="none"
-														viewBox="0 0 48 48"
-														aria-hidden="true"
-													>
-														<path
-															d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-															strokeWidth={2}
-															strokeLinecap="round"
-															strokeLinejoin="round"
-														/>
-													</svg>
-													<div className="flex text-sm text-gray-600">
-														<label
-															htmlFor="file-upload"
-															className="relative cursor-pointer rounded-md bg-white font-medium text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:text-indigo-500"
-														>
-															<span>Upload a file</span>
-															<input
-																id="file-upload"
-																name="file-upload"
-																type="file"
-																className="sr-only"
-															/>
-														</label>
-														<p className="pl-1">or drag and drop</p>
-													</div>
-													<p className="text-xs text-gray-500">
-														PNG, JPG, GIF up to 10MB
-													</p>
-												</div>
-											</div>
-										</div> */}
-                  </div>
-                  {/* <div className="bg-gray-50 px-4 py-3 text-right sm:px-6">
-                    <button
-                      type="submit"
-                      className="inline-flex justify-center rounded-md border border-transparent bg-amarelo-ouro py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-amarelo-escuro focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    >
-                      Guardar
-                    </button>
-                  </div> */}
-                </div>
+            {attr.con_criativo && (
+              <div style={{ marginTop: "0.5rem", padding: "1.25rem 1.5rem", background: `${GOLD}08`, border: `1px solid ${GOLD}18`, borderRadius: "10px" }}>
+                <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.62rem", letterSpacing: "0.16em", textTransform: "uppercase", color: `${GOLD}55`, margin: "0 0 0.5rem" }}>Conceito Criativo</p>
+                <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.88rem", color: `${GOLD_BRIGHT}aa`, margin: 0, lineHeight: 1.8 }}>{attr.con_criativo}</p>
               </div>
-            </div>
-          </div>
-        </div>
-        <div className="hidden sm:block" aria-hidden="true">
-          <div className="py-5">
-            <div className="border-t border-gray-200" />
-          </div>
-        </div>
-        {!loading &&
-          (user ? (
-            <>
-              <div>
-                <div className="md:grid md:grid-cols-3 md:gap-6">
-                  <div className="md:col-span-1">
-                    <div className="px-4 sm:px-0">
-                      <h3 className="text-lg font-medium leading-6 text-gray-900">
-                        Equipa do Projeto
-                      </h3>
-                      <p className="mt-1 text-sm text-gray-600">
-                        Informações sobre as equipas e colaboradores do projeto
-                      </p>
-                    </div>
-                  </div>
-                  <div className="mt-5 md:col-span-2 md:mt-0">
-                    <div>
-                      <div className="shadow sm:overflow-hidden sm:rounded-md">
-                        <div className="space-y-6 bg-white px-4 py-5 sm:p-6">
-                          <div className="col-span-6 sm:col-span-4">
-                            <label
-                              htmlFor="coo_prod"
-                              className="block text-sm font-medium text-gray-700"
-                            >
-                              Coordenador / Produtor
-                            </label>
-                            <p className="font-bold text-amarelo-ouro">
-                              {InscritosValues.coord_prod}
-                            </p>
-                          </div>
+            )}
+          </SectionPanel>
 
-                          <div className="col-span-6 sm:col-span-4">
-                            <label
-                              htmlFor="coo_prod"
-                              className="block text-sm font-medium text-gray-700"
-                            >
-                              Diretor de Fotografia
-                            </label>
-                            <p className="font-bold text-amarelo-ouro">
-                              {InscritosValues.dir_foto}
-                            </p>
-                          </div>
-
-                          <div className="col-span-6 sm:col-span-4">
-                            <label
-                              htmlFor="coo_prod"
-                              className="block text-sm font-medium text-gray-700"
-                            >
-                              Diretor de Arte
-                            </label>
-                            <p className="font-bold text-amarelo-ouro">
-                              {InscritosValues.dir_art}
-                            </p>
-                          </div>
-
-                          <div className="col-span-6 sm:col-span-4">
-                            <label
-                              htmlFor="coo_prod"
-                              className="block text-sm font-medium text-gray-700"
-                            >
-                              Realizador
-                            </label>
-                            <p className="font-bold text-amarelo-ouro">
-                              {InscritosValues.realizador}
-                            </p>
-                          </div>
-
-                          <div className="col-span-6 sm:col-span-4">
-                            <label
-                              htmlFor="coo_prod"
-                              className="block text-sm font-medium text-gray-700"
-                            >
-                              Editor
-                            </label>
-                            <p className="font-bold text-amarelo-ouro">
-                              {InscritosValues.editor}
-                            </p>
-                          </div>
-
-                          <div className="col-span-6 sm:col-span-4">
-                            <label
-                              htmlFor="coo_prod"
-                              className="block text-sm font-medium text-gray-700"
-                            >
-                              Autoria do Jingle
-                            </label>
-                            <p className="font-bold text-amarelo-ouro">
-                              {InscritosValues.autor_jingle}
-                            </p>
-                          </div>
-
-                          <div className="col-span-6 sm:col-span-4">
-                            <label
-                              htmlFor="coo_prod"
-                              className="block text-sm font-medium text-gray-700"
-                            >
-                              Designer
-                            </label>
-                            <p className="font-bold text-amarelo-ouro">
-                              {InscritosValues.designer}
-                            </p>
-                          </div>
-
-                          <div>
-                            <label
-                              htmlFor="about"
-                              className="block text-sm font-medium text-gray-700"
-                            >
-                              Outro (considerações adicionais)
-                            </label>
-                            <div className="mt-1">
-                              <p className="font-bold text-amarelo-ouro">
-                                {InscritosValues.outras_consideracoes}
-                              </p>
-                            </div>
-                            {/* <p className="mt-2 text-sm text-gray-500">
-												algumas considerações adicionais
-											</p> */}
-                          </div>
-
-                          <div className="col-span-6 sm:col-span-4">
-                            <label
-                              htmlFor="coo_prod"
-                              className="block text-sm font-medium text-gray-700"
-                            >
-                              Data da sua produção
-                            </label>
-                            <p className="font-bold text-amarelo-ouro">
-                              {InscritosValues.data_producao}
-                            </p>
-                          </div>
-
-                          <div className="col-span-6 sm:col-span-4">
-                            <label
-                              htmlFor="coo_prod"
-                              className="block text-sm font-medium text-gray-700"
-                            >
-                              Data da divulgação
-                            </label>
-                            <p className="font-bold text-amarelo-ouro">
-                              {InscritosValues.data_divulgacao}
-                            </p>
-                          </div>
-
-                          <div className="col-span-6 sm:col-span-4">
-                            <label
-                              htmlFor="coo_prod"
-                              className="block text-sm font-medium text-gray-700"
-                            >
-                              Data da sua apresentação pública (se trabalho
-                              universitário)
-                            </label>
-                            <p className="font-bold text-amarelo-ouro">
-                              {InscritosValues.data_apresentacao_publica}
-                            </p>
-                          </div>
-                        </div>
-                        {/* <div className="bg-gray-50 px-4 py-3 text-right sm:px-6">
-                    <button
-                      type="submit"
-                      className="inline-flex justify-center rounded-md border border-transparent bg-amarelo-ouro py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-amarelo-escuro focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    >
-                      Guardar
-                    </button>
-                  </div> */}
-                      </div>
-                    </div>
-                  </div>
-                </div>
+          {/* Equipa — logged users only */}
+          {!loading && user && (
+            <SectionPanel title="Equipa do Projeto" subtitle="Colaboradores e datas">
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "0 2rem" }}>
+                <Field label="Coordenador / Produtor"     value={attr.coord_prod} />
+                <Field label="Diretor de Fotografia"       value={attr.dir_foto} />
+                <Field label="Diretor de Arte"             value={attr.dir_art} />
+                <Field label="Realizador"                  value={attr.realizador} />
+                <Field label="Editor"                      value={attr.editor} />
+                <Field label="Autoria do Jingle"           value={attr.autor_jingle} />
+                <Field label="Designer"                    value={attr.designer} />
+                <Field label="Data de Produção"            value={attr.data_producao} />
+                <Field label="Data de Divulgação"          value={attr.data_divulgacao} />
+                <Field label="Data de Apresentação Pública" value={attr.data_apresentacao_publica} />
               </div>
-              <div className="hidden sm:block" aria-hidden="true">
-                <div className="py-5">
-                  <div className="border-t border-gray-200" />
-                </div>
-              </div>
-            </>
-          ) : (
-            <></>
-          ))}
+              {attr.outras_consideracoes && (
+                <Field label="Outras Considerações" value={attr.outras_consideracoes} />
+              )}
+            </SectionPanel>
+          )}
 
-        {/* fim dos detalhes de cada projeto */}
-        {/* lista de documentos submetidos */}
-        {!loading &&
-          (user ? (
-            <div className="mt-10 sm:mt-0">
-              {/** Private Documents Section */}
-              <div className="md:grid md:grid-cols-3 md:gap-6">
-                <div className="md:col-span-1">
-                  <div className="px-4 sm:px-0">
-                    <h3 className="text-lg font-medium leading-6 text-gray-900">
-                      Documentos Privados
-                    </h3>
-                    <div className="mt-1 text-sm text-gray-600">
-                      <p className="mb-2">
-                        <span className="text-red-500 font-bold text-lg pointer">
-                          {/* <IoTrashOutline /> */}
-                        </span>{" "}
-                        {/* Remove a file */}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-5 md:col-span-2 md:mt-0">
-                  <div>
-                    <Accordion activeIndex={0}>
-                      {inscricao.data.attributes.fileLink?.map(
-                        (value: any, index: number) => {
-                          // Filtra apenas documentos privados (publico: false)
-                          if (value.publico !== false) return null
-
-                          // console.log("inscricao.data.attributes.fileLink")
-                          // console.log(inscricao.data.attributes.fileLink)
-
-                          const fileExtension = value.titulo
-                            ?.slice(-4)
-                            .toLowerCase() // Obtém a extensão do arquivo
-
-                          const renderFilePreview = () => {
-                            switch (fileExtension) {
-                              case ".pdf":
-                                return (
-                                  <p className="m-0">
-                                    <a
-                                      href={`${api_link}${value.ficheiro?.data?.attributes?.url}`}
-                                      target="_blank"
-                                      className="hover:text-blue-500 hover:underline"
-                                      rel="noreferrer"
-                                    >
-                                      [Abrir Link]
-                                    </a>
-                                  </p>
-                                )
-
-                              case ".mp3":
-                                return (
-                                  <>
-                                    <p className="m-0">
-                                      <a
-                                        href={`${api_link}${value.ficheiro?.data?.attributes?.url}`}
-                                        target="_blank"
-                                        className="hover:text-blue-500 hover:underline"
-                                        rel="noreferrer"
-                                      >
-                                        [Abrir Link]
-                                      </a>
-                                    </p>
-                                    <audio controls>
-                                      <source
-                                        src={`${api_link}${value.ficheiro?.data?.attributes?.url}`}
-                                        type="audio/mpeg"
-                                      />
-                                      Your browser does not support the audio
-                                      element.
-                                    </audio>
-                                  </>
-                                )
-
-                              case ".mp4":
-                                return (
-                                  <>
-                                    <p className="m-0">
-                                      <a
-                                        href={`${api_link}${value.ficheiro?.data?.attributes?.url}`}
-                                        target="_blank"
-                                        className="hover:text-blue-500 hover:underline"
-                                        rel="noreferrer"
-                                      >
-                                        [Abrir Link]
-                                      </a>
-                                    </p>
-                                    <video width="500" height="300" controls>
-                                      <source
-                                        src={`${api_link}${value.ficheiro?.data?.attributes?.url}`}
-                                        type="video/mp4"
-                                      />
-                                      Your browser does not support the video
-                                      tag.
-                                    </video>
-                                  </>
-                                )
-
-                              case ".png":
-                              case ".jpg":
-                              case ".jpeg":
-                                return (
-                                  <>
-                                    <p className="m-0">
-                                      <a
-                                        href={`${api_link}${value.ficheiro?.data?.attributes?.url}`}
-                                        target="_blank"
-                                        className="hover:text-blue-500 hover:underline"
-                                        rel="noreferrer"
-                                      >
-                                        [Abrir Link]
-                                      </a>
-                                    </p>
-                                    <div className="card flex justify-content-center">
-                                      <Image
-                                        src={`${api_link}${value.ficheiro?.data?.attributes?.url}`}
-                                        alt={value.titulo}
-                                        width="500"
-                                        preview
-                                      />
-                                    </div>
-                                  </>
-                                )
-
-                              default:
-                                return null // Ignora tipos de arquivo não suportados
-                            }
-                          }
-
-                          return (
-                            <AccordionTab key={index} header={value.titulo}>
-                              {renderFilePreview()}
-                            </AccordionTab>
-                          )
-                        }
+          {/* Documentos Privados — logged users only */}
+          {!loading && user && (
+            <SectionPanel title="Documentos Privados">
+              <Accordion>
+                {(attr.fileLink ?? []).filter((v: any) => v.publico === false).map((value: any, index: number) => {
+                  const url = `${api_link}${value.ficheiro?.data?.attributes?.url}`
+                  const ext = value.titulo?.slice(-4).toLowerCase()
+                  return (
+                    <AccordionTab key={index} header={value.titulo}>
+                      <a href={url} target="_blank" rel="noreferrer" style={{ color: GOLD, fontSize: "0.8rem" }}>[Abrir ficheiro]</a>
+                      {ext === ".mp3" && <audio controls style={{ marginTop: "0.75rem", width: "100%" }}><source src={url} type="audio/mpeg" /></audio>}
+                      {ext === ".mp4" && <video width="100%" controls style={{ marginTop: "0.75rem", borderRadius: "8px" }}><source src={url} type="video/mp4" /></video>}
+                      {[".png", ".jpg", ".jpeg"].includes(ext) && (
+                        <div style={{ marginTop: "0.75rem" }}><Image src={url} alt={value.titulo} width="100%" preview /></div>
                       )}
-                    </Accordion>
-                  </div>
-                </div>
+                    </AccordionTab>
+                  )
+                })}
+              </Accordion>
+            </SectionPanel>
+          )}
+
+          {/* Documentos Públicos */}
+          <SectionPanel title="Documentos Públicos">
+            <Accordion>
+              {(attr.fileLink ?? []).filter((v: any) => v.publico === true).map((value: any, index: number) => {
+                const url = `${api_link}${value.ficheiro?.data?.attributes?.url}`
+                const ext = url.slice(-4).toLowerCase()
+                return (
+                  <AccordionTab key={index} header={value.titulo}>
+                    <a href={url} target="_blank" rel="noreferrer" style={{ color: GOLD, fontSize: "0.8rem" }}>[Abrir ficheiro]</a>
+                    {ext === ".mp3" && <audio controls style={{ marginTop: "0.75rem", width: "100%" }}><source src={url} type="audio/mpeg" /></audio>}
+                    {ext === ".mp4" && <video width="100%" controls style={{ marginTop: "0.75rem", borderRadius: "8px" }}><source src={url} type="video/mp4" /></video>}
+                    {[".png", ".jpg", ".jpeg"].includes(ext) && (
+                      <div style={{ marginTop: "0.75rem" }}><Image src={url} alt={value.titulo} width="100%" preview /></div>
+                    )}
+                  </AccordionTab>
+                )
+              })}
+            </Accordion>
+          </SectionPanel>
+
+          {/* Avaliação do Júri — logged users only */}
+          {!loading && user && (
+            <SectionPanel title="Avaliação dos Jurados" subtitle="Notas por critério de cada jurado">
+              <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.75rem", color: `${GOLD}66`, marginBottom: "1.25rem" }}>
+                Categoria: <strong style={{ color: GOLD }}>{attr.categoria}</strong>
+              </p>
+              <Votacao
+                edicaoId={edicoes?.data?.[0]?.id}
+                inscricaoId={inscricao.data.id}
+                userId={nhaId}
+              />
+            </SectionPanel>
+          )}
+
+          {/* Votação Pública */}
+          <SectionPanel title="Votação Pública" subtitle="Dê o seu voto a este trabalho">
+            <form onSubmit={handleSubmit(onVotar)} style={{ maxWidth: "480px" }}>
+              <div style={{ marginBottom: "1rem" }}>
+                <label style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.62rem", letterSpacing: "0.16em", textTransform: "uppercase", color: `${GOLD}66`, display: "block", marginBottom: "0.5rem" }}>
+                  Nome Completo
+                </label>
+                <input
+                  type="text"
+                  className="vote-input"
+                  placeholder="Seu nome"
+                  {...register("nome", { required: true })}
+                />
               </div>
-            </div>
-          ) : (
-            <></>
-          ))}
-
-        <div className="hidden sm:block" aria-hidden="true">
-          <div className="py-5">
-            <div className="border-t border-gray-200" />
-          </div>
-        </div>
-
-        <div className="mt-10 sm:mt-0">
-          {/** Public Documents Section */}
-          <div className="md:grid md:grid-cols-3 md:gap-6">
-            <div className="md:col-span-1">
-              <div className="px-4 sm:px-0">
-                <h3 className="text-lg font-medium leading-6 text-gray-900">
-                  Documentos Públicos
-                </h3>
-                <div className="mt-1 text-sm text-gray-600">
-                  <p className="mb-2">
-                    <span className="text-red-500 font-bold text-lg pointer">
-                      {/* <IoTrashOutline /> */}
-                    </span>{" "}
-                    {/* Remove a file */}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-5 md:col-span-2 md:mt-0">
-              <div>
-                <Accordion activeIndex={0}>
-                  {inscricao.data.attributes.fileLink?.map(
-                    (value: any, index: number) => {
-                      // Filtra apenas documentos públicos (publico: true)
-                      if (value.publico !== true) return null
-
-                      const fileExtension =
-                        `${api_link}${value.ficheiro?.data?.attributes?.url}`
-                          ?.slice(-4)
-                          .toLowerCase() // Obtém a extensão do arquivo
-
-                      const renderFilePreview = () => {
-                        switch (fileExtension) {
-                          case ".pdf":
-                            return (
-                              <p className="m-0">
-                                <a
-                                  href={`${api_link}${value.ficheiro?.data?.attributes?.url}`}
-                                  target="_blank"
-                                  className="hover:text-blue-500 hover:underline"
-                                  rel="noreferrer"
-                                >
-                                  [Abrir Link]
-                                </a>
-                              </p>
-                            )
-
-                          case ".mp3":
-                            return (
-                              <>
-                                <p className="m-0">
-                                  <a
-                                    href={`${api_link}${value.ficheiro?.data?.attributes?.url}`}
-                                    target="_blank"
-                                    className="hover:text-blue-500 hover:underline"
-                                    rel="noreferrer"
-                                  >
-                                    [Abrir Link]
-                                  </a>
-                                </p>
-                                <audio controls>
-                                  <source
-                                    src={`${api_link}${value.ficheiro?.data?.attributes?.url}`}
-                                    type="audio/mpeg"
-                                  />
-                                  Your browser does not support the audio
-                                  element.
-                                </audio>
-                              </>
-                            )
-
-                          case ".mp4":
-                            return (
-                              <>
-                                <p className="m-0">
-                                  <a
-                                    href={`${api_link}${value.ficheiro?.data?.attributes?.url}`}
-                                    target="_blank"
-                                    className="hover:text-blue-500 hover:underline"
-                                    rel="noreferrer"
-                                  >
-                                    [Abrir Link]
-                                  </a>
-                                </p>
-                                <video width="500" height="300" controls>
-                                  <source
-                                    src={`${api_link}${value.ficheiro?.data?.attributes?.url}`}
-                                    type="video/mp4"
-                                  />
-                                  Your browser does not support the video tag.
-                                </video>
-                              </>
-                            )
-
-                          case ".png":
-                          case ".jpg":
-                          case ".jpeg":
-                            return (
-                              <>
-                                <p className="m-0">
-                                  <a
-                                    href={`${api_link}${value.ficheiro?.data?.attributes?.url}`}
-                                    target="_blank"
-                                    className="hover:text-blue-500 hover:underline"
-                                    rel="noreferrer"
-                                  >
-                                    [Abrir Link]
-                                  </a>
-                                </p>
-                                <div className="card flex justify-content-center">
-                                  <Image
-                                    src={`${api_link}${value.ficheiro?.data?.attributes?.url}`}
-                                    alt={value.titulo}
-                                    width="500"
-                                    preview
-                                  />
-                                </div>
-                              </>
-                            )
-
-                          default:
-                            return null // Ignora tipos de arquivo não suportados
-                        }
-                      }
-
-                      return (
-                        <AccordionTab key={index} header={value.titulo}>
-                          {renderFilePreview()}
-                        </AccordionTab>
-                      )
-                    }
-                  )}
-                </Accordion>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="hidden sm:block" aria-hidden="true">
-          <div className="py-5">
-            <div className="border-t border-gray-200" />
-          </div>
-        </div>
-        {!loading &&
-          (user ? (
-            <>
-              <div className="mt-10 sm:mt-0">
-                <div
-                  id="AvaliaçaoJuri"
-                  className="md:grid md:grid-cols-3 md:gap-6"
-                >
-                  <div className="md:col-span-1">
-                    <div className="px-4 sm:px-0">
-                      <h3 className="text-lg font-medium leading-6 text-gray-900">
-                        Avaliaçao dos Jurados
-                      </h3>
-                      <div className="mt-1 text-sm text-gray-600">
-                        <p className="mb-2">
-                          <span className="text-red-500 font-bold text-lg">
-                            *
-                          </span>{" "}
-                          Notas da Avaliaçao por parte de cada jurado
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-5 md:col-span-2 md:mt-0">
-                    <div className="mb-5 font-bold text-gray-500">
-                      <h1>
-                        Categoria:
-                        {inscricao.data.attributes.categoria}
-                      </h1>
-                    </div>
-                    <div>
-                      {/* aqui vica o code da nova votação */}
-                      <Votacao
-                        edicaoId={edicoes.data[0]?.id}
-                        inscricaoId={inscricao.data.id}
-                        userId={nhaId}
-                      />
-                    </div>
-                  </div>
-                </div>
+              <div style={{ marginBottom: "1.5rem" }}>
+                <label style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.62rem", letterSpacing: "0.16em", textTransform: "uppercase", color: `${GOLD}66`, display: "block", marginBottom: "0.5rem" }}>
+                  Email
+                </label>
+                <input
+                  type="email"
+                  className="vote-input"
+                  placeholder="exemplo@email.com"
+                  {...register("email", { required: true })}
+                />
+                {errors.email && <span style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.72rem", color: "#e74c3c" }}>O email é obrigatório.</span>}
               </div>
 
-              <div className="hidden sm:block" aria-hidden="true">
-                <div className="py-5">
-                  <div className="border-t border-gray-200" />
-                </div>
-              </div>
-            </>
-          ) : (
-            <></>
-          ))}
-        <div id="votacaoPublica" className="mt-10 sm:mt-0">
-          <div className="md:grid md:grid-cols-3 md:gap-6">
-            <div className="md:col-span-1">
-              <div className="px-4 sm:px-0">
-                <h3 className="text-lg font-medium leading-6 text-gray-900">
-                  Votaçao Publica
-                </h3>
-                <div className="mt-1 text-sm text-gray-600">
-                  <p className="mb-2">
-                    <span className="text-red-500 font-bold text-lg">*</span>{" "}
-                    Votaçao publica por parte do publico
-                  </p>
-                  <p className="mb-2">
-                    <span className="text-red-500 font-bold text-lg">*</span>{" "}
-                    Apos fornecer o email use o botao de &quot;votar&quot; para
-                    enviar o seu voto
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="mt-5 md:col-span-2 md:mt-0">
-              <form className="" onSubmit={handleSubmit(onVotar)}>
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    Nome Completo
-                  </label>
-                  <input
-                    type="text"
-                    id="nome"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder="Sr. premio nacional de publicidade"
-                    {...register("nome", {
-                      required: true,
-                    })}
-                  />
-                  {errors.email && (
-                    <span className="text-red-500">O email é obrigatorio!</span>
-                  )}
-                </div>
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder="exemplo@pnp.cv"
-                    {...register("email", {
-                      required: true,
-                    })}
-                  />
-                  {errors.email && (
-                    <span className="text-red-500">O email é obrigatorio!</span>
-                  )}
-                </div>
+              <button
+                type="submit"
+                disabled={isBlock}
+                style={{
+                  fontFamily: "'DM Sans',sans-serif",
+                  fontSize: "0.7rem",
+                  letterSpacing: "0.18em",
+                  textTransform: "uppercase",
+                  color: isBlock ? `${GOLD}44` : DARK,
+                  background: isBlock ? `${GOLD}22` : `linear-gradient(135deg, ${GOLD}, ${GOLD_BRIGHT})`,
+                  border: "none",
+                  borderRadius: "100px",
+                  padding: "12px 32px",
+                  cursor: isBlock ? "not-allowed" : "pointer",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  transition: "opacity 0.2s",
+                }}
+              >
+                <svg width="16" height="16" fill={cor} viewBox="0 0 20 20">
+                  <path fillRule="evenodd" clipRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" />
+                </svg>
+                {isBlock ? "Voto registado" : "Votar"}
+              </button>
+            </form>
+          </SectionPanel>
 
-                <button
-                  type="submit"
-                  className="mt-5 w-full text-white bg-amarelo-ouro hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                >
-                  Votar
-                  <svg
-                    width="20"
-                    height="20"
-                    fill={cor}
-                    aria-hidden="true"
-                    className="ml-2"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      clipRule="evenodd"
-                      d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
-                    />
-                  </svg>
-                </button>
-              </form>
-            </div>
-          </div>
         </div>
       </div>
     </Layout>
@@ -1172,39 +371,30 @@ const VpublicaDetalhes = ({
 
 export default VpublicaDetalhes
 
-// This gets called on every request
-export async function getServerSideProps({ params, query }: any) {
-  // Fetch data from external API
-  // console.log(query);
+export async function getServerSideProps({ query }: any) {
   const { id } = query
 
-  const queri = qs.stringify(
-    {
-      sort: ["N_Edicao:desc"], // Ordena pela edição mais recente
-    },
-    { encodeValuesOnly: true }
-  )
+  const queri = qs.stringify({ sort: ["N_Edicao:desc"] }, { encodeValuesOnly: true })
 
   const results = await Promise.allSettled([
-    fetcher(`${api_link}/api/edicoes?populate[categoria][fields]=titulo,id&[populate][inscricoes][fields]=titulo&${queri}`),
+    fetcher(`${api_link}/api/edicoes?populate[categoria][fields]=titulo,id&${queri}`),
     fetcher(`${api_link}/api/contato`),
     fetcher(`${api_link}/api/menus?populate=deep`),
     fetcher(`${api_link}/api/inscricoes/${id}?populate[fileLink][populate][ficheiro][fields]=url`),
   ])
-
   const [edicoes, contato, menus, inscritos] = results.map((r: any) => {
-    if (r.status === 'fulfilled') return r.value
-    console.error('Endpoint failed:', r.reason)
+    if (r.status === "fulfilled") return r.value
+    console.error("Endpoint failed:", r.reason)
     return null
   })
 
   return {
     props: {
-      edicoes: edicoes ?? null,
-      social: parseNavbar(menus, "redes-social"),
-      contato: contato ?? null,
-      navbar: parseNavbar(menus, "menus"),
-      inscricao: inscritos ?? null,
+      edicoes:    edicoes ?? null,
+      social:     parseNavbar(menus, "redes-social"),
+      contato:    contato ?? null,
+      navbar:     parseNavbar(menus, "menus"),
+      inscricao:  inscritos ?? null,
     },
   }
 }
