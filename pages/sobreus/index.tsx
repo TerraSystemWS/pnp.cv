@@ -1,5 +1,6 @@
 import Layout from "../../components/Layout";
-import { fetcher } from "../../lib/api";
+import { fetcher } from "../../lib/api"
+import { parseNavbar } from "../../lib/parseNavbar";
 import showdown from "showdown";
 import Head from "next/head";
 import { useFetchUser } from "../../lib/authContext";
@@ -53,30 +54,23 @@ export default Sobreus;
 export async function getServerSideProps() {
   // Fetch data from external API
 
-  // GET: links para as redes sociais
-  const rsocials = await fetcher(`${api_link}/api/redes-social?populate=*`);
-  // GET: dados para contatos
-  const contato = await fetcher(`${api_link}/api/contato`);
-  // GET: dados do navbar
-  const navbar = await fetcher(`${api_link}/api/menus?populate=deep`);
-  // GET: dados do sobre Us
-  const sobreus = await fetcher(`${api_link}/api/sobre-pnp?populate=deep`);
-  //get links for menu
-  let dlink: any = [];
-  navbar.data.map((value: any) => {
-    value.attributes.items.data.map((value: any, index: any) => {
-      // value.attributes.title;
-      // value.attributes.url;
-      // console.log(value);
-      dlink[index] = {
-        name: value.attributes.title,
-        link: value.attributes.url,
-      };
-    });
-  });
+  const results = await Promise.allSettled([
+    fetcher(`${api_link}/api/contato`),
+    fetcher(`${api_link}/api/menus?populate=deep`),
+    fetcher(`${api_link}/api/sobre-pnp?populate=deep`),
+  ])
+  const [contato, menus, sobreus] = results.map((r: any) => {
+    if (r.status === 'fulfilled') return r.value
+    console.error('Endpoint failed:', r.reason)
+    return null
+  })
 
-  // Pass data to the page via props
   return {
-    props: { social: rsocials, contato, navbar: dlink, sobreus },
+    props: {
+      social: parseNavbar(menus, "redes-social"),
+      contato: contato ?? null,
+      navbar: parseNavbar(menus, "menus"),
+      sobreus: sobreus ?? null,
+    },
   };
 }

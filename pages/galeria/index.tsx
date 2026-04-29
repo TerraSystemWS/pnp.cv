@@ -1,5 +1,6 @@
 import Layout from "../../components/Layout";
-import { fetcher } from "../../lib/api";
+import { fetcher } from "../../lib/api"
+import { parseNavbar } from "../../lib/parseNavbar";
 const qs = require("qs");
 import Head from "next/head";
 import { useFetchUser } from "../../lib/authContext";
@@ -180,31 +181,30 @@ export async function getServerSideProps({ params, query }: any) {
 	const queries = new URLSearchParams({ sort: "N_Edicao:desc" });
 
 	try {
-		const [rsocials, contato, edicao, navbar] = await Promise.all([
-			fetcher(`${api_link}/api/redes-social?populate=*`),
+    const results = await Promise.allSettled([
 			fetcher(`${api_link}/api/contato`),
 			fetcher(
 				`${api_link}/api/edicoes?populate=deep&${queries.toString()}&filters[N_Edicao][$eq]=${edicao_id}`
 			),
 			fetcher(`${api_link}/api/menus?populate=deep`),
-		]);
+		])
+    const [contato, edicao, menus] = results.map((r: any) => {
+      if (r.status === 'fulfilled') return r.value
+      console.error('Endpoint failed:', r.reason)
+      return null
+    })
+;
 
-		const dlink =
-			navbar?.data?.flatMap((value: any) =>
-				value?.attributes?.items?.data?.map((item: any) => ({
-					name: item?.attributes?.title ?? "",
-					link: item?.attributes?.url ?? "#",
-				})) ?? []
-			) ?? [];
+		const dlink = parseNavbar(menus, "menus");
 
-		return { props: { social: rsocials, contato, edicao, navbar: dlink } };
+		return { props: { social: parseNavbar(menus, "redes-social"), edicao, navbar: parseNavbar(menus, "menus") } };
 	} catch (error) {
 		console.error("Error fetching galeria data:", error)
 		return {
 			props: {
-				social: { data: null },
-				contato: { data: null },
-				edicao: { data: null },
+				social: [],
+				contato: null,
+				edicao: null,
 				navbar: [],
 			},
 		}

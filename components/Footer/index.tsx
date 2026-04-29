@@ -172,7 +172,7 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
 
           {/* Social Icons */}
           <div className="text-center text-xl mb-2">
-            {(rsocial ?? []).map((s) => (
+            {(Array.isArray(rsocial) ? rsocial : []).map((s) => (
               <Link
                 key={s.name}
                 href={s.link}

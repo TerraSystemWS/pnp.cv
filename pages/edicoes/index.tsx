@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import Image from "next/image"
 import { fetcher } from "../../lib/api"
+import { parseNavbar } from "../../lib/parseNavbar"
 import Layout from "../../components/Layout"
 import Head from "next/head"
 import HeroSection from "../../components/HeroSection"
@@ -349,29 +350,28 @@ export async function getServerSideProps() {
   const query = new URLSearchParams({ sort: "N_Edicao:desc" })
 
   try {
-    const [rsocials, contato, edicao, navbar] = await Promise.all([
-      fetcher(`${api_link}/api/redes-social?populate=*`),
+    const results = await Promise.allSettled([
       fetcher(`${api_link}/api/contato`),
       fetcher(`${api_link}/api/edicoes?populate=deep&${query.toString()}`),
       fetcher(`${api_link}/api/menus?populate=deep`),
     ])
+    const [contato, edicao, menus] = results.map((r: any) => {
+      if (r.status === 'fulfilled') return r.value
+      console.error('Endpoint failed:', r.reason)
+      return null
+    })
 
-    const dlink =
-      navbar?.data?.flatMap((value: any) =>
-        value?.attributes?.items?.data?.map((item: any) => ({
-          name: item?.attributes?.title ?? "",
-          link: item?.attributes?.url ?? "#",
-        })) ?? []
-      ) ?? []
 
-    return { props: { social: rsocials, contato, edicao, navbar: dlink } }
+    const dlink = parseNavbar(menus, "menus")
+
+    return { props: { social: parseNavbar(menus, "redes-social"), edicao, navbar: parseNavbar(menus, "menus") } }
   } catch (error) {
     console.error("Error fetching edicoes data:", error)
     return {
       props: {
-        social: { data: null },
-        contato: { data: null },
-        edicao: { data: null },
+        social: [],
+        contato: null,
+        edicao: null,
         navbar: [],
       },
     }

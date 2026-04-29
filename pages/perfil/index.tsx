@@ -1,5 +1,6 @@
 import Layout from "../../components/Layout"
 import { fetcher } from "../../lib/api"
+import { parseNavbar } from "../../lib/parseNavbar"
 import Link from "next/link"
 import Head from "next/head"
 import { StrapiImage } from "../../components/custom/StrapiImage"
@@ -151,38 +152,32 @@ export async function getServerSideProps({ query }: any) {
 
   try {
     // Fetch data concurrently
-    const [edicoes, rsocials, contato, navbar, inscritos] = await Promise.all([
+    const results = await Promise.allSettled([
       fetcher(
         `${api_link}/api/edicoes?populate[categoria][fields]=titulo,id&[populate][inscricoes][fields]=titulo&${queri}`
       ),
-      fetcher(`${api_link}/api/redes-social?populate=*`),
       fetcher(`${api_link}/api/contato`),
       fetcher(`${api_link}/api/menus?populate=deep`),
-      fetcher(`${api_link}/api/inscricoes?populate=*`), // Certifique-se de que as inscrições também estão sendo populadas
+      fetcher(`${api_link}/api/inscricoes?populate=*`),
     ])
+    const [edicoes, contato, menus, inscritos] = results.map((r: any) => {
+      if (r.status === 'fulfilled') return r.value
+      console.error('Endpoint failed:', r.reason)
+      return null
+    })
 
-    const totalPages = Math.ceil(edicoes.meta.pagination.total / pageSize)
-    const currentPage = edicoes.meta.pagination.page
-
-    // Navbar parsing
-    const dlink =
-      navbar?.data?.flatMap(
-        (menuItem: any) =>
-          menuItem?.attributes?.items?.data?.map((linkItem: any) => ({
-            name: linkItem?.attributes?.title ?? "Unnamed",
-            link: linkItem?.attributes?.url ?? "#",
-          })) || []
-      ) || []
+    const totalPages = Math.ceil((edicoes?.meta?.pagination?.total ?? 0) / pageSize)
+    const currentPage = edicoes?.meta?.pagination?.page ?? 1
 
     return {
       props: {
-        edicoes: edicoes.data,
-        totalPages, // Add total pages for pagination
-        currentPage, // Add current page
-        social: rsocials,
-        contato,
-        navbar: dlink,
-        inscritos: inscritos.data,
+        edicoes: edicoes?.data ?? [],
+        totalPages,
+        currentPage,
+        social: parseNavbar(menus, "redes-social"),
+        contato: contato ?? null,
+        navbar: parseNavbar(menus, "menus"),
+        inscritos: inscritos?.data ?? [],
       },
     }
   } catch (error) {

@@ -1,6 +1,7 @@
 import Head from "next/head"
 import Layout from "../../components/Layout"
 import { fetcher } from "../../lib/api"
+import { parseNavbar } from "../../lib/parseNavbar"
 import { useRouter } from "next/router"
 import { Toaster } from "react-hot-toast"
 import { useFetchUser } from "../../lib/authContext"
@@ -143,23 +144,25 @@ export async function getServerSideProps({ query }: { query: Record<string, stri
       return { notFound: true }
     }
 
-    const [rsocials, contato, edicao, navbar] = await Promise.all([
-      fetcher(`${api_link}/api/redes-social?populate=*`),
+    const results = await Promise.allSettled([
       fetcher(`${api_link}/api/contato`),
       fetcher(`${api_link}/api/edicoes?populate=deep&${queri}`),
       fetcher(`${api_link}/api/menus?populate=deep`),
     ])
-
-    const navbarLinks =
-      navbar?.data?.flatMap((menu: any) =>
-        menu?.attributes?.items?.data?.map((item: any) => ({
-          name: item?.attributes?.title ?? "",
-          link: item?.attributes?.url ?? "#",
-        })) ?? []
-      ) ?? []
+    const [contato, edicao, menus] = results.map((r: any) => {
+      if (r.status === 'fulfilled') return r.value
+      console.error('Endpoint failed:', r.reason)
+      return null
+    })
 
     return {
-      props: { social: rsocials, contato, edicao, navbar: navbarLinks, inscricao },
+      props: {
+        social: parseNavbar(menus, "redes-social"),
+        contato: contato ?? null,
+        edicao: edicao ?? null,
+        navbar: parseNavbar(menus, "menus"),
+        inscricao,
+      },
     }
   } catch (error) {
     console.error("Erro ao buscar dados:", error)

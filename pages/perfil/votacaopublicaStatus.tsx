@@ -1,5 +1,6 @@
 import Layout from "../../components/Layout"
 import { fetcher } from "../../lib/api"
+import { parseNavbar } from "../../lib/parseNavbar"
 import Head from "next/head"
 import { useFetchUser } from "../../lib/authContext"
 import Router from "next/router"
@@ -222,36 +223,32 @@ export const getServerSideProps = async () => {
     )
 
     // Fetch all data concurrently
-    const [rsocials, contato, navbar, Vpublica] = await Promise.all([
-      fetcher(`${api_link}/api/redes-social?populate=*`),
+    const results = await Promise.allSettled([
       fetcher(`${api_link}/api/contato`),
       fetcher(`${api_link}/api/menus?populate=deep`),
       fetcher(`${api_link}/api/inscricoes?${query}`),
     ])
+    const [contato, menus, inscricoes] = results.map((r: any) => {
+      if (r.status === 'fulfilled') return r.value
+      console.error('Endpoint failed:', r.reason)
+      return null
+    })
 
-    // Map navbar links
-    const dlink =
-      navbar?.data?.flatMap((value: any) =>
-        value?.attributes?.items?.data?.map((item: any) => ({
-          name: item?.attributes?.title ?? "",
-          link: item?.attributes?.url ?? "#",
-        })) ?? []
-      ) ?? []
 
     return {
       props: {
-        social: rsocials,
-        contato,
-        Vpublica,
-        navbar: dlink,
+        social: parseNavbar(menus, "redes-social"),
+        contato: contato ?? null,
+        Vpublica: inscricoes ?? { data: [] },
+        navbar: parseNavbar(menus, "menus"),
       },
     }
   } catch (error) {
     console.error("Error fetching data:", error)
     return {
       props: {
-        social: { data: null },
-        contato: { data: null },
+        social: [],
+        contato: null,
         Vpublica: { data: [] },
         navbar: [],
       },
