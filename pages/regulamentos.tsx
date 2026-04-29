@@ -1,5 +1,6 @@
 import Layout from "../components/Layout"
 import { fetcher } from "../lib/api"
+import { parseNavbar } from "../lib/parseNavbar"
 import showdown from "showdown"
 import Head from "next/head"
 import { useFetchUser } from "../lib/authContext"
@@ -140,30 +141,23 @@ export async function getServerSideProps() {
   )
 
   try {
-    const [rsocials, contato, edicaoResponse, navbarResponse] = await Promise.all(
-      [
-        fetcher(`${api_link}/api/redes-social?populate=*`),
-        fetcher(`${api_link}/api/contato`),
-        fetcher(`${api_link}/api/edicoes?_limit=1&populate=deep&${query}`),
-        fetcher(`${api_link}/api/menus?populate=deep`),
-      ]
-    )
-
-    const edicao = edicaoResponse?.data?.[0] ?? null
-    const navbar =
-      navbarResponse?.data?.flatMap((menu: any) =>
-        menu?.attributes?.items?.data?.map((item: any) => ({
-          name: item?.attributes?.title ?? "",
-          link: item?.attributes?.url ?? "#",
-        })) ?? []
-      ) ?? []
+    const results = await Promise.allSettled([
+      fetcher(`${api_link}/api/contato`),
+      fetcher(`${api_link}/api/edicoes?_limit=1&populate=deep&${query}`),
+      fetcher(`${api_link}/api/menus?populate=deep`),
+    ])
+    const [contato, edicaoResponse, menus] = results.map((r: any) => {
+      if (r.status === 'fulfilled') return r.value
+      console.error('Endpoint failed:', r.reason)
+      return null
+    })
 
     return {
       props: {
-        social: rsocials,
-        contato,
-        edicao,
-        navbar,
+        social: parseNavbar(menus, "redes-social"),
+        contato: contato ?? null,
+        edicao: edicaoResponse?.data?.[0] ?? null,
+        navbar: parseNavbar(menus, "menus"),
       },
     }
   } catch (error) {

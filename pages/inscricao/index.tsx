@@ -1,5 +1,6 @@
 import Layout from "../../components/Layout"
 import { fetcher } from "../../lib/api"
+import { parseNavbar } from "../../lib/parseNavbar"
 import qs from "qs"
 import Head from "next/head"
 import { useForm, SubmitHandler } from "react-hook-form"
@@ -354,36 +355,34 @@ export async function getServerSideProps() {
   )
 
   try {
-    const [rsocials, contato, edicao, navbar] = await Promise.all([
-      fetcher(`${api_link}/api/redes-social?populate=*`),
+    const results = await Promise.allSettled([
       fetcher(`${api_link}/api/contato`),
       fetcher(`${api_link}/api/edicoes/1?populate=deep&${query}`),
       fetcher(`${api_link}/api/menus?populate=deep`),
     ])
+    const [contato, edicao, menus] = results.map((r: any) => {
+      if (r.status === 'fulfilled') return r.value
+      console.error('Endpoint failed:', r.reason)
+      return null
+    })
 
-    const dlink =
-      navbar?.data?.flatMap((value: any) =>
-        value?.attributes?.items?.data?.map((item: any) => ({
-          name: item?.attributes?.title ?? "",
-          link: item?.attributes?.url ?? "#",
-        })) ?? []
-      ) ?? []
+
+    const dlink = parseNavbar(menus, "menus")
 
     return {
       props: {
-        social: rsocials,
-        contato,
-        edicao,
-        navbar: dlink,
+        social: parseNavbar(menus, "redes-social"),
+        edicao: edicao ?? null,
+        navbar: parseNavbar(menus, "menus"),
       },
     }
   } catch (error) {
     console.error("Erro ao buscar dados:", error)
     return {
       props: {
-        social: { data: null },
-        contato: { data: null },
-        edicao: { data: null },
+        social: [],
+        contato: null,
+        edicao: null,
         navbar: [],
       },
     }

@@ -1,5 +1,6 @@
 import Layout from "../../components/Layout";
-import { fetcher } from "../../lib/api";
+import { fetcher } from "../../lib/api"
+import { parseNavbar } from "../../lib/parseNavbar";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import showdown from "showdown";
@@ -202,6 +203,6 @@ export async function getServerSideProps({ params, query }: any) {
 
 	// Pass data to the page via props
 	return {
-		props: { social: rsocials, contato, banners, edicao, navbar: dlink },
+		props: { social: contato, banners, edicao, navbar: dlink },
 	};
 }
