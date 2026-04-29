@@ -1,354 +1,282 @@
 import React, { useState } from "react"
-import Image from "next/image"
 import { fetcher } from "../../lib/api"
 import { parseNavbar } from "../../lib/parseNavbar"
 import Layout from "../../components/Layout"
 import Head from "next/head"
-import HeroSection from "../../components/HeroSection"
-import { StrapiImage } from "../../components/custom/StrapiImage"
 import Link from "next/link"
 import { useFetchUser } from "../../lib/authContext"
+import { getStrapiMedia } from "../../lib/utils"
 
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
 
+const GOLD        = "#c2a12b"
+const GOLD_BRIGHT = "#f0d060"
+const DARK        = "#080604"
+const DARK_CARD   = "#100d07"
+const DARK_MID    = "#0d0a05"
+
+type Tab = "jurados" | "galeria" | "videos" | "documentos"
+
 const Edicoes = ({ social, contato, edicao, navbar }: any) => {
   const { user } = useFetchUser()
-  const [currentPage, setCurrentPage] = useState(0)
+  const [currentIdx, setCurrentIdx] = useState(0)
+  const [activeTab, setActiveTab]   = useState<Tab>("jurados")
+  const [hovCard, setHovCard]       = useState<string | null>(null)
 
-  // Agrupando os jurados por edição
-  const Juris = edicao.data.map((edicaoItem: any) => ({
-    edicaoNumero: edicaoItem.attributes.N_Edicao,
-    jurados: edicaoItem.attributes.juri.map((jurado: any) => ({
-      id: jurado.id,
-      nome: jurado.nome,
-      titulo: jurado.titulo,
-      descricao: jurado.descricao,
-      foto: {
-        url: jurado.foto.data?.attributes.formats.small.url,
-        width: jurado.foto.data?.attributes.formats.small.width,
-        height: jurado.foto.data?.attributes.formats.small.height,
-      },
-    })),
-  }))
-
-  // Agrupando as galerias, vídeos e documentos por edição
-  const galeria = edicao.data.map((edicaoItem: any) => ({
-    edicaoNumero: edicaoItem.attributes.N_Edicao,
-    galeria: edicaoItem.attributes.galeria.map((galeria: any) => ({
-      titulo: galeria.titulo,
-      imagens: galeria.imagens.data.map((imagem: any) => ({
-        url: imagem.attributes.formats.medium.url,
-        width: imagem.attributes.formats.medium.width,
-        height: imagem.attributes.formats.medium.height,
-      })),
-    })),
-  }))
-
-  const videos = edicao.data.map((edicaoItem: any) => ({
-    edicaoNumero: edicaoItem.attributes.N_Edicao,
-    videos: edicaoItem.attributes.videos.map((video: any) => ({
-      titulo: video.titulo,
-      url: video.video.data?.attributes.url,
-    })),
-  }))
-
-  const documents = edicao.data.map((edicaoItem: any) => ({
-    edicaoNumero: edicaoItem.attributes.N_Edicao,
-    documents: edicaoItem.attributes.documents.map((document: any) => ({
-      titulo: document.titulo,
-      url: document.ficheiro.data?.attributes.url,
-    })),
-  }))
-
-  // Função para ir para a próxima página (próxima edição)
-  const nextPage = () => {
-    if (currentPage < Juris.length - 1) {
-      setCurrentPage(currentPage + 1)
-    }
+  const editions: any[] = edicao?.data ?? []
+  if (editions.length === 0) {
+    return (
+      <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
+        <div style={{ background: DARK, minHeight: "60vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <p style={{ color: `${GOLD}55`, fontFamily: "'DM Sans',sans-serif" }}>Sem edições disponíveis.</p>
+        </div>
+      </Layout>
+    )
   }
 
-  // Função para voltar para a página anterior (edição anterior)
-  const prevPage = () => {
-    if (currentPage > 0) {
-      setCurrentPage(currentPage - 1)
-    }
-  }
+  const ed    = editions[currentIdx]
+  const attrs = ed?.attributes ?? {}
+  const num   = attrs.N_Edicao ?? ""
 
-  // Edição atual a ser exibida
-  const currentEdition = Juris[currentPage]
+  const jurados   = (attrs.juri        ?? [])
+  const galerias  = (attrs.galeria     ?? [])
+  const videos    = (attrs.videos      ?? [])
+  const documents = (attrs.documents   ?? [])
 
-  console.log(galeria)
+  const tabs: { key: Tab; label: string }[] = [
+    { key: "jurados",    label: "Júri" },
+    { key: "galeria",    label: "Galeria" },
+    { key: "videos",     label: "Vídeos" },
+    { key: "documentos", label: "Documentos" },
+  ]
 
   return (
     <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
       <Head>
         <title>Edições - Prémio Nacional De Publicidade</title>
-        <meta
-          name="description"
-          content="Fotografias, vídeos, regulamento, os vencedores dos Prémios Palmeira e respetivos discursos de vitória… Aqui encontra tudo sobre as anteriores edições do PNP."
-        />
+        <meta name="description" content="Todas as edições do Prémio Nacional de Publicidade" />
       </Head>
 
-      <HeroSection
-        title={`${currentEdition.edicaoNumero}ª EDIÇÃO DO PRÉMIO NACIONAL DE PUBLICIDADE`}
-        subtitle={
-          "Fotografias, vídeos, regulamento, os vencedores dos Prémios Palmeira e respetivos discursos de vitória… Aqui encontra tudo sobre as anteriores edições do PNP."
-        }
-      />
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap');
+        @keyframes fadeUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+        .ed-jurado-scroll { scrollbar-width:none; }
+        .ed-jurado-scroll::-webkit-scrollbar { display:none; }
+        @media(max-width:640px){ .ed-pill-row{ flex-wrap:wrap !important; } }
+      `}</style>
 
-      <div className="container mx-auto py-6">
-        {/* Jurados Section */}
-        <div className="my-6">
-          <h1 className="text-4xl font-extrabold text-center text-amarelo-ouro dark:text-white tracking-tight my-4">
-            Jurados
-          </h1>
+      {/* ── Hero ── */}
+      <div style={{ background: DARK, paddingTop: "7rem", paddingBottom: "3.5rem", textAlign: "center", position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", inset: 0, opacity: 0.03, pointerEvents: "none", backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")` }} />
+        <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.52rem", letterSpacing: "0.32em", textTransform: "uppercase", color: `${GOLD}66`, marginBottom: "1.2rem", animation: "fadeUp 0.6s ease both" }}>✦ &nbsp; Prémio Nacional de Publicidade</p>
+        <h1 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: "clamp(2.5rem,7vw,5rem)", fontWeight: 300, color: "#f5e8b8", letterSpacing: "0.06em", margin: 0, animation: "fadeUp 0.7s ease 0.1s both" }}>
+          <em style={{ fontStyle: "italic", color: GOLD_BRIGHT }}>{num}ª</em> Edição
+        </h1>
+        <div style={{ width: "48px", height: "1px", background: `linear-gradient(90deg, transparent, ${GOLD}, transparent)`, margin: "1.8rem auto 0" }} />
+      </div>
 
-          <div className="flex flex-wrap justify-center gap-6">
-            {currentEdition.jurados.map((jurado: any) => (
-              <div
-                key={jurado.nome}
-                className="flex flex-col items-center bg-gray-50 rounded-lg shadow sm:flex-row dark:bg-gray-800 dark:border-gray-700 w-full sm:w-[20rem] md:w-[22rem] lg:w-[24rem]"
-              >
-                <Link
-                  href={`/juris/${jurado.id}?edicao=${currentEdition.edicaoNumero}`}
-                >
-                  <StrapiImage
-                    className="w-[200px] h-[200px] object-cover rounded-lg sm:rounded-none sm:rounded-l-lg"
-                    src={jurado.foto?.url || "/default-avatar.png"}
-                    alt={jurado.nome}
-                    height={200}
-                    width={200}
-                  />
-                </Link>
-                <div className="p-5 flex flex-col justify-between h-full">
-                  <h3 className="text-lg font-medium text-amarelo-ouro dark:text-white">
-                    <Link
-                      href={`/juris/${jurado.id}?edicao=${currentEdition.edicaoNumero}`}
-                    >
-                      {jurado.nome}
-                    </Link>
-                  </h3>
-                  <span className="text-sm text-gray-800 dark:text-gray-400">
-                    {jurado.titulo}
-                  </span>
-                  <p className="mt-3 mb-4 font-light text-gray-500 dark:text-gray-400">
-                    {/* Renderizando a descrição truncada, se disponível */}
-
-                    {/* <span
-                      dangerouslySetInnerHTML={{
-                        __html:
-                          jurado.descricao.slice(0, 112) +
-                          (jurado.descricao.length > 112 ? "..." : ""),
-                      }}
-                    /> */}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
+      {/* ── Edition selector pills ── */}
+      <div style={{ background: DARK_MID, borderBottom: `1px solid ${GOLD}18`, padding: "0 2rem" }}>
+        <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "1rem 0", display: "flex", gap: "0.5rem", overflowX: "auto" }} className="ed-pill-row">
+          {editions.map((e: any, i: number) => (
+            <button
+              key={i}
+              onClick={() => { setCurrentIdx(i); setActiveTab("jurados") }}
+              style={{
+                flexShrink: 0,
+                fontFamily: "'DM Sans',sans-serif",
+                fontSize: "0.62rem",
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                padding: "6px 18px",
+                borderRadius: "100px",
+                border: currentIdx === i ? `1px solid ${GOLD}` : `1px solid ${GOLD}28`,
+                background: currentIdx === i ? GOLD : "transparent",
+                color: currentIdx === i ? "#0f0a02" : `${GOLD}88`,
+                cursor: "pointer",
+                fontWeight: currentIdx === i ? 600 : 400,
+                transition: "all 0.25s",
+              }}
+            >
+              {e.attributes?.N_Edicao}ª Edição
+            </button>
+          ))}
         </div>
+      </div>
 
-        {/* Galeria Section */}
-        <div className="my-6">
-          <h1 className="text-3xl font-extrabold text-center text-yellow-400 mb-4">
-            Galeria
-          </h1>
-          {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"> */}
-          {galeria
-            .find(
-              (item: any) => item.edicaoNumero === currentEdition.edicaoNumero
-            )
-            ?.galeria.slice(0, 1) // Pega a galeria mais recente
-            .map((galeriaItem: any) => (
-              <div key={galeriaItem.titulo} className="w-full">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {/* Exibindo até 5 imagens da galeria mais recente */}
-                  {galeriaItem.imagens
-                    .slice(0, 6)
-                    .map((image: any, index: number) => (
-                      <div key={index} className="relative">
-                        <StrapiImage
-                          className="w-full h-full object-cover rounded-lg"
-                          src={image?.url || "/default-avatar.png"}
-                          alt={galeriaItem.titulo}
-                          height={200}
-                          width={200}
-                        />
-                        {/* Magnifier Icon (zoom) */}
-                        <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            className="w-12 h-12 text-white"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M11 6a5 5 0 0110 0 5 5 0 01-10 0zM4.93 4.93a9 9 0 1112.73 12.73M13.8 14.8l4.69 4.69"
-                            />
-                          </svg>
+      {/* ── Tab bar ── */}
+      <div style={{ background: DARK_MID, borderBottom: `1px solid ${GOLD}15`, position: "sticky", top: "68px", zIndex: 10 }}>
+        <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 2rem", display: "flex" }}>
+          {tabs.map((t) => (
+            <button
+              key={t.key}
+              onClick={() => setActiveTab(t.key)}
+              style={{
+                fontFamily: "'DM Sans',sans-serif",
+                fontSize: "0.63rem",
+                letterSpacing: "0.16em",
+                textTransform: "uppercase",
+                padding: "1rem 1.25rem",
+                background: "transparent",
+                border: "none",
+                borderBottom: activeTab === t.key ? `2px solid ${GOLD}` : "2px solid transparent",
+                color: activeTab === t.key ? GOLD : `${GOLD}50`,
+                cursor: "pointer",
+                transition: "color 0.25s, border-color 0.25s",
+              }}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Content ── */}
+      <div style={{ background: DARK, minHeight: "50vh", padding: "3.5rem 2rem 6rem" }}>
+        <div style={{ maxWidth: "1200px", margin: "0 auto", animation: "fadeIn 0.4s ease" }}>
+
+          {/* JURADOS */}
+          {activeTab === "jurados" && (
+            <>
+              {jurados.length === 0 && <EmptyMsg />}
+              <div className="ed-jurado-scroll" style={{ display: "flex", gap: "1.25rem", overflowX: "auto", paddingBottom: "0.5rem", scrollSnapType: "x mandatory" }}>
+                {jurados.map((j: any) => {
+                  const imgUrl = getStrapiMedia(j.foto.data?.attributes.formats.small?.url ?? null)
+                  const hov    = hovCard === `j-${j.id}`
+                  return (
+                    <Link key={j.id} href={`/juris/${j.id}?edicao=${num}`} style={{ textDecoration: "none", flexShrink: 0, scrollSnapAlign: "start" }}>
+                      <div
+                        onMouseEnter={() => setHovCard(`j-${j.id}`)}
+                        onMouseLeave={() => setHovCard(null)}
+                        style={{ width: "220px", background: DARK_CARD, border: hov ? `1px solid ${GOLD}55` : `1px solid ${GOLD}18`, borderRadius: "16px", overflow: "hidden", transition: "border-color 0.3s, transform 0.3s", transform: hov ? "translateY(-5px)" : "none", cursor: "pointer" }}
+                      >
+                        <div style={{ position: "relative", height: "200px", background: DARK }}>
+                          {imgUrl && <img src={imgUrl} alt={j.nome} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }} />}
+                          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(16,13,7,0.9) 0%, transparent 50%)" }} />
+                          <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "2px", background: hov ? `linear-gradient(90deg,${GOLD},${GOLD_BRIGHT})` : `${GOLD}35`, transition: "background 0.3s" }} />
+                        </div>
+                        <div style={{ padding: "1rem 1.1rem 1.3rem" }}>
+                          <h3 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: "1.05rem", fontWeight: 400, color: hov ? GOLD_BRIGHT : "#f5e8b8", margin: "0 0 3px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", transition: "color 0.3s" }}>{j.nome}</h3>
+                          <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.58rem", letterSpacing: "0.14em", textTransform: "uppercase", color: GOLD, margin: 0 }}>{j.titulo}</p>
                         </div>
                       </div>
-                    ))}
+                    </Link>
+                  )
+                })}
+              </div>
+            </>
+          )}
 
-                  {/* Se houver mais de 5 imagens, mostra um link na última posição */}
-                  {galeriaItem.imagens.length > 5 && (
-                    <div className="col-span-1 sm:col-span-2 lg:col-span-3 bg-gray-200 p-6 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out flex items-center justify-center">
-                      <Link
-                        href="/galerias"
-                        className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-400 transition-colors duration-300"
-                      >
-                        Ver mais galerias
+          {/* GALERIA */}
+          {activeTab === "galeria" && (
+            <>
+              {galerias.length === 0 && <EmptyMsg />}
+              {galerias.slice(0, 1).map((g: any, gi: number) => (
+                <div key={gi}>
+                  {g.titulo && <SectionHead title={g.titulo} />}
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "1rem" }}>
+                    {(g.imagens?.data ?? []).slice(0, 9).map((img: any, ii: number) => {
+                      const url = getStrapiMedia(img.attributes.formats?.medium?.url ?? null)
+                      const hov = hovCard === `img-${ii}`
+                      return (
+                        <div key={ii}
+                          onMouseEnter={() => setHovCard(`img-${ii}`)} onMouseLeave={() => setHovCard(null)}
+                          style={{ position: "relative", aspectRatio: "16/10", borderRadius: "12px", overflow: "hidden", border: hov ? `1px solid ${GOLD}55` : `1px solid ${GOLD}15`, transition: "border-color 0.3s, transform 0.3s", transform: hov ? "scale(1.02)" : "none", background: DARK_CARD, cursor: "pointer" }}>
+                          {url && <img src={url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", transition: "opacity 0.3s", opacity: hov ? 1 : 0.85 }} />}
+                          <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "2px", background: hov ? `linear-gradient(90deg,${GOLD},${GOLD_BRIGHT})` : "transparent" }} />
+                        </div>
+                      )
+                    })}
+                  </div>
+                  {(g.imagens?.data?.length ?? 0) > 9 && (
+                    <div style={{ textAlign: "center", marginTop: "2rem" }}>
+                      <Link href={`/galeria?edicao=${num}`} style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.65rem", letterSpacing: "0.18em", textTransform: "uppercase", color: GOLD, borderBottom: `1px solid ${GOLD}55`, paddingBottom: "2px", textDecoration: "none" }}>
+                        Ver galeria completa →
                       </Link>
                     </div>
                   )}
                 </div>
-              </div>
-            ))}
-          {/* </div> */}
-        </div>
-
-        {/* Videos Section */}
-        <div className="my-6">
-          <h1 className="text-3xl font-extrabold text-center text-yellow-400 mb-4">
-            Vídeos
-          </h1>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {videos
-              .find(
-                (item: any) => item.edicaoNumero === currentEdition.edicaoNumero
-              )
-              ?.videos.slice(0, 5) // Exibe até 5 vídeos
-              .map((video: any, index: any) => (
-                <div
-                  key={video.titulo}
-                  className="bg-gray-200 p-6 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out"
-                >
-                  <h2 className="text-xl font-extrabold text-center text-yellow-500 mb-4">
-                    {video.titulo}
-                  </h2>
-                  {/* Video player */}
-                  <div className="flex justify-center">
-                    <video
-                      width={320}
-                      height={240}
-                      controls
-                      className="rounded-lg"
-                    >
-                      <source
-                        src={`${api_link}${video.url}`}
-                        type="video/mp4"
-                      />
-                      Seu navegador não suporta o elemento de vídeo.
-                    </video>
-                  </div>
-                </div>
               ))}
-            {/* Adiciona o box de link para a página de vídeos, caso haja mais de 5 vídeos */}
-            {videos.find(
-              (item: any) => item.edicaoNumero === currentEdition.edicaoNumero
-            )?.videos.length > 5 && (
-              <div className="bg-gray-200 p-6 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out">
-                <h2 className="text-xl font-extrabold text-center text-yellow-500 mb-4">
-                  Veja mais vídeos
-                </h2>
-                <div className="flex justify-center">
-                  <a
-                    href="/pagina-de-videos" // Substitua pelo link correto para a página de vídeos
-                    className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-400 transition-colors duration-300"
-                  >
-                    Acessar Página de Vídeos
-                  </a>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
+            </>
+          )}
 
-        {/* Documents Section */}
-        <div className="my-6">
-          <h1 className="text-3xl font-extrabold text-center text-yellow-400 mb-4">
-            Documentos
-          </h1>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {documents
-              .find(
-                (item: any) => item.edicaoNumero === currentEdition.edicaoNumero
-              )
-              ?.documents.map((document: any) => (
-                <a
-                  key={document.titulo}
-                  href={`${api_link}${document.url}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out transform hover:scale-105">
-                    <h2 className="text-xl font-extrabold text-center text-yellow-500 mb-4">
-                      {document.titulo}
-                    </h2>
-                    <div className="w-full h-48 bg-gray-200 rounded-lg flex items-center justify-center relative overflow-hidden">
-                      <Image
-                        src="https://placehold.co/150x200.png?text=Abrir+PDF"
-                        alt="Capa do documento"
-                        fill
-                        className="object-cover"
-                      />
-                      <div className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black bg-opacity-50">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          className="w-12 h-12 text-white"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M10 14l2 2 4-4m0 0l-4-4-2 2m4 4H6"
-                          />
-                        </svg>
+          {/* VIDEOS */}
+          {activeTab === "videos" && (
+            <>
+              {videos.length === 0 && <EmptyMsg />}
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "1.25rem" }}>
+                {videos.slice(0, 6).map((v: any, vi: number) => {
+                  const hov = hovCard === `v-${vi}`
+                  return (
+                    <div key={vi}
+                      onMouseEnter={() => setHovCard(`v-${vi}`)} onMouseLeave={() => setHovCard(null)}
+                      style={{ background: DARK_CARD, border: hov ? `1px solid ${GOLD}55` : `1px solid ${GOLD}18`, borderRadius: "16px", overflow: "hidden", transition: "border-color 0.3s, transform 0.3s", transform: hov ? "translateY(-4px)" : "none", position: "relative" }}>
+                      <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "2px", background: hov ? `linear-gradient(90deg,${GOLD},${GOLD_BRIGHT})` : `${GOLD}28`, transition: "background 0.3s" }} />
+                      {v.titulo && (
+                        <div style={{ padding: "1.1rem 1.25rem 0.75rem" }}>
+                          <p style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: "1rem", color: "#f0dfa0cc", margin: 0, letterSpacing: "0.02em" }}>{v.titulo}</p>
+                        </div>
+                      )}
+                      <div style={{ padding: "0 1.25rem 1.25rem" }}>
+                        <video controls style={{ width: "100%", borderRadius: "8px", background: "#000" }}>
+                          <source src={`${api_link}${v.video?.data?.attributes?.url}`} type="video/mp4" />
+                        </video>
                       </div>
                     </div>
-                    <p className="mt-4 text-gray-600 text-center text-sm">
-                      Clique para abrir o documento
-                    </p>
-                  </div>
-                </a>
-              ))}
-          </div>
-        </div>
+                  )
+                })}
+              </div>
+            </>
+          )}
 
-        {/* Pagination Section */}
-        <div className="mt-6 flex justify-between">
-          <button
-            onClick={prevPage}
-            className="px-4 py-2 bg-gray-200 rounded-md text-gray-700 disabled:opacity-50"
-            disabled={currentPage === 0}
-          >
-            Anterior
-          </button>
-          <button
-            onClick={nextPage}
-            className="px-4 py-2 bg-gray-200 rounded-md text-gray-700 disabled:opacity-50"
-            disabled={currentPage === Juris.length - 1}
-          >
-            Próximo
-          </button>
+          {/* DOCUMENTOS */}
+          {activeTab === "documentos" && (
+            <>
+              {documents.length === 0 && <EmptyMsg />}
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "1.25rem" }}>
+                {documents.map((doc: any, di: number) => {
+                  const hov = hovCard === `d-${di}`
+                  const url = doc.ficheiro?.data?.attributes?.url
+                  return (
+                    <a key={di} href={url ? `${api_link}${url}` : "#"} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none" }}
+                      onMouseEnter={() => setHovCard(`d-${di}`)} onMouseLeave={() => setHovCard(null)}>
+                      <div style={{ background: DARK_CARD, border: hov ? `1px solid ${GOLD}55` : `1px solid ${GOLD}18`, borderRadius: "16px", padding: "2rem 1.5rem", textAlign: "center", transition: "border-color 0.3s, transform 0.3s", transform: hov ? "translateY(-5px)" : "none", position: "relative" }}>
+                        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "2px", background: hov ? `linear-gradient(90deg,${GOLD},${GOLD_BRIGHT})` : `${GOLD}28` }} />
+                        <p style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: "3rem", margin: "0 0 1rem", color: `${GOLD}66` }}>📄</p>
+                        <h3 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: "1.1rem", fontWeight: 400, color: hov ? GOLD_BRIGHT : "#f5e8b8", margin: "0 0 0.75rem", letterSpacing: "0.02em" }}>{doc.titulo}</h3>
+                        <span style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.6rem", letterSpacing: "0.18em", textTransform: "uppercase", color: hov ? GOLD : `${GOLD}66`, transition: "color 0.3s" }}>
+                          Abrir documento →
+                        </span>
+                      </div>
+                    </a>
+                  )
+                })}
+              </div>
+            </>
+          )}
         </div>
       </div>
     </Layout>
   )
 }
 
+const EmptyMsg = () => (
+  <p style={{ textAlign: "center", fontFamily: "'DM Sans',sans-serif", color: `rgba(194,161,43,0.35)`, fontSize: "0.82rem", padding: "3rem 0" }}>
+    Sem conteúdo disponível para esta edição.
+  </p>
+)
+
+const SectionHead = ({ title }: { title: string }) => (
+  <h2 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: "1.4rem", fontWeight: 300, color: "#f5e8b8", letterSpacing: "0.04em", marginBottom: "1.5rem", borderLeft: `2px solid #c2a12b`, paddingLeft: "1rem" }}>
+    {title}
+  </h2>
+)
+
 export default Edicoes
 
 export async function getServerSideProps() {
   const query = new URLSearchParams({ sort: "N_Edicao:desc" })
-
   try {
     const results = await Promise.allSettled([
       fetcher(`${api_link}/api/contato`),
@@ -356,22 +284,14 @@ export async function getServerSideProps() {
       fetcher(`${api_link}/api/menus?populate=deep`),
     ])
     const [contato, edicao, menus] = results.map((r: any) => {
-      if (r.status === 'fulfilled') return r.value
-      console.error('Endpoint failed:', r.reason)
+      if (r.status === "fulfilled") return r.value
+      console.error("Endpoint failed:", r.reason)
       return null
     })
 
-
-    return { props: { social: parseNavbar(menus, "redes-social"), contato: contato ?? null, edicao, navbar: parseNavbar(menus, "menus") } }
+    return { props: { social: parseNavbar(menus, "redes-social"), contato: contato ?? null, edicao: edicao ?? null, navbar: parseNavbar(menus, "menus") } }
   } catch (error) {
     console.error("Error fetching edicoes data:", error)
-    return {
-      props: {
-        social: [],
-        contato: null,
-        edicao: null,
-        navbar: [],
-      },
-    }
+    return { props: { social: [], contato: null, edicao: null, navbar: [] } }
   }
 }
