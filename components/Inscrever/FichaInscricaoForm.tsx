@@ -1,9 +1,8 @@
-import { useState } from "react"
-import { useForm, SubmitHandler } from "react-hook-form"
+import { useState, forwardRef, useImperativeHandle } from "react"
+import { useForm } from "react-hook-form"
 
-const GOLD        = "#c2a12b"
-const GOLD_BRIGHT = "#f0d060"
-const DARK_CARD   = "#100d07"
+const GOLD      = "#c2a12b"
+const DARK_CARD = "#100d07"
 
 interface Inputs {
   nome_completo: string
@@ -18,118 +17,99 @@ interface Props {
   apiLink: string
   defaults: Partial<Inputs>
   onSaved?: () => void
+  onSaveStatusChange?: (status: "idle" | "saving" | "saved" | "error") => void
 }
 
-type SaveStatus = "idle" | "saving" | "saved" | "error"
+export interface FormHandle {
+  validate: () => string[]
+  submit: () => void
+}
 
-export default function FichaInscricaoForm({ cid, apiLink, defaults, onSaved }: Props) {
-  const { register, handleSubmit, reset, formState: { isDirty } } = useForm<Inputs>({ defaultValues: defaults })
-  const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle")
+const REQUIRED: (keyof Inputs)[] = ["nome_completo", "email"]
 
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    setSaveStatus("saving")
-    try {
-      const res = await fetch(`${apiLink}/api/inscricoes/${cid}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          data: { nome_completo: data.nome_completo, NIF: data.nif || 0, email: data.email, sede: data.sede, telefone: data.telefone || 0 },
-        }),
-      })
-      if (res.ok) {
-        setSaveStatus("saved")
-        reset(data)
-        onSaved?.()
-      } else {
-        setSaveStatus("error")
-      }
-    } catch {
-      setSaveStatus("error")
-    }
-  }
+const FIELDS = [
+  { label: "Nome Completo", name: "nome_completo" as const, type: "text",   span: 2, required: true  },
+  { label: "NIF",           name: "nif"           as const, type: "number", span: 1, required: false },
+  { label: "Email",         name: "email"         as const, type: "email",  span: 1, required: true  },
+  { label: "Sede ou Local de Residência", name: "sede" as const, type: "text", span: 2, required: false },
+  { label: "Telefone",      name: "telefone"      as const, type: "tel",    span: 1, required: false },
+]
 
-  const statusLabel = saveStatus === "saving"
-    ? "A guardar…"
-    : saveStatus === "error"
-    ? "Erro ao guardar"
-    : isDirty
-    ? "· Alterações não guardadas"
-    : saveStatus === "saved"
-    ? "✓ Guardado"
-    : ""
+const FichaInscricaoForm = forwardRef<FormHandle, Props>(
+  ({ cid, apiLink, defaults, onSaved, onSaveStatusChange }, ref) => {
+    const { register, handleSubmit, reset, getValues } = useForm<Inputs>({ defaultValues: defaults })
+    const [highlighted, setHighlighted] = useState<Set<string>>(new Set())
 
-  const statusColor = saveStatus === "error"
-    ? "#e74c3c"
-    : isDirty
-    ? `${GOLD}99`
-    : `${GOLD_BRIGHT}88`
-
-  const fields = [
-    { label: "Nome Completo", name: "nome_completo" as const, type: "text", span: 2 },
-    { label: "NIF", name: "nif" as const, type: "number", span: 1 },
-    { label: "Email", name: "email" as const, type: "email", span: 1 },
-    { label: "Sede ou Local de Residência", name: "sede" as const, type: "text", span: 2 },
-    { label: "Telefone", name: "telefone" as const, type: "tel", span: 1 },
-  ]
-
-  return (
-    <div>
-      <style>{`
-        .pnp-fi-input {
-          background: ${DARK_CARD};
-          border: 1px solid ${GOLD}28;
-          color: rgba(240,216,144,0.82);
-          border-radius: 8px;
-          padding: 0.72rem 1rem;
-          width: 100%;
-          font-family: 'DM Sans', sans-serif;
-          font-size: 0.875rem;
-          outline: none;
-          transition: border-color 0.2s;
+    const doSave = handleSubmit(async (data) => {
+      onSaveStatusChange?.("saving")
+      try {
+        const res = await fetch(`${apiLink}/api/inscricoes/${cid}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            data: { nome_completo: data.nome_completo, NIF: data.nif || 0, email: data.email, sede: data.sede, telefone: data.telefone || 0 },
+          }),
+        })
+        if (res.ok) {
+          onSaveStatusChange?.("saved")
+          reset(data)
+          setHighlighted(new Set())
+          onSaved?.()
+        } else {
+          onSaveStatusChange?.("error")
         }
-        .pnp-fi-input:focus { border-color: ${GOLD}66; }
-        .pnp-fi-input::placeholder { color: ${GOLD}30; }
-      `}</style>
+      } catch {
+        onSaveStatusChange?.("error")
+      }
+    })
 
-      <form onSubmit={handleSubmit(onSubmit)}>
+    useImperativeHandle(ref, () => ({
+      validate: () => {
+        const vals = getValues()
+        const empty = REQUIRED.filter(f => !String(vals[f] ?? "").trim())
+        setHighlighted(new Set(empty))
+        return empty
+      },
+      submit: () => {
+        setHighlighted(new Set())
+        doSave()
+      },
+    }))
+
+    return (
+      <div>
+        <style>{`
+          .pnp-fi-input { background:${DARK_CARD}; border:1px solid ${GOLD}28; color:rgba(240,216,144,0.82); border-radius:8px; padding:0.72rem 1rem; width:100%; font-family:'DM Sans',sans-serif; font-size:0.875rem; outline:none; transition:border-color 0.2s,background 0.2s; box-sizing:border-box; }
+          .pnp-fi-input:focus { border-color:${GOLD}66; }
+          .pnp-fi-input::placeholder { color:${GOLD}30; }
+          .pnp-fi-err { border-color:#e74c3c88 !important; background:#e74c3c08 !important; }
+          .pnp-fi-err:focus { border-color:#e74c3cbb !important; }
+        `}</style>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem" }}>
-          {fields.map((f) => (
+          {FIELDS.map((f) => (
             <div key={f.name} style={{ gridColumn: `span ${f.span}` }}>
-              <label style={{ display: "block", fontFamily: "'DM Sans',sans-serif", fontSize: "0.62rem", letterSpacing: "0.16em", textTransform: "uppercase", color: `${GOLD}66`, marginBottom: "0.4rem" }}>
+              <label style={{ display: "flex", alignItems: "center", gap: "3px", fontFamily: "'DM Sans',sans-serif", fontSize: "0.62rem", letterSpacing: "0.16em", textTransform: "uppercase", color: highlighted.has(f.name) ? "#e74c3ccc" : `${GOLD}66`, marginBottom: "0.4rem", transition: "color 0.2s" }}>
                 {f.label}
+                {f.required && <span style={{ color: highlighted.has(f.name) ? "#e74c3c" : `${GOLD}44`, lineHeight: 1 }}>*</span>}
               </label>
-              <input type={f.type} className="pnp-fi-input" {...register(f.name)} />
+              <input
+                type={f.type}
+                className={`pnp-fi-input${highlighted.has(f.name) ? " pnp-fi-err" : ""}`}
+                {...register(f.name, {
+                  onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                    if (String(e.target.value).trim()) {
+                      setHighlighted(prev => { if (!prev.has(f.name)) return prev; const n = new Set(prev); n.delete(f.name); return n })
+                    }
+                  },
+                })}
+              />
             </div>
           ))}
         </div>
+      </div>
+    )
+  }
+)
 
-        <div style={{ marginTop: "1.75rem", display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "1rem" }}>
-          {statusLabel && (
-            <span style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.72rem", color: statusColor, letterSpacing: "0.04em" }}>
-              {statusLabel}
-            </span>
-          )}
-          <button
-            type="submit"
-            disabled={saveStatus === "saving"}
-            style={{
-              fontFamily: "'DM Sans',sans-serif",
-              fontSize: "0.68rem",
-              letterSpacing: "0.16em",
-              textTransform: "uppercase",
-              color: saveStatus === "saving" ? `${GOLD}44` : "#080604",
-              background: saveStatus === "saving" ? `${GOLD}33` : `linear-gradient(135deg, ${GOLD}, ${GOLD_BRIGHT})`,
-              border: "none",
-              borderRadius: "100px",
-              padding: "10px 28px",
-              cursor: saveStatus === "saving" ? "not-allowed" : "pointer",
-              transition: "opacity 0.2s",
-            }}
-          >
-            Guardar
-          </button>
-        </div>
-      </form>
-    </div>
-  )
-}
+FichaInscricaoForm.displayName = "FichaInscricaoForm"
+export default FichaInscricaoForm

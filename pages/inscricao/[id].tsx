@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 import Head from "next/head"
 import Layout from "../../components/Layout"
 import { fetcher } from "../../lib/api"
@@ -28,11 +28,18 @@ interface Props {
   accessCode: string
 }
 
+interface FormHandle {
+  validate: () => string[]
+  submit: () => void
+}
+
+type SaveStatus = "idle" | "saving" | "saved" | "error"
+
 const STEPS = [
-  { label: "Dados Pessoais",  desc: "Nome, email e contacto" },
-  { label: "Ficha Técnica",   desc: "Projeto e conceito" },
-  { label: "Equipa",          desc: "Colaboradores e datas" },
-  { label: "Documentos",      desc: "Ficheiros do trabalho" },
+  { label: "Dados Pessoais", desc: "Nome, email e contacto" },
+  { label: "Ficha Técnica",  desc: "Projeto e conceito" },
+  { label: "Equipa",         desc: "Colaboradores e datas" },
+  { label: "Documentos",     desc: "Ficheiros do trabalho" },
 ]
 
 const Inscrever = ({ social, contato, edicao, navbar, inscricao, accessCode }: Props) => {
@@ -45,8 +52,18 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao, accessCode }: P
   const [existingFiles, setExistingFiles] = useState<FileLink[]>(attrs?.fileLink ?? [])
   const [savedSteps, setSavedSteps] = useState([false, false, false, false])
   const [copied, setCopied] = useState(false)
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle")
+  const [emptyWarning, setEmptyWarning] = useState(false)
 
-  // Completion based on existing data
+  const ref0 = useRef<FormHandle>(null)
+  const ref1 = useRef<FormHandle>(null)
+  const ref2 = useRef<FormHandle>(null)
+
+  useEffect(() => {
+    setSaveStatus("idle")
+    setEmptyWarning(false)
+  }, [activeStep])
+
   const stepDone = [
     !!attrs?.nome_completo,
     !!(attrs?.categoria && attrs?.nome_projeto),
@@ -57,12 +74,41 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao, accessCode }: P
   const markSaved = (step: number) =>
     setSavedSteps((prev) => { const next = [...prev]; next[step] = true; return next })
 
+  const currentRef = (): React.RefObject<FormHandle> | null => {
+    if (activeStep === 0) return ref0
+    if (activeStep === 1) return ref1
+    if (activeStep === 2) return ref2
+    return null
+  }
+
+  const handleSave = () => {
+    const ref = currentRef()
+    if (!ref?.current) return
+    const empty = ref.current.validate()
+    if (empty.length > 0) {
+      setEmptyWarning(true)
+      return
+    }
+    setEmptyWarning(false)
+    ref.current.submit()
+  }
+
+  const handleForceSave = () => {
+    const ref = currentRef()
+    if (!ref?.current) return
+    setEmptyWarning(false)
+    ref.current.submit()
+  }
+
   const copyCode = () => {
     navigator.clipboard.writeText(accessCode).then(() => {
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     })
   }
+
+  const saveLabel  = saveStatus === "saving" ? "A guardar…" : saveStatus === "saved" ? "✓ Guardado" : saveStatus === "error" ? "Erro ao guardar" : ""
+  const saveLabelColor = saveStatus === "error" ? "#e74c3c" : `${GOLD_BRIGHT}88`
 
   return (
     <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
@@ -74,13 +120,13 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao, accessCode }: P
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap');
         @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
-        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
         .step-btn { transition: color 0.2s, border-color 0.2s, background 0.2s; cursor: pointer; }
         .step-btn:hover .step-label { color: ${GOLD} !important; }
         .nav-btn { transition: background 0.2s, color 0.2s, border-color 0.2s; }
         .nav-btn:hover { background: ${GOLD}22 !important; color: ${GOLD} !important; border-color: ${GOLD}55 !important; }
         .nav-btn-primary:hover { opacity: 0.85 !important; }
+        .save-btn:hover:not(:disabled) { opacity: 0.85 !important; }
       `}</style>
 
       {/* ── Hero ── */}
@@ -131,11 +177,9 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao, accessCode }: P
                 onClick={() => setActiveStep(i)}
                 style={{ flex: 1, background: "none", border: "none", padding: "1rem 0.5rem", borderBottom: isActive ? `2px solid ${GOLD}` : "2px solid transparent", textAlign: "center" }}
               >
-                {/* Circle */}
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 0.4rem", width: "24px", height: "24px", borderRadius: "50%", background: isActive ? GOLD : isDone ? `${GOLD}33` : `${GOLD}12`, border: `1px solid ${isActive ? GOLD : isDone ? GOLD + "55" : GOLD + "28"}`, fontSize: "0.65rem", color: isActive ? DARK : isDone ? GOLD : `${GOLD}44`, fontFamily: "'DM Sans',sans-serif", fontWeight: 500 }}>
                   {isDone && !isActive ? "✓" : i + 1}
                 </div>
-                {/* Label */}
                 <p className="step-label" style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.62rem", letterSpacing: "0.12em", textTransform: "uppercase", margin: 0, color: isActive ? GOLD : `${GOLD}55`, transition: "color 0.2s" }}>
                   {step.label}
                 </p>
@@ -165,27 +209,33 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao, accessCode }: P
           {/* Step content */}
           {activeStep === 0 && (
             <FichaInscricaoForm
+              ref={ref0}
               cid={cid}
               apiLink={api_link ?? ""}
               defaults={{ nome_completo: attrs?.nome_completo, email: attrs?.email, sede: attrs?.sede, nif: attrs?.NIF as any, telefone: attrs?.telefone as any }}
               onSaved={() => markSaved(0)}
+              onSaveStatusChange={setSaveStatus}
             />
           )}
           {activeStep === 1 && (
             <FichaTecnicaForm
+              ref={ref1}
               cid={cid}
               apiLink={api_link ?? ""}
               categorias={categorias}
               defaults={{ categoria: attrs?.categoria, nome_projeto: attrs?.nome_projeto, con_criativo: attrs?.con_criativo }}
               onSaved={() => markSaved(1)}
+              onSaveStatusChange={setSaveStatus}
             />
           )}
           {activeStep === 2 && (
             <EquipaForm
+              ref={ref2}
               cid={cid}
               apiLink={api_link ?? ""}
               defaults={{ coord_prod: attrs?.coord_prod, dir_foto: attrs?.dir_foto, dir_art: attrs?.dir_art, realizador: attrs?.realizador, editor: attrs?.editor, autor_jingle: attrs?.autor_jingle, designer: attrs?.designer, outras_consideracoes: attrs?.outras_consideracoes, data_producao: attrs?.data_producao, data_divulgacao: attrs?.data_divulgacao, data_apresentacao_publica: attrs?.data_apresentacao_publica }}
               onSaved={() => markSaved(2)}
+              onSaveStatusChange={setSaveStatus}
             />
           )}
           {activeStep === 3 && (
@@ -198,33 +248,68 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao, accessCode }: P
           )}
 
           {/* Navigation */}
-          <div style={{ marginTop: "3rem", paddingTop: "2rem", borderTop: `1px solid ${GOLD}18`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <div>
-              {activeStep > 0 && (
-                <button
-                  className="nav-btn"
-                  onClick={() => setActiveStep((s) => s - 1)}
-                  style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.65rem", letterSpacing: "0.16em", textTransform: "uppercase", color: `${GOLD}77`, background: "none", border: `1px solid ${GOLD}28`, borderRadius: "100px", padding: "9px 22px", cursor: "pointer" }}
-                >
-                  ← Anterior
-                </button>
-              )}
-            </div>
+          <div style={{ marginTop: "3rem", paddingTop: "2rem", borderTop: `1px solid ${GOLD}18` }}>
 
-            <span style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.6rem", letterSpacing: "0.12em", color: `${GOLD}44` }}>
-              {activeStep + 1} / {STEPS.length}
-            </span>
-
-            <div>
-              {activeStep < STEPS.length - 1 && (
+            {/* Empty fields warning */}
+            {emptyWarning && (
+              <div style={{ marginBottom: "1.25rem", padding: "0.85rem 1.25rem", background: "#e74c3c0a", border: "1px solid #e74c3c33", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1rem" }}>
+                <span style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.72rem", color: "#e74c3ccc" }}>
+                  ⚠ Campos obrigatórios por preencher — estão marcados a vermelho.
+                </span>
                 <button
-                  className="nav-btn-primary"
-                  onClick={() => setActiveStep((s) => s + 1)}
-                  style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.65rem", letterSpacing: "0.16em", textTransform: "uppercase", color: DARK, background: `linear-gradient(135deg, ${GOLD}, ${GOLD_BRIGHT})`, border: "none", borderRadius: "100px", padding: "10px 24px", cursor: "pointer" }}
+                  onClick={handleForceSave}
+                  style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.62rem", letterSpacing: "0.14em", textTransform: "uppercase", color: "#e74c3c", background: "none", border: "1px solid #e74c3c55", borderRadius: "100px", padding: "6px 16px", cursor: "pointer", whiteSpace: "nowrap", transition: "background 0.2s" }}
                 >
-                  Próximo →
+                  Guardar mesmo assim
                 </button>
-              )}
+              </div>
+            )}
+
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              {/* Back */}
+              <div>
+                {activeStep > 0 && (
+                  <button
+                    className="nav-btn"
+                    onClick={() => setActiveStep((s) => s - 1)}
+                    style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.65rem", letterSpacing: "0.16em", textTransform: "uppercase", color: `${GOLD}77`, background: "none", border: `1px solid ${GOLD}28`, borderRadius: "100px", padding: "9px 22px", cursor: "pointer" }}
+                  >
+                    ← Anterior
+                  </button>
+                )}
+              </div>
+
+              {/* Save */}
+              <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                {saveLabel && (
+                  <span style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.72rem", color: saveLabelColor }}>
+                    {saveLabel}
+                  </span>
+                )}
+                {activeStep < 3 && (
+                  <button
+                    className="save-btn"
+                    onClick={handleSave}
+                    disabled={saveStatus === "saving"}
+                    style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.68rem", letterSpacing: "0.16em", textTransform: "uppercase", color: saveStatus === "saving" ? `${GOLD}44` : DARK, background: saveStatus === "saving" ? `${GOLD}33` : `linear-gradient(135deg, ${GOLD}, ${GOLD_BRIGHT})`, border: "none", borderRadius: "100px", padding: "10px 28px", cursor: saveStatus === "saving" ? "not-allowed" : "pointer", transition: "opacity 0.2s" }}
+                  >
+                    Guardar
+                  </button>
+                )}
+              </div>
+
+              {/* Next */}
+              <div>
+                {activeStep < STEPS.length - 1 && (
+                  <button
+                    className="nav-btn-primary"
+                    onClick={() => setActiveStep((s) => s + 1)}
+                    style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.65rem", letterSpacing: "0.16em", textTransform: "uppercase", color: DARK, background: `linear-gradient(135deg, ${GOLD}, ${GOLD_BRIGHT})`, border: "none", borderRadius: "100px", padding: "10px 24px", cursor: "pointer" }}
+                  >
+                    Próximo →
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -259,12 +344,12 @@ export async function getServerSideProps({ query }: { query: Record<string, stri
 
     return {
       props: {
-        social:      parseNavbar(menus, "redes-social"),
-        contato:     contato ?? null,
-        edicao:      edicao ?? null,
-        navbar:      parseNavbar(menus, "menus"),
+        social:     parseNavbar(menus, "redes-social"),
+        contato:    contato ?? null,
+        edicao:     edicao ?? null,
+        navbar:     parseNavbar(menus, "menus"),
         inscricao,
-        accessCode:  cd ?? "",
+        accessCode: cd ?? "",
       },
     }
   } catch (error) {
