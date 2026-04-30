@@ -16,6 +16,7 @@ Páginas que ainda não foram incluídas na reforma do design dark gold do PNP.
 - [x] `/inscricao/[id]` — Detalhe / edição de inscrição existente
 - [ ] `/inscricao/upload` — Upload de ficheiros para inscrição
 - [ ] Apagar ficheiros na inscrição — botão de delete na tabela de ficheiros submetidos (FileUploadSection)
+- [ ] Repensar código de acesso `pnp_i` da inscrição — mecanismo actual é inseguro, substituir por algo mais robusto (ex: token assinado, UUID longo, ou autenticação por email)
 
 ## Área de Perfil (utilizador autenticado)
 
