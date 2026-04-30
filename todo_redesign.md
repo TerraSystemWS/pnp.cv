@@ -13,8 +13,9 @@ Páginas que ainda não foram incluídas na reforma do design dark gold do PNP.
 - [ ] `/posts/[slug]` — Artigo individual do blog
 - [x] `/sobreus/terms` — Termos de Serviço
 - [x] `/sobreus/policy` — Política de Privacidade
-- [ ] `/inscricao/[id]` — Detalhe / edição de inscrição existente
+- [x] `/inscricao/[id]` — Detalhe / edição de inscrição existente
 - [ ] `/inscricao/upload` — Upload de ficheiros para inscrição
+- [ ] Apagar ficheiros na inscrição — botão de delete na tabela de ficheiros submetidos (FileUploadSection)
 
 ## Área de Perfil (utilizador autenticado)
 
