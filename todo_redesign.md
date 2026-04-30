@@ -1,39 +1,38 @@
-# TODO — Páginas por Redesenhar
-
-Páginas que ainda não foram incluídas na reforma do design dark gold do PNP.
+# Kanban — Redesign & Melhorias PNP
 
 ---
 
-## Páginas Públicas
+## 🔲 A Fazer
 
-- [ ] `/juris/[id]` — Perfil detalhado de um membro do júri
-- [x] `/projetos` — Lista de projectos do Prémio Público
-- [x] `/projetos/[id]` — Detalhe de um projecto em competição
-- [x] `/galeria` — Galeria de imagens por edição
-- [ ] `/posts/[slug]` — Artigo individual do blog
-- [x] `/sobreus/terms` — Termos de Serviço
-- [x] `/sobreus/policy` — Política de Privacidade
-- [x] `/inscricao/[id]` — Detalhe / edição de inscrição existente
-- [ ] `/inscricao/upload` — Upload de ficheiros para inscrição
-- [ ] Apagar ficheiros na inscrição — botão de delete na tabela de ficheiros submetidos (FileUploadSection)
-- [ ] Repensar código de acesso `pnp_i` da inscrição — mecanismo actual é inseguro, substituir por algo mais robusto (ex: token assinado, UUID longo, ou autenticação por email)
-
-## Área de Perfil (utilizador autenticado)
-
-- [ ] `/perfil` — Área pessoal do utilizador
-- [ ] `/perfil/avaliacao` — Formulário de avaliação (júri)
-- [ ] `/perfil/avaliacaoStatus` — Estado das avaliações
-- [ ] `/perfil/votacaopublicaStatus` — Estado da votação pública
+| Tarefa | Notas |
+|--------|-------|
+| `/juris/[id]` — Perfil de membro do júri | Redesign dark gold |
+| `/posts/[slug]` — Artigo individual do blog | Redesign dark gold |
+| `/inscricao/upload` — Upload de ficheiros | Redesign dark gold |
+| `/perfil` — Área pessoal do utilizador | Redesign dark gold |
+| `/perfil/avaliacao` — Formulário de avaliação (júri) | Redesign dark gold |
+| `/perfil/avaliacaoStatus` — Estado das avaliações | Redesign dark gold |
+| `/perfil/votacaopublicaStatus` — Estado da votação pública | Redesign dark gold |
+| Apagar ficheiros na inscrição | Botão de delete na tabela de ficheiros submetidos (`FileUploadSection`) |
+| Repensar código de acesso `pnp_i` | Mecanismo actual inseguro — substituir por token assinado, UUID longo ou autenticação por email |
 
 ---
 
-## Páginas Concluídas ✅
+## ✅ Concluído
 
-- [x] `/` — Home
-- [x] `/contatos` — Contactos
-- [x] `/inscricao` — Página de inscrição (nova / retomar)
-- [x] `/regulamentos` — Regulamento
-- [x] `/edicoes` — Edições
-- [x] `/parceiros` — Parceiros
-- [x] `/posts` — Blog (listagem)
-- [x] `/sobreus` — Sobre Nós
+| Tarefa | Notas |
+|--------|-------|
+| `/` — Home | |
+| `/contatos` — Contactos | |
+| `/inscricao` — Nova inscrição / retomar | |
+| `/regulamentos` — Regulamento | |
+| `/edicoes` — Edições | |
+| `/parceiros` — Parceiros | |
+| `/posts` — Blog (listagem) | |
+| `/sobreus` — Sobre Nós | |
+| `/sobreus/terms` — Termos de Serviço | |
+| `/sobreus/policy` — Política de Privacidade | |
+| `/galeria` — Galeria de imagens | Fix crash + fix URLs de imagens |
+| `/projetos` — Lista de projectos | |
+| `/projetos/[id]` — Detalhe de projecto | |
+| `/inscricao/[id]` — Edição de inscrição | Stepper 4 passos, botão guardar unificado, validação com bordas vermelhas |
