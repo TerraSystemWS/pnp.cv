@@ -1,6 +1,7 @@
 import Head from "next/head"
 import Layout from "../components/Layout"
 import { fetcher } from "../lib/api"
+import { parseNavbar } from "../lib/parseNavbar"
 import Juri from "../components/Juri"
 import Categorias from "../components/Categorias"
 import { useRouter } from "next/router"
@@ -116,8 +117,7 @@ export async function getServerSideProps() {
   )
 
   try {
-    const [rsocials, contato, banners, edicao, navbar] = await Promise.all([
-      fetcher(`${api_link}/api/redes-social?populate=*`),
+    const results = await Promise.allSettled([
       fetcher(`${api_link}/api/contato`),
       fetcher(
         `${api_link}/api/banners?populate[0]=banners&populate[1]=banners.image&${queryBanner}`
@@ -126,26 +126,24 @@ export async function getServerSideProps() {
       fetcher(`${api_link}/api/menus?populate=deep`),
     ])
 
-    const dlink =
-      navbar?.data?.flatMap((value: any) =>
-        value?.attributes?.items?.data?.map((item: any) => ({
-          name: item?.attributes?.title ?? "",
-          link: item?.attributes?.url ?? "#",
-        })) ?? []
-      ) ?? []
+    const [contato, banners, edicao, menus] = results.map((r) => {
+      if (r.status === "fulfilled") return r.value
+      console.error("Endpoint failed:", (r as PromiseRejectedResult).reason)
+      return null
+    })
 
     return {
       props: {
-        social: rsocials,
-        contato,
-        banners,
-        edicao: edicao?.data?.[0],
-        navbar: dlink,
+        social: parseNavbar(menus, "redes-social"),
+        contato: contato ?? null,
+        banners: banners ?? null,
+        edicao: edicao?.data?.[0] ?? null,
+        navbar: parseNavbar(menus, "menus"),
       },
     }
   } catch (error) {
     console.error("Error fetching data:", error)
-    return { props: { error: "Failed to fetch data" } }
+    return { props: { error: "Failed to fetch data", social: [], contato: null, navbar: [] } }
   }
 }
 

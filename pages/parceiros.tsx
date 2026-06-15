@@ -1,6 +1,7 @@
 import Image from "next/image"
 import Layout from "../components/Layout"
 import { fetcher } from "../lib/api"
+import { parseNavbar } from "../lib/parseNavbar"
 import Link from "next/link"
 import Head from "next/head"
 import { useFetchUser } from "../lib/authContext"
@@ -170,29 +171,25 @@ export default Parceiros
 // Server-side data fetching
 export async function getServerSideProps() {
   try {
-    const rsocials = await fetcher(`${api_link}/api/redes-social?populate=*`)
-    const contato = await fetcher(`${api_link}/api/contato`)
-    const parceiros = await fetcher(
-      `${api_link}/api/parceiros?populate=deep&sort[0]=id:desc&pagination[pageSize]=1`
-    )
-    const navbar = await fetcher(`${api_link}/api/menus?populate=deep`)
+    const results = await Promise.allSettled([
+      fetcher(`${api_link}/api/contato`),
+      fetcher(`${api_link}/api/parceiros?populate=deep&sort[0]=id:desc&pagination[pageSize]=1`),
+      fetcher(`${api_link}/api/menus?populate=deep`),
+    ])
 
-    // Process navbar links
-    const dlink =
-      navbar?.data?.flatMap((value: any) =>
-        value?.attributes?.items?.data?.map((item: any) => ({
-          name: item?.attributes?.title ?? "",
-          link: item?.attributes?.url ?? "#",
-        })) ?? []
-      ) ?? []
+    const [contato, parceiros, menus] = results.map((r: any) => {
+      if (r.status === 'fulfilled') return r.value
+      console.error('Endpoint failed:', r.reason)
+      return null
+    })
 
     return {
-      props: { social: rsocials, contato, parceiros, navbar: dlink },
+      props: { social: parseNavbar(menus, "redes-social"), contato: contato ?? null, parceiros, navbar: parseNavbar(menus, "menus") },
     }
   } catch (error) {
     console.error("Error fetching data:", error)
     return {
-      props: { social: [], contato: [], parceiros: [], navbar: [] },
+      props: { social: [], contato: null, parceiros: null, navbar: [] },
     }
   }
 }

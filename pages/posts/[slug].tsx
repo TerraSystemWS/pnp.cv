@@ -1,5 +1,6 @@
 import Layout from "../../components/Layout"
 import { fetcher } from "../../lib/api"
+import { parseNavbar } from "../../lib/parseNavbar"
 import Link from "next/link"
 import Head from "next/head"
 import { StrapiImage } from "../../components/custom/StrapiImage"
@@ -105,8 +106,7 @@ const PostDetail = ({
 export async function getServerSideProps(context: any) {
   try {
     const { slug } = context.params
-    const [rsocials, contato, post, navbar] = await Promise.all([
-      fetcher(`${api_link}/api/redes-social?populate=*`),
+    const results = await Promise.allSettled([
       fetcher(`${api_link}/api/contato`),
       fetcher(
         `${api_link}/api/noticias/${slug}?populate[0]=noticias&populate[1]=capa`
@@ -114,13 +114,13 @@ export async function getServerSideProps(context: any) {
       fetcher(`${api_link}/api/menus?populate=deep`),
     ])
 
-    const dlink =
-      navbar?.data?.flatMap((value: any) =>
-        value?.attributes?.items?.data?.map((item: any) => ({
-          name: item?.attributes?.title ?? "",
-          link: item?.attributes?.url ?? "#",
-        })) ?? []
-      ) ?? []
+    const [contato, post, menus] = results.map((r) => {
+      if (r.status === "fulfilled") return r.value
+      console.error("Endpoint failed:", (r as PromiseRejectedResult).reason)
+      return null
+    })
+
+    const dlink = parseNavbar(menus, "menus")
 
     // Fetch the previous and next posts
     const previousPost = await fetcher(
@@ -132,8 +132,8 @@ export async function getServerSideProps(context: any) {
 
     return {
       props: {
-        social: rsocials,
-        contato,
+        social: parseNavbar(menus, "redes-social"),
+        contato: contato ?? null,
         post,
         navbar: dlink,
         previousPost:
@@ -143,7 +143,7 @@ export async function getServerSideProps(context: any) {
     }
   } catch (error) {
     console.error("Error fetching data:", error)
-    return { props: { error: "Failed to fetch data" } }
+    return { props: { error: "Failed to fetch data", social: null, contato: null, navbar: [] } }
   }
 }
 

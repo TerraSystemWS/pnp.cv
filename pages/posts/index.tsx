@@ -1,5 +1,6 @@
 import Layout from "../../components/Layout"
 import { fetcher } from "../../lib/api"
+import { parseNavbar } from "../../lib/parseNavbar"
 import Link from "next/link"
 import Head from "next/head"
 import { StrapiImage } from "../../components/custom/StrapiImage"
@@ -16,13 +17,14 @@ const PostList = ({ social, contato, posts, navbar }: any) => {
   const postsPerPage = 4 // After the first 6, paginate remaining posts
 
   // Total available posts, excluding the first 6 (2 for the main area, 4 for sidebar)
-  const totalPosts = posts.data.length - 6
+  const allPosts = posts?.data ?? []
+  const totalPosts = allPosts.length - 6
   const totalPages = Math.ceil(totalPosts / postsPerPage)
 
   // Get the posts for pagination
   const indexOfLastPost = currentPage * postsPerPage
   const indexOfFirstPost = indexOfLastPost - postsPerPage
-  const currentPaginatedPosts = posts.data.slice(
+  const currentPaginatedPosts = allPosts.slice(
     6 + indexOfFirstPost,
     6 + indexOfLastPost
   )
@@ -54,7 +56,7 @@ const PostList = ({ social, contato, posts, navbar }: any) => {
           {/* Main News - First two posts */}
           <div className="lg:col-span-3">
             <div className="grid gap-8">
-              {posts.data.slice(0, 2).map((post: any) => (
+              {allPosts.slice(0, 2).map((post: any) => (
                 <article
                   key={post.id}
                   className="p-6 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700 flex flex-col lg:flex-row hover:shadow-lg transition-shadow"
@@ -122,7 +124,7 @@ const PostList = ({ social, contato, posts, navbar }: any) => {
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
                 Outras Notícias
               </h3>
-              {posts.data.slice(2, 6).map((post: any) => (
+              {allPosts.slice(2, 6).map((post: any) => (
                 <article
                   key={post.id}
                   className="p-4 bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
@@ -203,8 +205,7 @@ export default PostList
 
 export async function getServerSideProps() {
   try {
-    const [rsocials, contato, posts, navbar] = await Promise.all([
-      fetcher(`${api_link}/api/redes-social?populate=*`),
+    const results = await Promise.allSettled([
       fetcher(`${api_link}/api/contato`),
       fetcher(
         `${api_link}/api/noticias?sort[0]=publishedAt:desc&populate[0]=noticias&populate[1]=capa`
@@ -212,17 +213,15 @@ export async function getServerSideProps() {
       fetcher(`${api_link}/api/menus?populate=deep`),
     ])
 
-    const dlink =
-      navbar?.data?.flatMap((value: any) =>
-        value?.attributes?.items?.data?.map((item: any) => ({
-          name: item?.attributes?.title ?? "",
-          link: item?.attributes?.url ?? "#",
-        })) ?? []
-      ) ?? []
+    const [contato, posts, menus] = results.map((r) => {
+      if (r.status === "fulfilled") return r.value
+      console.error("Endpoint failed:", (r as PromiseRejectedResult).reason)
+      return null
+    })
 
-    return { props: { social: rsocials, contato, posts, navbar: dlink } }
+    return { props: { social: parseNavbar(menus, "redes-social"), contato: contato ?? null, posts, navbar: parseNavbar(menus, "menus") } }
   } catch (error) {
     console.error("Error fetching data:", error)
-    return { props: { error: "Failed to fetch data" } }
+    return { props: { error: "Failed to fetch data", social: null, contato: null, navbar: [] } }
   }
 }

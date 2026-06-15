@@ -1,5 +1,6 @@
 import Layout from "../components/Layout"
 import { fetcher } from "../lib/api"
+import { parseNavbar } from "../lib/parseNavbar"
 import { useForm, SubmitHandler } from "react-hook-form"
 import Head from "next/head"
 import { useFetchUser } from "../lib/authContext"
@@ -73,36 +74,38 @@ const CONTATOS = ({ social, contato, navbar }: any) => {
       <section className="text-gray-600 body-font relative mt-5">
         <div className="container px-5 py-24 mx-auto flex sm:flex-nowrap flex-wrap">
           <div className="lg:w-2/3 md:w-1/2 bg-gray-300 rounded-lg overflow-hidden sm:mr-10 p-10 flex items-end justify-start relative">
-            <iframe
-              width="100%"
-              height="100%"
-              className="absolute inset-0"
-              frameBorder="0"
-              title="map"
-              marginHeight={0}
-              marginWidth={0}
-              scrolling="no"
-              src={contato.data.attributes.mapa}
-            ></iframe>
+            {contato?.data?.attributes?.mapa && (
+              <iframe
+                width="100%"
+                height="100%"
+                className="absolute inset-0"
+                frameBorder="0"
+                title="map"
+                marginHeight={0}
+                marginWidth={0}
+                scrolling="no"
+                src={contato.data.attributes.mapa}
+              ></iframe>
+            )}
             <div className="bg-white relative flex flex-wrap py-6 rounded shadow-md">
               <div className="lg:w-1/2 px-6">
                 <h2 className="title-font font-semibold text-gray-900 tracking-widest text-xs">
                   ENDEREÇO
                 </h2>
-                <p className="mt-1">{contato.data.attributes.Local}</p>
+                <p className="mt-1">{contato?.data?.attributes?.Local}</p>
               </div>
               <div className="lg:w-1/2 px-6 mt-4 lg:mt-0">
                 <h2 className="title-font font-semibold text-gray-900 tracking-widest text-xs">
                   EMAIL
                 </h2>
                 <a className="text-indigo-500 leading-relaxed">
-                  {contato.data.attributes.email}
+                  {contato?.data?.attributes?.email}
                 </a>
                 <h2 className="title-font font-semibold text-gray-900 tracking-widest text-xs mt-4">
                   Contato
                 </h2>
                 <p className="leading-relaxed">
-                  {contato.data.attributes.phone}
+                  {contato?.data?.attributes?.phone}
                 </p>
               </div>
             </div>
@@ -201,27 +204,30 @@ export default CONTATOS
 // Função para buscar dados do servidor
 export async function getServerSideProps() {
   try {
-    const [rsocials, contato, navbar] = await Promise.all([
-      fetcher(`${api_link}/api/redes-social?populate=*`),
+    const results = await Promise.allSettled([
       fetcher(`${api_link}/api/contato`),
       fetcher(`${api_link}/api/menus?populate=deep`),
     ])
+    const [contato, menus] = results.map((r: any) => {
+      if (r.status === 'fulfilled') return r.value
+      console.error('Endpoint failed:', r.reason)
+      return null
+    })
 
-    const dlink =
-      navbar?.data?.flatMap((value: any) =>
-        value?.attributes?.items?.data?.map((item: any) => ({
-          name: item?.attributes?.title ?? "",
-          link: item?.attributes?.url ?? "#",
-        })) ?? []
-      ) ?? []
 
-    return { props: { social: rsocials, contato, navbar: dlink } }
+    return {
+      props: {
+        social: parseNavbar(menus, "redes-social"),
+        contato: contato ?? null,
+        navbar: parseNavbar(menus, "menus"),
+      },
+    }
   } catch (error) {
     console.error("Error fetching contatos data:", error)
     return {
       props: {
-        social: { data: null },
-        contato: { data: null },
+        social: [],
+        contato: null,
         navbar: [],
       },
     }

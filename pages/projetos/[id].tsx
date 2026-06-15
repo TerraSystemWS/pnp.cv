@@ -1,5 +1,6 @@
 import Layout from "../../components/Layout"
 import { fetcher } from "../../lib/api"
+import { parseNavbar } from "../../lib/parseNavbar"
 // import Link from "next/link";
 import Head from "next/head"
 // import { Card } from "flowbite-react";
@@ -229,13 +230,13 @@ const VpublicaDetalhes = ({
 
   const { user, loading } = useFetchUser()
 
-  const [nhaId, setNhaId] = useState(null) // State to hold the ID
+  const [nhaId, setNhaId] = useState<string | null>(null) // State to hold the ID
   // const [loading, setLoading] = useState(true); // State to track loading status
 
   useEffect(() => {
     const fetchNhaId = async () => {
       const id = await getIdFromLocalCookie() // Await the promise
-      setNhaId(id) // Set the resolved value
+      setNhaId(id ?? null) // Set the resolved value
       // setLoading(false); // Set loading to false after the value is fetched
     }
 
@@ -1184,44 +1185,26 @@ export async function getServerSideProps({ params, query }: any) {
     { encodeValuesOnly: true }
   )
 
-  // GET: links das edicoes
-  const edicoes = await fetcher(
-    `${api_link}/api/edicoes?populate[categoria][fields]=titulo,id&[populate][inscricoes][fields]=titulo&${queri}`
-  )
-  // GET: links para as redes sociais
-  const rsocials = await fetcher(`${api_link}/api/redes-social?populate=*`)
-  // GET: dados para contatos
-  const contato = await fetcher(`${api_link}/api/contato`)
-  // GET: dados do navbar
-  const navbar = await fetcher(`${api_link}/api/menus?populate=deep`)
-  // GET: dados dos projetos inscritos
-  const inscritos = await fetcher(
-    `${api_link}/api/inscricoes/${id}?populate[fileLink][populate][ficheiro][fields]=url`
-  )
-  //get links for menu
-  let dlink: any = []
-  navbar.data.map((value: any) => {
-    value.attributes.items.data.map((value: any, index: any) => {
-      // value.attributes.title;
-      // value.attributes.url;
-      // console.log(value);
-      dlink[index] = {
-        name: value.attributes.title,
-        link: value.attributes.url,
-      }
-    })
-  })
-  //   console.log("inscritos");
-  //   console.log(inscritos);
+  const results = await Promise.allSettled([
+    fetcher(`${api_link}/api/edicoes?populate[categoria][fields]=titulo,id&[populate][inscricoes][fields]=titulo&${queri}`),
+    fetcher(`${api_link}/api/contato`),
+    fetcher(`${api_link}/api/menus?populate=deep`),
+    fetcher(`${api_link}/api/inscricoes/${id}?populate[fileLink][populate][ficheiro][fields]=url`),
+  ])
 
-  // Pass data to the page via props
+  const [edicoes, contato, menus, inscritos] = results.map((r: any) => {
+    if (r.status === 'fulfilled') return r.value
+    console.error('Endpoint failed:', r.reason)
+    return null
+  })
+
   return {
     props: {
-      edicoes,
-      social: rsocials,
-      contato,
-      navbar: dlink,
-      inscricao: inscritos,
+      edicoes: edicoes ?? null,
+      social: parseNavbar(menus, "redes-social"),
+      contato: contato ?? null,
+      navbar: parseNavbar(menus, "menus"),
+      inscricao: inscritos ?? null,
     },
   }
 }
