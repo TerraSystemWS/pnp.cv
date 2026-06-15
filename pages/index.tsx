@@ -15,6 +15,23 @@ const qs = require("qs")
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
 
 const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
+
+const UNDER_CONSTRUCTION = true;
+
+  if (UNDER_CONSTRUCTION) {
+    return (
+      <main className="min-h-screen flex items-center justify-center bg-gray-950 text-white">
+        <div className="text-center">
+          <h1 className="text-5xl font-bold mb-4">🚧 Em Construção</h1>
+          <p className="text-gray-400">
+            Voltaremos em breve.
+          </p>
+        </div>
+      </main>
+    );
+  }
+  
+  
   const router = useRouter()
 
   // Data processing for banners, juries, and categories
