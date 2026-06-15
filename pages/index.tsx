@@ -18,19 +18,6 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
 
 const UNDER_CONSTRUCTION = true;
 
-  if (UNDER_CONSTRUCTION) {
-    return (
-      <main className="min-h-screen flex items-center justify-center bg-gray-950 text-white">
-        <div className="text-center">
-          <h1 className="text-5xl font-bold mb-4">🚧 Em Construção</h1>
-          <p className="text-gray-400">
-            Voltaremos em breve.
-          </p>
-        </div>
-      </main>
-    );
-  }
-  
   
   const router = useRouter()
 
@@ -77,6 +64,21 @@ const UNDER_CONSTRUCTION = true;
       </Layout>
     )
   }
+  
+  if (UNDER_CONSTRUCTION) {
+    return (
+      <main className="min-h-screen flex items-center justify-center bg-gray-950 text-white">
+        <div className="text-center">
+          <h1 className="text-5xl font-bold mb-4">🚧 Em Construção</h1>
+          <p className="text-gray-400">
+            Voltaremos em breve.
+          </p>
+        </div>
+      </main>
+    );
+  }
+  
+  
 
   return (
     <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
