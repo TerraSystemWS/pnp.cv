@@ -16,7 +16,7 @@ const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
 
 const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
 
-const UNDER_CONSTRUCTION = true;
+const UNDER_CONSTRUCTION = false;
 
   
   const router = useRouter()
