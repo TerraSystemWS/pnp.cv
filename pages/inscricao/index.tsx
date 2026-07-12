@@ -1,4 +1,5 @@
 import Layout from "../../components/Layout"
+import Link from "next/link"
 import { fetcher } from "../../lib/api"
 import { parseNavbar } from "../../lib/parseNavbar"
 import qs from "qs"
@@ -426,9 +427,9 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
           {/* Footer note */}
           <p className="text-center mt-10" style={{ color: INK_SOFT, fontFamily: FONT, fontSize: "0.85rem" }}>
             Ao submeter, declara ter lido e aceite o{" "}
-            <a href="/regulamentos" style={{ color: GOLD_DARK, textDecoration: "underline", textUnderlineOffset: "3px" }}>
+            <Link href="/regulamentos" style={{ color: GOLD_DARK, textDecoration: "underline", textUnderlineOffset: "3px" }}>
               regulamento
-            </a>{" "}
+            </Link>{" "}
             do concurso.
           </p>
         </div>
