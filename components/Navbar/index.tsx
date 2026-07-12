@@ -151,7 +151,7 @@ const Nav = ({ navbar }: any) => {
         fontFamily: FONT,
         boxShadow: open ? "-20px 0 60px rgba(0,0,0,0.4)" : "none",
       }}>
-        <p style={{ fontFamily: FONT, fontSize: "0.77rem", letterSpacing: "0.14em", color: GOLD, textTransform: "uppercase", fontWeight: 700, marginBottom: "1.5rem" }}>
+        <p style={{ fontFamily: FONT, fontSize: "0.7rem", letterSpacing: "0.14em", color: GOLD, textTransform: "uppercase", fontWeight: 600, marginBottom: "1.5rem" }}>
           Prémio Nacional de Publicidade
         </p>
 
@@ -163,8 +163,8 @@ const Nav = ({ navbar }: any) => {
             onClick={() => setOpen(false)}
             style={{
               fontFamily: FONT,
-              fontSize: "1.265rem",
-              fontWeight: 700,
+              fontSize: "1.15rem",
+              fontWeight: 600,
               color: LIGHT_TEXT,
               textDecoration: "none",
               padding: "0.7rem 0",
@@ -178,7 +178,7 @@ const Nav = ({ navbar }: any) => {
           <Link
             href="/perfil"
             onClick={() => setOpen(false)}
-            style={{ fontFamily: FONT, fontSize: "1.155rem", fontWeight: 700, color: GOLD, textDecoration: "none", padding: "0.7rem 0", borderBottom: `1px solid ${DARK_BORDER}` }}
+            style={{ fontFamily: FONT, fontSize: "1.05rem", fontWeight: 600, color: GOLD, textDecoration: "none", padding: "0.7rem 0", borderBottom: `1px solid ${DARK_BORDER}` }}
           >
             {user}
           </Link>
@@ -188,14 +188,14 @@ const Nav = ({ navbar }: any) => {
           {!loading && (user ? (
             <button
               onClick={() => { logout(); setOpen(false) }}
-              style={{ width: "100%", background: "transparent", border: `1px solid ${GOLD}55`, borderRadius: "8px", padding: "11px", fontFamily: FONT, fontSize: "0.935rem", fontWeight: 700, color: LIGHT_TEXT, cursor: "pointer" }}
+              style={{ width: "100%", background: "transparent", border: `1px solid ${GOLD}55`, borderRadius: "8px", padding: "11px", fontFamily: FONT, fontSize: "0.85rem", fontWeight: 600, color: LIGHT_TEXT, cursor: "pointer" }}
             >
               Logout
             </button>
           ) : (
             <button
               onClick={() => { setVisible(true); setOpen(false) }}
-              style={{ width: "100%", background: GOLD, border: "none", borderRadius: "8px", padding: "12px", fontFamily: FONT, fontSize: "0.935rem", color: "#fff", fontWeight: 700, cursor: "pointer" }}
+              style={{ width: "100%", background: GOLD, border: "none", borderRadius: "8px", padding: "12px", fontFamily: FONT, fontSize: "0.85rem", color: "#fff", fontWeight: 700, cursor: "pointer" }}
             >
               Login
             </button>
@@ -240,8 +240,8 @@ const Nav = ({ navbar }: any) => {
                 onMouseLeave={() => setHovered(null)}
                 style={{
                   fontFamily: FONT,
-                  fontSize: "0.99rem",
-                  fontWeight: 700,
+                  fontSize: "0.9rem",
+                  fontWeight: 600,
                   color: hovered === link.name ? GOLD_BRIGHT : LIGHT_TEXT,
                   textDecoration: "none",
                   transition: "color 0.2s",
@@ -263,7 +263,7 @@ const Nav = ({ navbar }: any) => {
             {!loading && user && (
               <Link
                 href="/perfil"
-                style={{ fontFamily: FONT, fontSize: "0.99rem", fontWeight: 700, color: GOLD, textDecoration: "none" }}
+                style={{ fontFamily: FONT, fontSize: "0.9rem", fontWeight: 700, color: GOLD, textDecoration: "none" }}
               >
                 {user}
               </Link>
@@ -278,8 +278,8 @@ const Nav = ({ navbar }: any) => {
                   borderRadius: "100px",
                   padding: "8px 22px",
                   fontFamily: FONT,
-                  fontSize: "0.935rem",
-                  fontWeight: 700,
+                  fontSize: "0.85rem",
+                  fontWeight: 600,
                   color: LIGHT_TEXT,
                   cursor: "pointer",
                 }}
@@ -295,7 +295,7 @@ const Nav = ({ navbar }: any) => {
                   borderRadius: "100px",
                   padding: "9px 26px",
                   fontFamily: FONT,
-                  fontSize: "0.935rem",
+                  fontSize: "0.85rem",
                   color: "#fff",
                   fontWeight: 700,
                   cursor: "pointer",
@@ -355,32 +355,32 @@ const Nav = ({ navbar }: any) => {
       >
         <form onSubmit={handleSubmit(onSubmit)}>
           {/* Email */}
-          <label style={{ display: "block", fontSize: "0.88rem", fontWeight: 700, color: LIGHT_TEXT, marginBottom: "7px", fontFamily: FONT }}>
+          <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 600, color: LIGHT_TEXT, marginBottom: "7px", fontFamily: FONT }}>
             Email
           </label>
           <input
             type="email"
             placeholder="nome@email.com"
             {...register("email", { required: "Email obrigatório" })}
-            style={{ width: "100%", background: `${GOLD}0d`, border: `1px solid ${DARK_BORDER}`, borderRadius: "9px", padding: "11px 14px", fontSize: "1.045rem", color: LIGHT_TEXT, fontFamily: FONT, outline: "none", marginBottom: "0.85rem", boxSizing: "border-box" }}
+            style={{ width: "100%", background: `${GOLD}0d`, border: `1px solid ${DARK_BORDER}`, borderRadius: "9px", padding: "11px 14px", fontSize: "0.95rem", color: LIGHT_TEXT, fontFamily: FONT, outline: "none", marginBottom: "0.85rem", boxSizing: "border-box" }}
           />
-          {errors.email && <p style={{ color: "#f87171", fontSize: "0.88rem", marginTop: "-0.6rem", marginBottom: "0.6rem" }}>{errors.email.message}</p>}
+          {errors.email && <p style={{ color: "#f87171", fontSize: "0.8rem", marginTop: "-0.6rem", marginBottom: "0.6rem" }}>{errors.email.message}</p>}
 
           {/* Password */}
-          <label style={{ display: "block", fontSize: "0.88rem", fontWeight: 700, color: LIGHT_TEXT, marginBottom: "7px", fontFamily: FONT }}>
+          <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 600, color: LIGHT_TEXT, marginBottom: "7px", fontFamily: FONT }}>
             Password
           </label>
           <input
             type="password"
             placeholder="••••••••"
             {...register("password", { required: "Password obrigatória" })}
-            style={{ width: "100%", background: `${GOLD}0d`, border: `1px solid ${DARK_BORDER}`, borderRadius: "9px", padding: "11px 14px", fontSize: "1.045rem", color: LIGHT_TEXT, fontFamily: FONT, outline: "none", marginBottom: "1rem", boxSizing: "border-box" }}
+            style={{ width: "100%", background: `${GOLD}0d`, border: `1px solid ${DARK_BORDER}`, borderRadius: "9px", padding: "11px 14px", fontSize: "0.95rem", color: LIGHT_TEXT, fontFamily: FONT, outline: "none", marginBottom: "1rem", boxSizing: "border-box" }}
           />
-          {errors.password && <p style={{ color: "#f87171", fontSize: "0.88rem", marginTop: "-0.6rem", marginBottom: "0.6rem" }}>{errors.password.message}</p>}
+          {errors.password && <p style={{ color: "#f87171", fontSize: "0.8rem", marginTop: "-0.6rem", marginBottom: "0.6rem" }}>{errors.password.message}</p>}
 
           <button
             type="submit"
-            style={{ width: "100%", background: GOLD, border: "none", borderRadius: "9px", padding: "13px", fontFamily: FONT, fontSize: "0.99rem", color: "#fff", fontWeight: 700, cursor: "pointer" }}
+            style={{ width: "100%", background: GOLD, border: "none", borderRadius: "9px", padding: "13px", fontFamily: FONT, fontSize: "0.9rem", color: "#fff", fontWeight: 700, cursor: "pointer" }}
           >
             Entrar
           </button>

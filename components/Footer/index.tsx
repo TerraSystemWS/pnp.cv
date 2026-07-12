@@ -87,7 +87,7 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
 
           <p style={{
             fontFamily: FONT,
-            fontSize: "0.825rem",
+            fontSize: "0.75rem",
             letterSpacing: "0.1em",
             textTransform: "uppercase",
             fontWeight: 700,
@@ -114,7 +114,7 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
               <div style={{ marginBottom: "1.6rem" }}>
                 <Image src={logo} alt="PNP" width={120} height={44} style={{ objectFit: "contain" }} />
               </div>
-              <div style={{ fontSize: "0.99rem", lineHeight: 1.9, color: LIGHT_TEXT_SOFT, fontFamily: FONT }}>
+              <div style={{ fontSize: "0.9rem", lineHeight: 1.9, color: LIGHT_TEXT_SOFT, fontFamily: FONT }}>
                 {contact?.Local && <span style={{ display: "block" }}>{contact.Local}</span>}
                 {contact?.phone && <span style={{ display: "block" }}>{contact.phone}</span>}
                 {contact?.email && <span style={{ display: "block" }}>{contact.email}</span>}
@@ -125,7 +125,7 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
             <div>
               <p style={{
                 fontFamily: FONT,
-                fontSize: "0.935rem",
+                fontSize: "0.85rem",
                 fontWeight: 700,
                 letterSpacing: "0.04em",
                 textTransform: "uppercase",
@@ -142,7 +142,7 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
                   style={{
                     display: "block",
                     fontFamily: FONT,
-                    fontSize: "0.99rem",
+                    fontSize: "0.9rem",
                     color: LIGHT_TEXT_SOFT,
                     textDecoration: "none",
                     padding: "5px 0",
@@ -158,7 +158,7 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
             <div>
               <p style={{
                 fontFamily: FONT,
-                fontSize: "0.935rem",
+                fontSize: "0.85rem",
                 fontWeight: 700,
                 letterSpacing: "0.04em",
                 textTransform: "uppercase",
@@ -175,7 +175,7 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
                   style={{
                     display: "block",
                     fontFamily: FONT,
-                    fontSize: "0.99rem",
+                    fontSize: "0.9rem",
                     color: LIGHT_TEXT_SOFT,
                     textDecoration: "none",
                     padding: "5px 0",
@@ -191,7 +191,7 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
             <div>
               <p style={{
                 fontFamily: FONT,
-                fontSize: "0.935rem",
+                fontSize: "0.85rem",
                 fontWeight: 700,
                 letterSpacing: "0.04em",
                 textTransform: "uppercase",
@@ -202,7 +202,7 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
               </p>
               <p style={{
                 fontFamily: FONT,
-                fontSize: "0.968rem",
+                fontSize: "0.88rem",
                 lineHeight: 1.6,
                 color: LIGHT_TEXT_SOFT,
                 marginBottom: "1.25rem",
@@ -223,7 +223,7 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
                     borderRight: "none",
                     borderRadius: "8px 0 0 8px",
                     padding: "10px 13px",
-                    fontSize: "0.968rem",
+                    fontSize: "0.88rem",
                     color: LIGHT_TEXT,
                     fontFamily: FONT,
                     transition: "border-color 0.2s",
@@ -237,7 +237,7 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
                     border: "none",
                     borderRadius: "0 8px 8px 0",
                     padding: "10px 18px",
-                    fontSize: "0.88rem",
+                    fontSize: "0.8rem",
                     color: "#fff",
                     fontWeight: 700,
                     cursor: "pointer",
@@ -275,7 +275,7 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
           }}>
             <span style={{
               fontFamily: FONT,
-              fontSize: "0.88rem",
+              fontSize: "0.8rem",
               color: LIGHT_TEXT_SOFT,
             }}>
               PNP &copy; {year} · Todos os direitos reservados.
@@ -298,7 +298,7 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
                     borderRadius: "50%",
                     border: `1px solid ${DARK_BORDER}`,
                     color: LIGHT_TEXT_SOFT,
-                    fontSize: "0.88rem",
+                    fontSize: "0.8rem",
                     fontWeight: 700,
                     textDecoration: "none",
                     fontFamily: FONT,
