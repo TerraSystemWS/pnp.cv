@@ -302,7 +302,7 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
           font-family: ${FONT};
           font-size: 0.9rem;
           font-weight: 700;
-          color: #fff;
+          color: ${INK};
           cursor: pointer;
           transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
           margin-top: 8px;

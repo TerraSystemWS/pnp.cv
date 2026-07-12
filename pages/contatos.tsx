@@ -322,7 +322,7 @@ const CONTATOS = ({ social, contato, navbar }: any) => {
                   padding: "13px",
                   fontFamily: FONT,
                   fontSize: "0.9rem",
-                  color: "#fff",
+                  color: INK,
                   fontWeight: 700,
                   cursor: "pointer",
                   transition: "background 0.2s, box-shadow 0.2s",

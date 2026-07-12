@@ -334,7 +334,7 @@ const VpublicaDetalhes = ({ edicoes, social, contato, inscricao, navbar }: any) 
                   fontFamily: FONT,
                   fontSize: "0.85rem",
                   fontWeight: 700,
-                  color: isBlock ? INK_SOFT : "#fff",
+                  color: isBlock ? INK_SOFT : INK,
                   background: isBlock ? BG_ALT : GOLD,
                   border: isBlock ? `1px solid ${BORDER}` : "none",
                   borderRadius: "100px",

@@ -1,12 +1,12 @@
 // Shared design tokens — light background, gold accent, legible sans-serif.
 // Swap values here to retune the whole site's look.
 
-export const GOLD        = "#c2a12b" // accent: buttons, borders, highlights
-export const GOLD_DARK   = "#8d741c" // accent text on light bg (better contrast than GOLD)
-export const GOLD_BRIGHT = "#e3b93a" // hover / active accent
+export const GOLD        = "#c2a12b" // accent: borders, small UI fills — NOT for solid-fill button text contrast
+export const GOLD_DARK   = "#766119" // accent text/labels on light bg — ~6:1 contrast on white (was too pale at #8d741c, ~4.5:1)
+export const GOLD_BRIGHT = "#e3b93a" // hover / active accent, dark backgrounds only
 
-export const INK       = "#241f0f" // primary body text
-export const INK_SOFT  = "#5c5240" // secondary / muted text
+export const INK       = "#241f0f" // primary body text — also use as button text on GOLD fills (GOLD is too light for white text, ~2.5:1)
+export const INK_SOFT  = "#463c2c" // secondary / muted text — darkened for extra legibility margin (was #5c5240)
 
 export const BG        = "#fffdf9" // page background
 export const BG_ALT    = "#f7f2e6" // alternate section background

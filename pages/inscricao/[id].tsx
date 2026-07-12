@@ -281,7 +281,7 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao, accessCode }: P
                     className="save-btn"
                     onClick={handleSave}
                     disabled={saveStatus === "saving"}
-                    style={{ fontFamily: FONT, fontSize: "0.85rem", fontWeight: 700, color: saveStatus === "saving" ? INK_SOFT : "#fff", background: saveStatus === "saving" ? BG_ALT : GOLD, border: saveStatus === "saving" ? `1px solid ${BORDER}` : "none", borderRadius: "100px", padding: "10px 28px", cursor: saveStatus === "saving" ? "not-allowed" : "pointer", transition: "opacity 0.2s" }}
+                    style={{ fontFamily: FONT, fontSize: "0.85rem", fontWeight: 700, color: saveStatus === "saving" ? INK_SOFT : INK, background: saveStatus === "saving" ? BG_ALT : GOLD, border: saveStatus === "saving" ? `1px solid ${BORDER}` : "none", borderRadius: "100px", padding: "10px 28px", cursor: saveStatus === "saving" ? "not-allowed" : "pointer", transition: "opacity 0.2s" }}
                   >
                     Guardar
                   </button>
@@ -294,7 +294,7 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao, accessCode }: P
                   <button
                     className="nav-btn-primary"
                     onClick={() => setActiveStep((s) => s + 1)}
-                    style={{ fontFamily: FONT, fontSize: "0.85rem", fontWeight: 700, color: "#fff", background: GOLD, border: "none", borderRadius: "100px", padding: "10px 24px", cursor: "pointer" }}
+                    style={{ fontFamily: FONT, fontSize: "0.85rem", fontWeight: 700, color: INK, background: GOLD, border: "none", borderRadius: "100px", padding: "10px 24px", cursor: "pointer" }}
                   >
                     Próximo →
                   </button>
