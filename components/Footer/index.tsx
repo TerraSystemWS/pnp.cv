@@ -4,7 +4,7 @@ import { useForm, SubmitHandler } from "react-hook-form"
 import toast, { Toaster } from "react-hot-toast"
 import logo from "public/logo1.png"
 import { NavLink } from "../../lib/parseNavbar"
-import { GOLD, GOLD_DARK, GOLD_BRIGHT, INK, INK_SOFT, BG, BG_ALT, BORDER, FONT, FONT_IMPORT } from "../../lib/theme"
+import { GOLD, GOLD_BRIGHT, DARK_BG, DARK_BG_ALT, DARK_BORDER, LIGHT_TEXT, LIGHT_TEXT_SOFT, FONT, FONT_IMPORT } from "../../lib/theme"
 
 interface Contact {
   Local: string
@@ -62,13 +62,13 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
           border-color: ${GOLD} !important;
           outline: none;
         }
-        .ft-nl-input::placeholder { color: ${INK_SOFT}88; }
+        .ft-nl-input::placeholder { color: ${LIGHT_TEXT_SOFT}88; }
 
-        .ft-link-item:hover { color: ${GOLD_DARK} !important; padding-left: 4px !important; }
+        .ft-link-item:hover { color: ${GOLD_BRIGHT} !important; padding-left: 4px !important; }
         .ft-social-pill:hover {
           border-color: ${GOLD} !important;
-          color: ${GOLD_DARK} !important;
-          background: ${GOLD}14 !important;
+          color: ${GOLD_BRIGHT} !important;
+          background: ${GOLD}18 !important;
         }
         .ft-nl-btn:hover { background: ${GOLD_BRIGHT} !important; }
       `}</style>
@@ -78,11 +78,11 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
       {/* ── Gold accent line at top ── */}
       <div style={{
         height: "3px",
-        background: `linear-gradient(90deg, ${GOLD_DARK}, ${GOLD}, ${GOLD_BRIGHT}, ${GOLD}, ${GOLD_DARK})`,
+        background: `linear-gradient(90deg, #8d741c, ${GOLD}, ${GOLD_BRIGHT}, ${GOLD}, #8d741c)`,
       }} />
 
       {/* ── Main footer body ── */}
-      <div style={{ background: BG_ALT, borderTop: `1px solid ${BORDER}` }}>
+      <div style={{ background: DARK_BG, borderTop: `1px solid ${DARK_BORDER}` }}>
         <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "4rem 2rem 3.5rem" }}>
 
           <p style={{
@@ -91,7 +91,7 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
             letterSpacing: "0.1em",
             textTransform: "uppercase",
             fontWeight: 700,
-            color: GOLD_DARK,
+            color: GOLD,
             textAlign: "center",
             marginBottom: "3rem",
           }}>
@@ -114,7 +114,7 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
               <div style={{ marginBottom: "1.6rem" }}>
                 <Image src={logo} alt="PNP" width={120} height={44} style={{ objectFit: "contain" }} />
               </div>
-              <div style={{ fontSize: "0.9rem", lineHeight: 1.9, color: INK_SOFT, fontFamily: FONT }}>
+              <div style={{ fontSize: "0.9rem", lineHeight: 1.9, color: LIGHT_TEXT_SOFT, fontFamily: FONT }}>
                 {contact?.Local && <span style={{ display: "block" }}>{contact.Local}</span>}
                 {contact?.phone && <span style={{ display: "block" }}>{contact.phone}</span>}
                 {contact?.email && <span style={{ display: "block" }}>{contact.email}</span>}
@@ -129,7 +129,7 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
                 fontWeight: 700,
                 letterSpacing: "0.04em",
                 textTransform: "uppercase",
-                color: INK,
+                color: LIGHT_TEXT,
                 marginBottom: "1.2rem",
               }}>
                 Links Úteis
@@ -143,7 +143,7 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
                     display: "block",
                     fontFamily: FONT,
                     fontSize: "0.9rem",
-                    color: INK_SOFT,
+                    color: LIGHT_TEXT_SOFT,
                     textDecoration: "none",
                     padding: "5px 0",
                     transition: "color 0.2s, padding-left 0.2s",
@@ -162,7 +162,7 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
                 fontWeight: 700,
                 letterSpacing: "0.04em",
                 textTransform: "uppercase",
-                color: INK,
+                color: LIGHT_TEXT,
                 marginBottom: "1.2rem",
               }}>
                 Navegação
@@ -176,7 +176,7 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
                     display: "block",
                     fontFamily: FONT,
                     fontSize: "0.9rem",
-                    color: INK_SOFT,
+                    color: LIGHT_TEXT_SOFT,
                     textDecoration: "none",
                     padding: "5px 0",
                     transition: "color 0.2s, padding-left 0.2s",
@@ -195,7 +195,7 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
                 fontWeight: 700,
                 letterSpacing: "0.04em",
                 textTransform: "uppercase",
-                color: INK,
+                color: LIGHT_TEXT,
                 marginBottom: "1.2rem",
               }}>
                 Newsletter
@@ -204,7 +204,7 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
                 fontFamily: FONT,
                 fontSize: "0.88rem",
                 lineHeight: 1.6,
-                color: INK_SOFT,
+                color: LIGHT_TEXT_SOFT,
                 marginBottom: "1.25rem",
               }}>
                 {contact?.newsletterTitle || "Receba as últimas novidades do PNP directamente no seu email."}
@@ -218,13 +218,13 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
                   style={{
                     flex: 1,
                     minWidth: 0,
-                    background: "#ffffff",
-                    border: `1px solid ${BORDER}`,
+                    background: `${GOLD}0d`,
+                    border: `1px solid ${DARK_BORDER}`,
                     borderRight: "none",
                     borderRadius: "8px 0 0 8px",
                     padding: "10px 13px",
                     fontSize: "0.88rem",
-                    color: INK,
+                    color: LIGHT_TEXT,
                     fontFamily: FONT,
                     transition: "border-color 0.2s",
                   }}
@@ -256,13 +256,13 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
           {/* ── Divider ── */}
           <div style={{
             height: "1px",
-            background: BORDER,
+            background: DARK_BORDER,
             margin: "3rem 0 0",
           }} />
         </div>
 
         {/* ── Bottom bar ── */}
-        <div style={{ background: BG, borderTop: `1px solid ${BORDER}` }}>
+        <div style={{ background: DARK_BG_ALT, borderTop: `1px solid ${DARK_BORDER}` }}>
           <div style={{
             maxWidth: "1280px",
             margin: "0 auto",
@@ -276,7 +276,7 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
             <span style={{
               fontFamily: FONT,
               fontSize: "0.8rem",
-              color: INK_SOFT,
+              color: LIGHT_TEXT_SOFT,
             }}>
               PNP &copy; {year} · Todos os direitos reservados.
             </span>
@@ -296,8 +296,8 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
                     width: "34px",
                     height: "34px",
                     borderRadius: "50%",
-                    border: `1px solid ${BORDER}`,
-                    color: INK_SOFT,
+                    border: `1px solid ${DARK_BORDER}`,
+                    color: LIGHT_TEXT_SOFT,
                     fontSize: "0.8rem",
                     fontWeight: 700,
                     textDecoration: "none",
