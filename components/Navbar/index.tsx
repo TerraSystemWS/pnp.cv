@@ -2,6 +2,7 @@ import Image from "next/image"
 import React, { useState, useEffect } from "react"
 import logo from "public/logo1.png"
 import Link from "next/link"
+import { useRouter } from "next/router"
 import { fetcher } from "../../lib/api"
 import { setToken, unsetToken } from "../../lib/auth"
 import { useUser } from "../../lib/authContext"
@@ -17,10 +18,18 @@ type Inputs = { email: string; password: string }
 
 const Nav = ({ navbar }: any) => {
   const { user, loading } = useUser()
+  const router = useRouter()
   const [open, setOpen]       = useState(false)
   const [visible, setVisible] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [hovered, setHovered]   = useState<string | null>(null)
+
+  const isActiveLink = (href: string) => {
+    if (!href || !router) return false
+    if (href === "/") return router.pathname === "/"
+    const clean = href.replace(/\/$/, "")
+    return router.pathname === clean || router.pathname.startsWith(`${clean}/`)
+  }
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 20)
@@ -155,25 +164,28 @@ const Nav = ({ navbar }: any) => {
           Prémio Nacional de Publicidade
         </p>
 
-        {(navbar ?? []).map((link: any) => (
-          <Link
-            key={link.name}
-            href={link.link}
-            target={link.target ?? "_self"}
-            onClick={() => setOpen(false)}
-            style={{
-              fontFamily: FONT,
-              fontSize: "1.15rem",
-              fontWeight: 600,
-              color: LIGHT_TEXT,
-              textDecoration: "none",
-              padding: "0.7rem 0",
-              borderBottom: `1px solid ${DARK_BORDER}`,
-            }}
-          >
-            {link.name}
-          </Link>
-        ))}
+        {(navbar ?? []).map((link: any) => {
+          const active = isActiveLink(link.link)
+          return (
+            <Link
+              key={link.name}
+              href={link.link}
+              target={link.target ?? "_self"}
+              onClick={() => setOpen(false)}
+              style={{
+                fontFamily: FONT,
+                fontSize: "1.15rem",
+                fontWeight: active ? 700 : 600,
+                color: active ? GOLD_BRIGHT : LIGHT_TEXT,
+                textDecoration: "none",
+                padding: "0.7rem 0",
+                borderBottom: `1px solid ${active ? GOLD : DARK_BORDER}`,
+              }}
+            >
+              {link.name}
+            </Link>
+          )
+        })}
         {!loading && user && (
           <Link
             href="/perfil"
@@ -231,34 +243,37 @@ const Nav = ({ navbar }: any) => {
 
           {/* Desktop links */}
           <div style={{ display: "flex", alignItems: "center", gap: "2rem" }} className="pnp-nav-desktop">
-            {(navbar ?? []).map((link: any) => (
-              <Link
-                key={link.name}
-                href={link.link}
-                target={link.target ?? "_self"}
-                onMouseEnter={() => setHovered(link.name)}
-                onMouseLeave={() => setHovered(null)}
-                style={{
-                  fontFamily: FONT,
-                  fontSize: "0.9rem",
-                  fontWeight: 600,
-                  color: hovered === link.name ? GOLD_BRIGHT : LIGHT_TEXT,
-                  textDecoration: "none",
-                  transition: "color 0.2s",
-                  position: "relative",
-                }}
-              >
-                {link.name}
-                {hovered === link.name && (
-                  <span style={{
-                    position: "absolute", bottom: "-6px", left: 0, right: 0,
-                    height: "2px",
-                    background: GOLD,
-                    borderRadius: "2px",
-                  }} />
-                )}
-              </Link>
-            ))}
+            {(navbar ?? []).map((link: any) => {
+              const active = isActiveLink(link.link)
+              return (
+                <Link
+                  key={link.name}
+                  href={link.link}
+                  target={link.target ?? "_self"}
+                  onMouseEnter={() => setHovered(link.name)}
+                  onMouseLeave={() => setHovered(null)}
+                  style={{
+                    fontFamily: FONT,
+                    fontSize: "0.9rem",
+                    fontWeight: active ? 700 : 600,
+                    color: (hovered === link.name || active) ? GOLD_BRIGHT : LIGHT_TEXT,
+                    textDecoration: "none",
+                    transition: "color 0.2s",
+                    position: "relative",
+                  }}
+                >
+                  {link.name}
+                  {(hovered === link.name || active) && (
+                    <span style={{
+                      position: "absolute", bottom: "-6px", left: 0, right: 0,
+                      height: "2px",
+                      background: GOLD,
+                      borderRadius: "2px",
+                    }} />
+                  )}
+                </Link>
+              )
+            })}
 
             {!loading && user && (
               <Link
