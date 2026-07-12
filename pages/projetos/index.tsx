@@ -38,14 +38,14 @@ const Vpublica = ({ edicoes, social, contato, navbar, inscritos, totalPages, cur
 
       {/* ── Hero ── */}
       <div style={{ background: BG_ALT, paddingTop: "6rem", paddingBottom: "3rem", textAlign: "center", borderBottom: `1px solid ${BORDER}` }}>
-        <p style={{ fontFamily: FONT, fontSize: "0.8rem", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "1rem", animation: "fadeUp 0.6s ease both" }}>
+        <p style={{ fontFamily: FONT, fontSize: "0.88rem", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "1rem", animation: "fadeUp 0.6s ease both" }}>
           Prémio Nacional de Publicidade
         </p>
-        <h1 style={{ fontFamily: FONT, fontSize: "clamp(2rem,5vw,3.2rem)", fontWeight: 700, color: INK, margin: "0 0 0.5rem", animation: "fadeUp 0.7s ease 0.1s both" }}>
+        <h1 style={{ fontFamily: FONT, fontSize: "clamp(2.2rem,5vw,3.52rem)", fontWeight: 700, color: INK, margin: "0 0 0.5rem", animation: "fadeUp 0.7s ease 0.1s both" }}>
           Trabalhos Concorrentes
         </h1>
         {edicaoMaisRecente && (
-          <p style={{ fontFamily: FONT, fontSize: "0.95rem", color: INK_SOFT, animation: "fadeUp 0.8s ease 0.2s both" }}>
+          <p style={{ fontFamily: FONT, fontSize: "1.045rem", color: INK_SOFT, animation: "fadeUp 0.8s ease 0.2s both" }}>
             {edicaoMaisRecente.N_Edicao}ª Edição
           </p>
         )}
@@ -56,7 +56,7 @@ const Vpublica = ({ edicoes, social, contato, navbar, inscritos, totalPages, cur
         <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
 
           {!edicaoMaisRecente ? (
-            <p style={{ textAlign: "center", fontFamily: FONT, color: INK_SOFT, fontSize: "0.95rem", padding: "4rem 0" }}>
+            <p style={{ textAlign: "center", fontFamily: FONT, color: INK_SOFT, fontSize: "1.045rem", padding: "4rem 0" }}>
               Sem edições disponíveis de momento.
             </p>
           ) : (
@@ -70,11 +70,11 @@ const Vpublica = ({ edicoes, social, contato, navbar, inscritos, totalPages, cur
                   {/* Category header */}
                   <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "1.5rem" }}>
                     <div style={{ width: "4px", height: "1.4rem", background: GOLD, borderRadius: "2px", flexShrink: 0 }} />
-                    <h2 style={{ fontFamily: FONT, fontSize: "1.25rem", fontWeight: 700, color: INK, margin: 0 }}>
+                    <h2 style={{ fontFamily: FONT, fontSize: "1.375rem", fontWeight: 700, color: INK, margin: 0 }}>
                       {categoria.titulo}
                     </h2>
                     {inscricoesCategoria.length > 0 && (
-                      <span style={{ fontFamily: FONT, fontSize: "0.78rem", fontWeight: 600, color: GOLD_DARK, border: `1px solid ${BORDER}`, borderRadius: "100px", padding: "2px 10px" }}>
+                      <span style={{ fontFamily: FONT, fontSize: "0.858rem", fontWeight: 700, color: GOLD_DARK, border: `1px solid ${BORDER}`, borderRadius: "100px", padding: "2px 10px" }}>
                         {inscricoesCategoria.length} {inscricoesCategoria.length === 1 ? "trabalho" : "trabalhos"}
                       </span>
                     )}
@@ -97,20 +97,20 @@ const Vpublica = ({ edicoes, social, contato, navbar, inscritos, totalPages, cur
                             position: "relative",
                           }}
                         >
-                          <h3 style={{ fontFamily: FONT, fontSize: "1.1rem", fontWeight: 700, color: INK, margin: "0 0 0.75rem", lineHeight: 1.4 }}>
+                          <h3 style={{ fontFamily: FONT, fontSize: "1.21rem", fontWeight: 700, color: INK, margin: "0 0 0.75rem", lineHeight: 1.4 }}>
                             {inscricao.attributes.nome_projeto || "Sem título"}
                           </h3>
-                          <p style={{ fontFamily: FONT, fontSize: "0.82rem", fontWeight: 600, color: INK_SOFT, margin: 0 }}>
+                          <p style={{ fontFamily: FONT, fontSize: "0.902rem", fontWeight: 700, color: INK_SOFT, margin: 0 }}>
                             {inscricao.attributes.sede || "—"}
                           </p>
-                          <div className="proj-card-arrow" style={{ position: "absolute", bottom: "1.25rem", right: "1.25rem", color: GOLD_DARK, fontSize: "1rem", opacity: 0, transform: "translateX(-6px)", transition: "opacity 0.2s, transform 0.2s" }}>
+                          <div className="proj-card-arrow" style={{ position: "absolute", bottom: "1.25rem", right: "1.25rem", color: GOLD_DARK, fontSize: "1.1rem", opacity: 0, transform: "translateX(-6px)", transition: "opacity 0.2s, transform 0.2s" }}>
                             →
                           </div>
                         </Link>
                       ))}
                     </div>
                   ) : (
-                    <p style={{ fontFamily: FONT, fontSize: "0.88rem", color: INK_SOFT, paddingLeft: "1rem", borderLeft: `1px solid ${BORDER}` }}>
+                    <p style={{ fontFamily: FONT, fontSize: "0.968rem", color: INK_SOFT, paddingLeft: "1rem", borderLeft: `1px solid ${BORDER}` }}>
                       Nenhum trabalho inscrito nesta categoria.
                     </p>
                   )}
@@ -129,8 +129,8 @@ const Vpublica = ({ edicoes, social, contato, navbar, inscritos, totalPages, cur
                     className="pag-btn"
                     style={{
                       fontFamily: FONT,
-                      fontSize: "0.85rem",
-                      fontWeight: 600,
+                      fontSize: "0.935rem",
+                      fontWeight: 700,
                       color: INK,
                       border: `1px solid ${BORDER}`,
                       borderRadius: "100px",
@@ -144,7 +144,7 @@ const Vpublica = ({ edicoes, social, contato, navbar, inscritos, totalPages, cur
                 )}
               </div>
 
-              <span style={{ fontFamily: FONT, fontSize: "0.82rem", fontWeight: 600, color: INK_SOFT }}>
+              <span style={{ fontFamily: FONT, fontSize: "0.902rem", fontWeight: 700, color: INK_SOFT }}>
                 Edição {currentPage} / {totalPages}
               </span>
 
@@ -155,8 +155,8 @@ const Vpublica = ({ edicoes, social, contato, navbar, inscritos, totalPages, cur
                     className="pag-btn"
                     style={{
                       fontFamily: FONT,
-                      fontSize: "0.85rem",
-                      fontWeight: 600,
+                      fontSize: "0.935rem",
+                      fontWeight: 700,
                       color: INK,
                       border: `1px solid ${BORDER}`,
                       borderRadius: "100px",

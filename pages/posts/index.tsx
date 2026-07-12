@@ -42,16 +42,16 @@ const PostList = ({ social, contato, posts, navbar }: any) => {
 
       {/* ── Hero ── */}
       <div style={{ background: BG_ALT, paddingTop: "6rem", paddingBottom: "3rem", textAlign: "center", borderBottom: `1px solid ${BORDER}` }}>
-        <p style={{ fontFamily: FONT, fontSize: "0.8rem", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "1rem", animation: "fadeUp 0.6s ease both" }}>Notícias &amp; Actualizações</p>
-        <h1 style={{ fontFamily: FONT, fontSize: "clamp(2.2rem,6vw,3.4rem)", fontWeight: 700, color: INK, margin: 0, animation: "fadeUp 0.7s ease 0.1s both" }}>Blog</h1>
-        <p style={{ fontFamily: FONT, fontSize: "1rem", color: INK_SOFT, marginTop: "1rem", animation: "fadeUp 0.8s ease 0.2s both" }}>Fique por dentro das últimas novidades do PNP.</p>
+        <p style={{ fontFamily: FONT, fontSize: "0.88rem", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "1rem", animation: "fadeUp 0.6s ease both" }}>Notícias &amp; Actualizações</p>
+        <h1 style={{ fontFamily: FONT, fontSize: "clamp(2.42rem,6vw,3.74rem)", fontWeight: 700, color: INK, margin: 0, animation: "fadeUp 0.7s ease 0.1s both" }}>Blog</h1>
+        <p style={{ fontFamily: FONT, fontSize: "1.1rem", color: INK_SOFT, marginTop: "1rem", animation: "fadeUp 0.8s ease 0.2s both" }}>Fique por dentro das últimas novidades do PNP.</p>
       </div>
 
       <div style={{ background: BG, padding: "4rem 2rem 6rem" }}>
         <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
 
           {allPosts.length === 0 && (
-            <p style={{ textAlign: "center", fontFamily: FONT, color: INK_SOFT, fontSize: "0.95rem" }}>
+            <p style={{ textAlign: "center", fontFamily: FONT, color: INK_SOFT, fontSize: "1.045rem" }}>
               Sem publicações disponíveis.
             </p>
           )}
@@ -85,16 +85,16 @@ const PostList = ({ social, contato, posts, navbar }: any) => {
                         )}
                         {/* Content */}
                         <div style={{ padding: "1.5rem", flex: 1 }}>
-                          <p style={{ fontFamily: FONT, fontSize: "0.75rem", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "0.6rem" }}>
+                          <p style={{ fontFamily: FONT, fontSize: "0.825rem", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "0.6rem" }}>
                             {formatDateTime(post.attributes.publishedAt)}
                           </p>
-                          <h2 style={{ fontFamily: FONT, fontSize: "1.25rem", fontWeight: 700, color: hovMain === i ? GOLD_DARK : INK, marginBottom: "0.75rem", lineHeight: 1.3, transition: "color 0.25s" }}>
+                          <h2 style={{ fontFamily: FONT, fontSize: "1.375rem", fontWeight: 700, color: hovMain === i ? GOLD_DARK : INK, marginBottom: "0.75rem", lineHeight: 1.3, transition: "color 0.25s" }}>
                             {post.attributes.Titulo}
                           </h2>
-                          <p style={{ fontFamily: FONT, fontSize: "0.88rem", color: INK_SOFT, lineHeight: 1.6, marginBottom: "1rem" }}>
+                          <p style={{ fontFamily: FONT, fontSize: "0.968rem", color: INK_SOFT, lineHeight: 1.6, marginBottom: "1rem" }}>
                             <span dangerouslySetInnerHTML={{ __html: (post.attributes.descricao ?? "").substring(0, 180) }} />
                           </p>
-                          <span style={{ fontFamily: FONT, fontSize: "0.8rem", fontWeight: 700, color: GOLD_DARK, borderBottom: `1px solid ${GOLD}`, paddingBottom: "2px" }}>
+                          <span style={{ fontFamily: FONT, fontSize: "0.88rem", fontWeight: 700, color: GOLD_DARK, borderBottom: `1px solid ${GOLD}`, paddingBottom: "2px" }}>
                             Ler mais →
                           </span>
                         </div>
@@ -106,7 +106,7 @@ const PostList = ({ social, contato, posts, navbar }: any) => {
 
               {/* Sidebar */}
               <div>
-                <p style={{ fontFamily: FONT, fontSize: "0.78rem", letterSpacing: "0.06em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "1.25rem" }}>
+                <p style={{ fontFamily: FONT, fontSize: "0.858rem", letterSpacing: "0.06em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "1.25rem" }}>
                   Outras Notícias
                 </p>
                 <div style={{ display: "flex", flexDirection: "column", gap: "1px" }}>
@@ -119,13 +119,13 @@ const PostList = ({ social, contato, posts, navbar }: any) => {
                         transition: "padding-left 0.2s",
                         paddingLeft: hovSide === i ? "8px" : "0",
                       }}>
-                        <p style={{ fontFamily: FONT, fontSize: "0.75rem", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 600, color: INK_SOFT, marginBottom: "0.4rem" }}>
+                        <p style={{ fontFamily: FONT, fontSize: "0.825rem", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: INK_SOFT, marginBottom: "0.4rem" }}>
                           {formatDateTime(post.attributes.publishedAt)}
                         </p>
-                        <h4 style={{ fontFamily: FONT, fontSize: "0.98rem", fontWeight: 700, color: hovSide === i ? GOLD_DARK : INK, lineHeight: 1.35, marginBottom: "0.3rem", transition: "color 0.2s" }}>
+                        <h4 style={{ fontFamily: FONT, fontSize: "1.078rem", fontWeight: 700, color: hovSide === i ? GOLD_DARK : INK, lineHeight: 1.35, marginBottom: "0.3rem", transition: "color 0.2s" }}>
                           {post.attributes.Titulo}
                         </h4>
-                        <span style={{ fontFamily: FONT, fontSize: "0.78rem", fontWeight: 600, color: GOLD_DARK }}>Ler mais →</span>
+                        <span style={{ fontFamily: FONT, fontSize: "0.858rem", fontWeight: 700, color: GOLD_DARK }}>Ler mais →</span>
                       </article>
                     </Link>
                   ))}
@@ -155,13 +155,13 @@ const PostList = ({ social, contato, posts, navbar }: any) => {
                       >
                         {imgUrl && <img src={imgUrl} alt={post.attributes.Titulo} style={{ width: "100%", height: "160px", objectFit: "cover" }} />}
                         <div style={{ padding: "1.25rem" }}>
-                          <p style={{ fontFamily: FONT, fontSize: "0.75rem", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 600, color: INK_SOFT, marginBottom: "0.5rem" }}>
+                          <p style={{ fontFamily: FONT, fontSize: "0.825rem", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: INK_SOFT, marginBottom: "0.5rem" }}>
                             {formatDateTime(post.attributes.publishedAt)}
                           </p>
-                          <h3 style={{ fontFamily: FONT, fontSize: "1.05rem", fontWeight: 700, color: INK, lineHeight: 1.35, marginBottom: "0.5rem" }}>
+                          <h3 style={{ fontFamily: FONT, fontSize: "1.155rem", fontWeight: 700, color: INK, lineHeight: 1.35, marginBottom: "0.5rem" }}>
                             {post.attributes.Titulo}
                           </h3>
-                          <span style={{ fontFamily: FONT, fontSize: "0.78rem", fontWeight: 600, color: GOLD_DARK }}>Ler mais →</span>
+                          <span style={{ fontFamily: FONT, fontSize: "0.858rem", fontWeight: 700, color: GOLD_DARK }}>Ler mais →</span>
                         </div>
                       </article>
                     </Link>
@@ -185,10 +185,10 @@ const PostList = ({ social, contato, posts, navbar }: any) => {
                         background: p === currentPage ? GOLD : hovPage === String(p) ? BG_ALT : "transparent",
                         color: p === currentPage ? "#fff" : INK,
                         fontFamily: FONT,
-                        fontSize: "0.85rem",
+                        fontSize: "0.935rem",
                         cursor: "pointer",
                         transition: "background 0.2s, border-color 0.2s, color 0.2s",
-                        fontWeight: p === currentPage ? 700 : 500,
+                        fontWeight: p === currentPage ? 700 : 600,
                       }}
                     >
                       {p}

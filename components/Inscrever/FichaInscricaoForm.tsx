@@ -86,7 +86,7 @@ const FichaInscricaoForm = forwardRef<FormHandle, Props>(
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem" }}>
           {FIELDS.map((f) => (
             <div key={f.name} style={{ gridColumn: `span ${f.span}` }}>
-              <label style={{ display: "flex", alignItems: "center", gap: "3px", fontFamily: "'DM Sans',sans-serif", fontSize: "0.8rem", fontWeight: 600, color: highlighted.has(f.name) ? "#c0392b" : INK, marginBottom: "0.4rem", transition: "color 0.2s" }}>
+              <label style={{ display: "flex", alignItems: "center", gap: "3px", fontFamily: "'DM Sans',sans-serif", fontSize: "0.88rem", fontWeight: 700, color: highlighted.has(f.name) ? "#c0392b" : INK, marginBottom: "0.4rem", transition: "color 0.2s" }}>
                 {f.label}
                 {f.required && <span style={{ color: highlighted.has(f.name) ? "#c0392b" : GOLD_DARK, lineHeight: 1 }}>*</span>}
               </label>

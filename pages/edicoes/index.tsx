@@ -63,8 +63,8 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
 
       {/* ── Hero ── */}
       <div style={{ background: BG_ALT, paddingTop: "6rem", paddingBottom: "3rem", textAlign: "center", borderBottom: `1px solid ${BORDER}` }}>
-        <p style={{ fontFamily: FONT, fontSize: "0.8rem", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "1rem", animation: "fadeUp 0.6s ease both" }}>Prémio Nacional de Publicidade</p>
-        <h1 style={{ fontFamily: FONT, fontSize: "clamp(2.2rem,6vw,3.4rem)", fontWeight: 700, color: INK, margin: 0, animation: "fadeUp 0.7s ease 0.1s both" }}>
+        <p style={{ fontFamily: FONT, fontSize: "0.88rem", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "1rem", animation: "fadeUp 0.6s ease both" }}>Prémio Nacional de Publicidade</p>
+        <h1 style={{ fontFamily: FONT, fontSize: "clamp(2.42rem,6vw,3.74rem)", fontWeight: 700, color: INK, margin: 0, animation: "fadeUp 0.7s ease 0.1s both" }}>
           <span style={{ color: GOLD_DARK }}>{num}ª</span> Edição
         </h1>
       </div>
@@ -79,14 +79,14 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
               style={{
                 flexShrink: 0,
                 fontFamily: FONT,
-                fontSize: "0.82rem",
+                fontSize: "0.902rem",
                 padding: "7px 18px",
                 borderRadius: "100px",
                 border: currentIdx === i ? `1px solid ${GOLD}` : `1px solid ${BORDER}`,
                 background: currentIdx === i ? GOLD : "transparent",
                 color: currentIdx === i ? "#fff" : INK,
                 cursor: "pointer",
-                fontWeight: currentIdx === i ? 700 : 500,
+                fontWeight: currentIdx === i ? 700 : 600,
                 transition: "all 0.2s",
               }}
             >
@@ -105,7 +105,7 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
               onClick={() => setActiveTab(t.key)}
               style={{
                 fontFamily: FONT,
-                fontSize: "0.88rem",
+                fontSize: "0.968rem",
                 fontWeight: 700,
                 padding: "1rem 1.25rem",
                 background: "transparent",
@@ -145,8 +145,8 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
                           {imgUrl && <img src={imgUrl} alt={j.nome} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }} />}
                         </div>
                         <div style={{ padding: "1rem 1.1rem 1.3rem" }}>
-                          <h3 style={{ fontFamily: FONT, fontSize: "1rem", fontWeight: 700, color: hov ? GOLD_DARK : INK, margin: "0 0 3px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", transition: "color 0.25s" }}>{j.nome}</h3>
-                          <p style={{ fontFamily: FONT, fontSize: "0.75rem", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, margin: 0 }}>{j.titulo}</p>
+                          <h3 style={{ fontFamily: FONT, fontSize: "1.1rem", fontWeight: 700, color: hov ? GOLD_DARK : INK, margin: "0 0 3px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", transition: "color 0.25s" }}>{j.nome}</h3>
+                          <p style={{ fontFamily: FONT, fontSize: "0.825rem", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, margin: 0 }}>{j.titulo}</p>
                         </div>
                       </div>
                     </Link>
@@ -178,7 +178,7 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
                   </div>
                   {(g.imagens?.data?.length ?? 0) > 9 && (
                     <div style={{ textAlign: "center", marginTop: "2rem" }}>
-                      <Link href={`/galeria?edicao=${num}`} style={{ fontFamily: FONT, fontSize: "0.85rem", fontWeight: 700, color: GOLD_DARK, borderBottom: `1px solid ${GOLD}`, paddingBottom: "2px", textDecoration: "none" }}>
+                      <Link href={`/galeria?edicao=${num}`} style={{ fontFamily: FONT, fontSize: "0.935rem", fontWeight: 700, color: GOLD_DARK, borderBottom: `1px solid ${GOLD}`, paddingBottom: "2px", textDecoration: "none" }}>
                         Ver galeria completa →
                       </Link>
                     </div>
@@ -201,7 +201,7 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
                       style={{ background: CARD, border: hov ? `1px solid ${GOLD}` : `1px solid ${BORDER}`, borderRadius: "16px", overflow: "hidden", transition: "border-color 0.25s, transform 0.25s", transform: hov ? "translateY(-3px)" : "none", position: "relative" }}>
                       {v.titulo && (
                         <div style={{ padding: "1.1rem 1.25rem 0.75rem" }}>
-                          <p style={{ fontFamily: FONT, fontSize: "1rem", fontWeight: 700, color: INK, margin: 0 }}>{v.titulo}</p>
+                          <p style={{ fontFamily: FONT, fontSize: "1.1rem", fontWeight: 700, color: INK, margin: 0 }}>{v.titulo}</p>
                         </div>
                       )}
                       <div style={{ padding: "0 1.25rem 1.25rem" }}>
@@ -228,9 +228,9 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
                     <a key={di} href={url ? `${api_link}${url}` : "#"} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none" }}
                       onMouseEnter={() => setHovCard(`d-${di}`)} onMouseLeave={() => setHovCard(null)}>
                       <div style={{ background: CARD, border: hov ? `1px solid ${GOLD}` : `1px solid ${BORDER}`, borderRadius: "16px", padding: "2rem 1.5rem", textAlign: "center", transition: "border-color 0.25s, transform 0.25s", transform: hov ? "translateY(-4px)" : "none", position: "relative" }}>
-                        <p style={{ fontSize: "2.5rem", margin: "0 0 1rem" }}>📄</p>
-                        <h3 style={{ fontFamily: FONT, fontSize: "1.05rem", fontWeight: 700, color: hov ? GOLD_DARK : INK, margin: "0 0 0.75rem" }}>{doc.titulo}</h3>
-                        <span style={{ fontFamily: FONT, fontSize: "0.78rem", fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: hov ? GOLD_DARK : INK_SOFT, transition: "color 0.25s" }}>
+                        <p style={{ fontSize: "2.75rem", margin: "0 0 1rem" }}>📄</p>
+                        <h3 style={{ fontFamily: FONT, fontSize: "1.155rem", fontWeight: 700, color: hov ? GOLD_DARK : INK, margin: "0 0 0.75rem" }}>{doc.titulo}</h3>
+                        <span style={{ fontFamily: FONT, fontSize: "0.858rem", fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: hov ? GOLD_DARK : INK_SOFT, transition: "color 0.25s" }}>
                           Abrir documento →
                         </span>
                       </div>
@@ -247,13 +247,13 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
 }
 
 const EmptyMsg = () => (
-  <p style={{ textAlign: "center", fontFamily: FONT, color: INK_SOFT, fontSize: "0.95rem", padding: "3rem 0" }}>
+  <p style={{ textAlign: "center", fontFamily: FONT, color: INK_SOFT, fontSize: "1.045rem", padding: "3rem 0" }}>
     Sem conteúdo disponível para esta edição.
   </p>
 )
 
 const SectionHead = ({ title }: { title: string }) => (
-  <h2 style={{ fontFamily: FONT, fontSize: "1.25rem", fontWeight: 700, color: INK, marginBottom: "1.5rem", borderLeft: `3px solid ${GOLD}`, paddingLeft: "1rem" }}>
+  <h2 style={{ fontFamily: FONT, fontSize: "1.375rem", fontWeight: 700, color: INK, marginBottom: "1.5rem", borderLeft: `3px solid ${GOLD}`, paddingLeft: "1rem" }}>
     {title}
   </h2>
 )

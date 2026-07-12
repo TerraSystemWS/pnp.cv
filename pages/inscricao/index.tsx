@@ -344,7 +344,7 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
           <h1 style={{ fontFamily: FONT, fontWeight: 700, color: INK }} className="text-5xl md:text-7xl leading-none tracking-tight mb-3">
             Candidatura
           </h1>
-          <p style={{ fontFamily: FONT, fontWeight: 600, color: INK_SOFT, letterSpacing: "0.08em" }} className="text-base md:text-lg uppercase mb-10">
+          <p style={{ fontFamily: FONT, fontWeight: 700, color: INK_SOFT, letterSpacing: "0.08em" }} className="text-base md:text-lg uppercase mb-10">
             Prémio Nacional de Publicidade
           </p>
 
@@ -425,7 +425,7 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
           </div>
 
           {/* Footer note */}
-          <p className="text-center mt-10" style={{ color: INK_SOFT, fontFamily: FONT, fontSize: "0.85rem" }}>
+          <p className="text-center mt-10" style={{ color: INK_SOFT, fontFamily: FONT, fontSize: "0.935rem" }}>
             Ao submeter, declara ter lido e aceite o{" "}
             <Link href="/regulamentos" style={{ color: GOLD_DARK, textDecoration: "underline", textUnderlineOffset: "3px" }}>
               regulamento

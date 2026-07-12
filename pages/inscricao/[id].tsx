@@ -126,30 +126,30 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao, accessCode }: P
 
       {/* ── Hero ── */}
       <div style={{ background: BG_ALT, paddingTop: "6rem", paddingBottom: "2.5rem", textAlign: "center", borderBottom: `1px solid ${BORDER}` }}>
-        <p style={{ fontFamily: FONT, fontSize: "0.8rem", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "1rem", animation: "fadeUp 0.6s ease both" }}>
+        <p style={{ fontFamily: FONT, fontSize: "0.88rem", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "1rem", animation: "fadeUp 0.6s ease both" }}>
           Prémio Nacional de Publicidade
         </p>
-        <h1 style={{ fontFamily: FONT, fontSize: "clamp(1.8rem,4.5vw,2.8rem)", fontWeight: 700, color: INK, margin: "0 0 1.5rem", animation: "fadeUp 0.7s ease 0.1s both" }}>
+        <h1 style={{ fontFamily: FONT, fontSize: "clamp(1.98rem,4.5vw,3.08rem)", fontWeight: 700, color: INK, margin: "0 0 1.5rem", animation: "fadeUp 0.7s ease 0.1s both" }}>
           A sua Inscrição
         </h1>
 
         {/* Code badge */}
         <div style={{ display: "inline-flex", alignItems: "center", gap: "0.75rem", background: CARD, border: `1px solid ${BORDER}`, borderRadius: "100px", padding: "0.6rem 1.25rem", animation: "fadeUp 0.8s ease 0.2s both" }}>
-          <span style={{ fontFamily: FONT, fontSize: "0.78rem", fontWeight: 600, color: INK_SOFT }}>
+          <span style={{ fontFamily: FONT, fontSize: "0.858rem", fontWeight: 700, color: INK_SOFT }}>
             Código de acesso
           </span>
-          <span style={{ fontFamily: FONT, fontSize: "1rem", fontWeight: 700, color: INK, letterSpacing: "0.04em" }}>
+          <span style={{ fontFamily: FONT, fontSize: "1.1rem", fontWeight: 700, color: INK, letterSpacing: "0.04em" }}>
             {accessCode}
           </span>
           <button
             onClick={copyCode}
-            style={{ background: "none", border: `1px solid ${BORDER}`, borderRadius: "100px", padding: "3px 12px", cursor: "pointer", fontFamily: FONT, fontSize: "0.75rem", fontWeight: 600, color: copied ? GOLD_DARK : INK_SOFT, transition: "color 0.2s" }}
+            style={{ background: "none", border: `1px solid ${BORDER}`, borderRadius: "100px", padding: "3px 12px", cursor: "pointer", fontFamily: FONT, fontSize: "0.825rem", fontWeight: 700, color: copied ? GOLD_DARK : INK_SOFT, transition: "color 0.2s" }}
           >
             {copied ? "✓ Copiado" : "Copiar"}
           </button>
         </div>
 
-        <p style={{ fontFamily: FONT, fontSize: "0.82rem", color: INK_SOFT, marginTop: "0.75rem", animation: "fadeUp 0.9s ease 0.3s both" }}>
+        <p style={{ fontFamily: FONT, fontSize: "0.902rem", color: INK_SOFT, marginTop: "0.75rem", animation: "fadeUp 0.9s ease 0.3s both" }}>
           Guarde este código — precisará dele para voltar à sua inscrição.
         </p>
       </div>
@@ -167,10 +167,10 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao, accessCode }: P
                 onClick={() => setActiveStep(i)}
                 style={{ flex: 1, background: "none", border: "none", padding: "1rem 0.5rem", borderBottom: isActive ? `3px solid ${GOLD}` : "3px solid transparent", textAlign: "center" }}
               >
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 0.4rem", width: "24px", height: "24px", borderRadius: "50%", background: isActive ? GOLD : isDone ? `${GOLD}22` : BG_ALT, border: `1px solid ${isActive ? GOLD : isDone ? GOLD : BORDER}`, fontSize: "0.72rem", color: isActive ? "#fff" : isDone ? GOLD_DARK : INK_SOFT, fontFamily: FONT, fontWeight: 700 }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 0.4rem", width: "24px", height: "24px", borderRadius: "50%", background: isActive ? GOLD : isDone ? `${GOLD}22` : BG_ALT, border: `1px solid ${isActive ? GOLD : isDone ? GOLD : BORDER}`, fontSize: "0.792rem", color: isActive ? "#fff" : isDone ? GOLD_DARK : INK_SOFT, fontFamily: FONT, fontWeight: 700 }}>
                   {isDone && !isActive ? "✓" : i + 1}
                 </div>
-                <p className="step-label" style={{ fontFamily: FONT, fontSize: "0.8rem", fontWeight: 700, margin: 0, color: isActive ? INK : INK_SOFT, transition: "color 0.2s" }}>
+                <p className="step-label" style={{ fontFamily: FONT, fontSize: "0.88rem", fontWeight: 700, margin: 0, color: isActive ? INK : INK_SOFT, transition: "color 0.2s" }}>
                   {step.label}
                 </p>
               </button>
@@ -185,13 +185,13 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao, accessCode }: P
 
           {/* Step header */}
           <div style={{ marginBottom: "2.5rem" }}>
-            <p style={{ fontFamily: FONT, fontSize: "0.75rem", letterSpacing: "0.06em", textTransform: "uppercase", fontWeight: 600, color: INK_SOFT, margin: "0 0 0.3rem" }}>
+            <p style={{ fontFamily: FONT, fontSize: "0.825rem", letterSpacing: "0.06em", textTransform: "uppercase", fontWeight: 700, color: INK_SOFT, margin: "0 0 0.3rem" }}>
               Passo {activeStep + 1} de {STEPS.length}
             </p>
-            <h2 style={{ fontFamily: FONT, fontSize: "1.4rem", fontWeight: 700, color: INK, margin: "0 0 0.3rem" }}>
+            <h2 style={{ fontFamily: FONT, fontSize: "1.54rem", fontWeight: 700, color: INK, margin: "0 0 0.3rem" }}>
               {STEPS[activeStep].label}
             </h2>
-            <p style={{ fontFamily: FONT, fontSize: "0.9rem", color: INK_SOFT, margin: 0 }}>
+            <p style={{ fontFamily: FONT, fontSize: "0.99rem", color: INK_SOFT, margin: 0 }}>
               {STEPS[activeStep].desc}
             </p>
           </div>
@@ -243,12 +243,12 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao, accessCode }: P
             {/* Empty fields warning */}
             {emptyWarning && (
               <div style={{ marginBottom: "1.25rem", padding: "0.85rem 1.25rem", background: "#c0392b0a", border: "1px solid #c0392b33", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1rem" }}>
-                <span style={{ fontFamily: FONT, fontSize: "0.85rem", color: "#c0392b" }}>
+                <span style={{ fontFamily: FONT, fontSize: "0.935rem", color: "#c0392b" }}>
                   ⚠ Campos obrigatórios por preencher — estão marcados a vermelho.
                 </span>
                 <button
                   onClick={handleForceSave}
-                  style={{ fontFamily: FONT, fontSize: "0.78rem", fontWeight: 600, color: "#c0392b", background: "none", border: "1px solid #c0392b55", borderRadius: "100px", padding: "6px 16px", cursor: "pointer", whiteSpace: "nowrap", transition: "background 0.2s" }}
+                  style={{ fontFamily: FONT, fontSize: "0.858rem", fontWeight: 700, color: "#c0392b", background: "none", border: "1px solid #c0392b55", borderRadius: "100px", padding: "6px 16px", cursor: "pointer", whiteSpace: "nowrap", transition: "background 0.2s" }}
                 >
                   Guardar mesmo assim
                 </button>
@@ -262,7 +262,7 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao, accessCode }: P
                   <button
                     className="nav-btn"
                     onClick={() => setActiveStep((s) => s - 1)}
-                    style={{ fontFamily: FONT, fontSize: "0.85rem", fontWeight: 600, color: INK, background: "none", border: `1px solid ${BORDER}`, borderRadius: "100px", padding: "9px 22px", cursor: "pointer" }}
+                    style={{ fontFamily: FONT, fontSize: "0.935rem", fontWeight: 700, color: INK, background: "none", border: `1px solid ${BORDER}`, borderRadius: "100px", padding: "9px 22px", cursor: "pointer" }}
                   >
                     ← Anterior
                   </button>
@@ -272,7 +272,7 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao, accessCode }: P
               {/* Save */}
               <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
                 {saveLabel && (
-                  <span style={{ fontFamily: FONT, fontSize: "0.85rem", fontWeight: 600, color: saveLabelColor }}>
+                  <span style={{ fontFamily: FONT, fontSize: "0.935rem", fontWeight: 700, color: saveLabelColor }}>
                     {saveLabel}
                   </span>
                 )}
@@ -281,7 +281,7 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao, accessCode }: P
                     className="save-btn"
                     onClick={handleSave}
                     disabled={saveStatus === "saving"}
-                    style={{ fontFamily: FONT, fontSize: "0.85rem", fontWeight: 700, color: saveStatus === "saving" ? INK_SOFT : INK, background: saveStatus === "saving" ? BG_ALT : GOLD, border: saveStatus === "saving" ? `1px solid ${BORDER}` : "none", borderRadius: "100px", padding: "10px 28px", cursor: saveStatus === "saving" ? "not-allowed" : "pointer", transition: "opacity 0.2s" }}
+                    style={{ fontFamily: FONT, fontSize: "0.935rem", fontWeight: 700, color: saveStatus === "saving" ? INK_SOFT : INK, background: saveStatus === "saving" ? BG_ALT : GOLD, border: saveStatus === "saving" ? `1px solid ${BORDER}` : "none", borderRadius: "100px", padding: "10px 28px", cursor: saveStatus === "saving" ? "not-allowed" : "pointer", transition: "opacity 0.2s" }}
                   >
                     Guardar
                   </button>
@@ -294,7 +294,7 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao, accessCode }: P
                   <button
                     className="nav-btn-primary"
                     onClick={() => setActiveStep((s) => s + 1)}
-                    style={{ fontFamily: FONT, fontSize: "0.85rem", fontWeight: 700, color: INK, background: GOLD, border: "none", borderRadius: "100px", padding: "10px 24px", cursor: "pointer" }}
+                    style={{ fontFamily: FONT, fontSize: "0.935rem", fontWeight: 700, color: INK, background: GOLD, border: "none", borderRadius: "100px", padding: "10px 24px", cursor: "pointer" }}
                   >
                     Próximo →
                   </button>

@@ -69,9 +69,9 @@ const ParceirosPage = ({ social, contato, parceiros, navbar }: any) => {
 
       {/* ── Hero ── */}
       <div style={{ background: BG_ALT, paddingTop: "6rem", paddingBottom: "3rem", textAlign: "center", borderBottom: `1px solid ${BORDER}` }}>
-        <p style={{ fontFamily: FONT, fontSize: "0.8rem", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "1rem", animation: "fadeUp 0.6s ease both" }}>Prémio Nacional de Publicidade</p>
-        <h1 style={{ fontFamily: FONT, fontSize: "clamp(2.2rem,6vw,3.4rem)", fontWeight: 700, color: INK, margin: 0, animation: "fadeUp 0.7s ease 0.1s both" }}>Parceiros</h1>
-        <p style={{ fontFamily: FONT, fontSize: "1rem", color: INK_SOFT, marginTop: "1rem", animation: "fadeUp 0.8s ease 0.2s both" }}>Aqueles que nos impulsionam a fazer mais e melhor.</p>
+        <p style={{ fontFamily: FONT, fontSize: "0.88rem", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "1rem", animation: "fadeUp 0.6s ease both" }}>Prémio Nacional de Publicidade</p>
+        <h1 style={{ fontFamily: FONT, fontSize: "clamp(2.42rem,6vw,3.74rem)", fontWeight: 700, color: INK, margin: 0, animation: "fadeUp 0.7s ease 0.1s both" }}>Parceiros</h1>
+        <p style={{ fontFamily: FONT, fontSize: "1.1rem", color: INK_SOFT, marginTop: "1rem", animation: "fadeUp 0.8s ease 0.2s both" }}>Aqueles que nos impulsionam a fazer mais e melhor.</p>
       </div>
 
       {/* ── Partner groups ── */}
@@ -80,7 +80,7 @@ const ParceirosPage = ({ social, contato, parceiros, navbar }: any) => {
           <div key={group.label} style={{ maxWidth: "1200px", margin: "0 auto", marginBottom: gi < groups.length - 1 ? "4rem" : 0 }}>
             {/* Section header */}
             <div style={{ display: "flex", alignItems: "center", gap: "1.5rem", marginBottom: "2rem" }}>
-              <h2 style={{ fontFamily: FONT, fontSize: "1.1rem", fontWeight: 700, color: GOLD_DARK, letterSpacing: "0.06em", textTransform: "uppercase", whiteSpace: "nowrap", margin: 0 }}>
+              <h2 style={{ fontFamily: FONT, fontSize: "1.21rem", fontWeight: 700, color: GOLD_DARK, letterSpacing: "0.06em", textTransform: "uppercase", whiteSpace: "nowrap", margin: 0 }}>
                 {group.label}
               </h2>
               <div style={{ flex: 1, height: "1px", background: BORDER }} />
@@ -124,12 +124,12 @@ const ParceirosPage = ({ social, contato, parceiros, navbar }: any) => {
                         />
                       ) : (
                         <div style={{ width: "130px", height: "80px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                          <span style={{ fontFamily: FONT, fontWeight: 700, fontSize: "1rem", color: INK_SOFT }}>{p.title}</span>
+                          <span style={{ fontFamily: FONT, fontWeight: 700, fontSize: "1.1rem", color: INK_SOFT }}>{p.title}</span>
                         </div>
                       )}
 
                       {/* Title */}
-                      <p style={{ fontFamily: FONT, fontSize: "0.85rem", fontWeight: 600, color: hov ? GOLD_DARK : INK, textAlign: "center", margin: 0, transition: "color 0.25s" }}>
+                      <p style={{ fontFamily: FONT, fontSize: "0.935rem", fontWeight: 700, color: hov ? GOLD_DARK : INK, textAlign: "center", margin: 0, transition: "color 0.25s" }}>
                         {p.title}
                       </p>
 
@@ -137,7 +137,7 @@ const ParceirosPage = ({ social, contato, parceiros, navbar }: any) => {
                       {p.tipo && (
                         <span style={{
                           fontFamily: FONT,
-                          fontSize: "0.7rem",
+                          fontSize: "0.77rem",
                           letterSpacing: "0.04em",
                           textTransform: "uppercase",
                           fontWeight: 700,
@@ -158,7 +158,7 @@ const ParceirosPage = ({ social, contato, parceiros, navbar }: any) => {
         ))}
 
         {groups.length === 0 && (
-          <p style={{ textAlign: "center", color: INK_SOFT, fontFamily: FONT, fontSize: "0.95rem" }}>
+          <p style={{ textAlign: "center", color: INK_SOFT, fontFamily: FONT, fontSize: "1.045rem" }}>
             Sem dados de parceiros disponíveis.
           </p>
         )}

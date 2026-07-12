@@ -116,8 +116,8 @@ const SobreusTerms = ({ social, contato, navbar, sobreus }: any) => {
         <div style={{ animation: "fadeUp 0.5s ease both", marginBottom: "1.25rem" }}>
           <Link href="/sobreus" className="back-link" style={{
             fontFamily: FONT,
-            fontSize: "0.8rem",
-            fontWeight: 600,
+            fontSize: "0.88rem",
+            fontWeight: 700,
             color: INK_SOFT,
             textDecoration: "none",
             display: "inline-flex",
@@ -130,7 +130,7 @@ const SobreusTerms = ({ social, contato, navbar, sobreus }: any) => {
 
         <p style={{
           fontFamily: FONT,
-          fontSize: "0.8rem",
+          fontSize: "0.88rem",
           letterSpacing: "0.08em",
           textTransform: "uppercase",
           fontWeight: 700,
@@ -143,7 +143,7 @@ const SobreusTerms = ({ social, contato, navbar, sobreus }: any) => {
 
         <h1 style={{
           fontFamily: FONT,
-          fontSize: "clamp(2rem,5vw,3rem)",
+          fontSize: "clamp(2.2rem,5vw,3.3rem)",
           fontWeight: 700,
           color: INK,
           margin: "0 0 0.4rem",
@@ -154,7 +154,7 @@ const SobreusTerms = ({ social, contato, navbar, sobreus }: any) => {
 
         <p style={{
           fontFamily: FONT,
-          fontSize: "0.95rem",
+          fontSize: "1.045rem",
           color: INK_SOFT,
           animation: "fadeUp 0.8s ease 0.2s both",
           marginTop: "0.5rem",
@@ -180,8 +180,8 @@ const SobreusTerms = ({ social, contato, navbar, sobreus }: any) => {
         }}>
           <span style={{
             fontFamily: FONT,
-            fontSize: "0.78rem",
-            fontWeight: 600,
+            fontSize: "0.858rem",
+            fontWeight: 700,
             color: INK_SOFT,
           }}>
             Documento legal
@@ -190,8 +190,8 @@ const SobreusTerms = ({ social, contato, navbar, sobreus }: any) => {
             {["Uso", "Responsabilidades", "Privacidade", "Contacto"].map((tag) => (
               <span key={tag} className="section-pill" style={{
                 fontFamily: FONT,
-                fontSize: "0.72rem",
-                fontWeight: 600,
+                fontSize: "0.792rem",
+                fontWeight: 700,
                 color: INK_SOFT,
                 border: `1px solid ${BORDER}`,
                 borderRadius: "100px",
@@ -216,7 +216,7 @@ const SobreusTerms = ({ social, contato, navbar, sobreus }: any) => {
               textAlign: "center",
               color: INK_SOFT,
               fontFamily: FONT,
-              fontSize: "0.95rem",
+              fontSize: "1.045rem",
               padding: "4rem 0",
             }}>
               Conteúdo não disponível.
@@ -236,8 +236,8 @@ const SobreusTerms = ({ social, contato, navbar, sobreus }: any) => {
           }}>
             <Link href="/sobreus" style={{
               fontFamily: FONT,
-              fontSize: "0.85rem",
-              fontWeight: 600,
+              fontSize: "0.935rem",
+              fontWeight: 700,
               color: INK_SOFT,
               textDecoration: "none",
             }}>
@@ -246,7 +246,7 @@ const SobreusTerms = ({ social, contato, navbar, sobreus }: any) => {
 
             <Link href="/sobreus/policy" style={{
               fontFamily: FONT,
-              fontSize: "0.85rem",
+              fontSize: "0.935rem",
               fontWeight: 700,
               color: INK,
               border: `1px solid ${BORDER}`,

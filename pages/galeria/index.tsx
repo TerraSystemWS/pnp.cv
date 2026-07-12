@@ -21,10 +21,10 @@ const Galeria = ({ social, contato, navbar, edicaoNum, galeriaGroups }: any) => 
 			<style>{`${FONT_IMPORT}`}</style>
 
 			<div style={{ background: BG_ALT, borderBottom: `1px solid ${BORDER}`, paddingTop: "6rem", paddingBottom: "3rem", textAlign: "center" }}>
-				<p style={{ fontFamily: FONT, fontSize: "0.8rem", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "1rem" }}>
+				<p style={{ fontFamily: FONT, fontSize: "0.88rem", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "1rem" }}>
 					Prémio Nacional de Publicidade
 				</p>
-				<h1 style={{ fontFamily: FONT, fontSize: "clamp(2.2rem,6vw,3.4rem)", fontWeight: 700, color: INK, margin: 0 }}>
+				<h1 style={{ fontFamily: FONT, fontSize: "clamp(2.42rem,6vw,3.74rem)", fontWeight: 700, color: INK, margin: 0 }}>
 					{edicaoNum ? `Galeria da ${edicaoNum}ª Edição` : "Galeria"}
 				</h1>
 			</div>
@@ -35,7 +35,7 @@ const Galeria = ({ social, contato, navbar, edicaoNum, galeriaGroups }: any) => 
 						<Gallery key={i} images={group.images} />
 					))
 				) : (
-					<p style={{ textAlign: "center", color: INK_SOFT, fontFamily: FONT, fontSize: "0.95rem", padding: "4rem 0" }}>
+					<p style={{ textAlign: "center", color: INK_SOFT, fontFamily: FONT, fontSize: "1.045rem", padding: "4rem 0" }}>
 						Sem imagens disponíveis.
 					</p>
 				)}

@@ -65,9 +65,9 @@ const Regulamentos = ({ social, contato, edicao, navbar }: any) => {
 
       {/* ── Hero ── */}
       <div style={{ background: BG, paddingTop: "6rem", paddingBottom: "3rem", textAlign: "center" }}>
-        <p style={{ fontFamily: FONT, fontSize: "0.8rem", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "1rem", animation: "fadeUp 0.6s ease both" }}>Prémio Nacional de Publicidade</p>
-        <h1 style={{ fontFamily: FONT, fontSize: "clamp(2.2rem,6vw,3.4rem)", fontWeight: 700, color: INK, margin: 0, animation: "fadeUp 0.7s ease 0.1s both" }}>Regulamento</h1>
-        {edicaoNum && <p style={{ fontFamily: FONT, fontSize: "0.95rem", color: INK_SOFT, marginTop: "0.8rem", animation: "fadeUp 0.8s ease 0.2s both" }}>{edicaoNum}ª Edição</p>}
+        <p style={{ fontFamily: FONT, fontSize: "0.88rem", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "1rem", animation: "fadeUp 0.6s ease both" }}>Prémio Nacional de Publicidade</p>
+        <h1 style={{ fontFamily: FONT, fontSize: "clamp(2.42rem,6vw,3.74rem)", fontWeight: 700, color: INK, margin: 0, animation: "fadeUp 0.7s ease 0.1s both" }}>Regulamento</h1>
+        {edicaoNum && <p style={{ fontFamily: FONT, fontSize: "1.045rem", color: INK_SOFT, marginTop: "0.8rem", animation: "fadeUp 0.8s ease 0.2s both" }}>{edicaoNum}ª Edição</p>}
       </div>
 
       {/* ── Tab selector ── */}
@@ -79,7 +79,7 @@ const Regulamentos = ({ social, contato, edicao, navbar }: any) => {
               onClick={() => setActiveTab(tab)}
               style={{
                 fontFamily: FONT,
-                fontSize: "0.9rem",
+                fontSize: "0.99rem",
                 fontWeight: 700,
                 padding: "1rem 1.5rem",
                 background: "transparent",
@@ -104,7 +104,7 @@ const Regulamentos = ({ social, contato, edicao, navbar }: any) => {
           {activeTab === "regulamentos" && RegulamentosData.map((r: any) => (
             <div key={r.id}>
               {r.titulo && (
-                <h2 style={{ fontFamily: FONT, fontSize: "1.4rem", fontWeight: 700, color: INK, marginBottom: "1.5rem", borderLeft: `3px solid ${GOLD}`, paddingLeft: "1rem" }}>
+                <h2 style={{ fontFamily: FONT, fontSize: "1.54rem", fontWeight: 700, color: INK, marginBottom: "1.5rem", borderLeft: `3px solid ${GOLD}`, paddingLeft: "1rem" }}>
                   {r.titulo}
                 </h2>
               )}
@@ -118,7 +118,7 @@ const Regulamentos = ({ social, contato, edicao, navbar }: any) => {
               {CategoriaData.map((cat: any) => (
                 <div key={cat.id} id={cat.slug} style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: "16px", padding: "2rem", position: "relative", overflow: "hidden" }}>
                   <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "3px", background: GOLD }} />
-                  <h2 style={{ fontFamily: FONT, fontSize: "1.25rem", fontWeight: 700, color: INK, marginBottom: "1.1rem" }}>
+                  <h2 style={{ fontFamily: FONT, fontSize: "1.375rem", fontWeight: 700, color: INK, marginBottom: "1.1rem" }}>
                     {cat.titulo}
                   </h2>
                   <div className="reg-content" dangerouslySetInnerHTML={{ __html: cat.html }} />
@@ -128,7 +128,7 @@ const Regulamentos = ({ social, contato, edicao, navbar }: any) => {
           )}
 
           {!edicao && (
-            <p style={{ fontFamily: FONT, color: INK_SOFT, textAlign: "center", fontSize: "0.95rem" }}>
+            <p style={{ fontFamily: FONT, color: INK_SOFT, textAlign: "center", fontSize: "1.045rem" }}>
               Sem dados de regulamento disponíveis.
             </p>
           )}

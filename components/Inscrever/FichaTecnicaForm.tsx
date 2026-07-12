@@ -87,7 +87,7 @@ const FichaTecnicaForm = forwardRef<FormHandle, Props>(
         <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
           {/* Categoria */}
           <div>
-            <label style={{ display: "flex", alignItems: "center", gap: "3px", fontFamily: "'DM Sans',sans-serif", fontSize: "0.8rem", fontWeight: 600, color: err("categoria") ? "#c0392b" : INK, marginBottom: "0.4rem", transition: "color 0.2s" }}>
+            <label style={{ display: "flex", alignItems: "center", gap: "3px", fontFamily: "'DM Sans',sans-serif", fontSize: "0.88rem", fontWeight: 700, color: err("categoria") ? "#c0392b" : INK, marginBottom: "0.4rem", transition: "color 0.2s" }}>
               Categoria de Prémio
               <span style={{ color: err("categoria") ? "#c0392b" : GOLD_DARK }}>*</span>
             </label>
@@ -104,7 +104,7 @@ const FichaTecnicaForm = forwardRef<FormHandle, Props>(
 
           {/* Nome do Projeto */}
           <div>
-            <label style={{ display: "flex", alignItems: "center", gap: "3px", fontFamily: "'DM Sans',sans-serif", fontSize: "0.8rem", fontWeight: 600, color: err("nome_projeto") ? "#c0392b" : INK, marginBottom: "0.4rem", transition: "color 0.2s" }}>
+            <label style={{ display: "flex", alignItems: "center", gap: "3px", fontFamily: "'DM Sans',sans-serif", fontSize: "0.88rem", fontWeight: 700, color: err("nome_projeto") ? "#c0392b" : INK, marginBottom: "0.4rem", transition: "color 0.2s" }}>
               Nome do Projeto
               <span style={{ color: err("nome_projeto") ? "#c0392b" : GOLD_DARK }}>*</span>
             </label>
@@ -118,7 +118,7 @@ const FichaTecnicaForm = forwardRef<FormHandle, Props>(
 
           {/* Conceito Criativo */}
           <div>
-            <label style={{ display: "block", fontFamily: "'DM Sans',sans-serif", fontSize: "0.8rem", fontWeight: 600, color: INK, marginBottom: "0.4rem" }}>
+            <label style={{ display: "block", fontFamily: "'DM Sans',sans-serif", fontSize: "0.88rem", fontWeight: 700, color: INK, marginBottom: "0.4rem" }}>
               Conceito Criativo
             </label>
             <textarea

@@ -26,11 +26,11 @@ const SectionPanel = ({ title, subtitle, children }: { title: string; subtitle?:
     <div style={{ display: "flex", alignItems: "flex-start", gap: "1rem", marginBottom: "1.75rem", paddingBottom: "1rem", borderBottom: `1px solid ${BORDER}` }}>
       <div style={{ width: "4px", height: "1.25rem", marginTop: "3px", background: GOLD, borderRadius: "2px", flexShrink: 0 }} />
       <div>
-        <h3 style={{ fontFamily: FONT, fontSize: "1.15rem", fontWeight: 700, color: INK, margin: 0 }}>
+        <h3 style={{ fontFamily: FONT, fontSize: "1.265rem", fontWeight: 700, color: INK, margin: 0 }}>
           {title}
         </h3>
         {subtitle && (
-          <p style={{ fontFamily: FONT, fontSize: "0.85rem", color: INK_SOFT, margin: "0.25rem 0 0" }}>
+          <p style={{ fontFamily: FONT, fontSize: "0.935rem", color: INK_SOFT, margin: "0.25rem 0 0" }}>
             {subtitle}
           </p>
         )}
@@ -44,10 +44,10 @@ const Field = ({ label, value }: { label: string; value?: string }) => {
   if (!value) return null
   return (
     <div style={{ marginBottom: "1.25rem" }}>
-      <p style={{ fontFamily: FONT, fontSize: "0.75rem", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, margin: "0 0 0.3rem" }}>
+      <p style={{ fontFamily: FONT, fontSize: "0.825rem", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, margin: "0 0 0.3rem" }}>
         {label}
       </p>
-      <p style={{ fontFamily: FONT, fontSize: "0.95rem", color: INK, margin: 0, lineHeight: 1.6 }}>
+      <p style={{ fontFamily: FONT, fontSize: "1.045rem", color: INK, margin: 0, lineHeight: 1.6 }}>
         {value}
       </p>
     </div>
@@ -69,7 +69,7 @@ const VpublicaDetalhes = ({ edicoes, social, contato, inscricao, navbar }: any) 
     return (
       <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
         <div style={{ background: BG, minHeight: "80vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <p style={{ fontFamily: FONT, color: INK_SOFT, fontSize: "0.95rem" }}>
+          <p style={{ fontFamily: FONT, color: INK_SOFT, fontSize: "1.045rem" }}>
             Projeto não encontrado.
           </p>
         </div>
@@ -174,19 +174,19 @@ const VpublicaDetalhes = ({ edicoes, social, contato, inscricao, navbar }: any) 
       {/* ── Hero ── */}
       <div style={{ background: BG_ALT, paddingTop: "6rem", paddingBottom: "3rem", textAlign: "center", borderBottom: `1px solid ${BORDER}` }}>
         <div style={{ animation: "fadeUp 0.5s ease both", marginBottom: "1.25rem" }}>
-          <Link href="/projetos" style={{ fontFamily: FONT, fontSize: "0.85rem", fontWeight: 600, color: INK_SOFT, textDecoration: "none" }}>
+          <Link href="/projetos" style={{ fontFamily: FONT, fontSize: "0.935rem", fontWeight: 700, color: INK_SOFT, textDecoration: "none" }}>
             ← Trabalhos Concorrentes
           </Link>
         </div>
 
-        <p style={{ fontFamily: FONT, fontSize: "0.8rem", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "1rem", animation: "fadeUp 0.6s ease 0.05s both" }}>
+        <p style={{ fontFamily: FONT, fontSize: "0.88rem", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "1rem", animation: "fadeUp 0.6s ease 0.05s both" }}>
           {attr.categoria || "Categoria"}
         </p>
-        <h1 style={{ fontFamily: FONT, fontSize: "clamp(1.8rem,4.5vw,3rem)", fontWeight: 700, color: INK, margin: "0 auto 0.5rem", maxWidth: "800px", padding: "0 2rem", animation: "fadeUp 0.7s ease 0.1s both" }}>
+        <h1 style={{ fontFamily: FONT, fontSize: "clamp(1.98rem,4.5vw,3.3rem)", fontWeight: 700, color: INK, margin: "0 auto 0.5rem", maxWidth: "800px", padding: "0 2rem", animation: "fadeUp 0.7s ease 0.1s both" }}>
           {attr.nome_projeto}
         </h1>
         {edicaoNum && (
-          <p style={{ fontFamily: FONT, fontSize: "0.9rem", color: INK_SOFT, animation: "fadeUp 0.8s ease 0.2s both" }}>
+          <p style={{ fontFamily: FONT, fontSize: "0.99rem", color: INK_SOFT, animation: "fadeUp 0.8s ease 0.2s both" }}>
             Concorrente da {edicaoNum}ª edição
           </p>
         )}
@@ -217,8 +217,8 @@ const VpublicaDetalhes = ({ edicoes, social, contato, inscricao, navbar }: any) 
             </div>
             {attr.con_criativo && (
               <div style={{ marginTop: "0.5rem", padding: "1.25rem 1.5rem", background: BG_ALT, border: `1px solid ${BORDER}`, borderRadius: "10px" }}>
-                <p style={{ fontFamily: FONT, fontSize: "0.75rem", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, margin: "0 0 0.5rem" }}>Conceito Criativo</p>
-                <p style={{ fontFamily: FONT, fontSize: "0.95rem", color: INK, margin: 0, lineHeight: 1.7 }}>{attr.con_criativo}</p>
+                <p style={{ fontFamily: FONT, fontSize: "0.825rem", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, margin: "0 0 0.5rem" }}>Conceito Criativo</p>
+                <p style={{ fontFamily: FONT, fontSize: "1.045rem", color: INK, margin: 0, lineHeight: 1.7 }}>{attr.con_criativo}</p>
               </div>
             )}
           </SectionPanel>
@@ -253,7 +253,7 @@ const VpublicaDetalhes = ({ edicoes, social, contato, inscricao, navbar }: any) 
                   const ext = value.titulo?.slice(-4).toLowerCase()
                   return (
                     <AccordionTab key={index} header={value.titulo}>
-                      <a href={url} target="_blank" rel="noreferrer" style={{ color: GOLD_DARK, fontSize: "0.88rem", fontWeight: 600 }}>[Abrir ficheiro]</a>
+                      <a href={url} target="_blank" rel="noreferrer" style={{ color: GOLD_DARK, fontSize: "0.968rem", fontWeight: 700 }}>[Abrir ficheiro]</a>
                       {ext === ".mp3" && <audio controls style={{ marginTop: "0.75rem", width: "100%" }}><source src={url} type="audio/mpeg" /></audio>}
                       {ext === ".mp4" && <video width="100%" controls style={{ marginTop: "0.75rem", borderRadius: "8px" }}><source src={url} type="video/mp4" /></video>}
                       {[".png", ".jpg", ".jpeg"].includes(ext) && (
@@ -274,7 +274,7 @@ const VpublicaDetalhes = ({ edicoes, social, contato, inscricao, navbar }: any) 
                 const ext = url.slice(-4).toLowerCase()
                 return (
                   <AccordionTab key={index} header={value.titulo}>
-                    <a href={url} target="_blank" rel="noreferrer" style={{ color: GOLD_DARK, fontSize: "0.88rem", fontWeight: 600 }}>[Abrir ficheiro]</a>
+                    <a href={url} target="_blank" rel="noreferrer" style={{ color: GOLD_DARK, fontSize: "0.968rem", fontWeight: 700 }}>[Abrir ficheiro]</a>
                     {ext === ".mp3" && <audio controls style={{ marginTop: "0.75rem", width: "100%" }}><source src={url} type="audio/mpeg" /></audio>}
                     {ext === ".mp4" && <video width="100%" controls style={{ marginTop: "0.75rem", borderRadius: "8px" }}><source src={url} type="video/mp4" /></video>}
                     {[".png", ".jpg", ".jpeg"].includes(ext) && (
@@ -289,7 +289,7 @@ const VpublicaDetalhes = ({ edicoes, social, contato, inscricao, navbar }: any) 
           {/* Avaliação do Júri — logged users only */}
           {!loading && user && (
             <SectionPanel title="Avaliação dos Jurados" subtitle="Notas por critério de cada jurado">
-              <p style={{ fontFamily: FONT, fontSize: "0.88rem", color: INK_SOFT, marginBottom: "1.25rem" }}>
+              <p style={{ fontFamily: FONT, fontSize: "0.968rem", color: INK_SOFT, marginBottom: "1.25rem" }}>
                 Categoria: <strong style={{ color: INK, fontWeight: 700 }}>{attr.categoria}</strong>
               </p>
               <Votacao
@@ -304,7 +304,7 @@ const VpublicaDetalhes = ({ edicoes, social, contato, inscricao, navbar }: any) 
           <SectionPanel title="Votação Pública" subtitle="Dê o seu voto a este trabalho">
             <form onSubmit={handleSubmit(onVotar)} style={{ maxWidth: "480px" }}>
               <div style={{ marginBottom: "1rem" }}>
-                <label style={{ fontFamily: FONT, fontSize: "0.8rem", fontWeight: 600, color: INK, display: "block", marginBottom: "0.5rem" }}>
+                <label style={{ fontFamily: FONT, fontSize: "0.88rem", fontWeight: 700, color: INK, display: "block", marginBottom: "0.5rem" }}>
                   Nome Completo
                 </label>
                 <input
@@ -315,7 +315,7 @@ const VpublicaDetalhes = ({ edicoes, social, contato, inscricao, navbar }: any) 
                 />
               </div>
               <div style={{ marginBottom: "1.5rem" }}>
-                <label style={{ fontFamily: FONT, fontSize: "0.8rem", fontWeight: 600, color: INK, display: "block", marginBottom: "0.5rem" }}>
+                <label style={{ fontFamily: FONT, fontSize: "0.88rem", fontWeight: 700, color: INK, display: "block", marginBottom: "0.5rem" }}>
                   Email
                 </label>
                 <input
@@ -324,7 +324,7 @@ const VpublicaDetalhes = ({ edicoes, social, contato, inscricao, navbar }: any) 
                   placeholder="exemplo@email.com"
                   {...register("email", { required: true })}
                 />
-                {errors.email && <span style={{ fontFamily: FONT, fontSize: "0.8rem", color: "#c0392b" }}>O email é obrigatório.</span>}
+                {errors.email && <span style={{ fontFamily: FONT, fontSize: "0.88rem", color: "#c0392b" }}>O email é obrigatório.</span>}
               </div>
 
               <button
@@ -332,7 +332,7 @@ const VpublicaDetalhes = ({ edicoes, social, contato, inscricao, navbar }: any) 
                 disabled={isBlock}
                 style={{
                   fontFamily: FONT,
-                  fontSize: "0.85rem",
+                  fontSize: "0.935rem",
                   fontWeight: 700,
                   color: isBlock ? INK_SOFT : INK,
                   background: isBlock ? BG_ALT : GOLD,

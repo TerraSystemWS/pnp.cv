@@ -94,7 +94,7 @@ const CONTATOS = ({ social, contato, navbar }: any) => {
       }}>
         <p style={{
           fontFamily: FONT,
-          fontSize: "0.8rem",
+          fontSize: "0.88rem",
           letterSpacing: "0.08em",
           textTransform: "uppercase",
           fontWeight: 700,
@@ -107,7 +107,7 @@ const CONTATOS = ({ social, contato, navbar }: any) => {
 
         <h1 style={{
           fontFamily: FONT,
-          fontSize: "clamp(2.2rem, 6vw, 3.4rem)",
+          fontSize: "clamp(2.42rem, 6vw, 3.74rem)",
           fontWeight: 700,
           color: INK,
           margin: 0,
@@ -118,7 +118,7 @@ const CONTATOS = ({ social, contato, navbar }: any) => {
 
         <p style={{
           fontFamily: FONT,
-          fontSize: "1rem",
+          fontSize: "1.1rem",
           color: INK_SOFT,
           marginTop: "1rem",
           animation: "fadeUp 0.8s ease 0.2s both",
@@ -170,8 +170,8 @@ const CONTATOS = ({ social, contato, navbar }: any) => {
                   display: "flex", alignItems: "center", justifyContent: "center",
                   color: INK_SOFT,
                   fontFamily: FONT,
-                  fontSize: "1rem",
-                  fontWeight: 600,
+                  fontSize: "1.1rem",
+                  fontWeight: 700,
                 }}>
                   Mapa indisponível
                 </div>
@@ -189,30 +189,30 @@ const CONTATOS = ({ social, contato, navbar }: any) => {
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "1rem" }}>
               {attrs?.Local && (
                 <div className="ct-info-card">
-                  <p style={{ fontFamily: FONT, fontSize: "0.75rem", letterSpacing: "0.06em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "0.6rem" }}>
+                  <p style={{ fontFamily: FONT, fontSize: "0.825rem", letterSpacing: "0.06em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "0.6rem" }}>
                     Endereço
                   </p>
-                  <p style={{ fontFamily: FONT, fontSize: "0.9rem", color: INK, lineHeight: 1.6 }}>
+                  <p style={{ fontFamily: FONT, fontSize: "0.99rem", color: INK, lineHeight: 1.6 }}>
                     {attrs.Local}
                   </p>
                 </div>
               )}
               {attrs?.email && (
                 <div className="ct-info-card">
-                  <p style={{ fontFamily: FONT, fontSize: "0.75rem", letterSpacing: "0.06em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "0.6rem" }}>
+                  <p style={{ fontFamily: FONT, fontSize: "0.825rem", letterSpacing: "0.06em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "0.6rem" }}>
                     Email
                   </p>
-                  <a href={`mailto:${attrs.email}`} style={{ fontFamily: FONT, fontSize: "0.9rem", color: INK, textDecoration: "none", lineHeight: 1.6, wordBreak: "break-all" }}>
+                  <a href={`mailto:${attrs.email}`} style={{ fontFamily: FONT, fontSize: "0.99rem", color: INK, textDecoration: "none", lineHeight: 1.6, wordBreak: "break-all" }}>
                     {attrs.email}
                   </a>
                 </div>
               )}
               {attrs?.phone && (
                 <div className="ct-info-card">
-                  <p style={{ fontFamily: FONT, fontSize: "0.75rem", letterSpacing: "0.06em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "0.6rem" }}>
+                  <p style={{ fontFamily: FONT, fontSize: "0.825rem", letterSpacing: "0.06em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "0.6rem" }}>
                     Telefone
                   </p>
-                  <p style={{ fontFamily: FONT, fontSize: "0.9rem", color: INK, lineHeight: 1.6 }}>
+                  <p style={{ fontFamily: FONT, fontSize: "0.99rem", color: INK, lineHeight: 1.6 }}>
                     {attrs.phone}
                   </p>
                 </div>
@@ -239,7 +239,7 @@ const CONTATOS = ({ social, contato, navbar }: any) => {
 
             <p style={{
               fontFamily: FONT,
-              fontSize: "0.8rem",
+              fontSize: "0.88rem",
               letterSpacing: "0.06em",
               textTransform: "uppercase",
               fontWeight: 700,
@@ -250,7 +250,7 @@ const CONTATOS = ({ social, contato, navbar }: any) => {
             </p>
             <h2 style={{
               fontFamily: FONT,
-              fontSize: "1.7rem",
+              fontSize: "1.87rem",
               fontWeight: 700,
               color: INK,
               marginBottom: "0.4rem",
@@ -259,7 +259,7 @@ const CONTATOS = ({ social, contato, navbar }: any) => {
             </h2>
             <p style={{
               fontFamily: FONT,
-              fontSize: "0.9rem",
+              fontSize: "0.99rem",
               color: INK_SOFT,
               lineHeight: 1.6,
               marginBottom: "2rem",
@@ -269,7 +269,7 @@ const CONTATOS = ({ social, contato, navbar }: any) => {
 
             <form onSubmit={handleSubmit(onSubmit)}>
               {/* Nome */}
-              <label style={{ display: "block", fontFamily: FONT, fontSize: "0.8rem", fontWeight: 600, color: INK, marginBottom: "7px" }}>
+              <label style={{ display: "block", fontFamily: FONT, fontSize: "0.88rem", fontWeight: 700, color: INK, marginBottom: "7px" }}>
                 Nome
               </label>
               <input
@@ -277,13 +277,13 @@ const CONTATOS = ({ social, contato, navbar }: any) => {
                 className="ct-input"
                 placeholder="O seu nome"
                 {...register("name", { required: "Nome é obrigatório" })}
-                style={{ width: "100%", background: BG, border: `1px solid ${BORDER}`, borderRadius: "9px", padding: "11px 14px", fontSize: "0.92rem", color: INK, fontFamily: FONT, transition: "border-color 0.2s", marginBottom: "0.25rem", boxSizing: "border-box" }}
+                style={{ width: "100%", background: BG, border: `1px solid ${BORDER}`, borderRadius: "9px", padding: "11px 14px", fontSize: "1.012rem", color: INK, fontFamily: FONT, transition: "border-color 0.2s", marginBottom: "0.25rem", boxSizing: "border-box" }}
               />
-              {errors.name && <p style={{ color: "#c0392b", fontSize: "0.78rem", marginBottom: "0.8rem" }}>{errors.name.message}</p>}
+              {errors.name && <p style={{ color: "#c0392b", fontSize: "0.858rem", marginBottom: "0.8rem" }}>{errors.name.message}</p>}
               {!errors.name && <div style={{ marginBottom: "1rem" }} />}
 
               {/* Email */}
-              <label style={{ display: "block", fontFamily: FONT, fontSize: "0.8rem", fontWeight: 600, color: INK, marginBottom: "7px" }}>
+              <label style={{ display: "block", fontFamily: FONT, fontSize: "0.88rem", fontWeight: 700, color: INK, marginBottom: "7px" }}>
                 Email
               </label>
               <input
@@ -291,13 +291,13 @@ const CONTATOS = ({ social, contato, navbar }: any) => {
                 className="ct-input"
                 placeholder="email@exemplo.com"
                 {...register("email", { required: "Email é obrigatório" })}
-                style={{ width: "100%", background: BG, border: `1px solid ${BORDER}`, borderRadius: "9px", padding: "11px 14px", fontSize: "0.92rem", color: INK, fontFamily: FONT, transition: "border-color 0.2s", marginBottom: "0.25rem", boxSizing: "border-box" }}
+                style={{ width: "100%", background: BG, border: `1px solid ${BORDER}`, borderRadius: "9px", padding: "11px 14px", fontSize: "1.012rem", color: INK, fontFamily: FONT, transition: "border-color 0.2s", marginBottom: "0.25rem", boxSizing: "border-box" }}
               />
-              {errors.email && <p style={{ color: "#c0392b", fontSize: "0.78rem", marginBottom: "0.8rem" }}>{errors.email.message}</p>}
+              {errors.email && <p style={{ color: "#c0392b", fontSize: "0.858rem", marginBottom: "0.8rem" }}>{errors.email.message}</p>}
               {!errors.email && <div style={{ marginBottom: "1rem" }} />}
 
               {/* Mensagem */}
-              <label style={{ display: "block", fontFamily: FONT, fontSize: "0.8rem", fontWeight: 600, color: INK, marginBottom: "7px" }}>
+              <label style={{ display: "block", fontFamily: FONT, fontSize: "0.88rem", fontWeight: 700, color: INK, marginBottom: "7px" }}>
                 Mensagem
               </label>
               <textarea
@@ -305,9 +305,9 @@ const CONTATOS = ({ social, contato, navbar }: any) => {
                 placeholder="A sua mensagem..."
                 rows={5}
                 {...register("message", { required: "Mensagem é obrigatória" })}
-                style={{ width: "100%", background: BG, border: `1px solid ${BORDER}`, borderRadius: "9px", padding: "11px 14px", fontSize: "0.92rem", color: INK, fontFamily: FONT, transition: "border-color 0.2s", resize: "vertical", marginBottom: "0.25rem", boxSizing: "border-box" }}
+                style={{ width: "100%", background: BG, border: `1px solid ${BORDER}`, borderRadius: "9px", padding: "11px 14px", fontSize: "1.012rem", color: INK, fontFamily: FONT, transition: "border-color 0.2s", resize: "vertical", marginBottom: "0.25rem", boxSizing: "border-box" }}
               />
-              {errors.message && <p style={{ color: "#c0392b", fontSize: "0.78rem", marginBottom: "0.8rem" }}>{errors.message.message}</p>}
+              {errors.message && <p style={{ color: "#c0392b", fontSize: "0.858rem", marginBottom: "0.8rem" }}>{errors.message.message}</p>}
               {!errors.message && <div style={{ marginBottom: "1.25rem" }} />}
 
               {/* Submit */}
@@ -321,7 +321,7 @@ const CONTATOS = ({ social, contato, navbar }: any) => {
                   borderRadius: "10px",
                   padding: "13px",
                   fontFamily: FONT,
-                  fontSize: "0.9rem",
+                  fontSize: "0.99rem",
                   color: INK,
                   fontWeight: 700,
                   cursor: "pointer",
@@ -335,8 +335,8 @@ const CONTATOS = ({ social, contato, navbar }: any) => {
                 <p style={{
                   marginTop: "1rem",
                   fontFamily: FONT,
-                  fontSize: "0.85rem",
-                  fontWeight: 600,
+                  fontSize: "0.935rem",
+                  fontWeight: 700,
                   color: statusOk ? GOLD_DARK : "#c0392b",
                   textAlign: "center",
                 }}>
@@ -344,7 +344,7 @@ const CONTATOS = ({ social, contato, navbar }: any) => {
                 </p>
               )}
 
-              <p style={{ marginTop: "1.2rem", fontFamily: FONT, fontSize: "0.78rem", color: INK_SOFT, textAlign: "center" }}>
+              <p style={{ marginTop: "1.2rem", fontFamily: FONT, fontSize: "0.858rem", color: INK_SOFT, textAlign: "center" }}>
                 Os seus dados são privados e protegidos.
               </p>
             </form>

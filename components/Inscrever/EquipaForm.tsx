@@ -104,7 +104,7 @@ const EquipaForm = forwardRef<FormHandle, Props>(
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem" }}>
           {TEAM_FIELDS.map((f) => (
             <div key={f.name}>
-              <label style={{ display: "flex", alignItems: "center", gap: "3px", fontFamily: "'DM Sans',sans-serif", fontSize: "0.8rem", fontWeight: 600, color: highlighted.has(f.name) ? "#c0392b" : INK, marginBottom: "0.4rem", transition: "color 0.2s" }}>
+              <label style={{ display: "flex", alignItems: "center", gap: "3px", fontFamily: "'DM Sans',sans-serif", fontSize: "0.88rem", fontWeight: 700, color: highlighted.has(f.name) ? "#c0392b" : INK, marginBottom: "0.4rem", transition: "color 0.2s" }}>
                 {f.label}
                 {f.required && <span style={{ color: highlighted.has(f.name) ? "#c0392b" : GOLD_DARK }}>*</span>}
               </label>
@@ -117,7 +117,7 @@ const EquipaForm = forwardRef<FormHandle, Props>(
           ))}
 
           <div style={{ gridColumn: "span 2" }}>
-            <label style={{ display: "block", fontFamily: "'DM Sans',sans-serif", fontSize: "0.8rem", fontWeight: 600, color: INK, marginBottom: "0.4rem" }}>
+            <label style={{ display: "block", fontFamily: "'DM Sans',sans-serif", fontSize: "0.88rem", fontWeight: 700, color: INK, marginBottom: "0.4rem" }}>
               Considerações Adicionais
             </label>
             <textarea rows={3} className="pnp-eq-input" style={{ resize: "vertical" }} {...register("outras_consideracoes")} />
@@ -125,7 +125,7 @@ const EquipaForm = forwardRef<FormHandle, Props>(
 
           {DATE_FIELDS.map((f) => (
             <div key={f.name}>
-              <label style={{ display: "block", fontFamily: "'DM Sans',sans-serif", fontSize: "0.8rem", fontWeight: 600, color: INK, marginBottom: "0.4rem" }}>
+              <label style={{ display: "block", fontFamily: "'DM Sans',sans-serif", fontSize: "0.88rem", fontWeight: 700, color: INK, marginBottom: "0.4rem" }}>
                 {f.label}
               </label>
               <input type="date" className="pnp-eq-input" {...register(f.name)} />

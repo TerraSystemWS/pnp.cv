@@ -168,7 +168,7 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
               borderRadius: "100px",
               padding: "5px 20px",
               fontFamily: FONT,
-              fontSize: "0.75rem",
+              fontSize: "0.825rem",
               letterSpacing: "0.08em",
               textTransform: "uppercase",
               fontWeight: 700,
@@ -183,7 +183,7 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
 
           <h1 style={{
             fontFamily: FONT,
-            fontSize: "clamp(2.4rem, 7vw, 4.6rem)",
+            fontSize: "clamp(2.64rem, 7vw, 5.06rem)",
             fontWeight: 700,
             lineHeight: 1.15,
             color: "#ffffff",
@@ -205,7 +205,7 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
 
           <p style={{
             fontFamily: FONT,
-            fontSize: "clamp(0.95rem, 2vw, 1.1rem)",
+            fontSize: "clamp(1.045rem, 2vw, 1.21rem)",
             color: "rgba(255,255,255,0.85)",
             maxWidth: "480px",
             lineHeight: 1.6,
@@ -224,7 +224,7 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
               borderRadius: "100px",
               padding: "13px 32px",
               fontFamily: FONT,
-              fontSize: "0.9rem",
+              fontSize: "0.99rem",
               color: INK,
               fontWeight: 700,
               cursor: "pointer",
@@ -240,7 +240,7 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
               borderRadius: "100px",
               padding: "13px 32px",
               fontFamily: FONT,
-              fontSize: "0.9rem",
+              fontSize: "0.99rem",
               color: "#fff",
               fontWeight: 700,
               cursor: "pointer",
@@ -277,7 +277,7 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
           display: "flex", flexDirection: "column", alignItems: "center", gap: "6px",
           animation: "scrollBob 2s ease-in-out infinite",
         }}>
-          <span style={{ fontFamily: FONT, fontSize: "0.65rem", letterSpacing: "0.1em", color: "rgba(255,255,255,0.7)", textTransform: "uppercase", fontWeight: 600 }}>Scroll</span>
+          <span style={{ fontFamily: FONT, fontSize: "0.715rem", letterSpacing: "0.1em", color: "rgba(255,255,255,0.7)", textTransform: "uppercase", fontWeight: 700 }}>Scroll</span>
           <div style={{ width: "1px", height: "28px", background: "linear-gradient(to bottom, rgba(255,255,255,0.7), transparent)" }} />
         </div>
       </div>
@@ -291,12 +291,12 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
 
           {/* Left — quote */}
           <div>
-            <p style={{ fontFamily: FONT, fontSize: "0.8rem", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "1.2rem" }}>
+            <p style={{ fontFamily: FONT, fontSize: "0.88rem", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "1.2rem" }}>
               A Nossa Missão
             </p>
             <blockquote style={{
               fontFamily: FONT,
-              fontSize: "clamp(1.5rem, 3vw, 2rem)",
+              fontSize: "clamp(1.65rem, 3vw, 2.2rem)",
               fontWeight: 700,
               lineHeight: 1.35,
               color: INK,
@@ -312,7 +312,7 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
           <div>
             <p style={{
               fontFamily: FONT,
-              fontSize: "1rem",
+              fontSize: "1.1rem",
               lineHeight: 1.8,
               color: INK_SOFT,
               marginBottom: "2.5rem",
@@ -332,10 +332,10 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
                   { num: Juris.length || "—", label: "Jurados" },
                 ].map(({ num, label }) => (
                   <div key={label}>
-                    <p style={{ fontFamily: FONT, fontSize: "2.2rem", fontWeight: 700, color: GOLD_DARK, lineHeight: 1, marginBottom: "4px" }}>
+                    <p style={{ fontFamily: FONT, fontSize: "2.42rem", fontWeight: 700, color: GOLD_DARK, lineHeight: 1, marginBottom: "4px" }}>
                       {num}
                     </p>
-                    <p style={{ fontFamily: FONT, fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.04em", color: INK_SOFT }}>
+                    <p style={{ fontFamily: FONT, fontSize: "0.858rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.04em", color: INK_SOFT }}>
                       {label}
                     </p>
                   </div>
@@ -354,12 +354,12 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
           <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "0 2rem" }}>
             {/* Section header */}
             <div style={{ textAlign: "center", marginBottom: "3rem" }}>
-              <p style={{ fontFamily: FONT, fontSize: "0.8rem", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "0.8rem" }}>
+              <p style={{ fontFamily: FONT, fontSize: "0.88rem", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "0.8rem" }}>
                 Competição
               </p>
               <h2 style={{
                 fontFamily: FONT,
-                fontSize: "clamp(1.8rem, 4vw, 2.6rem)",
+                fontSize: "clamp(1.98rem, 4vw, 2.86rem)",
                 fontWeight: 700,
                 color: INK,
                 margin: 0,
@@ -414,7 +414,7 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
                           style={{ width: "100%", height: "100%", objectFit: "cover" }}
                         />
                       ) : (
-                        <span style={{ fontFamily: FONT, fontWeight: 700, color: GOLD_DARK, fontSize: "1rem" }}>
+                        <span style={{ fontFamily: FONT, fontWeight: 700, color: GOLD_DARK, fontSize: "1.1rem" }}>
                           {String(i + 1).padStart(2, "0")}
                         </span>
                       )}
@@ -422,7 +422,7 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
 
                     <p className="hp-cat-title" style={{
                       fontFamily: FONT,
-                      fontSize: "0.9rem",
+                      fontSize: "0.99rem",
                       fontWeight: 700,
                       color: INK,
                       lineHeight: 1.3,
@@ -444,12 +444,12 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
       ══════════════════════════════════════════ */}
       <div style={{ background: BG }}>
         <div style={{ maxWidth: "900px", margin: "0 auto", padding: "5rem 2rem", textAlign: "center" }}>
-          <p style={{ fontFamily: FONT, fontSize: "0.8rem", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "1rem" }}>
+          <p style={{ fontFamily: FONT, fontSize: "0.88rem", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "1rem" }}>
             Voto Popular
           </p>
           <h2 style={{
             fontFamily: FONT,
-            fontSize: "clamp(1.8rem, 4vw, 2.6rem)",
+            fontSize: "clamp(1.98rem, 4vw, 2.86rem)",
             fontWeight: 700,
             color: INK,
             marginBottom: "1.25rem",
@@ -458,7 +458,7 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
           </h2>
           <p style={{
             fontFamily: FONT,
-            fontSize: "1rem",
+            fontSize: "1.1rem",
             lineHeight: 1.8,
             color: INK_SOFT,
             maxWidth: "640px",
@@ -479,7 +479,7 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
             background: BG_ALT,
             marginBottom: "2rem",
           }}>
-            <span style={{ fontFamily: FONT, fontSize: "0.85rem", fontWeight: 600, color: INK_SOFT }}>
+            <span style={{ fontFamily: FONT, fontSize: "0.935rem", fontWeight: 700, color: INK_SOFT }}>
               ⏳ Disponível apenas durante o período de votação
             </span>
           </div>
@@ -491,7 +491,7 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
             borderRadius: "100px",
             padding: "14px 36px",
             fontFamily: FONT,
-            fontSize: "0.9rem",
+            fontSize: "0.99rem",
             color: INK,
             fontWeight: 700,
             cursor: "pointer",
@@ -513,12 +513,12 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
           <div style={{ maxWidth: "1200px", margin: "0 auto 2.5rem", padding: "0 2rem" }}>
             <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem" }}>
               <div>
-                <p style={{ fontFamily: FONT, fontSize: "0.8rem", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "0.6rem" }}>
+                <p style={{ fontFamily: FONT, fontSize: "0.88rem", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "0.6rem" }}>
                   Avaliação
                 </p>
                 <h2 style={{
                   fontFamily: FONT,
-                  fontSize: "clamp(1.8rem, 4vw, 2.6rem)",
+                  fontSize: "clamp(1.98rem, 4vw, 2.86rem)",
                   fontWeight: 700,
                   color: INK,
                   margin: 0,
@@ -572,7 +572,7 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
                   <div style={{ padding: "1.1rem 1.25rem 1.4rem" }}>
                     <h3 style={{
                       fontFamily: FONT,
-                      fontSize: "1.05rem",
+                      fontSize: "1.155rem",
                       fontWeight: 700,
                       color: hovJuri === i ? GOLD_DARK : INK,
                       margin: "0 0 4px",
@@ -585,7 +585,7 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
                     </h3>
                     <p style={{
                       fontFamily: FONT,
-                      fontSize: "0.75rem",
+                      fontSize: "0.825rem",
                       letterSpacing: "0.04em",
                       textTransform: "uppercase",
                       fontWeight: 700,
@@ -597,7 +597,7 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
                     {juriDescs[j.idd] && (
                       <p style={{
                         fontFamily: FONT,
-                        fontSize: "0.85rem",
+                        fontSize: "0.935rem",
                         color: INK_SOFT,
                         lineHeight: 1.6,
                         margin: 0,
@@ -624,13 +624,13 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
         textAlign: "center",
       }}>
         <div style={{ position: "relative" }}>
-          <p style={{ fontFamily: FONT, fontSize: "0.8rem", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700, color: GOLD_BRIGHT, marginBottom: "1.2rem" }}>
+          <p style={{ fontFamily: FONT, fontSize: "0.88rem", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700, color: GOLD_BRIGHT, marginBottom: "1.2rem" }}>
             Participe
           </p>
 
           <h2 style={{
             fontFamily: FONT,
-            fontSize: "clamp(2rem, 5vw, 3.2rem)",
+            fontSize: "clamp(2.2rem, 5vw, 3.52rem)",
             fontWeight: 700,
             lineHeight: 1.15,
             color: "#ffffff",
@@ -642,7 +642,7 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
 
           <p style={{
             fontFamily: FONT,
-            fontSize: "1rem",
+            fontSize: "1.1rem",
             color: "rgba(255,255,255,0.75)",
             marginTop: "1.5rem",
             marginBottom: "2.5rem",
@@ -657,7 +657,7 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
               borderRadius: "100px",
               padding: "14px 40px",
               fontFamily: FONT,
-              fontSize: "0.9rem",
+              fontSize: "0.99rem",
               color: INK,
               fontWeight: 700,
               cursor: "pointer",
@@ -674,7 +674,7 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
               borderRadius: "100px",
               padding: "14px 40px",
               fontFamily: FONT,
-              fontSize: "0.9rem",
+              fontSize: "0.99rem",
               color: "#fff",
               fontWeight: 700,
               textDecoration: "none",

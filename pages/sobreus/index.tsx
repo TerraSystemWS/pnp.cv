@@ -64,13 +64,13 @@ const Sobreus = ({ social, contato, navbar, sobreus }: any) => {
 
       {/* ── Hero ── */}
       <div style={{ background: BG_ALT, paddingTop: "6rem", paddingBottom: "3rem", textAlign: "center", borderBottom: `1px solid ${BORDER}` }}>
-        <p style={{ fontFamily: FONT, fontSize: "0.8rem", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "1rem", animation: "fadeUp 0.6s ease both" }}>
+        <p style={{ fontFamily: FONT, fontSize: "0.88rem", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "1rem", animation: "fadeUp 0.6s ease both" }}>
           Prémio Nacional de Publicidade
         </p>
-        <h1 style={{ fontFamily: FONT, fontSize: "clamp(2.2rem,6vw,3.4rem)", fontWeight: 700, color: INK, margin: 0, animation: "fadeUp 0.7s ease 0.1s both" }}>
+        <h1 style={{ fontFamily: FONT, fontSize: "clamp(2.42rem,6vw,3.74rem)", fontWeight: 700, color: INK, margin: 0, animation: "fadeUp 0.7s ease 0.1s both" }}>
           Sobre Nós
         </h1>
-        <p style={{ fontFamily: FONT, fontSize: "1rem", color: INK_SOFT, marginTop: "1rem", animation: "fadeUp 0.8s ease 0.2s both" }}>
+        <p style={{ fontFamily: FONT, fontSize: "1.1rem", color: INK_SOFT, marginTop: "1rem", animation: "fadeUp 0.8s ease 0.2s both" }}>
           Conheça o propósito e a missão por detrás do PNP.
         </p>
       </div>
@@ -82,7 +82,7 @@ const Sobreus = ({ social, contato, navbar, sobreus }: any) => {
           {html ? (
             <div className="sob-content" dangerouslySetInnerHTML={{ __html: html }} />
           ) : (
-            <p style={{ textAlign: "center", color: INK_SOFT, fontFamily: FONT, fontSize: "0.95rem" }}>
+            <p style={{ textAlign: "center", color: INK_SOFT, fontFamily: FONT, fontSize: "1.045rem" }}>
               Conteúdo não disponível.
             </p>
           )}
@@ -95,7 +95,7 @@ const Sobreus = ({ social, contato, navbar, sobreus }: any) => {
             ].map((l) => (
               <Link key={l.href} href={l.href} style={{
                 fontFamily: FONT,
-                fontSize: "0.85rem",
+                fontSize: "0.935rem",
                 fontWeight: 700,
                 color: INK,
                 border: `1px solid ${BORDER}`,

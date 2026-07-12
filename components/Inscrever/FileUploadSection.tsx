@@ -134,7 +134,7 @@ export default function FileUploadSection({ cid, apiLink, existingFiles, onFiles
       {/* Existing files table */}
       {existingFiles.length > 0 && (
         <div>
-          <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.8rem", fontWeight: 700, color: GOLD_DARK, marginBottom: "0.75rem" }}>
+          <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.88rem", fontWeight: 700, color: GOLD_DARK, marginBottom: "0.75rem" }}>
             Ficheiros Submetidos ({existingFiles.length})
           </p>
           <div style={{ border: `1px solid ${BORDER}`, borderRadius: "10px", overflow: "hidden" }}>
@@ -155,7 +155,7 @@ export default function FileUploadSection({ cid, apiLink, existingFiles, onFiles
                     <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" stroke={GOLD_DARK} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                     <path d="M14 2v6h6" stroke={GOLD_DARK} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
-                  <span style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.9rem", color: INK }}>
+                  <span style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.99rem", color: INK }}>
                     {f.titulo}
                   </span>
                 </div>
@@ -163,7 +163,7 @@ export default function FileUploadSection({ cid, apiLink, existingFiles, onFiles
                   href={`${apiLink}${f.ficheiro.data?.attributes?.url}`}
                   target="_blank"
                   rel="noreferrer"
-                  style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.78rem", fontWeight: 600, color: INK, textDecoration: "none", padding: "4px 12px", border: `1px solid ${BORDER}`, borderRadius: "100px" }}
+                  style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.858rem", fontWeight: 700, color: INK, textDecoration: "none", padding: "4px 12px", border: `1px solid ${BORDER}`, borderRadius: "100px" }}
                 >
                   Abrir
                 </a>
@@ -175,7 +175,7 @@ export default function FileUploadSection({ cid, apiLink, existingFiles, onFiles
 
       {/* Upload zone */}
       <div>
-        <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.8rem", fontWeight: 700, color: GOLD_DARK, marginBottom: "0.75rem" }}>
+        <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.88rem", fontWeight: 700, color: GOLD_DARK, marginBottom: "0.75rem" }}>
           Adicionar Ficheiros
         </p>
 
@@ -201,10 +201,10 @@ export default function FileUploadSection({ cid, apiLink, existingFiles, onFiles
             <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" stroke={GOLD_DARK} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
           <div style={{ textAlign: "center" }}>
-            <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.9rem", color: INK, margin: "0 0 0.25rem" }}>
+            <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.99rem", color: INK, margin: "0 0 0.25rem" }}>
               Arraste ficheiros ou <span style={{ color: GOLD_DARK, textDecoration: "underline" }}>clique para selecionar</span>
             </p>
-            <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.78rem", color: INK_SOFT, margin: 0 }}>
+            <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.858rem", color: INK_SOFT, margin: 0 }}>
               PNG, JPG, PDF, MP3, AAC, MP4
             </p>
           </div>
@@ -219,7 +219,7 @@ export default function FileUploadSection({ cid, apiLink, existingFiles, onFiles
 
         {/* Obs */}
         <div style={{ marginTop: "1rem", padding: "1rem 1.25rem", background: BG_ALT, border: `1px solid ${BORDER}`, borderRadius: "8px" }}>
-          <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.85rem", color: INK, margin: "0 0 0.4rem", fontWeight: 700 }}>
+          <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.935rem", color: INK, margin: "0 0 0.4rem", fontWeight: 700 }}>
             Documentos obrigatórios:
           </p>
           {[
@@ -228,7 +228,7 @@ export default function FileUploadSection({ cid, apiLink, existingFiles, onFiles
             "BI, NIF e certificado de matrícula (estudante universitário)",
             "Comprovativo de pagamento e ficha técnica do trabalho",
           ].map((item, i) => (
-            <p key={i} style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.85rem", color: INK_SOFT, margin: "0.3rem 0 0", display: "flex", gap: "0.5rem" }}>
+            <p key={i} style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.935rem", color: INK_SOFT, margin: "0.3rem 0 0", display: "flex", gap: "0.5rem" }}>
               <span style={{ color: GOLD_DARK, flexShrink: 0 }}>·</span> {item}
             </p>
           ))}
@@ -238,14 +238,14 @@ export default function FileUploadSection({ cid, apiLink, existingFiles, onFiles
       {/* Upload progress */}
       {uploading.length > 0 && (
         <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-          <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.8rem", fontWeight: 700, color: GOLD_DARK, margin: 0 }}>
+          <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.88rem", fontWeight: 700, color: GOLD_DARK, margin: 0 }}>
             A enviar…
           </p>
           {uploading.map((f, i) => (
             <div key={i}>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.3rem" }}>
-                <span style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.88rem", color: INK }}>{f.name}</span>
-                <span style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.82rem", fontWeight: 600, color: f.status === "error" ? "#c0392b" : f.status === "done" ? GOLD_DARK : INK_SOFT }}>
+                <span style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.968rem", color: INK }}>{f.name}</span>
+                <span style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.902rem", fontWeight: 700, color: f.status === "error" ? "#c0392b" : f.status === "done" ? GOLD_DARK : INK_SOFT }}>
                   {f.status === "error" ? "Erro" : f.status === "done" ? "✓ Concluído" : `${f.progress}%`}
                 </span>
               </div>
