@@ -9,6 +9,7 @@ import { v4 as uuidv4 } from "uuid"
 import Swal from "sweetalert2"
 import { useFetchUser } from "../../lib/authContext"
 import { useMemo } from "react"
+import { GOLD, GOLD_DARK, INK, INK_SOFT, BG, BG_ALT, CARD, BORDER, FONT, FONT_IMPORT } from "../../lib/theme"
 
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
 
@@ -142,18 +143,13 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
       <Head>
         <title>Inscrição — Prémio Nacional De Publicidade</title>
         <meta name="description" content="Candidatura ao Prémio Nacional de Publicidade de Cabo Verde." />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet" />
       </Head>
 
-      <style jsx global>{`
-        @keyframes goldShimmer {
-          0%   { background-position: -300% center; }
-          100% { background-position:  300% center; }
-        }
+      <style>{`
+        ${FONT_IMPORT}
+
         @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(28px); }
+          from { opacity: 0; transform: translateY(24px); }
           to   { opacity: 1; transform: translateY(0);    }
         }
         @keyframes fadeIn {
@@ -161,183 +157,116 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
           to   { opacity: 1; }
         }
         @keyframes pulseGold {
-          0%, 100% { opacity: 0.4; }
-          50%       { opacity: 0.8; }
+          0%, 100% { opacity: 0.5; }
+          50%       { opacity: 1; }
         }
 
         .pnp-page {
-          background: #080604;
+          background: ${BG};
           min-height: 100vh;
-          font-family: 'DM Sans', sans-serif;
-          position: relative;
-          overflow-x: hidden;
+          font-family: ${FONT};
         }
 
-        /* grain */
-        .pnp-page::before {
-          content: '';
-          position: fixed;
-          inset: 0;
-          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-          background-size: 180px;
-          opacity: 0.04;
-          pointer-events: none;
-          z-index: 0;
-        }
-
-        /* radial glow behind hero */
-        .pnp-glow {
-          position: absolute;
-          top: 0; left: 50%;
-          transform: translateX(-50%);
-          width: 700px; height: 420px;
-          background: radial-gradient(ellipse at center, rgba(194,161,43,0.12) 0%, transparent 70%);
-          pointer-events: none;
-        }
-
-        .pnp-hero {
-          animation: fadeIn 1s ease both;
-          position: relative; z-index: 1;
-        }
-
-        .pnp-display { font-family: 'Cormorant Garamond', Georgia, serif; }
-
-        .pnp-shimmer {
-          background: linear-gradient(90deg,
-            #8a6e1a 0%,
-            #c2a12b 20%,
-            #f0d060 40%,
-            #ffe87a 50%,
-            #f0d060 60%,
-            #c2a12b 80%,
-            #8a6e1a 100%
-          );
-          background-size: 300% auto;
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-          animation: goldShimmer 5s linear infinite;
-        }
+        .pnp-hero { animation: fadeIn 0.8s ease both; }
 
         .pnp-rule {
           height: 1px;
-          background: linear-gradient(90deg, transparent 0%, rgba(194,161,43,0.5) 50%, transparent 100%);
+          background: ${BORDER};
         }
 
         .pnp-deadline {
           display: inline-flex;
           align-items: center;
           gap: 8px;
-          border: 1px solid rgba(194,161,43,0.3);
+          border: 1px solid ${BORDER};
           border-radius: 100px;
-          padding: 5px 16px;
-          font-size: 0.7rem;
-          letter-spacing: 0.14em;
-          text-transform: uppercase;
-          color: #c2a12b;
-          background: rgba(194,161,43,0.06);
-          animation: fadeIn 0.8s 0.2s both;
+          padding: 6px 18px;
+          font-size: 0.82rem;
+          font-weight: 600;
+          color: ${GOLD_DARK};
+          background: ${BG_ALT};
         }
 
         .pnp-dot {
-          width: 6px; height: 6px;
+          width: 7px; height: 7px;
           border-radius: 50%;
-          background: #c2a12b;
+          background: ${GOLD};
           animation: pulseGold 2s ease-in-out infinite;
         }
 
         /* Cards */
         .pnp-card {
-          background: linear-gradient(160deg, #100d07 0%, #18130a 60%, #100d07 100%);
-          border: 1px solid rgba(194,161,43,0.2);
+          background: ${CARD};
+          border: 1px solid ${BORDER};
           border-radius: 20px;
           padding: 2.5rem;
           position: relative;
-          overflow: hidden;
-          transition: border-color 0.5s ease, box-shadow 0.5s ease, transform 0.4s ease;
-          opacity: 0;
-        }
-
-        .pnp-card::after {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background: radial-gradient(ellipse at 30% 0%, rgba(194,161,43,0.06) 0%, transparent 60%);
-          pointer-events: none;
+          transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+          animation: fadeUp 0.6s ease both;
         }
 
         .pnp-card:hover {
-          border-color: rgba(194,161,43,0.55);
-          box-shadow: 0 24px 64px rgba(194,161,43,0.12), 0 0 0 1px rgba(194,161,43,0.08);
-          transform: translateY(-6px);
+          border-color: ${GOLD};
+          box-shadow: 0 16px 40px rgba(36,31,15,0.1);
+          transform: translateY(-4px);
         }
-
-        .pnp-card-1 { animation: fadeUp 0.7s 0.3s ease forwards; }
-        .pnp-card-2 { animation: fadeUp 0.7s 0.5s ease forwards; }
 
         .pnp-icon {
           width: 52px; height: 52px;
-          border: 1px solid rgba(194,161,43,0.35);
+          border: 1px solid ${BORDER};
           border-radius: 50%;
           display: flex; align-items: center; justify-content: center;
-          background: rgba(194,161,43,0.07);
+          background: ${BG_ALT};
           margin-bottom: 1.75rem;
-          transition: background 0.3s, border-color 0.3s;
-          position: relative; z-index: 1;
+          transition: background 0.25s, border-color 0.25s;
         }
 
         .pnp-card:hover .pnp-icon {
-          background: rgba(194,161,43,0.15);
-          border-color: rgba(194,161,43,0.65);
+          background: ${GOLD}14;
+          border-color: ${GOLD};
         }
 
         .pnp-card-title {
-          font-family: 'Cormorant Garamond', serif;
-          font-size: 1.6rem;
-          font-weight: 300;
-          color: #f5e8b8;
+          font-family: ${FONT};
+          font-size: 1.4rem;
+          font-weight: 700;
+          color: ${INK};
           margin-bottom: 0.5rem;
-          position: relative; z-index: 1;
-          letter-spacing: 0.01em;
         }
 
         .pnp-card-desc {
-          font-size: 0.82rem;
-          color: rgba(240,216,144,0.38);
+          font-size: 0.92rem;
+          color: ${INK_SOFT};
           line-height: 1.65;
           margin-bottom: 2rem;
-          position: relative; z-index: 1;
         }
 
         .pnp-label {
           display: block;
-          font-size: 0.65rem;
-          letter-spacing: 0.16em;
-          text-transform: uppercase;
-          color: rgba(194,161,43,0.5);
+          font-size: 0.8rem;
+          font-weight: 600;
+          color: ${INK};
           margin-bottom: 8px;
         }
 
         .pnp-input {
           width: 100%;
-          background: rgba(194,161,43,0.05);
-          border: 1px solid rgba(194,161,43,0.2);
+          background: ${BG};
+          border: 1px solid ${BORDER};
           border-radius: 10px;
           padding: 12px 16px;
-          font-size: 0.875rem;
-          color: #f0e0a0;
-          font-family: 'DM Sans', sans-serif;
-          transition: border-color 0.3s, background 0.3s, box-shadow 0.3s;
-          position: relative; z-index: 1;
+          font-size: 0.92rem;
+          color: ${INK};
+          font-family: ${FONT};
+          transition: border-color 0.2s;
+          box-sizing: border-box;
         }
 
-        .pnp-input::placeholder { color: rgba(194,161,43,0.25); }
+        .pnp-input::placeholder { color: ${INK_SOFT}88; }
 
         .pnp-input:focus {
           outline: none;
-          border-color: rgba(194,161,43,0.6);
-          background: rgba(194,161,43,0.09);
-          box-shadow: 0 0 0 3px rgba(194,161,43,0.08);
+          border-color: ${GOLD};
         }
 
         /* remove number arrows */
@@ -350,59 +279,52 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
           align-items: center;
           gap: 10px;
           margin-bottom: 10px;
-          position: relative; z-index: 1;
         }
 
         .pnp-calc-eq {
-          font-family: 'Cormorant Garamond', serif;
-          font-size: 1.4rem;
-          color: #d4aa40;
-          letter-spacing: 0.08em;
-          background: rgba(194,161,43,0.07);
-          border: 1px solid rgba(194,161,43,0.18);
+          font-family: ${FONT};
+          font-size: 1.1rem;
+          font-weight: 700;
+          color: ${GOLD_DARK};
+          background: ${BG_ALT};
+          border: 1px solid ${BORDER};
           border-radius: 8px;
           padding: 6px 18px;
         }
 
         .pnp-btn {
           width: 100%;
-          background: linear-gradient(135deg, #b8941f 0%, #d4aa40 35%, #f0d060 65%, #d4aa40 100%);
-          background-size: 200% auto;
+          background: ${GOLD};
           border: none;
           border-radius: 10px;
           padding: 13px 24px;
-          font-family: 'DM Sans', sans-serif;
-          font-size: 0.82rem;
-          font-weight: 500;
-          letter-spacing: 0.1em;
-          text-transform: uppercase;
-          color: #1a1205;
+          font-family: ${FONT};
+          font-size: 0.9rem;
+          font-weight: 700;
+          color: #fff;
           cursor: pointer;
-          transition: background-position 0.5s ease, transform 0.2s ease, box-shadow 0.3s ease;
-          position: relative; z-index: 1;
+          transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
           margin-top: 8px;
         }
 
         .pnp-btn:hover {
-          background-position: right center;
+          background: #d4aa40;
           transform: translateY(-2px);
-          box-shadow: 0 10px 28px rgba(194,161,43,0.35);
+          box-shadow: 0 10px 24px rgba(194,161,43,0.28);
         }
 
         .pnp-btn:active { transform: translateY(0); }
 
-        .pnp-err { color: rgba(248,113,113,0.8); font-size: 0.72rem; margin-top: 4px; }
+        .pnp-err { color: #c0392b; font-size: 0.82rem; margin-top: 4px; }
 
-        .pnp-divider {
-          display: none;
-        }
+        .pnp-divider { display: none; }
 
         @media (max-width: 768px) {
           .pnp-card { padding: 2rem 1.5rem; }
           .pnp-divider {
             display: block;
             height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(194,161,43,0.2), transparent);
+            background: ${BORDER};
             margin: 0.5rem 0;
           }
         }
@@ -411,20 +333,17 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
       <div className="pnp-page">
         {/* Hero */}
         <div className="pnp-hero pt-28 pb-14 px-6 text-center">
-          <div className="pnp-glow" />
-
           <div className="pnp-deadline mb-8">
             <span className="pnp-dot" />
             Prazo: {deadlineStr}
-            {diffDays > 0 && <span style={{ color: "rgba(194,161,43,0.6)" }}>· {diffDays} dias</span>}
-            {diffDays === 0 && <span style={{ color: "rgba(248,113,113,0.8)" }}>· Encerrado</span>}
+            {diffDays > 0 && <span style={{ color: INK_SOFT }}>· {diffDays} dias</span>}
+            {diffDays === 0 && <span style={{ color: "#c0392b" }}>· Encerrado</span>}
           </div>
 
-          <h1 className="pnp-display pnp-shimmer text-6xl md:text-8xl font-light leading-none tracking-tight mb-3">
+          <h1 style={{ fontFamily: FONT, fontWeight: 700, color: INK }} className="text-5xl md:text-7xl leading-none tracking-tight mb-3">
             Candidatura
           </h1>
-          <p className="pnp-display text-lg md:text-xl font-light tracking-[0.25em] uppercase mb-10"
-             style={{ color: "rgba(240,216,144,0.35)" }}>
+          <p style={{ fontFamily: FONT, fontWeight: 600, color: INK_SOFT, letterSpacing: "0.08em" }} className="text-base md:text-lg uppercase mb-10">
             Prémio Nacional de Publicidade
           </p>
 
@@ -439,7 +358,7 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
             <div className="pnp-card pnp-card-1">
               <div className="pnp-icon">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
-                     stroke="#c2a12b" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                     stroke={GOLD_DARK} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="8" cy="15" r="4" />
                   <line x1="12" y1="15" x2="22" y2="15" />
                   <line x1="19" y1="12" x2="19" y2="18" />
@@ -452,7 +371,7 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
               </p>
 
               <form onSubmit={handleAccess(onSubmitcode)}>
-                <div style={{ position: "relative", zIndex: 1 }}>
+                <div>
                   <label className="pnp-label">Código de acesso</label>
                   <input
                     className="pnp-input"
@@ -471,7 +390,7 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
             <div className="pnp-card pnp-card-2">
               <div className="pnp-icon">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
-                     stroke="#c2a12b" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                     stroke={GOLD_DARK} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                   <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                 </svg>
               </div>
@@ -483,7 +402,7 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
 
               <form onSubmit={handleNew(onSubmitncode)}>
                 <input type="hidden" {...regNew("ncode")} />
-                <div style={{ position: "relative", zIndex: 1 }}>
+                <div>
                   <label className="pnp-label">Verificação anti-spam</label>
                   <div className="pnp-calc">
                     <span className="pnp-calc-eq">{num1} + {num2} = ?</span>
@@ -505,10 +424,9 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
           </div>
 
           {/* Footer note */}
-          <p className="text-center mt-10" style={{ color: "rgba(194,161,43,0.25)", fontSize: "0.72rem", letterSpacing: "0.06em" }}>
+          <p className="text-center mt-10" style={{ color: INK_SOFT, fontFamily: FONT, fontSize: "0.85rem" }}>
             Ao submeter, declara ter lido e aceite o{" "}
-            <a href="/regulamentos"
-               style={{ color: "rgba(194,161,43,0.5)", textDecoration: "underline", textUnderlineOffset: "3px" }}>
+            <a href="/regulamentos" style={{ color: GOLD_DARK, textDecoration: "underline", textUnderlineOffset: "3px" }}>
               regulamento
             </a>{" "}
             do concurso.

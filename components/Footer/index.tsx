@@ -4,6 +4,7 @@ import { useForm, SubmitHandler } from "react-hook-form"
 import toast, { Toaster } from "react-hot-toast"
 import logo from "public/logo1.png"
 import { NavLink } from "../../lib/parseNavbar"
+import { GOLD, GOLD_DARK, GOLD_BRIGHT, INK, INK_SOFT, BG, BG_ALT, BORDER, FONT, FONT_IMPORT } from "../../lib/theme"
 
 interface Contact {
   Local: string
@@ -16,11 +17,6 @@ interface FooterProps {
   rsocial: NavLink[]
   contato: { data: { attributes: Contact } } | null
 }
-
-const GOLD        = "#c2a12b"
-const GOLD_BRIGHT = "#f0d060"
-const DARK        = "#080604"
-const DARK_MID    = "#0d0a05"
 
 const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
   const contact = contato?.data?.attributes
@@ -58,28 +54,23 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
   const year = new Date().getFullYear()
 
   return (
-    <footer style={{ position: "relative", zIndex: 50, fontFamily: "'DM Sans', sans-serif" }}>
+    <footer style={{ position: "relative", zIndex: 50, fontFamily: FONT }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap');
-
-        @keyframes ftNlBtnShimmer {
-          0%,100% { background-position: 0% 50%; }
-          50%      { background-position: 100% 50%; }
-        }
+        ${FONT_IMPORT}
 
         .ft-nl-input:focus {
-          border-color: ${GOLD}88 !important;
-          background: ${GOLD}12 !important;
+          border-color: ${GOLD} !important;
           outline: none;
         }
-        .ft-nl-input::placeholder { color: ${GOLD}44; }
+        .ft-nl-input::placeholder { color: ${INK_SOFT}88; }
 
-        .ft-link-item:hover { color: ${GOLD_BRIGHT} !important; padding-left: 8px !important; }
+        .ft-link-item:hover { color: ${GOLD_DARK} !important; padding-left: 4px !important; }
         .ft-social-pill:hover {
           border-color: ${GOLD} !important;
-          color: ${GOLD_BRIGHT} !important;
-          background: ${GOLD}18 !important;
+          color: ${GOLD_DARK} !important;
+          background: ${GOLD}14 !important;
         }
+        .ft-nl-btn:hover { background: ${GOLD_BRIGHT} !important; }
       `}</style>
 
       <Toaster position="bottom-right" reverseOrder={false} />
@@ -87,24 +78,24 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
       {/* ── Gold accent line at top ── */}
       <div style={{
         height: "3px",
-        background: `linear-gradient(90deg, transparent, ${GOLD}88, ${GOLD_BRIGHT}, ${GOLD}88, transparent)`,
+        background: `linear-gradient(90deg, ${GOLD_DARK}, ${GOLD}, ${GOLD_BRIGHT}, ${GOLD}, ${GOLD_DARK})`,
       }} />
 
       {/* ── Main footer body ── */}
-      <div style={{ background: DARK, borderTop: `1px solid ${GOLD}18` }}>
+      <div style={{ background: BG_ALT, borderTop: `1px solid ${BORDER}` }}>
         <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "4rem 2rem 3.5rem" }}>
 
-          {/* ── Ornament label ── */}
           <p style={{
-            fontFamily: "'DM Sans', sans-serif",
-            fontSize: "0.52rem",
-            letterSpacing: "0.28em",
+            fontFamily: FONT,
+            fontSize: "0.75rem",
+            letterSpacing: "0.1em",
             textTransform: "uppercase",
-            color: `${GOLD}50`,
+            fontWeight: 700,
+            color: GOLD_DARK,
             textAlign: "center",
             marginBottom: "3rem",
           }}>
-            ✦ &nbsp; Prémio Nacional de Publicidade &nbsp; ✦
+            Prémio Nacional de Publicidade
           </p>
 
           {/* ── 4-column grid ── */}
@@ -121,9 +112,9 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
             {/* Col 1 — Logo + contact */}
             <div>
               <div style={{ marginBottom: "1.6rem" }}>
-                <Image src={logo} alt="PNP" width={120} height={44} style={{ objectFit: "contain", opacity: 0.9 }} />
+                <Image src={logo} alt="PNP" width={120} height={44} style={{ objectFit: "contain" }} />
               </div>
-              <div style={{ fontSize: "0.76rem", lineHeight: 2.1, color: `${GOLD_BRIGHT}44`, fontFamily: "'DM Sans', sans-serif" }}>
+              <div style={{ fontSize: "0.9rem", lineHeight: 1.9, color: INK_SOFT, fontFamily: FONT }}>
                 {contact?.Local && <span style={{ display: "block" }}>{contact.Local}</span>}
                 {contact?.phone && <span style={{ display: "block" }}>{contact.phone}</span>}
                 {contact?.email && <span style={{ display: "block" }}>{contact.email}</span>}
@@ -133,13 +124,13 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
             {/* Col 2 — Links Úteis */}
             <div>
               <p style={{
-                fontFamily: "'Cormorant Garamond', serif",
-                fontSize: "0.95rem",
-                fontWeight: 300,
-                letterSpacing: "0.18em",
+                fontFamily: FONT,
+                fontSize: "0.85rem",
+                fontWeight: 700,
+                letterSpacing: "0.04em",
                 textTransform: "uppercase",
-                color: GOLD,
-                marginBottom: "1.4rem",
+                color: INK,
+                marginBottom: "1.2rem",
               }}>
                 Links Úteis
               </p>
@@ -150,13 +141,12 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
                   className="ft-link-item"
                   style={{
                     display: "block",
-                    fontFamily: "'DM Sans', sans-serif",
-                    fontSize: "0.78rem",
-                    color: `${GOLD_BRIGHT}40`,
+                    fontFamily: FONT,
+                    fontSize: "0.9rem",
+                    color: INK_SOFT,
                     textDecoration: "none",
                     padding: "5px 0",
-                    letterSpacing: "0.02em",
-                    transition: "color 0.25s, padding-left 0.25s",
+                    transition: "color 0.2s, padding-left 0.2s",
                   }}
                 >
                   {l.name}
@@ -167,13 +157,13 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
             {/* Col 3 — Navegação */}
             <div>
               <p style={{
-                fontFamily: "'Cormorant Garamond', serif",
-                fontSize: "0.95rem",
-                fontWeight: 300,
-                letterSpacing: "0.18em",
+                fontFamily: FONT,
+                fontSize: "0.85rem",
+                fontWeight: 700,
+                letterSpacing: "0.04em",
                 textTransform: "uppercase",
-                color: GOLD,
-                marginBottom: "1.4rem",
+                color: INK,
+                marginBottom: "1.2rem",
               }}>
                 Navegação
               </p>
@@ -184,13 +174,12 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
                   className="ft-link-item"
                   style={{
                     display: "block",
-                    fontFamily: "'DM Sans', sans-serif",
-                    fontSize: "0.78rem",
-                    color: `${GOLD_BRIGHT}40`,
+                    fontFamily: FONT,
+                    fontSize: "0.9rem",
+                    color: INK_SOFT,
                     textDecoration: "none",
                     padding: "5px 0",
-                    letterSpacing: "0.02em",
-                    transition: "color 0.25s, padding-left 0.25s",
+                    transition: "color 0.2s, padding-left 0.2s",
                   }}
                 >
                   {l.name}
@@ -201,21 +190,21 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
             {/* Col 4 — Newsletter */}
             <div>
               <p style={{
-                fontFamily: "'Cormorant Garamond', serif",
-                fontSize: "0.95rem",
-                fontWeight: 300,
-                letterSpacing: "0.18em",
+                fontFamily: FONT,
+                fontSize: "0.85rem",
+                fontWeight: 700,
+                letterSpacing: "0.04em",
                 textTransform: "uppercase",
-                color: GOLD,
-                marginBottom: "1.4rem",
+                color: INK,
+                marginBottom: "1.2rem",
               }}>
                 Newsletter
               </p>
               <p style={{
-                fontFamily: "'DM Sans', sans-serif",
-                fontSize: "0.74rem",
-                lineHeight: 1.7,
-                color: `${GOLD_BRIGHT}38`,
+                fontFamily: FONT,
+                fontSize: "0.88rem",
+                lineHeight: 1.6,
+                color: INK_SOFT,
                 marginBottom: "1.25rem",
               }}>
                 {contact?.newsletterTitle || "Receba as últimas novidades do PNP directamente no seu email."}
@@ -229,35 +218,33 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
                   style={{
                     flex: 1,
                     minWidth: 0,
-                    background: `${GOLD}0a`,
-                    border: `1px solid ${GOLD}30`,
+                    background: "#ffffff",
+                    border: `1px solid ${BORDER}`,
                     borderRight: "none",
                     borderRadius: "8px 0 0 8px",
                     padding: "10px 13px",
-                    fontSize: "0.78rem",
-                    color: "#f0e0a0",
-                    fontFamily: "'DM Sans', sans-serif",
-                    transition: "border-color 0.3s, background 0.3s",
+                    fontSize: "0.88rem",
+                    color: INK,
+                    fontFamily: FONT,
+                    transition: "border-color 0.2s",
                   }}
                 />
                 <button
                   type="submit"
+                  className="ft-nl-btn"
                   style={{
-                    background: `linear-gradient(135deg, #a8861a 0%, ${GOLD} 40%, ${GOLD_BRIGHT} 70%, ${GOLD} 100%)`,
-                    backgroundSize: "200% auto",
+                    background: GOLD,
                     border: "none",
                     borderRadius: "0 8px 8px 0",
                     padding: "10px 18px",
-                    fontSize: "0.62rem",
-                    letterSpacing: "0.14em",
-                    textTransform: "uppercase",
-                    color: "#0f0a02",
-                    fontWeight: 600,
+                    fontSize: "0.8rem",
+                    color: "#fff",
+                    fontWeight: 700,
                     cursor: "pointer",
-                    fontFamily: "'DM Sans', sans-serif",
+                    fontFamily: FONT,
                     whiteSpace: "nowrap",
                     flexShrink: 0,
-                    animation: "ftNlBtnShimmer 3s ease infinite",
+                    transition: "background 0.2s",
                   }}
                 >
                   Subscrever
@@ -266,16 +253,16 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
             </div>
           </div>
 
-          {/* ── Gold divider ── */}
+          {/* ── Divider ── */}
           <div style={{
             height: "1px",
-            background: `linear-gradient(90deg, transparent, ${GOLD}40, transparent)`,
+            background: BORDER,
             margin: "3rem 0 0",
           }} />
         </div>
 
         {/* ── Bottom bar ── */}
-        <div style={{ background: DARK_MID, borderTop: `1px solid ${GOLD}12` }}>
+        <div style={{ background: BG, borderTop: `1px solid ${BORDER}` }}>
           <div style={{
             maxWidth: "1280px",
             margin: "0 auto",
@@ -287,10 +274,9 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
             gap: "0.75rem",
           }}>
             <span style={{
-              fontFamily: "'DM Sans', sans-serif",
-              fontSize: "0.62rem",
-              color: `${GOLD}55`,
-              letterSpacing: "0.1em",
+              fontFamily: FONT,
+              fontSize: "0.8rem",
+              color: INK_SOFT,
             }}>
               PNP &copy; {year} · Todos os direitos reservados.
             </span>
@@ -310,13 +296,13 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
                     width: "34px",
                     height: "34px",
                     borderRadius: "50%",
-                    border: `1px solid ${GOLD}35`,
-                    color: `${GOLD}70`,
-                    fontSize: "0.7rem",
-                    fontWeight: 600,
+                    border: `1px solid ${BORDER}`,
+                    color: INK_SOFT,
+                    fontSize: "0.8rem",
+                    fontWeight: 700,
                     textDecoration: "none",
-                    fontFamily: "'DM Sans', sans-serif",
-                    transition: "border-color 0.3s, color 0.3s, background 0.3s",
+                    fontFamily: FONT,
+                    transition: "border-color 0.2s, color 0.2s, background 0.2s",
                   }}
                 >
                   {s.name.charAt(0).toUpperCase()}

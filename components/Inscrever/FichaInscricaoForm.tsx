@@ -1,8 +1,6 @@
 import { useState, forwardRef, useImperativeHandle } from "react"
 import { useForm } from "react-hook-form"
-
-const GOLD      = "#c2a12b"
-const DARK_CARD = "#100d07"
+import { GOLD, GOLD_DARK, INK, INK_SOFT, BG, BORDER } from "../../lib/theme"
 
 interface Inputs {
   nome_completo: string
@@ -79,18 +77,18 @@ const FichaInscricaoForm = forwardRef<FormHandle, Props>(
     return (
       <div>
         <style>{`
-          .pnp-fi-input { background:${DARK_CARD}; border:1px solid ${GOLD}28; color:rgba(240,216,144,0.82); border-radius:8px; padding:0.72rem 1rem; width:100%; font-family:'DM Sans',sans-serif; font-size:0.875rem; outline:none; transition:border-color 0.2s,background 0.2s; box-sizing:border-box; }
-          .pnp-fi-input:focus { border-color:${GOLD}66; }
-          .pnp-fi-input::placeholder { color:${GOLD}30; }
-          .pnp-fi-err { border-color:#e74c3c88 !important; background:#e74c3c08 !important; }
-          .pnp-fi-err:focus { border-color:#e74c3cbb !important; }
+          .pnp-fi-input { background:${BG}; border:1px solid ${BORDER}; color:${INK}; border-radius:8px; padding:0.72rem 1rem; width:100%; font-family:'DM Sans',sans-serif; font-size:0.92rem; outline:none; transition:border-color 0.2s; box-sizing:border-box; }
+          .pnp-fi-input:focus { border-color:${GOLD}; }
+          .pnp-fi-input::placeholder { color:${INK_SOFT}88; }
+          .pnp-fi-err { border-color:#c0392b !important; background:#c0392b0a !important; }
+          .pnp-fi-err:focus { border-color:#c0392b !important; }
         `}</style>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem" }}>
           {FIELDS.map((f) => (
             <div key={f.name} style={{ gridColumn: `span ${f.span}` }}>
-              <label style={{ display: "flex", alignItems: "center", gap: "3px", fontFamily: "'DM Sans',sans-serif", fontSize: "0.62rem", letterSpacing: "0.16em", textTransform: "uppercase", color: highlighted.has(f.name) ? "#e74c3ccc" : `${GOLD}66`, marginBottom: "0.4rem", transition: "color 0.2s" }}>
+              <label style={{ display: "flex", alignItems: "center", gap: "3px", fontFamily: "'DM Sans',sans-serif", fontSize: "0.8rem", fontWeight: 600, color: highlighted.has(f.name) ? "#c0392b" : INK, marginBottom: "0.4rem", transition: "color 0.2s" }}>
                 {f.label}
-                {f.required && <span style={{ color: highlighted.has(f.name) ? "#e74c3c" : `${GOLD}44`, lineHeight: 1 }}>*</span>}
+                {f.required && <span style={{ color: highlighted.has(f.name) ? "#c0392b" : GOLD_DARK, lineHeight: 1 }}>*</span>}
               </label>
               <input
                 type={f.type}

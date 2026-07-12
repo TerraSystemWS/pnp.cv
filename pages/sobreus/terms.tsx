@@ -5,14 +5,9 @@ import showdown from "showdown"
 import Head from "next/head"
 import Link from "next/link"
 import { useFetchUser } from "../../lib/authContext"
+import { GOLD, GOLD_DARK, INK, INK_SOFT, BG, BG_ALT, CARD, BORDER, FONT, FONT_IMPORT } from "../../lib/theme"
 
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
-
-const GOLD        = "#c2a12b"
-const GOLD_BRIGHT = "#f0d060"
-const DARK        = "#080604"
-const DARK_CARD   = "#100d07"
-const DARK_MID    = "#0d0a05"
 
 const SobreusTerms = ({ social, contato, navbar, sobreus }: any) => {
   const { user } = useFetchUser()
@@ -27,37 +22,32 @@ const SobreusTerms = ({ social, contato, navbar, sobreus }: any) => {
       </Head>
 
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap');
+        ${FONT_IMPORT}
 
         @keyframes fadeUp {
           from { opacity: 0; transform: translateY(20px); }
           to   { opacity: 1; transform: translateY(0); }
         }
-        @keyframes shimmer {
-          0%   { background-position: -200% center; }
-          100% { background-position:  200% center; }
-        }
 
         .legal-content h1, .legal-content h2, .legal-content h3, .legal-content h4 {
-          font-family: 'Cormorant Garamond', serif;
-          font-weight: 300;
-          letter-spacing: 0.03em;
-          margin: 2.5rem 0 1rem;
+          font-family: ${FONT};
+          font-weight: 700;
+          margin: 2.2rem 0 1rem;
         }
-        .legal-content h1 { font-size: 1.9rem; color: ${GOLD_BRIGHT}; }
+        .legal-content h1 { font-size: 1.5rem; color: ${INK}; }
         .legal-content h2 {
-          font-size: 1.3rem;
-          color: ${GOLD_BRIGHT}cc;
+          font-size: 1.25rem;
+          color: ${INK};
           padding-bottom: 0.5rem;
-          border-bottom: 1px solid ${GOLD}22;
+          border-bottom: 1px solid ${BORDER};
         }
-        .legal-content h3 { font-size: 1.05rem; color: ${GOLD}; }
-        .legal-content h4 { font-size: 0.95rem; color: ${GOLD}99; }
+        .legal-content h3 { font-size: 1.05rem; color: ${GOLD_DARK}; }
+        .legal-content h4 { font-size: 0.95rem; color: ${GOLD_DARK}; }
         .legal-content p {
-          font-family: 'DM Sans', sans-serif;
-          font-size: 0.875rem;
-          line-height: 2;
-          color: rgba(240,216,144,0.52);
+          font-family: ${FONT};
+          font-size: 0.96rem;
+          line-height: 1.8;
+          color: ${INK_SOFT};
           margin-bottom: 1.1rem;
         }
         .legal-content ul, .legal-content ol {
@@ -65,112 +55,97 @@ const SobreusTerms = ({ social, contato, navbar, sobreus }: any) => {
           margin-bottom: 1rem;
         }
         .legal-content li {
-          font-family: 'DM Sans', sans-serif;
-          font-size: 0.855rem;
-          line-height: 1.95;
-          color: rgba(240,216,144,0.48);
+          font-family: ${FONT};
+          font-size: 0.94rem;
+          line-height: 1.75;
+          color: ${INK_SOFT};
           margin-bottom: 0.3rem;
         }
-        .legal-content li::marker { color: ${GOLD}66; }
-        .legal-content strong { color: ${GOLD}cc; font-weight: 500; }
-        .legal-content em { color: ${GOLD_BRIGHT}88; font-style: italic; }
-        .legal-content a { color: ${GOLD}; text-decoration: underline; text-underline-offset: 3px; }
-        .legal-content a:hover { color: ${GOLD_BRIGHT}; }
-        .legal-content hr { border: none; border-top: 1px solid ${GOLD}18; margin: 2.5rem 0; }
+        .legal-content li::marker { color: ${GOLD_DARK}; }
+        .legal-content strong { color: ${INK}; font-weight: 700; }
+        .legal-content em { color: ${GOLD_DARK}; font-style: italic; }
+        .legal-content a { color: ${GOLD_DARK}; text-decoration: underline; text-underline-offset: 3px; }
+        .legal-content hr { border: none; border-top: 1px solid ${BORDER}; margin: 2.5rem 0; }
         .legal-content blockquote {
-          border-left: 2px solid ${GOLD}55;
+          border-left: 3px solid ${GOLD};
           padding: 0.75rem 1.25rem;
           margin: 1.5rem 0;
-          background: ${GOLD}08;
+          background: ${BG_ALT};
           border-radius: 0 8px 8px 0;
-          font-family: 'Cormorant Garamond', serif;
-          font-size: 1.1rem;
-          font-style: italic;
-          color: ${GOLD_BRIGHT}77;
+          font-family: ${FONT};
+          font-size: 1.05rem;
+          font-weight: 600;
+          color: ${INK};
         }
         .legal-content table {
           width: 100%;
           border-collapse: collapse;
           margin-bottom: 1.5rem;
-          font-family: 'DM Sans', sans-serif;
-          font-size: 0.82rem;
+          font-family: ${FONT};
+          font-size: 0.88rem;
         }
         .legal-content th {
-          color: ${GOLD};
-          font-weight: 500;
+          color: ${INK};
+          font-weight: 700;
           padding: 0.6rem 1rem;
-          border-bottom: 1px solid ${GOLD}33;
+          border-bottom: 1px solid ${BORDER};
           text-align: left;
-          letter-spacing: 0.06em;
           text-transform: uppercase;
-          font-size: 0.72rem;
+          font-size: 0.75rem;
         }
         .legal-content td {
-          color: rgba(240,216,144,0.45);
+          color: ${INK_SOFT};
           padding: 0.5rem 1rem;
-          border-bottom: 1px solid ${GOLD}11;
+          border-bottom: 1px solid ${BORDER};
         }
 
-        .back-link:hover { color: ${GOLD} !important; }
+        .back-link:hover { color: ${GOLD_DARK} !important; }
         .section-pill { transition: background 0.2s, color 0.2s; }
-        .section-pill:hover { background: ${GOLD}22 !important; color: ${GOLD} !important; }
+        .section-pill:hover { background: ${GOLD}18 !important; color: ${GOLD_DARK} !important; }
       `}</style>
 
       {/* ── Hero ── */}
       <div style={{
-        background: DARK,
-        paddingTop: "7rem",
-        paddingBottom: "3.5rem",
+        background: BG_ALT,
+        paddingTop: "6rem",
+        paddingBottom: "3rem",
         textAlign: "center",
-        position: "relative",
-        overflow: "hidden",
+        borderBottom: `1px solid ${BORDER}`,
       }}>
-        {/* Noise texture */}
-        <div style={{
-          position: "absolute", inset: 0, opacity: 0.03, pointerEvents: "none",
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-        }} />
-        {/* Radial glow */}
-        <div style={{
-          position: "absolute", inset: 0, pointerEvents: "none",
-          background: `radial-gradient(ellipse 60% 40% at 50% 100%, ${GOLD}0a 0%, transparent 70%)`,
-        }} />
-
         {/* Breadcrumb */}
-        <div style={{ animation: "fadeUp 0.5s ease both", marginBottom: "1.5rem" }}>
+        <div style={{ animation: "fadeUp 0.5s ease both", marginBottom: "1.25rem" }}>
           <Link href="/sobreus" className="back-link" style={{
-            fontFamily: "'DM Sans',sans-serif",
-            fontSize: "0.6rem",
-            letterSpacing: "0.2em",
-            textTransform: "uppercase",
-            color: `${GOLD}55`,
+            fontFamily: FONT,
+            fontSize: "0.8rem",
+            fontWeight: 600,
+            color: INK_SOFT,
             textDecoration: "none",
             display: "inline-flex",
             alignItems: "center",
             gap: "6px",
           }}>
-            ← &nbsp;Sobre Nós
+            ← Sobre Nós
           </Link>
         </div>
 
         <p style={{
-          fontFamily: "'DM Sans',sans-serif",
-          fontSize: "0.52rem",
-          letterSpacing: "0.32em",
+          fontFamily: FONT,
+          fontSize: "0.8rem",
+          letterSpacing: "0.08em",
           textTransform: "uppercase",
-          color: `${GOLD}66`,
-          marginBottom: "1.2rem",
+          fontWeight: 700,
+          color: GOLD_DARK,
+          marginBottom: "1rem",
           animation: "fadeUp 0.6s ease 0.05s both",
         }}>
-          ✦ &nbsp; Prémio Nacional de Publicidade
+          Prémio Nacional de Publicidade
         </p>
 
         <h1 style={{
-          fontFamily: "'Cormorant Garamond',serif",
-          fontSize: "clamp(2.2rem,6vw,4.2rem)",
-          fontWeight: 300,
-          color: "#f5e8b8",
-          letterSpacing: "0.06em",
+          fontFamily: FONT,
+          fontSize: "clamp(2rem,5vw,3rem)",
+          fontWeight: 700,
+          color: INK,
           margin: "0 0 0.4rem",
           animation: "fadeUp 0.7s ease 0.1s both",
         }}>
@@ -178,27 +153,20 @@ const SobreusTerms = ({ social, contato, navbar, sobreus }: any) => {
         </h1>
 
         <p style={{
-          fontFamily: "'DM Sans',sans-serif",
-          fontSize: "0.75rem",
-          color: `${GOLD_BRIGHT}40`,
+          fontFamily: FONT,
+          fontSize: "0.95rem",
+          color: INK_SOFT,
           animation: "fadeUp 0.8s ease 0.2s both",
           marginTop: "0.5rem",
         }}>
           Leia atentamente antes de utilizar os nossos serviços.
         </p>
-
-        <div style={{
-          width: "48px", height: "1px",
-          background: `linear-gradient(90deg, transparent, ${GOLD}, transparent)`,
-          margin: "1.8rem auto 0",
-          animation: "fadeUp 0.9s ease 0.3s both",
-        }} />
       </div>
 
       {/* ── Document label bar ── */}
       <div style={{
-        background: DARK_MID,
-        borderBottom: `1px solid ${GOLD}18`,
+        background: BG,
+        borderBottom: `1px solid ${BORDER}`,
         padding: "0.75rem 2rem",
       }}>
         <div style={{
@@ -211,23 +179,21 @@ const SobreusTerms = ({ social, contato, navbar, sobreus }: any) => {
           gap: "0.5rem",
         }}>
           <span style={{
-            fontFamily: "'DM Sans',sans-serif",
-            fontSize: "0.6rem",
-            letterSpacing: "0.18em",
-            textTransform: "uppercase",
-            color: `${GOLD}55`,
+            fontFamily: FONT,
+            fontSize: "0.78rem",
+            fontWeight: 600,
+            color: INK_SOFT,
           }}>
             Documento legal
           </span>
           <div style={{ display: "flex", gap: "0.5rem" }}>
             {["Uso", "Responsabilidades", "Privacidade", "Contacto"].map((tag) => (
               <span key={tag} className="section-pill" style={{
-                fontFamily: "'DM Sans',sans-serif",
-                fontSize: "0.58rem",
-                letterSpacing: "0.1em",
-                textTransform: "uppercase",
-                color: `${GOLD}55`,
-                border: `1px solid ${GOLD}22`,
+                fontFamily: FONT,
+                fontSize: "0.72rem",
+                fontWeight: 600,
+                color: INK_SOFT,
+                border: `1px solid ${BORDER}`,
                 borderRadius: "100px",
                 padding: "3px 10px",
                 cursor: "default",
@@ -240,7 +206,7 @@ const SobreusTerms = ({ social, contato, navbar, sobreus }: any) => {
       </div>
 
       {/* ── Content ── */}
-      <div style={{ background: DARK, padding: "4rem 2rem 6rem", minHeight: "60vh" }}>
+      <div style={{ background: BG, padding: "4rem 2rem 6rem", minHeight: "60vh" }}>
         <div style={{ maxWidth: "820px", margin: "0 auto" }}>
 
           {html ? (
@@ -248,9 +214,9 @@ const SobreusTerms = ({ social, contato, navbar, sobreus }: any) => {
           ) : (
             <p style={{
               textAlign: "center",
-              color: `${GOLD}44`,
-              fontFamily: "'DM Sans',sans-serif",
-              fontSize: "0.85rem",
+              color: INK_SOFT,
+              fontFamily: FONT,
+              fontSize: "0.95rem",
               padding: "4rem 0",
             }}>
               Conteúdo não disponível.
@@ -261,7 +227,7 @@ const SobreusTerms = ({ social, contato, navbar, sobreus }: any) => {
           <div style={{
             marginTop: "4rem",
             paddingTop: "2.5rem",
-            borderTop: `1px solid ${GOLD}18`,
+            borderTop: `1px solid ${BORDER}`,
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
@@ -269,23 +235,21 @@ const SobreusTerms = ({ social, contato, navbar, sobreus }: any) => {
             gap: "1rem",
           }}>
             <Link href="/sobreus" style={{
-              fontFamily: "'DM Sans',sans-serif",
-              fontSize: "0.65rem",
-              letterSpacing: "0.16em",
-              textTransform: "uppercase",
-              color: `${GOLD}66`,
+              fontFamily: FONT,
+              fontSize: "0.85rem",
+              fontWeight: 600,
+              color: INK_SOFT,
               textDecoration: "none",
             }}>
               ← Voltar a Sobre Nós
             </Link>
 
             <Link href="/sobreus/policy" style={{
-              fontFamily: "'DM Sans',sans-serif",
-              fontSize: "0.65rem",
-              letterSpacing: "0.16em",
-              textTransform: "uppercase",
-              color: `${GOLD}88`,
-              border: `1px solid ${GOLD}30`,
+              fontFamily: FONT,
+              fontSize: "0.85rem",
+              fontWeight: 700,
+              color: INK,
+              border: `1px solid ${BORDER}`,
               borderRadius: "100px",
               padding: "8px 20px",
               textDecoration: "none",

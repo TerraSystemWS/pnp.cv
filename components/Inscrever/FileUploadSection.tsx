@@ -1,11 +1,6 @@
 import { useState } from "react"
 import { FileLink } from "../../types/strapi"
-
-const GOLD        = "#c2a12b"
-const GOLD_BRIGHT = "#f0d060"
-const DARK        = "#080604"
-const DARK_CARD   = "#100d07"
-const DARK_MID    = "#0d0a05"
+import { GOLD, GOLD_DARK, INK, INK_SOFT, BG, BG_ALT, CARD, BORDER } from "../../lib/theme"
 
 interface Props {
   cid: string
@@ -139,10 +134,10 @@ export default function FileUploadSection({ cid, apiLink, existingFiles, onFiles
       {/* Existing files table */}
       {existingFiles.length > 0 && (
         <div>
-          <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.62rem", letterSpacing: "0.16em", textTransform: "uppercase", color: `${GOLD}66`, marginBottom: "0.75rem" }}>
+          <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.8rem", fontWeight: 700, color: GOLD_DARK, marginBottom: "0.75rem" }}>
             Ficheiros Submetidos ({existingFiles.length})
           </p>
-          <div style={{ border: `1px solid ${GOLD}22`, borderRadius: "10px", overflow: "hidden" }}>
+          <div style={{ border: `1px solid ${BORDER}`, borderRadius: "10px", overflow: "hidden" }}>
             {existingFiles.map((f, i) => (
               <div
                 key={i}
@@ -151,16 +146,16 @@ export default function FileUploadSection({ cid, apiLink, existingFiles, onFiles
                   alignItems: "center",
                   justifyContent: "space-between",
                   padding: "0.85rem 1.25rem",
-                  background: i % 2 === 0 ? DARK_CARD : `${DARK_CARD}cc`,
-                  borderBottom: i < existingFiles.length - 1 ? `1px solid ${GOLD}12` : "none",
+                  background: i % 2 === 0 ? CARD : BG_ALT,
+                  borderBottom: i < existingFiles.length - 1 ? `1px solid ${BORDER}` : "none",
                 }}
               >
                 <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0 }}>
-                    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" stroke={GOLD} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                    <path d="M14 2v6h6" stroke={GOLD} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" stroke={GOLD_DARK} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M14 2v6h6" stroke={GOLD_DARK} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
-                  <span style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.82rem", color: `${GOLD_BRIGHT}99` }}>
+                  <span style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.9rem", color: INK }}>
                     {f.titulo}
                   </span>
                 </div>
@@ -168,7 +163,7 @@ export default function FileUploadSection({ cid, apiLink, existingFiles, onFiles
                   href={`${apiLink}${f.ficheiro.data?.attributes?.url}`}
                   target="_blank"
                   rel="noreferrer"
-                  style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.62rem", letterSpacing: "0.12em", textTransform: "uppercase", color: `${GOLD}77`, textDecoration: "none", padding: "4px 12px", border: `1px solid ${GOLD}28`, borderRadius: "100px" }}
+                  style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.78rem", fontWeight: 600, color: INK, textDecoration: "none", padding: "4px 12px", border: `1px solid ${BORDER}`, borderRadius: "100px" }}
                 >
                   Abrir
                 </a>
@@ -180,7 +175,7 @@ export default function FileUploadSection({ cid, apiLink, existingFiles, onFiles
 
       {/* Upload zone */}
       <div>
-        <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.62rem", letterSpacing: "0.16em", textTransform: "uppercase", color: `${GOLD}66`, marginBottom: "0.75rem" }}>
+        <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.8rem", fontWeight: 700, color: GOLD_DARK, marginBottom: "0.75rem" }}>
           Adicionar Ficheiros
         </p>
 
@@ -195,21 +190,21 @@ export default function FileUploadSection({ cid, apiLink, existingFiles, onFiles
             justifyContent: "center",
             gap: "0.75rem",
             padding: "2.5rem",
-            border: `2px dashed ${isDragging ? GOLD + "88" : GOLD + "28"}`,
+            border: `2px dashed ${isDragging ? GOLD : BORDER}`,
             borderRadius: "12px",
-            background: isDragging ? `${GOLD}08` : DARK_CARD,
+            background: isDragging ? `${GOLD}0a` : BG_ALT,
             cursor: "pointer",
             transition: "border-color 0.2s, background 0.2s",
           }}
         >
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" style={{ opacity: 0.4 }}>
-            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" stroke={GOLD} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" stroke={GOLD_DARK} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
           <div style={{ textAlign: "center" }}>
-            <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.82rem", color: `${GOLD_BRIGHT}77`, margin: "0 0 0.25rem" }}>
-              Arraste ficheiros ou <span style={{ color: GOLD, textDecoration: "underline" }}>clique para selecionar</span>
+            <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.9rem", color: INK, margin: "0 0 0.25rem" }}>
+              Arraste ficheiros ou <span style={{ color: GOLD_DARK, textDecoration: "underline" }}>clique para selecionar</span>
             </p>
-            <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.65rem", color: `${GOLD}44`, margin: 0 }}>
+            <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.78rem", color: INK_SOFT, margin: 0 }}>
               PNG, JPG, PDF, MP3, AAC, MP4
             </p>
           </div>
@@ -223,8 +218,8 @@ export default function FileUploadSection({ cid, apiLink, existingFiles, onFiles
         </label>
 
         {/* Obs */}
-        <div style={{ marginTop: "1rem", padding: "1rem 1.25rem", background: `${GOLD}08`, border: `1px solid ${GOLD}18`, borderRadius: "8px" }}>
-          <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.7rem", color: `${GOLD}77`, margin: "0 0 0.4rem", fontWeight: 500 }}>
+        <div style={{ marginTop: "1rem", padding: "1rem 1.25rem", background: BG_ALT, border: `1px solid ${BORDER}`, borderRadius: "8px" }}>
+          <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.85rem", color: INK, margin: "0 0 0.4rem", fontWeight: 700 }}>
             Documentos obrigatórios:
           </p>
           {[
@@ -233,8 +228,8 @@ export default function FileUploadSection({ cid, apiLink, existingFiles, onFiles
             "BI, NIF e certificado de matrícula (estudante universitário)",
             "Comprovativo de pagamento e ficha técnica do trabalho",
           ].map((item, i) => (
-            <p key={i} style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.7rem", color: `${GOLD}55`, margin: "0.2rem 0 0", display: "flex", gap: "0.5rem" }}>
-              <span style={{ color: GOLD, flexShrink: 0 }}>·</span> {item}
+            <p key={i} style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.85rem", color: INK_SOFT, margin: "0.3rem 0 0", display: "flex", gap: "0.5rem" }}>
+              <span style={{ color: GOLD_DARK, flexShrink: 0 }}>·</span> {item}
             </p>
           ))}
         </div>
@@ -243,22 +238,22 @@ export default function FileUploadSection({ cid, apiLink, existingFiles, onFiles
       {/* Upload progress */}
       {uploading.length > 0 && (
         <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-          <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.62rem", letterSpacing: "0.16em", textTransform: "uppercase", color: `${GOLD}66`, margin: 0 }}>
+          <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.8rem", fontWeight: 700, color: GOLD_DARK, margin: 0 }}>
             A enviar…
           </p>
           {uploading.map((f, i) => (
             <div key={i}>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.3rem" }}>
-                <span style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.78rem", color: `${GOLD_BRIGHT}88` }}>{f.name}</span>
-                <span style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.7rem", color: f.status === "error" ? "#e74c3c" : f.status === "done" ? `${GOLD_BRIGHT}99` : `${GOLD}77` }}>
+                <span style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.88rem", color: INK }}>{f.name}</span>
+                <span style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.82rem", fontWeight: 600, color: f.status === "error" ? "#c0392b" : f.status === "done" ? GOLD_DARK : INK_SOFT }}>
                   {f.status === "error" ? "Erro" : f.status === "done" ? "✓ Concluído" : `${f.progress}%`}
                 </span>
               </div>
-              <div style={{ height: "4px", background: `${GOLD}18`, borderRadius: "100px", overflow: "hidden" }}>
+              <div style={{ height: "4px", background: BORDER, borderRadius: "100px", overflow: "hidden" }}>
                 <div style={{
                   height: "100%",
                   width: `${f.progress}%`,
-                  background: f.status === "error" ? "#e74c3c" : `linear-gradient(90deg, ${GOLD}, ${GOLD_BRIGHT})`,
+                  background: f.status === "error" ? "#c0392b" : GOLD,
                   borderRadius: "100px",
                   transition: "width 0.2s",
                 }} />

@@ -4,6 +4,7 @@ import { parseNavbar } from "../../lib/parseNavbar";
 import Head from "next/head";
 import { useFetchUser } from "../../lib/authContext";
 import Gallery from "../../components/Galeria";
+import { GOLD_DARK, INK, INK_SOFT, BG, BG_ALT, BORDER, FONT, FONT_IMPORT } from "../../lib/theme";
 
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
 
@@ -17,23 +18,28 @@ const Galeria = ({ social, contato, navbar, edicaoNum, galeriaGroups }: any) => 
 				<meta name="description" content="Galeria de imagens do Prémio Nacional de Publicidade" />
 			</Head>
 
-			<div className="bg-gray-50">
-				<div className="mx-auto max-w-7xl py-12 px-4 sm:px-6">
-					<h2 className="text-2xl text-center mb-8 font-bold tracking-tight text-gray-900 sm:text-4xl">
-						<span className="block text-amarelo-ouro">
-							{edicaoNum ? `Galeria da ${edicaoNum}ª Edição` : "Galeria"}
-						</span>
-					</h2>
-				</div>
+			<style>{`${FONT_IMPORT}`}</style>
+
+			<div style={{ background: BG_ALT, borderBottom: `1px solid ${BORDER}`, paddingTop: "6rem", paddingBottom: "3rem", textAlign: "center" }}>
+				<p style={{ fontFamily: FONT, fontSize: "0.8rem", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "1rem" }}>
+					Prémio Nacional de Publicidade
+				</p>
+				<h1 style={{ fontFamily: FONT, fontSize: "clamp(2.2rem,6vw,3.4rem)", fontWeight: 700, color: INK, margin: 0 }}>
+					{edicaoNum ? `Galeria da ${edicaoNum}ª Edição` : "Galeria"}
+				</h1>
 			</div>
 
-			{galeriaGroups.length > 0 ? (
-				galeriaGroups.map((group: any, i: number) => (
-					<Gallery key={i} images={group.images} />
-				))
-			) : (
-				<p className="text-center text-gray-500 py-16">Sem imagens disponíveis.</p>
-			)}
+			<div style={{ background: BG, paddingBottom: "3rem" }}>
+				{galeriaGroups.length > 0 ? (
+					galeriaGroups.map((group: any, i: number) => (
+						<Gallery key={i} images={group.images} />
+					))
+				) : (
+					<p style={{ textAlign: "center", color: INK_SOFT, fontFamily: FONT, fontSize: "0.95rem", padding: "4rem 0" }}>
+						Sem imagens disponíveis.
+					</p>
+				)}
+			</div>
 		</Layout>
 	);
 };

@@ -1,8 +1,6 @@
 import { useState, forwardRef, useImperativeHandle } from "react"
 import { useForm } from "react-hook-form"
-
-const GOLD      = "#c2a12b"
-const DARK_CARD = "#100d07"
+import { GOLD, GOLD_DARK, INK, INK_SOFT, BG, BORDER } from "../../lib/theme"
 
 interface Inputs {
   coord_prod: string
@@ -97,18 +95,18 @@ const EquipaForm = forwardRef<FormHandle, Props>(
     return (
       <div>
         <style>{`
-          .pnp-eq-input { background:${DARK_CARD}; border:1px solid ${GOLD}28; color:rgba(240,216,144,0.82); border-radius:8px; padding:0.72rem 1rem; width:100%; font-family:'DM Sans',sans-serif; font-size:0.875rem; outline:none; transition:border-color 0.2s,background 0.2s; box-sizing:border-box; }
-          .pnp-eq-input:focus { border-color:${GOLD}66; }
-          .pnp-eq-input::placeholder { color:${GOLD}30; }
-          .pnp-eq-err { border-color:#e74c3c88 !important; background:#e74c3c08 !important; }
-          .pnp-eq-err:focus { border-color:#e74c3cbb !important; }
+          .pnp-eq-input { background:${BG}; border:1px solid ${BORDER}; color:${INK}; border-radius:8px; padding:0.72rem 1rem; width:100%; font-family:'DM Sans',sans-serif; font-size:0.92rem; outline:none; transition:border-color 0.2s; box-sizing:border-box; }
+          .pnp-eq-input:focus { border-color:${GOLD}; }
+          .pnp-eq-input::placeholder { color:${INK_SOFT}88; }
+          .pnp-eq-err { border-color:#c0392b !important; background:#c0392b0a !important; }
+          .pnp-eq-err:focus { border-color:#c0392b !important; }
         `}</style>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem" }}>
           {TEAM_FIELDS.map((f) => (
             <div key={f.name}>
-              <label style={{ display: "flex", alignItems: "center", gap: "3px", fontFamily: "'DM Sans',sans-serif", fontSize: "0.62rem", letterSpacing: "0.16em", textTransform: "uppercase", color: highlighted.has(f.name) ? "#e74c3ccc" : `${GOLD}66`, marginBottom: "0.4rem", transition: "color 0.2s" }}>
+              <label style={{ display: "flex", alignItems: "center", gap: "3px", fontFamily: "'DM Sans',sans-serif", fontSize: "0.8rem", fontWeight: 600, color: highlighted.has(f.name) ? "#c0392b" : INK, marginBottom: "0.4rem", transition: "color 0.2s" }}>
                 {f.label}
-                {f.required && <span style={{ color: highlighted.has(f.name) ? "#e74c3c" : `${GOLD}44` }}>*</span>}
+                {f.required && <span style={{ color: highlighted.has(f.name) ? "#c0392b" : GOLD_DARK }}>*</span>}
               </label>
               <input
                 type="text"
@@ -119,7 +117,7 @@ const EquipaForm = forwardRef<FormHandle, Props>(
           ))}
 
           <div style={{ gridColumn: "span 2" }}>
-            <label style={{ display: "block", fontFamily: "'DM Sans',sans-serif", fontSize: "0.62rem", letterSpacing: "0.16em", textTransform: "uppercase", color: `${GOLD}66`, marginBottom: "0.4rem" }}>
+            <label style={{ display: "block", fontFamily: "'DM Sans',sans-serif", fontSize: "0.8rem", fontWeight: 600, color: INK, marginBottom: "0.4rem" }}>
               Considerações Adicionais
             </label>
             <textarea rows={3} className="pnp-eq-input" style={{ resize: "vertical" }} {...register("outras_consideracoes")} />
@@ -127,10 +125,10 @@ const EquipaForm = forwardRef<FormHandle, Props>(
 
           {DATE_FIELDS.map((f) => (
             <div key={f.name}>
-              <label style={{ display: "block", fontFamily: "'DM Sans',sans-serif", fontSize: "0.62rem", letterSpacing: "0.16em", textTransform: "uppercase", color: `${GOLD}66`, marginBottom: "0.4rem" }}>
+              <label style={{ display: "block", fontFamily: "'DM Sans',sans-serif", fontSize: "0.8rem", fontWeight: 600, color: INK, marginBottom: "0.4rem" }}>
                 {f.label}
               </label>
-              <input type="date" className="pnp-eq-input" style={{ colorScheme: "dark" }} {...register(f.name)} />
+              <input type="date" className="pnp-eq-input" {...register(f.name)} />
             </div>
           ))}
         </div>

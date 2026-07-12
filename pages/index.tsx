@@ -8,15 +8,10 @@ import { getStrapiMedia } from "../lib/utils"
 import Image from "next/image"
 import Link from "next/link"
 import { useEffect, useRef, useState } from "react"
+import { GOLD, GOLD_DARK, GOLD_BRIGHT, INK, INK_SOFT, BG, BG_ALT, CARD, BORDER, FONT, FONT_IMPORT } from "../lib/theme"
 const qs = require("qs")
 
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
-
-const GOLD        = "#c2a12b"
-const GOLD_BRIGHT = "#f0d060"
-const DARK        = "#080604"
-const DARK_CARD   = "#100d07"
-const DARK_MID    = "#0d0a05"
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 
@@ -88,8 +83,8 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
   if (error) {
     return (
       <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
-        <div style={{ background: DARK, minHeight: "60vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <p style={{ color: `${GOLD}88`, fontFamily: "'DM Sans', sans-serif" }}>Erro ao carregar. Tente mais tarde.</p>
+        <div style={{ background: BG, minHeight: "60vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <p style={{ color: INK_SOFT, fontFamily: FONT }}>Erro ao carregar. Tente mais tarde.</p>
         </div>
       </Layout>
     )
@@ -104,38 +99,29 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
 
       {/* ── Global keyframes ── */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap');
+        ${FONT_IMPORT}
 
         @keyframes fadeUp   { from { opacity:0; transform:translateY(28px); } to { opacity:1; transform:translateY(0); } }
         @keyframes fadeIn   { from { opacity:0; } to { opacity:1; } }
         @keyframes scrollBob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(7px); } }
-        @keyframes goldLine { from { width:0; } to { width:60px; } }
-        @keyframes goldPulse {
-          0%,100% { box-shadow: 0 0 0 0 rgba(194,161,43,0); }
-          50%      { box-shadow: 0 0 22px 5px rgba(194,161,43,0.22); }
-        }
-        @keyframes shimmer {
-          0%   { background-position: -200% center; }
-          100% { background-position:  200% center; }
-        }
 
-        .hp-cat-card:hover .hp-cat-overlay { opacity:1 !important; }
-        .hp-cat-card:hover .hp-cat-title   { color: ${GOLD_BRIGHT} !important; }
+        .hp-cat-card:hover { border-color: ${GOLD} !important; transform: translateY(-3px); box-shadow: 0 10px 26px rgba(36,31,15,0.1); }
+        .hp-cat-card:hover .hp-cat-title { color: ${GOLD_DARK} !important; }
         .hp-jury-scroll { scrollbar-width:none; }
         .hp-jury-scroll::-webkit-scrollbar { display:none; }
-        .hp-btn-outline:hover { background: ${GOLD}18 !important; border-color: ${GOLD} !important; color: ${GOLD_BRIGHT} !important; }
-        .hp-btn-solid:hover  { background-position: right center !important; box-shadow: 0 6px 26px rgba(194,161,43,0.35) !important; }
+        .hp-btn-outline:hover { background: ${GOLD}10 !important; border-color: ${GOLD} !important; }
+        .hp-btn-solid:hover  { background: ${GOLD_BRIGHT} !important; box-shadow: 0 6px 22px rgba(194,161,43,0.3) !important; }
       `}</style>
 
       {/* ══════════════════════════════════════════
-          §1  CINEMATIC HERO
+          §1  HERO
       ══════════════════════════════════════════ */}
       <div style={{
         position: "relative",
         height: "100vh",
         minHeight: "600px",
         overflow: "hidden",
-        background: DARK,
+        background: INK,
         marginTop: "-69px", // bleed under navbar
       }}>
         {/* Slides */}
@@ -153,22 +139,16 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
           </div>
         ))}
 
-        {/* Dark overlay gradient */}
+        {/* Overlay gradient — kept only over the photo, for text legibility */}
         <div style={{
           position: "absolute", inset: 0,
-          background: "linear-gradient(to bottom, rgba(8,6,4,0.62) 0%, rgba(8,6,4,0.3) 40%, rgba(8,6,4,0.88) 100%)",
-        }} />
-
-        {/* Grain texture */}
-        <div style={{
-          position: "absolute", inset: 0, opacity: 0.04, pointerEvents: "none",
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
+          background: "linear-gradient(to bottom, rgba(20,16,6,0.55) 0%, rgba(20,16,6,0.25) 40%, rgba(20,16,6,0.8) 100%)",
         }} />
 
         {/* Gold top accent */}
         <div style={{
-          position: "absolute", top: "69px", left: 0, right: 0, height: "2px",
-          background: `linear-gradient(90deg, transparent, ${GOLD}99, ${GOLD_BRIGHT}, ${GOLD}99, transparent)`,
+          position: "absolute", top: "69px", left: 0, right: 0, height: "3px",
+          background: `linear-gradient(90deg, transparent, ${GOLD}, ${GOLD_BRIGHT}, ${GOLD}, transparent)`,
           pointerEvents: "none",
         }} />
 
@@ -181,67 +161,54 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
           padding: "0 1.5rem",
           paddingTop: "69px",
         }}>
-          <p style={{
-            fontFamily: "'DM Sans', sans-serif",
-            fontSize: "0.54rem",
-            letterSpacing: "0.32em",
-            textTransform: "uppercase",
-            color: `${GOLD}bb`,
-            marginBottom: "1.4rem",
-            animation: "fadeUp 0.7s ease 0.1s both",
-          }}>
-            ✦ &nbsp; Cabo Verde &nbsp; ✦
-          </p>
-
           {edicaoNum && (
             <div style={{
               display: "inline-block",
-              border: `1px solid ${GOLD}55`,
+              border: `1px solid ${GOLD_BRIGHT}`,
               borderRadius: "100px",
-              padding: "4px 18px",
-              fontFamily: "'DM Sans', sans-serif",
-              fontSize: "0.6rem",
-              letterSpacing: "0.22em",
+              padding: "5px 20px",
+              fontFamily: FONT,
+              fontSize: "0.75rem",
+              letterSpacing: "0.08em",
               textTransform: "uppercase",
-              color: `${GOLD}cc`,
+              fontWeight: 700,
+              color: "#fff",
               marginBottom: "1.6rem",
               animation: "fadeUp 0.7s ease 0.2s both",
-              background: `${GOLD}10`,
+              background: `${GOLD}30`,
             }}>
               {edicaoNum}ª Edição
             </div>
           )}
 
           <h1 style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontSize: "clamp(2.8rem, 9vw, 7rem)",
-            fontWeight: 300,
-            lineHeight: 1.05,
-            letterSpacing: "0.04em",
-            color: "#f8ecc8",
+            fontFamily: FONT,
+            fontSize: "clamp(2.4rem, 7vw, 4.6rem)",
+            fontWeight: 700,
+            lineHeight: 1.15,
+            color: "#ffffff",
             margin: "0 0 0.5rem",
             animation: "fadeUp 0.8s ease 0.3s both",
-            textShadow: "0 4px 40px rgba(0,0,0,0.8)",
+            textShadow: "0 4px 30px rgba(0,0,0,0.5)",
             maxWidth: "900px",
           }}>
             Prémio Nacional<br />
-            <em style={{ color: GOLD_BRIGHT, fontStyle: "italic" }}>de Publicidade</em>
+            <span style={{ color: GOLD_BRIGHT }}>de Publicidade</span>
           </h1>
 
           <div style={{
-            width: "60px", height: "1px",
-            background: `linear-gradient(90deg, transparent, ${GOLD}, transparent)`,
-            margin: "2rem auto",
+            width: "60px", height: "3px", borderRadius: "3px",
+            background: GOLD,
+            margin: "1.8rem auto",
             animation: "fadeIn 1s ease 0.6s both",
           }} />
 
           <p style={{
-            fontFamily: "'DM Sans', sans-serif",
-            fontSize: "clamp(0.78rem, 2vw, 0.95rem)",
-            color: "rgba(240,216,160,0.55)",
-            letterSpacing: "0.06em",
+            fontFamily: FONT,
+            fontSize: "clamp(0.95rem, 2vw, 1.1rem)",
+            color: "rgba(255,255,255,0.85)",
             maxWidth: "480px",
-            lineHeight: 1.8,
+            lineHeight: 1.6,
             animation: "fadeUp 0.9s ease 0.5s both",
           }}>
             Reconhecendo a criatividade e excelência publicitária em Cabo Verde.
@@ -252,39 +219,34 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
             animation: "fadeUp 1s ease 0.7s both",
           }}>
             <Link href="/inscricao" className="hp-btn-solid" style={{
-              background: `linear-gradient(135deg, #a8861a 0%, ${GOLD} 40%, ${GOLD_BRIGHT} 70%, ${GOLD} 100%)`,
-              backgroundSize: "200% auto",
+              background: GOLD,
               border: "none",
               borderRadius: "100px",
               padding: "13px 32px",
-              fontFamily: "'DM Sans', sans-serif",
-              fontSize: "0.7rem",
-              letterSpacing: "0.18em",
-              textTransform: "uppercase",
-              color: "#0f0a02",
-              fontWeight: 600,
+              fontFamily: FONT,
+              fontSize: "0.9rem",
+              color: "#fff",
+              fontWeight: 700,
               cursor: "pointer",
               textDecoration: "none",
               display: "inline-flex", alignItems: "center",
-              transition: "background-position 0.4s, box-shadow 0.3s",
-              animation: "goldPulse 3.5s ease-in-out infinite",
+              transition: "background 0.3s, box-shadow 0.3s",
             }}>
               Inscrever
             </Link>
             <Link href="/regulamentos" className="hp-btn-outline" style={{
-              background: "transparent",
-              border: `1px solid ${GOLD}55`,
+              background: "rgba(255,255,255,0.08)",
+              border: "1px solid rgba(255,255,255,0.55)",
               borderRadius: "100px",
               padding: "13px 32px",
-              fontFamily: "'DM Sans', sans-serif",
-              fontSize: "0.7rem",
-              letterSpacing: "0.18em",
-              textTransform: "uppercase",
-              color: `${GOLD}bb`,
+              fontFamily: FONT,
+              fontSize: "0.9rem",
+              color: "#fff",
+              fontWeight: 700,
               cursor: "pointer",
               textDecoration: "none",
               display: "inline-flex", alignItems: "center",
-              transition: "background 0.3s, border-color 0.3s, color 0.3s",
+              transition: "background 0.3s, border-color 0.3s",
             }}>
               Regulamentos
             </Link>
@@ -296,10 +258,10 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
           <div style={{ position: "absolute", bottom: "2.5rem", left: 0, right: 0, display: "flex", justifyContent: "center", gap: "8px" }}>
             {bannerData.map((_, i) => (
               <button key={i} onClick={() => setSlide(i)} style={{
-                width: i === slide ? "24px" : "6px",
-                height: "6px",
+                width: i === slide ? "24px" : "8px",
+                height: "8px",
                 borderRadius: "100px",
-                background: i === slide ? GOLD : `${GOLD}40`,
+                background: i === slide ? GOLD : "rgba(255,255,255,0.5)",
                 border: "none",
                 cursor: "pointer",
                 transition: "width 0.4s, background 0.4s",
@@ -315,50 +277,47 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
           display: "flex", flexDirection: "column", alignItems: "center", gap: "6px",
           animation: "scrollBob 2s ease-in-out infinite",
         }}>
-          <span style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.5rem", letterSpacing: "0.2em", color: `${GOLD}60`, textTransform: "uppercase" }}>Scroll</span>
-          <div style={{ width: "1px", height: "28px", background: `linear-gradient(to bottom, ${GOLD}80, transparent)` }} />
+          <span style={{ fontFamily: FONT, fontSize: "0.65rem", letterSpacing: "0.1em", color: "rgba(255,255,255,0.7)", textTransform: "uppercase", fontWeight: 600 }}>Scroll</span>
+          <div style={{ width: "1px", height: "28px", background: "linear-gradient(to bottom, rgba(255,255,255,0.7), transparent)" }} />
         </div>
       </div>
 
       {/* ══════════════════════════════════════════
           §2  MANIFESTO / ABOUT
       ══════════════════════════════════════════ */}
-      <div style={{ background: DARK_MID, borderTop: `1px solid ${GOLD}15`, borderBottom: `1px solid ${GOLD}15` }}>
-        <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "6rem 2rem", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "5rem", alignItems: "center" }} className="hp-manifesto-grid">
-          <style>{`@media(max-width:768px){.hp-manifesto-grid{grid-template-columns:1fr !important; gap:2.5rem !important;}}`}</style>
+      <div style={{ background: BG }}>
+        <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "5rem 2rem", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4rem", alignItems: "center" }} className="hp-manifesto-grid">
+          <style>{`@media(max-width:768px){.hp-manifesto-grid{grid-template-columns:1fr !important; gap:2rem !important;}}`}</style>
 
-          {/* Left — editorial quote */}
+          {/* Left — quote */}
           <div>
-            <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.52rem", letterSpacing: "0.3em", textTransform: "uppercase", color: `${GOLD}66`, marginBottom: "1.4rem" }}>
-              ✦ &nbsp; A Nossa Missão
+            <p style={{ fontFamily: FONT, fontSize: "0.8rem", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "1.2rem" }}>
+              A Nossa Missão
             </p>
             <blockquote style={{
-              fontFamily: "'Cormorant Garamond', serif",
-              fontSize: "clamp(2rem, 4vw, 3rem)",
-              fontWeight: 300,
-              lineHeight: 1.3,
-              color: "#f5e8b8",
-              letterSpacing: "0.02em",
+              fontFamily: FONT,
+              fontSize: "clamp(1.5rem, 3vw, 2rem)",
+              fontWeight: 700,
+              lineHeight: 1.35,
+              color: INK,
               margin: 0,
-              borderLeft: `2px solid ${GOLD}`,
+              borderLeft: `3px solid ${GOLD}`,
               paddingLeft: "1.5rem",
             }}>
               Reconhecer a excelência que move o mercado publicitário de Cabo Verde.
             </blockquote>
-
-            <div style={{ width: "48px", height: "1px", background: `linear-gradient(90deg, ${GOLD}, transparent)`, marginTop: "2.5rem" }} />
           </div>
 
           {/* Right — body text + stats */}
           <div>
             <p style={{
-              fontFamily: "'DM Sans', sans-serif",
-              fontSize: "0.88rem",
-              lineHeight: 2,
-              color: `${GOLD_BRIGHT}55`,
+              fontFamily: FONT,
+              fontSize: "1rem",
+              lineHeight: 1.8,
+              color: INK_SOFT,
               marginBottom: "2.5rem",
             }}>
-              O <strong style={{ color: GOLD, fontWeight: 500 }}>Prémio Nacional de Publicidade</strong> tem como
+              O <strong style={{ color: INK, fontWeight: 700 }}>Prémio Nacional de Publicidade</strong> tem como
               objetivo promover a atividade publicitária através do reconhecimento da qualidade
               dos trabalhos publicitários e institucionais veiculados, galardoando aqueles que,
               com criatividade e originalidade, contribuem para o desenvolvimento do mercado
@@ -373,10 +332,10 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
                   { num: Juris.length || "—", label: "Jurados" },
                 ].map(({ num, label }) => (
                   <div key={label}>
-                    <p style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "2.8rem", fontWeight: 300, color: GOLD, lineHeight: 1, marginBottom: "4px" }}>
+                    <p style={{ fontFamily: FONT, fontSize: "2.2rem", fontWeight: 700, color: GOLD_DARK, lineHeight: 1, marginBottom: "4px" }}>
                       {num}
                     </p>
-                    <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "0.6rem", letterSpacing: "0.2em", textTransform: "uppercase", color: `${GOLD}60` }}>
+                    <p style={{ fontFamily: FONT, fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.04em", color: INK_SOFT }}>
                       {label}
                     </p>
                   </div>
@@ -388,34 +347,32 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
       </div>
 
       {/* ══════════════════════════════════════════
-          §3  CATEGORIAS — dark masonry grid
+          §3  CATEGORIAS — compact icon grid
       ══════════════════════════════════════════ */}
       {Categoria.length > 0 && (
-        <div style={{ background: DARK, padding: "6rem 0" }}>
-          <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 2rem" }}>
+        <div style={{ background: BG_ALT, padding: "5rem 0", borderTop: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}` }}>
+          <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "0 2rem" }}>
             {/* Section header */}
-            <div style={{ textAlign: "center", marginBottom: "3.5rem" }}>
-              <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.52rem", letterSpacing: "0.3em", textTransform: "uppercase", color: `${GOLD}66`, marginBottom: "1rem" }}>
-                ✦ &nbsp; Competição
+            <div style={{ textAlign: "center", marginBottom: "3rem" }}>
+              <p style={{ fontFamily: FONT, fontSize: "0.8rem", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "0.8rem" }}>
+                Competição
               </p>
               <h2 style={{
-                fontFamily: "'Cormorant Garamond', serif",
-                fontSize: "clamp(2.2rem, 5vw, 3.5rem)",
-                fontWeight: 300,
-                color: "#f5e8b8",
-                letterSpacing: "0.05em",
-                margin: "0 0 1rem",
+                fontFamily: FONT,
+                fontSize: "clamp(1.8rem, 4vw, 2.6rem)",
+                fontWeight: 700,
+                color: INK,
+                margin: 0,
               }}>
                 Categorias de Prémio
               </h2>
-              <div style={{ width: "48px", height: "1px", background: `linear-gradient(90deg, transparent, ${GOLD}, transparent)`, margin: "0 auto" }} />
             </div>
 
-            {/* Cards grid */}
+            {/* Cards grid — small icon + title, no oversized artwork */}
             <div style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
-              gap: "1.25rem",
+              gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))",
+              gap: "1rem",
             }}>
               {Categoria.map((cat, i) => (
                 <Link key={cat.id} href={`/regulamentos#${cat.slug}`} style={{ textDecoration: "none" }}>
@@ -424,91 +381,56 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
                     onMouseEnter={() => setHovCat(i)}
                     onMouseLeave={() => setHovCat(null)}
                     style={{
-                      position: "relative",
-                      aspectRatio: "1",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      textAlign: "center",
+                      gap: "0.75rem",
+                      padding: "1.5rem 1rem",
                       borderRadius: "14px",
-                      overflow: "hidden",
-                      border: hovCat === i ? `1px solid ${GOLD}66` : `1px solid ${GOLD}20`,
-                      transition: "border-color 0.3s, transform 0.3s",
-                      transform: hovCat === i ? "translateY(-4px)" : "none",
-                      background: DARK_CARD,
+                      border: `1px solid ${BORDER}`,
+                      background: CARD,
                       cursor: "pointer",
+                      transition: "border-color 0.25s, transform 0.25s, box-shadow 0.25s",
                     }}
                   >
-                    {/* Background image */}
-                    {cat.url && (
-                      <img
-                        src={cat.url}
-                        alt={cat.titulo}
-                        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.35, transition: "opacity 0.4s" }}
-                      />
-                    )}
-
-                    {/* Dark overlay */}
+                    {/* Small icon */}
                     <div style={{
-                      position: "absolute", inset: 0,
-                      background: "linear-gradient(to top, rgba(8,6,4,0.95) 0%, rgba(8,6,4,0.3) 100%)",
-                    }} />
-
-                    {/* Hover overlay with description */}
-                    <div className="hp-cat-overlay" style={{
-                      position: "absolute", inset: 0,
-                      background: `linear-gradient(to top, ${DARK_CARD}fa 0%, ${DARK_CARD}cc 100%)`,
-                      opacity: 0,
-                      transition: "opacity 0.35s",
-                      display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center",
-                      padding: "1.5rem",
-                      textAlign: "center",
+                      width: "48px",
+                      height: "48px",
+                      borderRadius: "50%",
+                      overflow: "hidden",
+                      background: BG_ALT,
+                      border: `1px solid ${BORDER}`,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
                     }}>
-                      <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.72rem", color: `${GOLD_BRIGHT}70`, lineHeight: 1.7 }}>
-                        {cat.descricao?.slice(0, 90) || "Ver mais detalhes"}
-                      </p>
-                      <span style={{
-                        marginTop: "1rem",
-                        fontFamily: "'DM Sans',sans-serif",
-                        fontSize: "0.58rem",
-                        letterSpacing: "0.2em",
-                        textTransform: "uppercase",
-                        color: GOLD,
-                        borderBottom: `1px solid ${GOLD}55`,
-                        paddingBottom: "2px",
-                      }}>Saiba Mais</span>
+                      {cat.url ? (
+                        <img
+                          src={cat.url}
+                          alt={cat.titulo}
+                          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                        />
+                      ) : (
+                        <span style={{ fontFamily: FONT, fontWeight: 700, color: GOLD_DARK, fontSize: "1rem" }}>
+                          {String(i + 1).padStart(2, "0")}
+                        </span>
+                      )}
                     </div>
 
-                    {/* Gold top accent */}
-                    <div style={{
-                      position: "absolute", top: 0, left: 0, right: 0, height: "2px",
-                      background: hovCat === i ? `linear-gradient(90deg, ${GOLD}, ${GOLD_BRIGHT})` : `${GOLD}40`,
-                      transition: "background 0.3s",
-                    }} />
-
-                    {/* Category number */}
-                    <div style={{
-                      position: "absolute", top: "1rem", right: "1rem",
-                      fontFamily: "'Cormorant Garamond',serif",
-                      fontSize: "1.8rem",
-                      fontWeight: 300,
-                      color: `${GOLD}25`,
-                      lineHeight: 1,
+                    <p className="hp-cat-title" style={{
+                      fontFamily: FONT,
+                      fontSize: "0.9rem",
+                      fontWeight: 700,
+                      color: INK,
+                      lineHeight: 1.3,
+                      transition: "color 0.25s",
+                      margin: 0,
                     }}>
-                      {String(i + 1).padStart(2, "0")}
-                    </div>
-
-                    {/* Title at bottom */}
-                    <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "1.2rem" }}>
-                      <p className="hp-cat-title" style={{
-                        fontFamily: "'Cormorant Garamond', serif",
-                        fontSize: "1.05rem",
-                        fontWeight: 400,
-                        color: "#f5e8b8",
-                        letterSpacing: "0.03em",
-                        lineHeight: 1.3,
-                        transition: "color 0.3s",
-                        margin: 0,
-                      }}>
-                        {cat.titulo}
-                      </p>
-                    </div>
+                      {cat.titulo}
+                    </p>
                   </div>
                 </Link>
               ))}
@@ -518,30 +440,29 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
       )}
 
       {/* ══════════════════════════════════════════
-          §4  PRÉMIO PÚBLICO — dark minimal
+          §4  PRÉMIO PÚBLICO
       ══════════════════════════════════════════ */}
-      <div style={{ background: DARK_MID, borderTop: `1px solid ${GOLD}15`, borderBottom: `1px solid ${GOLD}15` }}>
-        <div style={{ maxWidth: "900px", margin: "0 auto", padding: "6rem 2rem", textAlign: "center" }}>
-          <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.52rem", letterSpacing: "0.3em", textTransform: "uppercase", color: `${GOLD}66`, marginBottom: "1.2rem" }}>
-            ✦ &nbsp; Voto Popular
+      <div style={{ background: BG }}>
+        <div style={{ maxWidth: "900px", margin: "0 auto", padding: "5rem 2rem", textAlign: "center" }}>
+          <p style={{ fontFamily: FONT, fontSize: "0.8rem", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "1rem" }}>
+            Voto Popular
           </p>
           <h2 style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontSize: "clamp(2rem, 5vw, 3.2rem)",
-            fontWeight: 300,
-            color: "#f5e8b8",
-            letterSpacing: "0.05em",
-            marginBottom: "1.5rem",
+            fontFamily: FONT,
+            fontSize: "clamp(1.8rem, 4vw, 2.6rem)",
+            fontWeight: 700,
+            color: INK,
+            marginBottom: "1.25rem",
           }}>
             Prémio Público de Publicidade
           </h2>
           <p style={{
-            fontFamily: "'DM Sans', sans-serif",
-            fontSize: "0.85rem",
-            lineHeight: 2,
-            color: `${GOLD_BRIGHT}50`,
+            fontFamily: FONT,
+            fontSize: "1rem",
+            lineHeight: 1.8,
+            color: INK_SOFT,
             maxWidth: "640px",
-            margin: "0 auto 2.5rem",
+            margin: "0 auto 2rem",
           }}>
             Uma categoria onde a votação é feita exclusivamente pelo público, através da internet —
             sem avaliação do júri, baseado unicamente na popularidade e no impacto.
@@ -551,36 +472,33 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
           <div style={{
             display: "inline-flex",
             alignItems: "center",
-            gap: "0.75rem",
-            border: `1px solid ${GOLD}28`,
+            gap: "0.6rem",
+            border: `1px solid ${BORDER}`,
             borderRadius: "10px",
             padding: "10px 20px",
-            background: `${GOLD}08`,
-            marginBottom: "2.5rem",
+            background: BG_ALT,
+            marginBottom: "2rem",
           }}>
-            <span style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.68rem", color: `${GOLD}99`, letterSpacing: "0.06em" }}>
-              ⏳ &nbsp; Disponível apenas durante o período de votação
+            <span style={{ fontFamily: FONT, fontSize: "0.85rem", fontWeight: 600, color: INK_SOFT }}>
+              ⏳ Disponível apenas durante o período de votação
             </span>
           </div>
 
           <br />
           <Link href="/projetos" className="hp-btn-solid" style={{
-            background: `linear-gradient(135deg, #a8861a 0%, ${GOLD} 40%, ${GOLD_BRIGHT} 70%, ${GOLD} 100%)`,
-            backgroundSize: "200% auto",
+            background: GOLD,
             border: "none",
             borderRadius: "100px",
             padding: "14px 36px",
-            fontFamily: "'DM Sans', sans-serif",
-            fontSize: "0.7rem",
-            letterSpacing: "0.18em",
-            textTransform: "uppercase",
-            color: "#0f0a02",
-            fontWeight: 600,
+            fontFamily: FONT,
+            fontSize: "0.9rem",
+            color: "#fff",
+            fontWeight: 700,
             cursor: "pointer",
             textDecoration: "none",
             display: "inline-flex",
             alignItems: "center",
-            transition: "background-position 0.4s, box-shadow 0.3s",
+            transition: "background 0.3s, box-shadow 0.3s",
           }}>
             Ver Projetos em Competição
           </Link>
@@ -591,25 +509,23 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
           §5  JÚRI — horizontal scroll strip
       ══════════════════════════════════════════ */}
       {Juris.length > 0 && (
-        <div style={{ background: DARK, padding: "6rem 0" }}>
+        <div style={{ background: BG_ALT, padding: "5rem 0", borderTop: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}` }}>
           <div style={{ maxWidth: "1200px", margin: "0 auto 2.5rem", padding: "0 2rem" }}>
             <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem" }}>
               <div>
-                <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.52rem", letterSpacing: "0.3em", textTransform: "uppercase", color: `${GOLD}66`, marginBottom: "0.8rem" }}>
-                  ✦ &nbsp; Avaliação
+                <p style={{ fontFamily: FONT, fontSize: "0.8rem", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "0.6rem" }}>
+                  Avaliação
                 </p>
                 <h2 style={{
-                  fontFamily: "'Cormorant Garamond', serif",
-                  fontSize: "clamp(2rem, 5vw, 3.2rem)",
-                  fontWeight: 300,
-                  color: "#f5e8b8",
-                  letterSpacing: "0.04em",
+                  fontFamily: FONT,
+                  fontSize: "clamp(1.8rem, 4vw, 2.6rem)",
+                  fontWeight: 700,
+                  color: INK,
                   margin: 0,
                 }}>
                   Júri da {Juris[0]?.edicao}ª Edição
                 </h2>
               </div>
-              <div style={{ width: "48px", height: "1px", background: `linear-gradient(90deg, ${GOLD}, transparent)`, marginBottom: "8px" }} />
             </div>
           </div>
 
@@ -633,41 +549,34 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
                   onMouseLeave={() => setHovJuri(null)}
                   style={{
                     width: "240px",
-                    background: DARK_CARD,
-                    border: hovJuri === i ? `1px solid ${GOLD}55` : `1px solid ${GOLD}18`,
+                    background: CARD,
+                    border: hovJuri === i ? `1px solid ${GOLD}` : `1px solid ${BORDER}`,
                     borderRadius: "16px",
                     overflow: "hidden",
-                    transition: "border-color 0.3s, transform 0.3s",
-                    transform: hovJuri === i ? "translateY(-5px)" : "none",
+                    transition: "border-color 0.25s, transform 0.25s, box-shadow 0.25s",
+                    transform: hovJuri === i ? "translateY(-4px)" : "none",
+                    boxShadow: hovJuri === i ? "0 10px 26px rgba(36,31,15,0.1)" : "none",
                     cursor: "pointer",
                   }}
                 >
                   {/* Portrait */}
-                  <div style={{ position: "relative", height: "220px", background: DARK }}>
+                  <div style={{ position: "relative", height: "220px", background: BG_ALT }}>
                     <img
                       src={getStrapiMedia(j.j_foto) ?? ""}
                       alt={j.j_nome}
                       style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }}
                     />
-                    <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(16,13,7,0.9) 0%, transparent 50%)" }} />
-                    {/* Gold top bar */}
-                    <div style={{
-                      position: "absolute", top: 0, left: 0, right: 0, height: "2px",
-                      background: hovJuri === i ? `linear-gradient(90deg, ${GOLD}, ${GOLD_BRIGHT})` : `${GOLD}40`,
-                      transition: "background 0.3s",
-                    }} />
                   </div>
 
                   {/* Info */}
                   <div style={{ padding: "1.1rem 1.25rem 1.4rem" }}>
                     <h3 style={{
-                      fontFamily: "'Cormorant Garamond', serif",
-                      fontSize: "1.1rem",
-                      fontWeight: 400,
-                      color: hovJuri === i ? GOLD_BRIGHT : "#f5e8b8",
-                      letterSpacing: "0.02em",
+                      fontFamily: FONT,
+                      fontSize: "1.05rem",
+                      fontWeight: 700,
+                      color: hovJuri === i ? GOLD_DARK : INK,
                       margin: "0 0 4px",
-                      transition: "color 0.3s",
+                      transition: "color 0.25s",
                       whiteSpace: "nowrap",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
@@ -675,21 +584,22 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
                       {j.j_nome}
                     </h3>
                     <p style={{
-                      fontFamily: "'DM Sans',sans-serif",
-                      fontSize: "0.6rem",
-                      letterSpacing: "0.15em",
+                      fontFamily: FONT,
+                      fontSize: "0.75rem",
+                      letterSpacing: "0.04em",
                       textTransform: "uppercase",
-                      color: GOLD,
+                      fontWeight: 700,
+                      color: GOLD_DARK,
                       margin: "0 0 0.75rem",
                     }}>
                       {j.j_titulo}
                     </p>
                     {juriDescs[j.idd] && (
                       <p style={{
-                        fontFamily: "'DM Sans',sans-serif",
-                        fontSize: "0.72rem",
-                        color: `${GOLD_BRIGHT}45`,
-                        lineHeight: 1.7,
+                        fontFamily: FONT,
+                        fontSize: "0.85rem",
+                        color: INK_SOFT,
+                        lineHeight: 1.6,
                         margin: 0,
                       }}>
                         {juriDescs[j.idd]}
@@ -709,89 +619,68 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
       <div style={{
         position: "relative",
         overflow: "hidden",
-        background: DARK_CARD,
-        borderTop: `1px solid ${GOLD}25`,
-        padding: "7rem 2rem",
+        background: INK,
+        padding: "6rem 2rem",
         textAlign: "center",
       }}>
-        {/* Grain */}
-        <div style={{
-          position: "absolute", inset: 0, opacity: 0.035, pointerEvents: "none",
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-        }} />
-
-        {/* Radial gold glow */}
-        <div style={{
-          position: "absolute", inset: 0, pointerEvents: "none",
-          background: `radial-gradient(ellipse 60% 50% at 50% 50%, ${GOLD}0d 0%, transparent 70%)`,
-        }} />
-
         <div style={{ position: "relative" }}>
-          <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.52rem", letterSpacing: "0.32em", textTransform: "uppercase", color: `${GOLD}66`, marginBottom: "1.4rem" }}>
-            ✦ &nbsp; Participe
+          <p style={{ fontFamily: FONT, fontSize: "0.8rem", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700, color: GOLD_BRIGHT, marginBottom: "1.2rem" }}>
+            Participe
           </p>
 
           <h2 style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontSize: "clamp(2.5rem, 7vw, 5rem)",
-            fontWeight: 300,
-            lineHeight: 1.1,
-            letterSpacing: "0.04em",
-            color: "#f5e8b8",
+            fontFamily: FONT,
+            fontSize: "clamp(2rem, 5vw, 3.2rem)",
+            fontWeight: 700,
+            lineHeight: 1.15,
+            color: "#ffffff",
             marginBottom: "0.5rem",
           }}>
             Pronto para se<br />
-            <em style={{ color: GOLD_BRIGHT, fontStyle: "italic" }}>inscrever?</em>
+            <span style={{ color: GOLD_BRIGHT }}>inscrever?</span>
           </h2>
 
-          <div style={{ width: "48px", height: "1px", background: `linear-gradient(90deg, transparent, ${GOLD}, transparent)`, margin: "2rem auto" }} />
-
           <p style={{
-            fontFamily: "'DM Sans',sans-serif",
-            fontSize: "0.8rem",
-            color: `${GOLD_BRIGHT}45`,
-            letterSpacing: "0.08em",
-            marginBottom: "3rem",
+            fontFamily: FONT,
+            fontSize: "1rem",
+            color: "rgba(255,255,255,0.75)",
+            marginTop: "1.5rem",
+            marginBottom: "2.5rem",
           }}>
             Submeta o seu trabalho e faça parte da história da publicidade cabo-verdiana.
           </p>
 
           <div style={{ display: "flex", gap: "1.25rem", justifyContent: "center", flexWrap: "wrap" }}>
             <Link href="/inscricao" className="hp-btn-solid" style={{
-              background: `linear-gradient(135deg, #a8861a 0%, ${GOLD} 40%, ${GOLD_BRIGHT} 70%, ${GOLD} 100%)`,
-              backgroundSize: "200% auto",
+              background: GOLD,
               border: "none",
               borderRadius: "100px",
               padding: "14px 40px",
-              fontFamily: "'DM Sans',sans-serif",
-              fontSize: "0.7rem",
-              letterSpacing: "0.18em",
-              textTransform: "uppercase",
-              color: "#0f0a02",
-              fontWeight: 600,
+              fontFamily: FONT,
+              fontSize: "0.9rem",
+              color: "#fff",
+              fontWeight: 700,
               cursor: "pointer",
               textDecoration: "none",
               display: "inline-flex",
               alignItems: "center",
-              transition: "background-position 0.4s, box-shadow 0.3s",
-              animation: "goldPulse 3.5s ease-in-out infinite",
+              transition: "background 0.3s, box-shadow 0.3s",
             }}>
               Inscrever Agora
             </Link>
             <Link href="/regulamentos" className="hp-btn-outline" style={{
-              background: "transparent",
-              border: `1px solid ${GOLD}50`,
+              background: "rgba(255,255,255,0.08)",
+              border: "1px solid rgba(255,255,255,0.5)",
               borderRadius: "100px",
               padding: "14px 40px",
-              fontFamily: "'DM Sans',sans-serif",
-              fontSize: "0.7rem",
-              letterSpacing: "0.18em",
-              textTransform: "uppercase",
-              color: `${GOLD}bb`,
+              fontFamily: FONT,
+              fontSize: "0.9rem",
+              color: "#fff",
+              fontWeight: 700,
               textDecoration: "none",
               display: "inline-flex",
               alignItems: "center",
-              transition: "background 0.3s, border-color 0.3s, color 0.3s",
+              transition: "background 0.3s, border-color 0.3s",
             }}>
               Ver Regulamento
             </Link>
