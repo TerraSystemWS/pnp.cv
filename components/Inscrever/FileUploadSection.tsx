@@ -42,91 +42,149 @@ export default function FileUploadSection({ cid, apiLink, existingFiles, onFiles
     if (e.dataTransfer.files) processFiles(e.dataTransfer.files)
   }
 
-  const uploadFile = (file: File, index: number, list: UploadingFile[]): Promise<void> =>
-    new Promise((resolve) => {
-      const formData = new FormData()
-      formData.append("files", file)
+  // Ficheiros grandes enviados de ligações lentas/instáveis (ex: Cabo Verde)
+  // nunca completam um único POST antes de a ligação ser cortada (~60s).
+  // Por isso o envio é feito em pedaços pequenos, cada um curto o suficiente
+  // para terminar mesmo em ligações fracas, com retry por pedaço.
+  const CHUNK_SIZE = 2 * 1024 * 1024 // 2MB
+  const MAX_CHUNK_RETRIES = 3
 
-      const xhr = new XMLHttpRequest()
+  const uploadChunkWithRetry = (
+    uploadId: string,
+    chunkIndex: number,
+    blob: Blob,
+    onChunkProgress: (loaded: number) => void
+  ): Promise<void> => {
+    const attempt = (retriesLeft: number): Promise<void> =>
+      new Promise((resolve, reject) => {
+        const formData = new FormData()
+        formData.append("chunk", blob)
 
-      xhr.upload.onprogress = (event) => {
-        if (event.lengthComputable) {
-          const percent = Math.round((event.loaded * 100) / event.total)
-          setUploading((prev) => {
-            const next = [...prev]
-            next[index] = { ...next[index], progress: percent }
-            return next
-          })
+        const xhr = new XMLHttpRequest()
+
+        xhr.upload.onprogress = (event) => {
+          if (event.lengthComputable) onChunkProgress(event.loaded)
         }
-      }
 
-      xhr.onreadystatechange = async () => {
-        if (xhr.readyState !== XMLHttpRequest.DONE) return
+        xhr.onreadystatechange = () => {
+          if (xhr.readyState !== XMLHttpRequest.DONE) return
 
-        if (xhr.status === 200) {
-          try {
-            const uploadData = JSON.parse(xhr.responseText)
+          if (xhr.status === 200) {
+            resolve()
+          } else if (retriesLeft > 0) {
+            onChunkProgress(0)
+            setTimeout(() => {
+              attempt(retriesLeft - 1).then(resolve, reject)
+            }, 800 * (MAX_CHUNK_RETRIES - retriesLeft + 1))
+          } else {
+            reject(new Error(`Falha ao enviar pedaço ${chunkIndex}`))
+          }
+        }
 
-            // Fetch current inscription file list
-            const inscricaoRes = await fetch(
-              `${apiLink}/api/inscricoes/${cid}?populate[fileLink][populate][ficheiro][fields]=name,hash,ext,mime,url`
+        xhr.open("POST", `${apiLink}/api/chunked-upload/${uploadId}/chunks/${chunkIndex}`)
+        xhr.send(formData)
+      })
+
+    return attempt(MAX_CHUNK_RETRIES)
+  }
+
+  const uploadFile = (file: File, index: number, list: UploadingFile[]): Promise<void> =>
+    (async () => {
+      try {
+        const totalChunks = Math.max(1, Math.ceil(file.size / CHUNK_SIZE))
+
+        const initRes = await fetch(`${apiLink}/api/chunked-upload/init`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            filename: file.name,
+            mimetype: file.type || "application/octet-stream",
+            size: file.size,
+            totalChunks,
+          }),
+        })
+        if (!initRes.ok) throw new Error("Não foi possível iniciar o upload")
+        const { uploadId } = await initRes.json()
+
+        let bytesSentBeforeCurrentChunk = 0
+        for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex += 1) {
+          const start = chunkIndex * CHUNK_SIZE
+          const end = Math.min(start + CHUNK_SIZE, file.size)
+          const blob = file.slice(start, end)
+
+          // eslint-disable-next-line no-await-in-loop
+          await uploadChunkWithRetry(uploadId, chunkIndex, blob, (loadedInChunk) => {
+            const percent = Math.round(
+              ((bytesSentBeforeCurrentChunk + loadedInChunk) * 100) / file.size
             )
-            const inscricaoData = await inscricaoRes.json()
-            const existing: FileLink[] = inscricaoData.data?.attributes?.fileLink ?? []
-
-            const merged = [
-              ...existing.map((f: FileLink) => ({
-                titulo: f.titulo,
-                publico: f.publico,
-                ficheiro: { id: f.ficheiro.data?.id },
-              })),
-              ...uploadData.map((f: { id: number; name: string }) => ({
-                titulo: f.name,
-                publico: false,
-                ficheiro: { id: f.id },
-              })),
-            ]
-
-            const putRes = await fetch(`${apiLink}/api/inscricoes/${cid}`, {
-              method: "PUT",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ data: { fileLink: merged } }),
-            })
-
-            if (putRes.ok) {
-              // Fetch final file list to update parent
-              const finalRes = await fetch(
-                `${apiLink}/api/inscricoes/${cid}?populate[fileLink][populate][ficheiro][fields]=name,hash,ext,mime,url`
-              )
-              const finalData = await finalRes.json()
-              onFilesUpdated(finalData.data?.attributes?.fileLink ?? [])
-
-              setUploading((prev) => {
-                const next = [...prev]
-                next[index] = { ...next[index], progress: 100, status: "done" }
-                return next
-              })
-            }
-          } catch {
             setUploading((prev) => {
               const next = [...prev]
-              next[index] = { ...next[index], status: "error" }
+              next[index] = { ...next[index], progress: percent }
               return next
             })
-          }
-        } else {
+          })
+
+          bytesSentBeforeCurrentChunk += end - start
+        }
+
+        const completeRes = await fetch(`${apiLink}/api/chunked-upload/${uploadId}/complete`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({}),
+        })
+        if (!completeRes.ok) throw new Error("Não foi possível concluir o upload")
+        const uploadData = await completeRes.json()
+
+        // Fetch current inscription file list
+        const inscricaoRes = await fetch(
+          `${apiLink}/api/inscricoes/${cid}?populate[fileLink][populate][ficheiro][fields]=name,hash,ext,mime,url`
+        )
+        const inscricaoData = await inscricaoRes.json()
+        const existing: FileLink[] = inscricaoData.data?.attributes?.fileLink ?? []
+
+        const merged = [
+          ...existing.map((f: FileLink) => ({
+            titulo: f.titulo,
+            publico: f.publico,
+            ficheiro: { id: f.ficheiro.data?.id },
+          })),
+          ...uploadData.map((f: { id: number; name: string }) => ({
+            titulo: f.name,
+            publico: false,
+            ficheiro: { id: f.id },
+          })),
+        ]
+
+        const putRes = await fetch(`${apiLink}/api/inscricoes/${cid}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ data: { fileLink: merged } }),
+        })
+
+        if (putRes.ok) {
+          // Fetch final file list to update parent
+          const finalRes = await fetch(
+            `${apiLink}/api/inscricoes/${cid}?populate[fileLink][populate][ficheiro][fields]=name,hash,ext,mime,url`
+          )
+          const finalData = await finalRes.json()
+          onFilesUpdated(finalData.data?.attributes?.fileLink ?? [])
+
           setUploading((prev) => {
             const next = [...prev]
-            next[index] = { ...next[index], status: "error" }
+            next[index] = { ...next[index], progress: 100, status: "done" }
             return next
           })
+        } else {
+          throw new Error("Não foi possível associar o ficheiro à inscrição")
         }
-        resolve()
+      } catch {
+        setUploading((prev) => {
+          const next = [...prev]
+          next[index] = { ...next[index], status: "error" }
+          return next
+        })
       }
-
-      xhr.open("POST", `${apiLink}/api/upload`)
-      xhr.send(formData)
-    })
+    })()
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
