@@ -118,11 +118,14 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
       ══════════════════════════════════════════ */}
       <div style={{
         position: "relative",
-        height: "100vh",
-        minHeight: "600px",
+        width: "100%",
+        // Banner artwork is a wide letterbox graphic (~1983×793). Sizing the
+        // section to that ratio instead of a fixed 100vh means object-fit:
+        // cover never has to crop the sides/top to fill the box.
+        aspectRatio: "1983 / 793",
+        maxHeight: "70vh",
         overflow: "hidden",
         background: INK,
-        marginTop: "-69px", // bleed under navbar
       }}>
         {/* Slides */}
         {bannerData.map((b, i) => (
@@ -147,7 +150,7 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
 
         {/* Gold top accent */}
         <div style={{
-          position: "absolute", top: "69px", left: 0, right: 0, height: "3px",
+          position: "absolute", top: 0, left: 0, right: 0, height: "3px",
           background: `linear-gradient(90deg, transparent, ${GOLD}, ${GOLD_BRIGHT}, ${GOLD}, transparent)`,
           pointerEvents: "none",
         }} />
