@@ -32,11 +32,10 @@ export async function verificarEmail(email: string): Promise<unknown | null> {
   }
 }
 
-export async function getAvaliacaos(inscricaoId: number, userId: number) {
+export async function getAvaliacaos(inscricaoId: number, userId: number, jwt?: string) {
   try {
-    const data = await apiClient.get(
-      `/api/avaliacaos?populate[user_id][fields]=id&populate[inscricoe][fields]=id&filters[user_id][id][$eq]=${userId}&filters[inscricoe][id][$eq]=${inscricaoId}&pagination[pageSize]=1`
-    )
+    const path = `/api/avaliacaos?populate[user_id][fields]=id&populate[inscricoe][fields]=id&filters[user_id][id][$eq]=${userId}&filters[inscricoe][id][$eq]=${inscricaoId}&pagination[pageSize]=1`
+    const data = jwt ? await apiClient.getWithAuth(path, jwt) : await apiClient.get(path)
 
     const avaliacao = data.data?.[0]
     if (!avaliacao) return null

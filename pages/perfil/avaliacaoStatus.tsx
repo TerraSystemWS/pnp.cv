@@ -11,7 +11,7 @@ import qs from "qs"
 // import HeroSection from "../../components/HeroSection"
 import { useRouter } from "next/router"
 import UserProfileCard from "../../components/custom/sidemenu"
-import { getTokenFromLocalCookie } from "../../lib/auth"
+import { getTokenFromLocalCookie, getTokenFromServerCookie } from "../../lib/auth"
 
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
 
@@ -27,7 +27,7 @@ const Avaliacao = ({
   totalPages,
   currentPage,
 }: any) => {
-  const { user, loading } = useFetchUser()
+  const { user, role, loading } = useFetchUser()
   const router = useRouter()
 
   // Estado para armazenar os nomes dos usuários
@@ -39,6 +39,13 @@ const Avaliacao = ({
       router.push("/") // Redirecionar para a página inicial (home)
     }
   }, [user, loading, router])
+
+  // Só jurados e responsáveis podem ver o resultado da avaliação
+  useEffect(() => {
+    if (!loading && user && role !== "jurado" && role !== "responsavel") {
+      router.push("/perfil")
+    }
+  }, [user, role, loading, router])
 
   // Função para pegar o nome do usuário com base no ID
   const getUserNameById = async (userId: number) => {
@@ -135,7 +142,7 @@ const Avaliacao = ({
         <div className="bg-gray-100">
           <div className="container mx-auto py-8">
             <div className="grid grid-cols-4 sm:grid-cols-12 gap-6 px-4">
-              <UserProfileCard user={user} />
+              <UserProfileCard user={user} role={role} />
               <div className="col-span-4 sm:col-span-9">
                 <div className="bg-white shadow rounded-lg p-6">
                   <h2 className="text-xl font-bold mb-4">
@@ -232,9 +239,10 @@ const Avaliacao = ({
 export default Avaliacao
 
 // Server-Side Data Fetching with Pagination Logic
-export async function getServerSideProps({ query }: any) {
+export async function getServerSideProps({ query, req }: any) {
   const page = query.page || 1 // Default to first page
   const pageSize = 1 // Show only one edition per page
+  const jwt = getTokenFromServerCookie(req)
 
   const queri = qs.stringify(
     {
@@ -257,7 +265,8 @@ export async function getServerSideProps({ query }: any) {
       fetcher(`${api_link}/api/menus?populate=deep`),
       fetcher(`${api_link}/api/inscricoes?populate=*`),
       fetcher(
-        `${api_link}/api/avaliacaos?populate[user_id][fields]=id&[populate][inscricoe][fields]=*&pagination[page]=1&pagination[pageSize]=500`
+        `${api_link}/api/avaliacaos?populate[user_id][fields]=id&[populate][inscricoe][fields]=*&pagination[page]=1&pagination[pageSize]=500`,
+        jwt ? { headers: { Authorization: `Bearer ${jwt}` } } : {}
       ),
     ])
     const [edicoes, contato, menus, inscritos, avaliacoes] = results.map((r: any) => {

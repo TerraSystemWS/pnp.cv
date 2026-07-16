@@ -23,7 +23,7 @@ const Avaliacao = ({
   totalPages,
   currentPage,
 }: any) => {
-  const { user, loading } = useFetchUser()
+  const { user, role, loading } = useFetchUser()
   const router = useRouter()
 
   // Verifica se o usuário está logado e redireciona para a home caso contrário
@@ -110,7 +110,7 @@ const Avaliacao = ({
           <div className="container mx-auto py-8">
             <div className="grid grid-cols-4 sm:grid-cols-12 gap-6 px-4">
               {/* component de side meu */}
-              <UserProfileCard user={user} />
+              <UserProfileCard user={user} role={role} />
               <div className="col-span-4 sm:col-span-9">
                 <div className="bg-white shadow rounded-lg p-6">
                   {/* inicio do section */}

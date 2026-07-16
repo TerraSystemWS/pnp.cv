@@ -6,6 +6,7 @@ import { FaUserAlt, FaStar, FaVoteYea } from "react-icons/fa"
 
 interface UserProfileCardProps {
   user: string
+  role?: string | null
 }
 
 type AccessLink = {
@@ -14,7 +15,7 @@ type AccessLink = {
   label: string
 }
 
-const UserProfileCard = ({ user }: UserProfileCardProps) => {
+const UserProfileCard = ({ user, role }: UserProfileCardProps) => {
   const router = useRouter()
   const pathname = router.pathname
 
@@ -33,19 +34,21 @@ const UserProfileCard = ({ user }: UserProfileCardProps) => {
       icon: <FaUserAlt className="mr-3 text-xl" />,
       label: "Perfil",
     },
-    {
-      href: "/perfil/avaliacao",
-      icon: <FaStar className="mr-3 text-xl" />,
-      label: "Avaliar Projetos",
-    },
-    user === "soniarosa" || user === "ailton"
+    role === "jurado" || role === "responsavel"
+      ? {
+          href: "/perfil/avaliacao",
+          icon: <FaStar className="mr-3 text-xl" />,
+          label: "Avaliar Projetos",
+        }
+      : null,
+    role === "jurado" || role === "responsavel"
       ? {
           href: "/perfil/votacaopublicaStatus",
           icon: <FaVoteYea className="mr-3 text-xl" />,
           label: "Resultado da Votação Pública",
         }
       : null,
-    user === "soniarosa" || user === "ailton" || user === "Solange Cesarovna"
+    role === "jurado" || role === "responsavel"
       ? {
           href: "/perfil/avaliacaoStatus",
           icon: <FaVoteYea className="mr-3 text-xl" />,

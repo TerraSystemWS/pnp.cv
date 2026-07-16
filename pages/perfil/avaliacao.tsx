@@ -11,7 +11,7 @@ import qs from "qs"
 import HeroSection from "../../components/HeroSection"
 import { useRouter } from "next/router"
 import UserProfileCard from "../../components/custom/sidemenu"
-import { getIdFromLocalCookie } from "../../lib/auth"
+import { getIdFromLocalCookie, getTokenFromLocalCookie } from "../../lib/auth"
 
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
 
@@ -25,7 +25,7 @@ const Avaliacao = ({
   totalPages,
   currentPage,
 }: any) => {
-  const { user, loading } = useFetchUser()
+  const { user, role, loading } = useFetchUser()
   const router = useRouter()
 
   // Estado para armazenar o userId
@@ -49,13 +49,20 @@ const Avaliacao = ({
     }
   }, [user, loading, router])
 
+  // Só jurados e responsáveis podem avaliar projetos
+  useEffect(() => {
+    if (!loading && user && role !== "jurado" && role !== "responsavel") {
+      router.push("/perfil")
+    }
+  }, [user, role, loading, router])
+
   // Fetch de avaliações baseado em inscrições e userId
   useEffect(() => {
     if (userId && inscritos.length > 0) {
       const fetchAvaliacoes = async () => {
     const results = await Promise.allSettled(
           inscritos.map(async (inscricao: any) => {
-            const avaliacao = await getAvaliacaos(inscricao.id, Number(userId))
+            const avaliacao = await getAvaliacaos(inscricao.id, Number(userId), getTokenFromLocalCookie())
             return {
               inscricaoId: inscricao.id,
               avaliacao: avaliacao || null,
@@ -103,7 +110,7 @@ const Avaliacao = ({
         <div className="bg-gray-100">
           <div className="container mx-auto py-8">
             <div className="grid grid-cols-4 sm:grid-cols-12 gap-6 px-4">
-              <UserProfileCard user={user} />
+              <UserProfileCard user={user} role={role} />
               <div className="col-span-4 sm:col-span-9">
                 <div className="bg-white shadow rounded-lg p-6">
                   <h2 className="text-xl font-bold mb-4">Área dos Jurados</h2>
