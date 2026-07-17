@@ -53,8 +53,6 @@ const Avaliacao = ({
   // Só jurados e responsáveis podem avaliar projetos
   useEffect(() => {
     if (!loading && user && !hasJuryAccess(role)) {
-      // eslint-disable-next-line no-alert
-      alert(`[DEBUG] Acesso negado em /perfil/avaliacao — user=${user} role=${JSON.stringify(role)}`)
       router.push("/perfil")
     }
   }, [user, role, loading, router])
