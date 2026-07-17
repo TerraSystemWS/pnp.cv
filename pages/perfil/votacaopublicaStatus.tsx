@@ -33,7 +33,7 @@ const VotacaoPublicaStatus = ({ social, contato, Vpublica, navbar }: any) => {
 
   // Verificar se o usuário é permitido (depois de carregado)
   useEffect(() => {
-    if (!loading && user && role !== "jurado" && role !== "responsavel") {
+    if (!loading && user && role !== "Jurado" && role !== "Responsavel") {
       Router.push("/perfil")
     }
   }, [user, role, loading])
@@ -229,11 +229,10 @@ export const getServerSideProps = async () => {
       fetcher(`${api_link}/api/inscricoes?${query}`),
     ])
     const [contato, menus, inscricoes] = results.map((r: any) => {
-      if (r.status === 'fulfilled') return r.value
-      console.error('Endpoint failed:', r.reason)
+      if (r.status === "fulfilled") return r.value
+      console.error("Endpoint failed:", r.reason)
       return null
     })
-
 
     return {
       props: {

@@ -34,7 +34,7 @@ const Avaliacao = ({
     }
   }, [user, loading, router])
 
-  const userb: any = "terra"
+  // const userb: any = "terra"
   // user === "soniarosa" || user === "ailton" || user === "Solange Cesarovna"
   //       ? {
   //           href: "/perfil/avaliacaoStatus",
@@ -161,12 +161,14 @@ export async function getServerSideProps({ query }: any) {
       fetcher(`${api_link}/api/inscricoes?populate=*`),
     ])
     const [edicoes, contato, menus, inscritos] = results.map((r: any) => {
-      if (r.status === 'fulfilled') return r.value
-      console.error('Endpoint failed:', r.reason)
+      if (r.status === "fulfilled") return r.value
+      console.error("Endpoint failed:", r.reason)
       return null
     })
 
-    const totalPages = Math.ceil((edicoes?.meta?.pagination?.total ?? 0) / pageSize)
+    const totalPages = Math.ceil(
+      (edicoes?.meta?.pagination?.total ?? 0) / pageSize
+    )
     const currentPage = edicoes?.meta?.pagination?.page ?? 1
 
     return {

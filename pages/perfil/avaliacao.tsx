@@ -51,7 +51,7 @@ const Avaliacao = ({
 
   // Só jurados e responsáveis podem avaliar projetos
   useEffect(() => {
-    if (!loading && user && role !== "jurado" && role !== "responsavel") {
+    if (!loading && user && role !== "Jurado" && role !== "Responsavel") {
       router.push("/perfil")
     }
   }, [user, role, loading, router])
@@ -60,9 +60,13 @@ const Avaliacao = ({
   useEffect(() => {
     if (userId && inscritos.length > 0) {
       const fetchAvaliacoes = async () => {
-    const results = await Promise.allSettled(
+        const results = await Promise.allSettled(
           inscritos.map(async (inscricao: any) => {
-            const avaliacao = await getAvaliacaos(inscricao.id, Number(userId), getTokenFromLocalCookie())
+            const avaliacao = await getAvaliacaos(
+              inscricao.id,
+              Number(userId),
+              getTokenFromLocalCookie()
+            )
             return {
               inscricaoId: inscricao.id,
               avaliacao: avaliacao || null,
@@ -168,12 +172,12 @@ const Avaliacao = ({
                                                       "Insuficiente"
                                                       ? "bg-red-400"
                                                       : avaliacao.notas ===
-                                                        "Suficiente"
-                                                      ? "bg-yellow-400"
-                                                      : avaliacao.notas ===
-                                                        "Bom"
-                                                      ? "bg-blue-400"
-                                                      : "bg-green-400"
+                                                          "Suficiente"
+                                                        ? "bg-yellow-400"
+                                                        : avaliacao.notas ===
+                                                            "Bom"
+                                                          ? "bg-blue-400"
+                                                          : "bg-green-400"
                                                   }`}
                                                 >
                                                   {avaliacao.notas
@@ -247,12 +251,14 @@ export async function getServerSideProps({ query }: any) {
       fetcher(`${api_link}/api/inscricoes?populate=*`),
     ])
     const [edicoes, contato, menus, inscritos] = results.map((r: any) => {
-      if (r.status === 'fulfilled') return r.value
-      console.error('Endpoint failed:', r.reason)
+      if (r.status === "fulfilled") return r.value
+      console.error("Endpoint failed:", r.reason)
       return null
     })
 
-    const totalPages = Math.ceil((edicoes?.meta?.pagination?.total ?? 0) / pageSize)
+    const totalPages = Math.ceil(
+      (edicoes?.meta?.pagination?.total ?? 0) / pageSize
+    )
     const currentPage = edicoes?.meta?.pagination?.page ?? 1
 
     return {
