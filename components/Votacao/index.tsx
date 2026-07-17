@@ -39,14 +39,14 @@ const Votacao = ({ edicaoId, inscricaoId, userId }: any) => {
   // });
 
   useEffect(() => {
-    getAvaliacaos(inscricaoId, userId)
+    getAvaliacaos(inscricaoId, userId, jwt)
       .then((avaliacao2) => {
         setAvaliacao(avaliacao2) // Atualize o estado com a avaliação
       })
       .catch((error) => {
         console.error("Error fetching data:", error)
       })
-  }, [inscricaoId, userId]) // Dependências para chamar novamente se mudar
+  }, [inscricaoId, userId, jwt]) // Dependências para chamar novamente se mudar
 
   // const avaliacao = avaliacaos.find(
   //   (avaliacao: any) =>

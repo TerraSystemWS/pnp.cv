@@ -6,6 +6,7 @@ import { useFetchUser } from "../../lib/authContext"
 import Router from "next/router"
 import qs from "qs"
 import UserProfileCard from "../../components/custom/sidemenu"
+import { hasJuryAccess } from "../../lib/roles"
 
 // PrimeReact components
 import React, { useState, useEffect, useRef } from "react"
@@ -19,7 +20,7 @@ import { Tooltip } from "primereact/tooltip"
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
 
 const VotacaoPublicaStatus = ({ social, contato, Vpublica, navbar }: any) => {
-  const { user, loading } = useFetchUser()
+  const { user, role, loading } = useFetchUser()
   const [products, setProducts] = useState<any[]>([])
   const [selectedProducts, setSelectedProducts] = useState<any[]>([])
   const dt = useRef<any>(null)
@@ -33,10 +34,10 @@ const VotacaoPublicaStatus = ({ social, contato, Vpublica, navbar }: any) => {
 
   // Verificar se o usuário é permitido (depois de carregado)
   useEffect(() => {
-    if (!loading && user && user !== "ailton" && user !== "soniarosa") {
+    if (!loading && user && !hasJuryAccess(role)) {
       Router.push("/perfil")
     }
-  }, [user, loading])
+  }, [user, role, loading])
 
   // Transform Vpublica data into products
   useEffect(() => {
@@ -151,7 +152,7 @@ const VotacaoPublicaStatus = ({ social, contato, Vpublica, navbar }: any) => {
           <div className="container mx-auto py-8">
             <div className="grid grid-cols-4 sm:grid-cols-12 gap-6 px-4">
               {/* componente de side menu */}
-              <UserProfileCard user={user} />
+              <UserProfileCard user={user} role={role} />
               <div className="col-span-4 sm:col-span-9">
                 <div className="bg-white shadow rounded-lg p-6">
                   <h2 className="text-xl font-bold mb-4">Área do Utilizador</h2>
@@ -229,11 +230,10 @@ export const getServerSideProps = async () => {
       fetcher(`${api_link}/api/inscricoes?${query}`),
     ])
     const [contato, menus, inscricoes] = results.map((r: any) => {
-      if (r.status === 'fulfilled') return r.value
-      console.error('Endpoint failed:', r.reason)
+      if (r.status === "fulfilled") return r.value
+      console.error("Endpoint failed:", r.reason)
       return null
     })
-
 
     return {
       props: {

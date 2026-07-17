@@ -1,5 +1,6 @@
-import { useForm, SubmitHandler } from "react-hook-form"
-import toast from "react-hot-toast"
+import { useState, forwardRef, useImperativeHandle } from "react"
+import { useForm } from "react-hook-form"
+import { GOLD, GOLD_DARK, INK, INK_SOFT, BG, BORDER } from "../../lib/theme"
 
 interface Inputs {
   coord_prod: string
@@ -19,108 +20,122 @@ interface Props {
   cid: string
   apiLink: string
   defaults: Partial<Inputs>
+  onSaved?: () => void
+  onSaveStatusChange?: (status: "idle" | "saving" | "saved" | "error") => void
 }
 
-const TEAM_FIELDS: { name: keyof Inputs; label: string }[] = [
-  { name: "coord_prod", label: "COORD PROD" },
-  { name: "dir_foto", label: "DIR FOTO" },
-  { name: "dir_art", label: "DIR ART" },
-  { name: "realizador", label: "REALIZADOR" },
-  { name: "editor", label: "EDITOR" },
-  { name: "autor_jingle", label: "AUTOR JINGLE" },
-  { name: "designer", label: "DESIGNER" },
+export interface FormHandle {
+  validate: () => string[]
+  submit: () => void
+}
+
+const REQUIRED: (keyof Inputs)[] = ["coord_prod"]
+
+const TEAM_FIELDS: { name: keyof Inputs; label: string; required?: boolean }[] = [
+  { name: "coord_prod",   label: "Coordenador / Produtor", required: true },
+  { name: "dir_foto",     label: "Diretor de Fotografia" },
+  { name: "dir_art",      label: "Diretor de Arte" },
+  { name: "realizador",   label: "Realizador" },
+  { name: "editor",       label: "Editor" },
+  { name: "autor_jingle", label: "Autor do Jingle" },
+  { name: "designer",     label: "Designer" },
 ]
 
 const DATE_FIELDS: { name: keyof Inputs; label: string }[] = [
-  { name: "data_producao", label: "Data da sua produção" },
-  { name: "data_divulgacao", label: "Data da divulgação" },
-  { name: "data_apresentacao_publica", label: "Data da sua apresentação pública (se trabalho universitário)" },
+  { name: "data_producao",             label: "Data de Produção" },
+  { name: "data_divulgacao",           label: "Data de Divulgação" },
+  { name: "data_apresentacao_publica", label: "Data de Apresentação Pública (se universitário)" },
 ]
 
-export default function EquipaForm({ cid, apiLink, defaults }: Props) {
-  const { register, handleSubmit } = useForm<Inputs>({ defaultValues: defaults })
+const EquipaForm = forwardRef<FormHandle, Props>(
+  ({ cid, apiLink, defaults, onSaved, onSaveStatusChange }, ref) => {
+    const { register, handleSubmit, reset, getValues } = useForm<Inputs>({ defaultValues: defaults })
+    const [highlighted, setHighlighted] = useState<Set<string>>(new Set())
 
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    try {
-      const res = await fetch(`${apiLink}/api/inscricoes/${cid}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ data }),
-      })
+    const doSave = handleSubmit(async (data) => {
+      onSaveStatusChange?.("saving")
+      try {
+        const res = await fetch(`${apiLink}/api/inscricoes/${cid}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ data }),
+        })
+        if (res.ok) {
+          onSaveStatusChange?.("saved")
+          reset(data)
+          setHighlighted(new Set())
+          onSaved?.()
+        } else {
+          onSaveStatusChange?.("error")
+        }
+      } catch {
+        onSaveStatusChange?.("error")
+      }
+    })
 
-      toast.promise(Promise.resolve(res.ok ? true : Promise.reject()), {
-        loading: "Guardando...",
-        success: "FICHA DA EQUIPA GUARDADA COM SUCESSO!",
-        error: "ERRO NA FICHA DE EQUIPA",
-      })
-    } catch {
-      toast.error("ERRO NA FICHA DE EQUIPA")
+    useImperativeHandle(ref, () => ({
+      validate: () => {
+        const vals = getValues()
+        const empty = REQUIRED.filter(f => !String(vals[f] ?? "").trim())
+        setHighlighted(new Set(empty))
+        return empty
+      },
+      submit: () => {
+        setHighlighted(new Set())
+        doSave()
+      },
+    }))
+
+    const clearIf = (name: keyof Inputs) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (String(e.target.value).trim()) {
+        setHighlighted(prev => { if (!prev.has(name)) return prev; const n = new Set(prev); n.delete(name); return n })
+      }
     }
-  }
 
-  return (
-    <div>
-      <div className="md:grid md:grid-cols-3 md:gap-6">
-        <div className="md:col-span-1">
-          <div className="px-4 sm:px-0">
-            <h3 className="text-xl font-semibold text-gray-900">Equipa do Projeto</h3>
-            <p className="mt-2 text-sm text-gray-600">Informações sobre as equipas e colaboradores do projeto</p>
-          </div>
-        </div>
-        <div className="mt-5 md:col-span-2 md:mt-0">
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="shadow-xl sm:overflow-hidden sm:rounded-lg">
-              <div className="space-y-6 bg-white px-6 py-8 sm:p-8 rounded-lg">
-                {TEAM_FIELDS.map((field) => (
-                  <div key={field.name} className="col-span-6 sm:col-span-4">
-                    <label htmlFor={field.name} className="block text-sm font-medium text-gray-700">
-                      {field.label}
-                    </label>
-                    <input
-                      type="text"
-                      id={field.name}
-                      className="mt-1 block w-full rounded-lg border-gray-300 shadow-md focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 sm:text-sm"
-                      {...register(field.name)}
-                    />
-                  </div>
-                ))}
-
-                <div className="col-span-6 sm:col-span-4">
-                  <label htmlFor="outras_consideracoes" className="block text-sm font-medium text-gray-700">
-                    Outro (considerações adicionais)
-                  </label>
-                  <textarea
-                    id="outras_consideracoes"
-                    rows={3}
-                    className="mt-1 block w-full rounded-lg border-gray-300 shadow-md focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 sm:text-sm"
-                    placeholder="Descreva seu projeto"
-                    {...register("outras_consideracoes")}
-                  />
-                </div>
-
-                {DATE_FIELDS.map((field) => (
-                  <div key={field.name} className="col-span-6 sm:col-span-4">
-                    <label htmlFor={field.name} className="block text-sm font-medium text-gray-700">
-                      {field.label}
-                    </label>
-                    <input
-                      type="date"
-                      id={field.name}
-                      className="mt-1 block w-full rounded-lg border-gray-300 shadow-md focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 sm:text-sm"
-                      {...register(field.name)}
-                    />
-                  </div>
-                ))}
-              </div>
-              <div className="bg-gray-50 px-6 py-4 text-right sm:px-6 rounded-b-lg">
-                <button type="submit" className="inline-flex justify-center rounded-md border border-transparent bg-amarelo-ouro py-2 px-6 text-sm font-medium text-white shadow-md hover:bg-amarelo-escuro focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition duration-300">
-                  Guardar
-                </button>
-              </div>
+    return (
+      <div>
+        <style>{`
+          .pnp-eq-input { background:${BG}; border:1px solid ${BORDER}; color:${INK}; border-radius:8px; padding:0.72rem 1rem; width:100%; font-family:'DM Sans',sans-serif; font-size:0.92rem; outline:none; transition:border-color 0.2s; box-sizing:border-box; }
+          .pnp-eq-input:focus { border-color:${GOLD}; }
+          .pnp-eq-input::placeholder { color:${INK_SOFT}88; }
+          .pnp-eq-err { border-color:#c0392b !important; background:#c0392b0a !important; }
+          .pnp-eq-err:focus { border-color:#c0392b !important; }
+        `}</style>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem" }}>
+          {TEAM_FIELDS.map((f) => (
+            <div key={f.name}>
+              <label style={{ display: "flex", alignItems: "center", gap: "3px", fontFamily: "'DM Sans',sans-serif", fontSize: "0.88rem", fontWeight: 700, color: highlighted.has(f.name) ? "#c0392b" : INK, marginBottom: "0.4rem", transition: "color 0.2s" }}>
+                {f.label}
+                {f.required && <span style={{ color: highlighted.has(f.name) ? "#c0392b" : GOLD_DARK }}>*</span>}
+              </label>
+              <input
+                type="text"
+                className={`pnp-eq-input${highlighted.has(f.name) ? " pnp-eq-err" : ""}`}
+                {...register(f.name, { onChange: clearIf(f.name) })}
+              />
             </div>
-          </form>
+          ))}
+
+          <div style={{ gridColumn: "span 2" }}>
+            <label style={{ display: "block", fontFamily: "'DM Sans',sans-serif", fontSize: "0.88rem", fontWeight: 700, color: INK, marginBottom: "0.4rem" }}>
+              Considerações Adicionais
+            </label>
+            <textarea rows={3} className="pnp-eq-input" style={{ resize: "vertical" }} {...register("outras_consideracoes")} />
+          </div>
+
+          {DATE_FIELDS.map((f) => (
+            <div key={f.name}>
+              <label style={{ display: "block", fontFamily: "'DM Sans',sans-serif", fontSize: "0.88rem", fontWeight: 700, color: INK, marginBottom: "0.4rem" }}>
+                {f.label}
+              </label>
+              <input type="date" className="pnp-eq-input" {...register(f.name)} />
+            </div>
+          ))}
         </div>
       </div>
-    </div>
-  )
-}
+    )
+  }
+)
+
+EquipaForm.displayName = "EquipaForm"
+export default EquipaForm

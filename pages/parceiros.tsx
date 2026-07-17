@@ -1,4 +1,3 @@
-import Image from "next/image"
 import Layout from "../components/Layout"
 import { fetcher } from "../lib/api"
 import { parseNavbar } from "../lib/parseNavbar"
@@ -6,169 +5,170 @@ import Link from "next/link"
 import Head from "next/head"
 import { useFetchUser } from "../lib/authContext"
 import { getStrapiMedia } from "../lib/utils"
-import HeroSection from "../components/HeroSection"
-
-type Partner = {
-  id: number
-  link: string | null
-  title: string
-  foto: string
-  tipo: string | null
-  cor: string
-  icon: string
-}
-
-type ParceirosProps = {
-  social: any
-  contato: any
-  parceiros: any
-  navbar: any
-}
+import { useState } from "react"
+import { GOLD, GOLD_DARK, GOLD_BRIGHT, INK, INK_SOFT, BG, BG_ALT, CARD, BORDER, FONT, FONT_IMPORT } from "../lib/theme"
 
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
 
-// Helper to process partner data
-const processPartners = (data: any, category: string): Partner[] => {
-  return data
-    .flatMap((value: any) => value.attributes[category] ?? [])
-    .map((partner: any, index: number) => ({
-      id: index,
-      link: partner.link || "#",
-      title: partner.titulo,
-      foto: getStrapiMedia(partner.logo?.data?.attributes?.url) || " ",
-      tipo: partner.tipo,
-      cor:
-        partner.tipo === "Diamante"
-          ? ""
-          : partner.tipo === "Ouro"
-          ? "#FFD700"
-          : partner.tipo === "Prata"
-          ? "#C0C0C0"
-          : "#CD7F32",
-      icon:
-        partner.tipo === "Diamante"
-          ? "💎"
-          : partner.tipo === "Ouro"
-          ? "🥇"
-          : partner.tipo === "Prata"
-          ? "🥈"
-          : "🥉",
-    }))
+type Partner = {
+  id: number
+  link: string
+  title: string
+  foto: string
+  tipo: string | null
 }
 
-const PartnerCard = ({ partner }: { partner: Partner }) => (
-  <div className="p-2 lg:w-1/3 md:w-1/2 w-full">
-    <div className="h-full flex flex-col items-center p-4 justify-center">
-      <Link href={partner.link ?? "#"} target="_blank" rel="noreferrer">
-        <div className="flex justify-center items-center rounded">
-          <Image
-            alt={partner.title}
-            className="object-contain object-center"
-            src={partner.foto}
-            width={300}
-            height={300}
-          />
-        </div>
-      </Link>
-      <div className="text-center mt-2">
-        {(partner.tipo || partner.icon) && (
-          <div className="flex justify-center items-center space-x-2">
-            {partner.tipo && (
-              <>
-                <span
-                  className="text-white px-3 py-1 tracking-widest text-xs rounded-bl"
-                  style={{ backgroundColor: partner.cor }}
-                >
-                  {partner.tipo}
-                </span>
-                <span className="text-2xl">{partner.icon}</span>
-              </>
-            )}
-          </div>
-        )}
-      </div>
-    </div>
-  </div>
-)
+const TIER_COLORS: Record<string, string> = {
+  Diamante: "#2a7fa6",
+  Ouro:     GOLD_DARK,
+  Prata:    "#5a6c73",
+  Bronze:   "#8a5a3a",
+}
+const TIER_LABELS: Record<string, string> = {
+  Diamante: "💎 Diamante",
+  Ouro:     "✦ Ouro",
+  Prata:    "◈ Prata",
+  Bronze:   "◇ Bronze",
+}
 
-const Parceiros = ({ social, contato, parceiros, navbar }: ParceirosProps) => {
+const processPartners = (data: any, category: string): Partner[] =>
+  (data ?? [])
+    .flatMap((v: any) => v.attributes?.[category] ?? [])
+    .map((p: any, i: number) => ({
+      id: i,
+      link: p.link ?? "#",
+      title: p.titulo ?? "",
+      foto: getStrapiMedia(p.logo?.data?.attributes?.url) ?? "",
+      tipo: p.tipo ?? null,
+    }))
+
+const ParceirosPage = ({ social, contato, parceiros, navbar }: any) => {
   const { user } = useFetchUser()
+  const [hovCard, setHovCard] = useState<string | null>(null)
 
-  // Process partner data
-  const parceirosOrganizacao = processPartners(parceiros.data, "organizacao")
-  const parceirosPadrinho = processPartners(
-    parceiros.data,
-    "parceiros_padrinhos"
-  )
-  const parceirosPatrocinadores = processPartners(
-    parceiros.data,
-    "patrocinadores"
-  ).sort((a, b) => a.id - b.id)
-  const parceirosOperacionais = processPartners(
-    parceiros.data,
-    "parceiros_operacionais"
-  )
-  const parceirosApoio = processPartners(parceiros.data, "parceiros_opoios")
-  const parceirosMedia = processPartners(parceiros.data, "media_parteners")
-
-  const heading =
-    parceirosOrganizacao.length > 1 ? "Organizadores" : "Organizadora"
-
-  // Reusable Section component
-  const Section = ({
-    title,
-    partners,
-  }: {
-    title: string
-    partners: Partner[]
-  }) => (
-    <section className="text-gray-600 body-font">
-      <div className="container px-5 py-10 mx-auto">
-        <div className="flex flex-col text-center w-full py-1 rounded-lg shadow-lg">
-          <h1 className="sm:text-4xl text-3xl font-extrabold title-font mb-4 text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-yellow-200 transform transition-all duration-500 hover:scale-105">
-            {title}
-          </h1>
-        </div>
-        <div className="flex flex-wrap justify-center">
-          {partners.map((partner) => (
-            <PartnerCard key={partner.id} partner={partner} />
-          ))}
-        </div>
-      </div>
-    </section>
-  )
+  const groups = [
+    { label: "Organização",           partners: processPartners(parceiros?.data, "organizacao") },
+    { label: "Parceiro Institucional",partners: processPartners(parceiros?.data, "parceiros_padrinhos") },
+    { label: "Patrocinadores",        partners: processPartners(parceiros?.data, "patrocinadores") },
+    { label: "Parceiros Operacionais",partners: processPartners(parceiros?.data, "parceiros_operacionais") },
+    { label: "Media Partners",        partners: processPartners(parceiros?.data, "media_parteners") },
+    { label: "Apoio",                 partners: processPartners(parceiros?.data, "parceiros_opoios") },
+  ].filter((g) => g.partners.length > 0)
 
   return (
     <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
       <Head>
         <title>Parceiros - Prémio Nacional De Publicidade</title>
-        <meta name="description" content={heading} />
+        <meta name="description" content="Parceiros do Prémio Nacional de Publicidade" />
       </Head>
 
-      <HeroSection
-        title="Parceiros"
-        subtitle="Saiba mais sobre aqueles que nos impulsionam"
-      />
+      <style>{`
+        ${FONT_IMPORT}
+        @keyframes fadeUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+      `}</style>
 
-      <div className="mt-5" />
+      {/* ── Hero ── */}
+      <div style={{ background: BG_ALT, paddingTop: "6rem", paddingBottom: "3rem", textAlign: "center", borderBottom: `1px solid ${BORDER}` }}>
+        <p style={{ fontFamily: FONT, fontSize: "0.88rem", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "1rem", animation: "fadeUp 0.6s ease both" }}>Prémio Nacional de Publicidade</p>
+        <h1 style={{ fontFamily: FONT, fontSize: "clamp(2.42rem,6vw,3.74rem)", fontWeight: 700, color: INK, margin: 0, animation: "fadeUp 0.7s ease 0.1s both" }}>Parceiros</h1>
+        <p style={{ fontFamily: FONT, fontSize: "1.1rem", color: INK_SOFT, marginTop: "1rem", animation: "fadeUp 0.8s ease 0.2s both" }}>Aqueles que nos impulsionam a fazer mais e melhor.</p>
+      </div>
 
-      {/* Render sections dynamically */}
-      <Section title={heading} partners={parceirosOrganizacao} />
-      <Section title="Parceiro Institucional" partners={parceirosPadrinho} />
-      <Section title="Patrocinadores" partners={parceirosPatrocinadores} />
-      <Section
-        title="Parceiros Operacionais"
-        partners={parceirosOperacionais}
-      />
-      <Section title="Media Partners" partners={parceirosMedia} />
-      <Section title="Apoio" partners={parceirosApoio} />
+      {/* ── Partner groups ── */}
+      <div style={{ background: BG, padding: "4rem 2rem 6rem" }}>
+        {groups.map((group, gi) => (
+          <div key={group.label} style={{ maxWidth: "1200px", margin: "0 auto", marginBottom: gi < groups.length - 1 ? "4rem" : 0 }}>
+            {/* Section header */}
+            <div style={{ display: "flex", alignItems: "center", gap: "1.5rem", marginBottom: "2rem" }}>
+              <h2 style={{ fontFamily: FONT, fontSize: "1.21rem", fontWeight: 700, color: GOLD_DARK, letterSpacing: "0.06em", textTransform: "uppercase", whiteSpace: "nowrap", margin: 0 }}>
+                {group.label}
+              </h2>
+              <div style={{ flex: 1, height: "1px", background: BORDER }} />
+            </div>
+
+            {/* Cards */}
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "1.25rem", justifyContent: "center" }}>
+              {group.partners.map((p) => {
+                const key = `${gi}-${p.id}`
+                const hov = hovCard === key
+                return (
+                  <Link
+                    key={key}
+                    href={p.link}
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ textDecoration: "none" }}
+                    onMouseEnter={() => setHovCard(key)}
+                    onMouseLeave={() => setHovCard(null)}
+                  >
+                    <div style={{
+                      background: CARD,
+                      border: hov ? `1px solid ${GOLD}` : `1px solid ${BORDER}`,
+                      borderRadius: "14px",
+                      padding: "2rem 1.75rem",
+                      width: "200px",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      gap: "1rem",
+                      transition: "border-color 0.25s, transform 0.25s, box-shadow 0.25s",
+                      transform: hov ? "translateY(-4px)" : "none",
+                      boxShadow: hov ? "0 10px 26px rgba(36,31,15,0.1)" : "none",
+                    }}>
+                      {/* Logo */}
+                      {p.foto ? (
+                        <img
+                          src={p.foto}
+                          alt={p.title}
+                          style={{ width: "130px", height: "80px", objectFit: "contain" }}
+                        />
+                      ) : (
+                        <div style={{ width: "130px", height: "80px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                          <span style={{ fontFamily: FONT, fontWeight: 700, fontSize: "1.1rem", color: INK_SOFT }}>{p.title}</span>
+                        </div>
+                      )}
+
+                      {/* Title */}
+                      <p style={{ fontFamily: FONT, fontSize: "0.935rem", fontWeight: 700, color: hov ? GOLD_DARK : INK, textAlign: "center", margin: 0, transition: "color 0.25s" }}>
+                        {p.title}
+                      </p>
+
+                      {/* Tier badge */}
+                      {p.tipo && (
+                        <span style={{
+                          fontFamily: FONT,
+                          fontSize: "0.77rem",
+                          letterSpacing: "0.04em",
+                          textTransform: "uppercase",
+                          fontWeight: 700,
+                          color: TIER_COLORS[p.tipo] ?? GOLD_DARK,
+                          border: `1px solid ${TIER_COLORS[p.tipo] ?? GOLD_DARK}55`,
+                          borderRadius: "100px",
+                          padding: "3px 10px",
+                        }}>
+                          {TIER_LABELS[p.tipo] ?? p.tipo}
+                        </span>
+                      )}
+                    </div>
+                  </Link>
+                )
+              })}
+            </div>
+          </div>
+        ))}
+
+        {groups.length === 0 && (
+          <p style={{ textAlign: "center", color: INK_SOFT, fontFamily: FONT, fontSize: "1.045rem" }}>
+            Sem dados de parceiros disponíveis.
+          </p>
+        )}
+      </div>
     </Layout>
   )
 }
 
-export default Parceiros
+export default ParceirosPage
 
-// Server-side data fetching
 export async function getServerSideProps() {
   try {
     const results = await Promise.allSettled([
@@ -176,20 +176,17 @@ export async function getServerSideProps() {
       fetcher(`${api_link}/api/parceiros?populate=deep&sort[0]=id:desc&pagination[pageSize]=1`),
       fetcher(`${api_link}/api/menus?populate=deep`),
     ])
-
     const [contato, parceiros, menus] = results.map((r: any) => {
-      if (r.status === 'fulfilled') return r.value
-      console.error('Endpoint failed:', r.reason)
+      if (r.status === "fulfilled") return r.value
+      console.error("Endpoint failed:", r.reason)
       return null
     })
 
     return {
-      props: { social: parseNavbar(menus, "redes-social"), contato: contato ?? null, parceiros, navbar: parseNavbar(menus, "menus") },
+      props: { social: parseNavbar(menus, "redes-social"), contato: contato ?? null, parceiros: parceiros ?? null, navbar: parseNavbar(menus, "menus") },
     }
   } catch (error) {
-    console.error("Error fetching data:", error)
-    return {
-      props: { social: [], contato: null, parceiros: null, navbar: [] },
-    }
+    console.error("Error fetching parceiros data:", error)
+    return { props: { social: [], contato: null, parceiros: null, navbar: [] } }
   }
 }

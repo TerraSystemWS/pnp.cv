@@ -5,59 +5,40 @@ import { useForm, SubmitHandler } from "react-hook-form"
 import Head from "next/head"
 import { useFetchUser } from "../lib/authContext"
 import { useState } from "react"
-import HeroSection from "../components/HeroSection"
-// link para a URL do API
+import { GOLD, GOLD_DARK, GOLD_BRIGHT, INK, INK_SOFT, BG, BG_ALT, CARD, BORDER, FONT, FONT_IMPORT } from "../lib/theme"
+
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
 
-type Inputs = {
-  name: string
-  email: string
-  message: string
-}
+type Inputs = { name: string; email: string; message: string }
 
 const CONTATOS = ({ social, contato, navbar }: any) => {
   const { user, loading } = useFetchUser()
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    // setStatus,
-  } = useForm<Inputs>()
-
+  const { register, handleSubmit, formState: { errors } } = useForm<Inputs>()
   const [statusMessage, setStatusMessage] = useState("")
+  const [statusOk, setStatusOk]           = useState(false)
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    // Limpa o status anterior
     setStatusMessage("")
     try {
-      // Envia os dados para o backend
-      const url = `${api_link}/contato`
-      const response = await fetch(url, {
+      const response = await fetch(`${api_link}/contato`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: data.name,
-          email: data.email,
-          message: data.message,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: data.name, email: data.email, message: data.message }),
       })
-
-      const result = await response.json()
-
       if (response.status === 200) {
-        setStatusMessage("Sua mensagem foi enviada com sucesso!")
+        setStatusOk(true)
+        setStatusMessage("Mensagem enviada com sucesso!")
       } else {
-        setStatusMessage(
-          "Houve um erro ao enviar sua mensagem. Tente novamente mais tarde."
-        )
+        setStatusOk(false)
+        setStatusMessage("Erro ao enviar. Tente novamente mais tarde.")
       }
-    } catch (error) {
-      setStatusMessage("Erro ao enviar a mensagem. Tente novamente.")
-      console.error("Erro no envio do formulário:", error)
+    } catch {
+      setStatusOk(false)
+      setStatusMessage("Erro de ligação. Tente novamente.")
     }
   }
+
+  const attrs = contato?.data?.attributes
 
   return (
     <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
@@ -66,142 +47,316 @@ const CONTATOS = ({ social, contato, navbar }: any) => {
         <meta name="description" content="Página de contatos" />
       </Head>
 
-      <HeroSection
-        title={"Contatos"}
-        subtitle={"Não hesite em perguntar, fale connosco!"}
-      />
+      <style>{`
+        ${FONT_IMPORT}
 
-      <section className="text-gray-600 body-font relative mt-5">
-        <div className="container px-5 py-24 mx-auto flex sm:flex-nowrap flex-wrap">
-          <div className="lg:w-2/3 md:w-1/2 bg-gray-300 rounded-lg overflow-hidden sm:mr-10 p-10 flex items-end justify-start relative">
-            {contato?.data?.attributes?.mapa && (
-              <iframe
-                width="100%"
-                height="100%"
-                className="absolute inset-0"
-                frameBorder="0"
-                title="map"
-                marginHeight={0}
-                marginWidth={0}
-                scrolling="no"
-                src={contato.data.attributes.mapa}
-              ></iframe>
-            )}
-            <div className="bg-white relative flex flex-wrap py-6 rounded shadow-md">
-              <div className="lg:w-1/2 px-6">
-                <h2 className="title-font font-semibold text-gray-900 tracking-widest text-xs">
-                  ENDEREÇO
-                </h2>
-                <p className="mt-1">{contato?.data?.attributes?.Local}</p>
-              </div>
-              <div className="lg:w-1/2 px-6 mt-4 lg:mt-0">
-                <h2 className="title-font font-semibold text-gray-900 tracking-widest text-xs">
-                  EMAIL
-                </h2>
-                <a className="text-indigo-500 leading-relaxed">
-                  {contato?.data?.attributes?.email}
-                </a>
-                <h2 className="title-font font-semibold text-gray-900 tracking-widest text-xs mt-4">
-                  Contato
-                </h2>
-                <p className="leading-relaxed">
-                  {contato?.data?.attributes?.phone}
-                </p>
-              </div>
+        @keyframes fadeUp {
+          from { opacity: 0; transform: translateY(24px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .ct-input:focus {
+          border-color: ${GOLD} !important;
+          outline: none !important;
+        }
+        .ct-input::placeholder { color: ${INK_SOFT}88; }
+        .ct-textarea:focus {
+          border-color: ${GOLD} !important;
+          outline: none !important;
+        }
+        .ct-textarea::placeholder { color: ${INK_SOFT}88; }
+
+        .ct-submit-btn:hover {
+          background: ${GOLD_BRIGHT} !important;
+          box-shadow: 0 6px 20px rgba(194,161,43,0.28) !important;
+        }
+
+        .ct-info-card {
+          background: ${CARD};
+          border: 1px solid ${BORDER};
+          border-radius: 12px;
+          padding: 1.5rem 1.8rem;
+        }
+
+        @media (max-width: 768px) {
+          .ct-layout { flex-direction: column !important; }
+          .ct-map-col { min-height: 320px !important; }
+        }
+      `}</style>
+
+      {/* ── Hero header ── */}
+      <div style={{
+        background: BG_ALT,
+        paddingTop: "6rem",
+        paddingBottom: "3rem",
+        textAlign: "center",
+        borderBottom: `1px solid ${BORDER}`,
+      }}>
+        <p style={{
+          fontFamily: FONT,
+          fontSize: "0.88rem",
+          letterSpacing: "0.08em",
+          textTransform: "uppercase",
+          fontWeight: 700,
+          color: GOLD_DARK,
+          marginBottom: "1rem",
+          animation: "fadeUp 0.6s ease both",
+        }}>
+          Prémio Nacional de Publicidade
+        </p>
+
+        <h1 style={{
+          fontFamily: FONT,
+          fontSize: "clamp(2.42rem, 6vw, 3.74rem)",
+          fontWeight: 700,
+          color: INK,
+          margin: 0,
+          animation: "fadeUp 0.7s ease 0.1s both",
+        }}>
+          Contactos
+        </h1>
+
+        <p style={{
+          fontFamily: FONT,
+          fontSize: "1.1rem",
+          color: INK_SOFT,
+          marginTop: "1rem",
+          animation: "fadeUp 0.8s ease 0.2s both",
+        }}>
+          Não hesite em perguntar — fale connosco.
+        </p>
+      </div>
+
+      {/* ── Main content ── */}
+      <div style={{ background: BG, minHeight: "60vh" }}>
+        <div style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "4rem 2rem 6rem",
+          display: "flex",
+          gap: "3rem",
+          alignItems: "flex-start",
+        }} className="ct-layout">
+
+          {/* ── Left: map + contact info ── */}
+          <div style={{ flex: "1 1 55%", minWidth: 0 }}>
+
+            {/* Map */}
+            <div
+              className="ct-map-col"
+              style={{
+                position: "relative",
+                borderRadius: "16px",
+                overflow: "hidden",
+                border: `1px solid ${BORDER}`,
+                minHeight: "380px",
+                background: CARD,
+                marginBottom: "1.5rem",
+              }}
+            >
+              {attrs?.mapa ? (
+                <iframe
+                  src={attrs.mapa}
+                  width="100%"
+                  height="100%"
+                  frameBorder="0"
+                  title="Mapa"
+                  scrolling="no"
+                  style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
+                />
+              ) : (
+                <div style={{
+                  position: "absolute", inset: 0,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  color: INK_SOFT,
+                  fontFamily: FONT,
+                  fontSize: "1.1rem",
+                  fontWeight: 700,
+                }}>
+                  Mapa indisponível
+                </div>
+              )}
+
+              <div style={{
+                position: "absolute", top: 0, left: 0, right: 0,
+                height: "3px",
+                background: GOLD,
+                pointerEvents: "none",
+              }} />
+            </div>
+
+            {/* Contact info cards */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "1rem" }}>
+              {attrs?.Local && (
+                <div className="ct-info-card">
+                  <p style={{ fontFamily: FONT, fontSize: "0.825rem", letterSpacing: "0.06em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "0.6rem" }}>
+                    Endereço
+                  </p>
+                  <p style={{ fontFamily: FONT, fontSize: "0.99rem", color: INK, lineHeight: 1.6 }}>
+                    {attrs.Local}
+                  </p>
+                </div>
+              )}
+              {attrs?.email && (
+                <div className="ct-info-card">
+                  <p style={{ fontFamily: FONT, fontSize: "0.825rem", letterSpacing: "0.06em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "0.6rem" }}>
+                    Email
+                  </p>
+                  <a href={`mailto:${attrs.email}`} style={{ fontFamily: FONT, fontSize: "0.99rem", color: INK, textDecoration: "none", lineHeight: 1.6, wordBreak: "break-all" }}>
+                    {attrs.email}
+                  </a>
+                </div>
+              )}
+              {attrs?.phone && (
+                <div className="ct-info-card">
+                  <p style={{ fontFamily: FONT, fontSize: "0.825rem", letterSpacing: "0.06em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "0.6rem" }}>
+                    Telefone
+                  </p>
+                  <p style={{ fontFamily: FONT, fontSize: "0.99rem", color: INK, lineHeight: 1.6 }}>
+                    {attrs.phone}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Formulário de Contato */}
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="lg:w-1/3 md:w-1/2 bg-white flex flex-col md:ml-auto w-full md:py-8 mt-8 md:mt-0"
-          >
-            <h2 className="text-gray-900 text-lg mb-1 font-medium title-font">
-              Contate-nos
+          {/* ── Right: contact form ── */}
+          <div style={{
+            flex: "1 1 40%",
+            minWidth: 0,
+            background: CARD,
+            border: `1px solid ${BORDER}`,
+            borderRadius: "20px",
+            padding: "2.5rem",
+            position: "relative",
+            overflow: "hidden",
+          }}>
+            <div style={{
+              position: "absolute", top: 0, left: 0, right: 0,
+              height: "3px",
+              background: GOLD,
+            }} />
+
+            <p style={{
+              fontFamily: FONT,
+              fontSize: "0.88rem",
+              letterSpacing: "0.06em",
+              textTransform: "uppercase",
+              fontWeight: 700,
+              color: GOLD_DARK,
+              marginBottom: "0.8rem",
+            }}>
+              Envie uma mensagem
+            </p>
+            <h2 style={{
+              fontFamily: FONT,
+              fontSize: "1.87rem",
+              fontWeight: 700,
+              color: INK,
+              marginBottom: "0.4rem",
+            }}>
+              Fale Connosco
             </h2>
-            <p className="leading-relaxed mb-5 text-gray-600">
-              Para saber ou ter mais informações sobre o PNP, envie-nos um email
+            <p style={{
+              fontFamily: FONT,
+              fontSize: "0.99rem",
+              color: INK_SOFT,
+              lineHeight: 1.6,
+              marginBottom: "2rem",
+            }}>
+              Para saber mais sobre o PNP, envie-nos uma mensagem e responderemos em breve.
             </p>
 
-            {/* Campo Nome */}
-            <div className="relative mb-4">
-              <label htmlFor="name" className="leading-7 text-sm text-gray-600">
+            <form onSubmit={handleSubmit(onSubmit)}>
+              {/* Nome */}
+              <label style={{ display: "block", fontFamily: FONT, fontSize: "0.88rem", fontWeight: 700, color: INK, marginBottom: "7px" }}>
                 Nome
               </label>
               <input
                 type="text"
-                id="name"
-                className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+                className="ct-input"
+                placeholder="O seu nome"
                 {...register("name", { required: "Nome é obrigatório" })}
+                style={{ width: "100%", background: BG, border: `1px solid ${BORDER}`, borderRadius: "9px", padding: "11px 14px", fontSize: "1.012rem", color: INK, fontFamily: FONT, transition: "border-color 0.2s", marginBottom: "0.25rem", boxSizing: "border-box" }}
               />
-              {errors.name && (
-                <span className="text-red-500">{errors.name.message}</span>
-              )}
-            </div>
+              {errors.name && <p style={{ color: "#c0392b", fontSize: "0.858rem", marginBottom: "0.8rem" }}>{errors.name.message}</p>}
+              {!errors.name && <div style={{ marginBottom: "1rem" }} />}
 
-            {/* Campo Email */}
-            <div className="relative mb-4">
-              <label
-                htmlFor="email"
-                className="leading-7 text-sm text-gray-600"
-              >
+              {/* Email */}
+              <label style={{ display: "block", fontFamily: FONT, fontSize: "0.88rem", fontWeight: 700, color: INK, marginBottom: "7px" }}>
                 Email
               </label>
               <input
                 type="email"
-                id="email"
-                className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+                className="ct-input"
+                placeholder="email@exemplo.com"
                 {...register("email", { required: "Email é obrigatório" })}
+                style={{ width: "100%", background: BG, border: `1px solid ${BORDER}`, borderRadius: "9px", padding: "11px 14px", fontSize: "1.012rem", color: INK, fontFamily: FONT, transition: "border-color 0.2s", marginBottom: "0.25rem", boxSizing: "border-box" }}
               />
-              {errors.email && (
-                <span className="text-red-500">{errors.email.message}</span>
-              )}
-            </div>
+              {errors.email && <p style={{ color: "#c0392b", fontSize: "0.858rem", marginBottom: "0.8rem" }}>{errors.email.message}</p>}
+              {!errors.email && <div style={{ marginBottom: "1rem" }} />}
 
-            {/* Campo Mensagem */}
-            <div className="relative mb-4">
-              <label
-                htmlFor="message"
-                className="leading-7 text-sm text-gray-600"
-              >
+              {/* Mensagem */}
+              <label style={{ display: "block", fontFamily: FONT, fontSize: "0.88rem", fontWeight: 700, color: INK, marginBottom: "7px" }}>
                 Mensagem
               </label>
               <textarea
-                id="message"
-                className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 h-32 text-base outline-none text-gray-700 py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out"
+                className="ct-textarea"
+                placeholder="A sua mensagem..."
+                rows={5}
                 {...register("message", { required: "Mensagem é obrigatória" })}
-              ></textarea>
-              {errors.message && (
-                <span className="text-red-500">{errors.message.message}</span>
+                style={{ width: "100%", background: BG, border: `1px solid ${BORDER}`, borderRadius: "9px", padding: "11px 14px", fontSize: "1.012rem", color: INK, fontFamily: FONT, transition: "border-color 0.2s", resize: "vertical", marginBottom: "0.25rem", boxSizing: "border-box" }}
+              />
+              {errors.message && <p style={{ color: "#c0392b", fontSize: "0.858rem", marginBottom: "0.8rem" }}>{errors.message.message}</p>}
+              {!errors.message && <div style={{ marginBottom: "1.25rem" }} />}
+
+              {/* Submit */}
+              <button
+                type="submit"
+                className="ct-submit-btn"
+                style={{
+                  width: "100%",
+                  background: GOLD,
+                  border: "none",
+                  borderRadius: "10px",
+                  padding: "13px",
+                  fontFamily: FONT,
+                  fontSize: "0.99rem",
+                  color: INK,
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  transition: "background 0.2s, box-shadow 0.2s",
+                }}
+              >
+                Enviar Mensagem
+              </button>
+
+              {statusMessage && (
+                <p style={{
+                  marginTop: "1rem",
+                  fontFamily: FONT,
+                  fontSize: "0.935rem",
+                  fontWeight: 700,
+                  color: statusOk ? GOLD_DARK : "#c0392b",
+                  textAlign: "center",
+                }}>
+                  {statusMessage}
+                </p>
               )}
-            </div>
 
-            {/* Botão de Envio */}
-            <button
-              type="submit"
-              className="text-white bg-yellow-600 border-0 py-2 px-6 focus:outline-none hover:bg-yellow-500 rounded text-lg"
-            >
-              Enviar
-            </button>
-
-            {/* Mensagem de Status */}
-            {statusMessage && (
-              <p className="text-xs mt-3 text-gray-500">{statusMessage}</p>
-            )}
-
-            <p className="text-xs text-gray-500 mt-3">
-              *Os seus dados são privados e serão protegidos.
-            </p>
-          </form>
+              <p style={{ marginTop: "1.2rem", fontFamily: FONT, fontSize: "0.858rem", color: INK_SOFT, textAlign: "center" }}>
+                Os seus dados são privados e protegidos.
+              </p>
+            </form>
+          </div>
         </div>
-      </section>
+      </div>
     </Layout>
   )
 }
 
 export default CONTATOS
 
-// Função para buscar dados do servidor
 export async function getServerSideProps() {
   try {
     const results = await Promise.allSettled([
@@ -209,11 +364,10 @@ export async function getServerSideProps() {
       fetcher(`${api_link}/api/menus?populate=deep`),
     ])
     const [contato, menus] = results.map((r: any) => {
-      if (r.status === 'fulfilled') return r.value
-      console.error('Endpoint failed:', r.reason)
+      if (r.status === "fulfilled") return r.value
+      console.error("Endpoint failed:", r.reason)
       return null
     })
-
 
     return {
       props: {
@@ -225,11 +379,7 @@ export async function getServerSideProps() {
   } catch (error) {
     console.error("Error fetching contatos data:", error)
     return {
-      props: {
-        social: [],
-        contato: null,
-        navbar: [],
-      },
+      props: { social: [], contato: null, navbar: [] },
     }
   }
 }

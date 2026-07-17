@@ -11,7 +11,8 @@ import qs from "qs"
 import HeroSection from "../../components/HeroSection"
 import { useRouter } from "next/router"
 import UserProfileCard from "../../components/custom/sidemenu"
-import { getIdFromLocalCookie } from "../../lib/auth"
+import { getIdFromLocalCookie, getTokenFromLocalCookie } from "../../lib/auth"
+import { hasJuryAccess } from "../../lib/roles"
 
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
 
@@ -25,7 +26,7 @@ const Avaliacao = ({
   totalPages,
   currentPage,
 }: any) => {
-  const { user, loading } = useFetchUser()
+  const { user, role, loading } = useFetchUser()
   const router = useRouter()
 
   // Estado para armazenar o userId
@@ -49,13 +50,24 @@ const Avaliacao = ({
     }
   }, [user, loading, router])
 
+  // Só jurados e responsáveis podem avaliar projetos
+  useEffect(() => {
+    if (!loading && user && !hasJuryAccess(role)) {
+      router.push("/perfil")
+    }
+  }, [user, role, loading, router])
+
   // Fetch de avaliações baseado em inscrições e userId
   useEffect(() => {
     if (userId && inscritos.length > 0) {
       const fetchAvaliacoes = async () => {
-    const results = await Promise.allSettled(
+        const results = await Promise.allSettled(
           inscritos.map(async (inscricao: any) => {
-            const avaliacao = await getAvaliacaos(inscricao.id, Number(userId))
+            const avaliacao = await getAvaliacaos(
+              inscricao.id,
+              Number(userId),
+              getTokenFromLocalCookie()
+            )
             return {
               inscricaoId: inscricao.id,
               avaliacao: avaliacao || null,
@@ -103,7 +115,7 @@ const Avaliacao = ({
         <div className="bg-gray-100">
           <div className="container mx-auto py-8">
             <div className="grid grid-cols-4 sm:grid-cols-12 gap-6 px-4">
-              <UserProfileCard user={user} />
+              <UserProfileCard user={user} role={role} />
               <div className="col-span-4 sm:col-span-9">
                 <div className="bg-white shadow rounded-lg p-6">
                   <h2 className="text-xl font-bold mb-4">Área dos Jurados</h2>
@@ -161,12 +173,12 @@ const Avaliacao = ({
                                                       "Insuficiente"
                                                       ? "bg-red-400"
                                                       : avaliacao.notas ===
-                                                        "Suficiente"
-                                                      ? "bg-yellow-400"
-                                                      : avaliacao.notas ===
-                                                        "Bom"
-                                                      ? "bg-blue-400"
-                                                      : "bg-green-400"
+                                                          "Suficiente"
+                                                        ? "bg-yellow-400"
+                                                        : avaliacao.notas ===
+                                                            "Bom"
+                                                          ? "bg-blue-400"
+                                                          : "bg-green-400"
                                                   }`}
                                                 >
                                                   {avaliacao.notas
@@ -240,12 +252,14 @@ export async function getServerSideProps({ query }: any) {
       fetcher(`${api_link}/api/inscricoes?populate=*`),
     ])
     const [edicoes, contato, menus, inscritos] = results.map((r: any) => {
-      if (r.status === 'fulfilled') return r.value
-      console.error('Endpoint failed:', r.reason)
+      if (r.status === "fulfilled") return r.value
+      console.error("Endpoint failed:", r.reason)
       return null
     })
 
-    const totalPages = Math.ceil((edicoes?.meta?.pagination?.total ?? 0) / pageSize)
+    const totalPages = Math.ceil(
+      (edicoes?.meta?.pagination?.total ?? 0) / pageSize
+    )
     const currentPage = edicoes?.meta?.pagination?.page ?? 1
 
     return {

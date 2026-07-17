@@ -33,6 +33,15 @@ export const getUserFromLocalCookie = (): Promise<string | undefined> | undefine
     .catch((error: unknown) => { console.error(error); return undefined })
 }
 
+export const getUserRoleFromLocalCookie = (): Promise<string | undefined> | undefined => {
+  const jwt = getTokenFromLocalCookie()
+  if (!jwt) return
+  return apiClient
+    .getWithAuth("/api/users/me?populate=role", jwt)
+    .then((data: { role?: { type: string } }) => data.role?.type)
+    .catch((error: unknown) => { console.error(error); return undefined })
+}
+
 export const getIdFromLocalCookie = (): Promise<string | undefined> | undefined => {
   const jwt = getTokenFromLocalCookie()
   if (!jwt) return

@@ -1,202 +1,325 @@
 import { useState } from "react"
-import { Table } from "flowbite-react"
-import { IoTrashOutline } from "react-icons/io5"
 import { FileLink } from "../../types/strapi"
+import { GOLD, GOLD_DARK, INK, INK_SOFT, BG, BG_ALT, CARD, BORDER } from "../../lib/theme"
 
 interface Props {
   cid: string
   apiLink: string
   existingFiles: FileLink[]
-  onConfirm: () => void
+  onFilesUpdated: (files: FileLink[]) => void
 }
 
-export default function FileUploadSection({ cid, apiLink, existingFiles, onConfirm }: Props) {
-  const [files, setFiles] = useState<(File & { progress: number })[]>([])
-  const [isUploading, setIsUploading] = useState(false)
+interface UploadingFile {
+  name: string
+  progress: number
+  status: "uploading" | "done" | "error"
+}
 
-  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFiles = event.target.files
-    if (!selectedFiles) return
+export default function FileUploadSection({ cid, apiLink, existingFiles, onFilesUpdated }: Props) {
+  const [uploading, setUploading] = useState<UploadingFile[]>([])
+  const [isDragging, setIsDragging] = useState(false)
 
-    const updatedFiles = Array.from(selectedFiles).map((file) =>
-      Object.assign(file, { progress: 0 })
-    )
-    setFiles(updatedFiles)
+  const processFiles = async (selectedFiles: FileList) => {
+    const list: UploadingFile[] = Array.from(selectedFiles).map((f) => ({
+      name: f.name,
+      progress: 0,
+      status: "uploading" as const,
+    }))
+    setUploading(list)
 
     for (let i = 0; i < selectedFiles.length; i++) {
-      await uploadFile(selectedFiles[i], i)
+      await uploadFile(selectedFiles[i], i, list)
     }
   }
 
-  const uploadFile = (file: File, index: number): Promise<void> =>
-    new Promise((resolve) => {
-      const formData = new FormData()
-      formData.append("files", file)
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) processFiles(e.target.files)
+  }
 
-      const xhr = new XMLHttpRequest()
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragging(false)
+    if (e.dataTransfer.files) processFiles(e.dataTransfer.files)
+  }
 
-      xhr.upload.onprogress = (event) => {
-        if (event.lengthComputable) {
-          const percent = Math.round((event.loaded * 100) / event.total)
-          setFiles((prev) => {
-            const next = [...prev]
-            next[index] = Object.assign(next[index], { progress: percent })
-            return next
-          })
+  // Ficheiros grandes enviados de ligações lentas/instáveis (ex: Cabo Verde)
+  // nunca completam um único POST antes de a ligação ser cortada (~60s).
+  // Por isso o envio é feito em pedaços pequenos, cada um curto o suficiente
+  // para terminar mesmo em ligações fracas, com retry por pedaço.
+  const CHUNK_SIZE = 2 * 1024 * 1024 // 2MB
+  const MAX_CHUNK_RETRIES = 3
+
+  const uploadChunkWithRetry = (
+    uploadId: string,
+    chunkIndex: number,
+    blob: Blob,
+    onChunkProgress: (loaded: number) => void
+  ): Promise<void> => {
+    const attempt = (retriesLeft: number): Promise<void> =>
+      new Promise((resolve, reject) => {
+        const formData = new FormData()
+        formData.append("chunk", blob)
+
+        const xhr = new XMLHttpRequest()
+
+        xhr.upload.onprogress = (event) => {
+          if (event.lengthComputable) onChunkProgress(event.loaded)
         }
-      }
 
-      xhr.onreadystatechange = async () => {
-        if (xhr.readyState !== XMLHttpRequest.DONE) return
+        xhr.onreadystatechange = () => {
+          if (xhr.readyState !== XMLHttpRequest.DONE) return
 
-        if (xhr.status === 200) {
-          setIsUploading(true)
-          try {
-            const uploadData = JSON.parse(xhr.responseText)
-            const inscricaoRes = await fetch(
-              `${apiLink}/api/inscricoes/${cid}?populate[fileLink][populate][ficheiro][fields]=name,hash,ext,mime,url`
-            )
-            const inscricaoData = await inscricaoRes.json()
-            const existing = inscricaoData.data?.attributes?.fileLink ?? []
-
-            const fileIds = [
-              ...existing.map((f: FileLink) => ({
-                titulo: f.titulo,
-                publico: f.publico,
-                ficheiro: { id: f.ficheiro.data?.id },
-              })),
-              ...uploadData.map((f: { id: number; name: string }) => ({
-                titulo: f.name,
-                publico: false,
-                ficheiro: { id: f.id },
-              })),
-            ]
-
-            await fetch(`${apiLink}/api/inscricoes/${cid}`, {
-              method: "PUT",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ data: { fileLink: fileIds } }),
-            })
-          } catch (error) {
-            console.error("Erro ao associar arquivo:", error)
-            alert("Erro ao associar o arquivo. Por favor, tente novamente.")
-          } finally {
-            setIsUploading(false)
+          if (xhr.status === 200) {
+            resolve()
+          } else if (retriesLeft > 0) {
+            onChunkProgress(0)
+            setTimeout(() => {
+              attempt(retriesLeft - 1).then(resolve, reject)
+            }, 800 * (MAX_CHUNK_RETRIES - retriesLeft + 1))
+          } else {
+            reject(new Error(`Falha ao enviar pedaço ${chunkIndex}`))
           }
         }
-        resolve()
-      }
 
-      xhr.open("POST", `${apiLink}/api/upload`)
-      xhr.send(formData)
-    })
+        xhr.open("POST", `${apiLink}/api/chunked-upload/${uploadId}/chunks/${chunkIndex}`)
+        xhr.send(formData)
+      })
+
+    return attempt(MAX_CHUNK_RETRIES)
+  }
+
+  const uploadFile = (file: File, index: number, list: UploadingFile[]): Promise<void> =>
+    (async () => {
+      try {
+        const totalChunks = Math.max(1, Math.ceil(file.size / CHUNK_SIZE))
+
+        const initRes = await fetch(`${apiLink}/api/chunked-upload/init`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            filename: file.name,
+            mimetype: file.type || "application/octet-stream",
+            size: file.size,
+            totalChunks,
+          }),
+        })
+        if (!initRes.ok) throw new Error("Não foi possível iniciar o upload")
+        const { uploadId } = await initRes.json()
+
+        let bytesSentBeforeCurrentChunk = 0
+        for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex += 1) {
+          const start = chunkIndex * CHUNK_SIZE
+          const end = Math.min(start + CHUNK_SIZE, file.size)
+          const blob = file.slice(start, end)
+
+          // eslint-disable-next-line no-await-in-loop
+          await uploadChunkWithRetry(uploadId, chunkIndex, blob, (loadedInChunk) => {
+            const percent = Math.round(
+              ((bytesSentBeforeCurrentChunk + loadedInChunk) * 100) / file.size
+            )
+            setUploading((prev) => {
+              const next = [...prev]
+              next[index] = { ...next[index], progress: percent }
+              return next
+            })
+          })
+
+          bytesSentBeforeCurrentChunk += end - start
+        }
+
+        const completeRes = await fetch(`${apiLink}/api/chunked-upload/${uploadId}/complete`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({}),
+        })
+        if (!completeRes.ok) throw new Error("Não foi possível concluir o upload")
+        const uploadData = await completeRes.json()
+
+        // Fetch current inscription file list
+        const inscricaoRes = await fetch(
+          `${apiLink}/api/inscricoes/${cid}?populate[fileLink][populate][ficheiro][fields]=name,hash,ext,mime,url`
+        )
+        const inscricaoData = await inscricaoRes.json()
+        const existing: FileLink[] = inscricaoData.data?.attributes?.fileLink ?? []
+
+        const merged = [
+          ...existing.map((f: FileLink) => ({
+            titulo: f.titulo,
+            publico: f.publico,
+            ficheiro: { id: f.ficheiro.data?.id },
+          })),
+          ...uploadData.map((f: { id: number; name: string }) => ({
+            titulo: f.name,
+            publico: false,
+            ficheiro: { id: f.id },
+          })),
+        ]
+
+        const putRes = await fetch(`${apiLink}/api/inscricoes/${cid}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ data: { fileLink: merged } }),
+        })
+
+        if (putRes.ok) {
+          // Fetch final file list to update parent
+          const finalRes = await fetch(
+            `${apiLink}/api/inscricoes/${cid}?populate[fileLink][populate][ficheiro][fields]=name,hash,ext,mime,url`
+          )
+          const finalData = await finalRes.json()
+          onFilesUpdated(finalData.data?.attributes?.fileLink ?? [])
+
+          setUploading((prev) => {
+            const next = [...prev]
+            next[index] = { ...next[index], progress: 100, status: "done" }
+            return next
+          })
+        } else {
+          throw new Error("Não foi possível associar o ficheiro à inscrição")
+        }
+      } catch {
+        setUploading((prev) => {
+          const next = [...prev]
+          next[index] = { ...next[index], status: "error" }
+          return next
+        })
+      }
+    })()
 
   return (
-    <>
-      {/* Documentos submetidos */}
-      <div className="mt-10 sm:mt-0">
-        <div className="md:grid md:grid-cols-3 md:gap-6">
-          <div className="md:col-span-1">
-            <div className="px-4 sm:px-0">
-              <h3 className="text-2xl font-semibold text-gray-900 mb-4">Documentos Submetidos</h3>
-            </div>
+    <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
+
+      {/* Existing files table */}
+      {existingFiles.length > 0 && (
+        <div>
+          <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.88rem", fontWeight: 700, color: GOLD_DARK, marginBottom: "0.75rem" }}>
+            Ficheiros Submetidos ({existingFiles.length})
+          </p>
+          <div style={{ border: `1px solid ${BORDER}`, borderRadius: "10px", overflow: "hidden" }}>
+            {existingFiles.map((f, i) => (
+              <div
+                key={i}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  padding: "0.85rem 1.25rem",
+                  background: i % 2 === 0 ? CARD : BG_ALT,
+                  borderBottom: i < existingFiles.length - 1 ? `1px solid ${BORDER}` : "none",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0 }}>
+                    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" stroke={GOLD_DARK} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M14 2v6h6" stroke={GOLD_DARK} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                  <span style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.99rem", color: INK }}>
+                    {f.titulo}
+                  </span>
+                </div>
+                <a
+                  href={`${apiLink}${f.ficheiro.data?.attributes?.url}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.858rem", fontWeight: 700, color: INK, textDecoration: "none", padding: "4px 12px", border: `1px solid ${BORDER}`, borderRadius: "100px" }}
+                >
+                  Abrir
+                </a>
+              </div>
+            ))}
           </div>
-          <div className="mt-5 md:col-span-2 md:mt-0">
-            <div className="overflow-x-auto bg-white rounded-lg shadow-lg p-4">
-              <Table hoverable={true}>
-                <Table.Head className="bg-gray-100">
-                  <Table.HeadCell className="text-gray-700 font-medium py-3 px-4 text-sm">Documento</Table.HeadCell>
-                  <Table.HeadCell className="text-gray-700 font-medium py-3 px-4 text-sm">Link</Table.HeadCell>
-                  <Table.HeadCell className="text-gray-700 font-medium py-3 px-4 text-sm"><span className="sr-only">Remover</span></Table.HeadCell>
-                </Table.Head>
-                <Table.Body className="divide-y divide-gray-200">
-                  {existingFiles.map((value, index) => (
-                    <Table.Row key={index} className="bg-white hover:bg-gray-50 transition-all duration-300">
-                      <Table.Cell className="whitespace-nowrap py-3 px-4 text-gray-900 font-medium">{value.titulo}</Table.Cell>
-                      <Table.Cell className="py-3 px-4">
-                        <a
-                          href={`${apiLink}${value.ficheiro.data?.attributes.url}`}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="text-blue-600 hover:text-blue-800 font-medium hover:underline transition-all duration-200"
-                        >
-                          {value.ficheiro.data?.attributes.hash}
-                        </a>
-                      </Table.Cell>
-                      <Table.Cell className="py-3 px-4">
-                        <span className="cursor-pointer text-red-600 hover:text-red-800 transition-all duration-300">
-                          <IoTrashOutline />
-                        </span>
-                      </Table.Cell>
-                    </Table.Row>
-                  ))}
-                </Table.Body>
-              </Table>
-            </div>
+        </div>
+      )}
+
+      {/* Upload zone */}
+      <div>
+        <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.88rem", fontWeight: 700, color: GOLD_DARK, marginBottom: "0.75rem" }}>
+          Adicionar Ficheiros
+        </p>
+
+        <label
+          onDragOver={(e) => { e.preventDefault(); setIsDragging(true) }}
+          onDragLeave={() => setIsDragging(false)}
+          onDrop={handleDrop}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "0.75rem",
+            padding: "2.5rem",
+            border: `2px dashed ${isDragging ? GOLD : BORDER}`,
+            borderRadius: "12px",
+            background: isDragging ? `${GOLD}0a` : BG_ALT,
+            cursor: "pointer",
+            transition: "border-color 0.2s, background 0.2s",
+          }}
+        >
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" stroke={GOLD_DARK} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          <div style={{ textAlign: "center" }}>
+            <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.99rem", color: INK, margin: "0 0 0.25rem" }}>
+              Arraste ficheiros ou <span style={{ color: GOLD_DARK, textDecoration: "underline" }}>clique para selecionar</span>
+            </p>
+            <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.858rem", color: INK_SOFT, margin: 0 }}>
+              PNG, JPG, PDF, MP3, AAC, MP4
+            </p>
           </div>
+          <input
+            type="file"
+            accept=".png,.jpg,.jpeg,.gif,.pdf,.mp3,.aac,.mp4"
+            multiple
+            onChange={handleFileChange}
+            style={{ display: "none" }}
+          />
+        </label>
+
+        {/* Obs */}
+        <div style={{ marginTop: "1rem", padding: "1rem 1.25rem", background: BG_ALT, border: `1px solid ${BORDER}`, borderRadius: "8px" }}>
+          <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.935rem", color: INK, margin: "0 0 0.4rem", fontWeight: 700 }}>
+            Documentos obrigatórios:
+          </p>
+          {[
+            "Cópia do estatuto da empresa e NIF (empresas)",
+            "Bilhete de identidade e NIF (candidatura individual)",
+            "BI, NIF e certificado de matrícula (estudante universitário)",
+            "Comprovativo de pagamento e ficha técnica do trabalho",
+          ].map((item, i) => (
+            <p key={i} style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.935rem", color: INK_SOFT, margin: "0.3rem 0 0", display: "flex", gap: "0.5rem" }}>
+              <span style={{ color: GOLD_DARK, flexShrink: 0 }}>·</span> {item}
+            </p>
+          ))}
         </div>
       </div>
 
-      <div className="hidden sm:block" aria-hidden="true">
-        <div className="py-5"><div className="border-t border-gray-200" /></div>
-      </div>
-
-      {/* Upload de ficheiros */}
-      <div className="mt-10 sm:mt-0">
-        <div className="md:grid md:grid-cols-3 md:gap-6">
-          <div className="md:col-span-1">
-            <div className="px-4 sm:px-0">
-              <h3 className="text-xl font-semibold text-gray-900">OBS:</h3>
-              <p className="mt-2 text-sm text-gray-600">
-                <span className="text-red-500 font-bold">*</span> É necessário o envio da cópia do estatuto da empresa e do NIF.<br />
-                <span className="text-red-500 font-bold">*</span> Bilhete de identidade e NIF, se for candidatura individual.<br />
-                <span className="text-red-500 font-bold">*</span> Bilhete de identidade, NIF e certificado de matrícula, se for estudante universitário.<br />
-                <span className="text-red-500 font-bold">*</span> Comprovativo de pagamento e ficha técnica do trabalho que apresenta a concurso.
-              </p>
-            </div>
-          </div>
-          <div className="mt-5 md:col-span-2 md:mt-0">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Documentos (<span className="text-red-500 font-bold">*</span>) – só é permitido imagem (png, jpg, jpeg, gif), pdf, áudio (mp3, aac), vídeos (mp4).
-              </label>
-              <div className="mt-1 flex justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6">
-                <div className="space-y-1 text-center">
-                  <svg className="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                  <div>
-                    <input
-                      onChange={handleFileChange}
-                      type="file"
-                      accept=".png,.jpg,.jpeg,.gif,.pdf,.mp3,.aac,.mp4"
-                      className="w-full py-2 px-4 border border-gray-300 rounded-md"
-                      multiple
-                    />
-                    <div className="pt-8">
-                      {files.map((file, index) => (
-                        <div key={index}>
-                          Ficheiro #{index} progress: {Math.round(file.progress)}%
-                        </div>
-                      ))}
-                    </div>
-                    <div>
-                      <button
-                        className="bg-amarelo-ouro text-branco hover:text-branco font-[Poppins] py-2 px-6 rounded mt-10 hover:bg-castanho-claro duration-500"
-                        onClick={onConfirm}
-                        disabled={isUploading}
-                        type="button"
-                      >
-                        Confirmar
-                      </button>
-                    </div>
-                  </div>
-                </div>
+      {/* Upload progress */}
+      {uploading.length > 0 && (
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+          <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.88rem", fontWeight: 700, color: GOLD_DARK, margin: 0 }}>
+            A enviar…
+          </p>
+          {uploading.map((f, i) => (
+            <div key={i}>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.3rem" }}>
+                <span style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.968rem", color: INK }}>{f.name}</span>
+                <span style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.902rem", fontWeight: 700, color: f.status === "error" ? "#c0392b" : f.status === "done" ? GOLD_DARK : INK_SOFT }}>
+                  {f.status === "error" ? "Erro" : f.status === "done" ? "✓ Concluído" : `${f.progress}%`}
+                </span>
+              </div>
+              <div style={{ height: "4px", background: BORDER, borderRadius: "100px", overflow: "hidden" }}>
+                <div style={{
+                  height: "100%",
+                  width: `${f.progress}%`,
+                  background: f.status === "error" ? "#c0392b" : GOLD,
+                  borderRadius: "100px",
+                  transition: "width 0.2s",
+                }} />
               </div>
             </div>
-          </div>
+          ))}
         </div>
-      </div>
-    </>
+      )}
+    </div>
   )
 }

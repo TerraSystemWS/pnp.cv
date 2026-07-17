@@ -5,129 +5,135 @@ import showdown from "showdown"
 import Head from "next/head"
 import { useFetchUser } from "../lib/authContext"
 import qs from "qs"
-import CategBox from "../components/CategBox"
-import HeroSection from "../components/HeroSection"
 import { useState } from "react"
+import { GOLD, GOLD_DARK, INK, INK_SOFT, BG, BG_ALT, CARD, BORDER, FONT, FONT_IMPORT } from "../lib/theme"
 
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
 
 const Regulamentos = ({ social, contato, edicao, navbar }: any) => {
-  const { user, loading } = useFetchUser()
+  const { user } = useFetchUser()
+  const [activeTab, setActiveTab] = useState<"regulamentos" | "categorias">("regulamentos")
 
-  const createMarkup = (content: string) => {
-    if (typeof content !== "string") {
-      console.error("Error: Content is not a string.")
-      return { __html: "" }
-    }
-    const converter = new showdown.Converter()
-    return { __html: converter.makeHtml(content) }
-  }
+  const converter = new showdown.Converter()
 
-  const Regulamentos = edicao.attributes.regulamentos.map(
-    (regulamento: any, index: number) => ({
-      id: index,
-      titulo: regulamento.titulo,
-      descricao: createMarkup(regulamento.descricao),
+  const RegulamentosData = (edicao?.attributes?.regulamentos ?? []).map(
+    (r: any, i: number) => ({
+      id: i,
+      titulo: r.titulo,
+      html: converter.makeHtml(typeof r.descricao === "string" ? r.descricao : ""),
     })
   )
 
-  const Categoria = edicao.attributes.categoria.map(
-    (categoria: any, index: number) => ({
-      id: index,
-      titulo: categoria.titulo,
-      slug: categoria.titulo.replace(/ /g, "_"),
-      descricao: createMarkup(categoria.descricao),
+  const CategoriaData = (edicao?.attributes?.categoria ?? []).map(
+    (c: any, i: number) => ({
+      id: i,
+      titulo: c.titulo,
+      slug: c.titulo.replace(/ /g, "_"),
+      html: converter.makeHtml(typeof c.descricao === "string" ? c.descricao : ""),
     })
   )
 
-  // Estado para controlar a aba ativa
-  const [activeTab, setActiveTab] = useState<"regulamentos" | "categorias">(
-    "regulamentos"
-  )
+  const edicaoNum = edicao?.attributes?.N_Edicao ?? ""
 
   return (
     <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
       <Head>
-        <title>{`Regulamento - Prémio Nacional De Publicidade`}</title>
-        <meta name="description" content={Regulamentos[0]?.titulo || " "} />
+        <title>Regulamento - Prémio Nacional De Publicidade</title>
+        <meta name="description" content="Regulamento do Prémio Nacional de Publicidade" />
       </Head>
 
-      <HeroSection
-        title={Regulamentos[0]?.titulo}
-        subtitle={"Tudo sobre a recente edição do PNP"}
-      />
+      <style>{`
+        ${FONT_IMPORT}
+        @keyframes fadeUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
 
-      <section className="bg-gradient-to-r from-[#f2f0eb] via-[#e3e3e3] to-[#f2f0eb] py-12 px-6 sm:px-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-          <div className="py-6 sm:py-8 md:py-12">
-            <div className="flex justify-center mb-6">
-              <button
-                className={`px-6 py-3 text-lg font-semibold rounded-md ${
-                  activeTab === "regulamentos"
-                    ? "bg-yellow-500 text-white"
-                    : "bg-gray-200 text-gray-700"
-                }`}
-                onClick={() => setActiveTab("regulamentos")}
-              >
-                Regulamentos
-              </button>
-              <button
-                className={`px-6 py-3 text-lg font-semibold rounded-md ml-4 ${
-                  activeTab === "categorias"
-                    ? "bg-yellow-500 text-white"
-                    : "bg-gray-200 text-gray-700"
-                }`}
-                onClick={() => setActiveTab("categorias")}
-              >
-                Categorias
-              </button>
-            </div>
+        .reg-content h1,.reg-content h2,.reg-content h3 {
+          font-family: ${FONT};
+          color: ${INK};
+          font-weight: 700;
+          margin: 1.75rem 0 1rem;
+        }
+        .reg-content h1 { font-size: 1.6rem; }
+        .reg-content h2 { font-size: 1.35rem; }
+        .reg-content h3 { font-size: 1.1rem; color: ${GOLD_DARK}; }
+        .reg-content p  { font-family: ${FONT}; font-size: 0.98rem; line-height: 1.8; color: ${INK_SOFT}; margin-bottom: 1rem; }
+        .reg-content ul,.reg-content ol { padding-left: 1.5rem; margin-bottom: 1rem; }
+        .reg-content li { font-family: ${FONT}; font-size: 0.96rem; line-height: 1.7; color: ${INK_SOFT}; margin-bottom: 0.25rem; }
+        .reg-content strong { color: ${INK}; font-weight: 700; }
+        .reg-content a { color: ${GOLD_DARK}; text-decoration: underline; }
+        .reg-content hr { border: none; border-top: 1px solid ${BORDER}; margin: 2rem 0; }
+      `}</style>
 
-            {activeTab === "regulamentos" && (
-              <div className="leading-relaxed text-lg sm:text-xl md:text-2xl text-gray-800 font-serif">
-                <span dangerouslySetInnerHTML={Regulamentos[0]?.descricao} />
-              </div>
-            )}
+      {/* ── Hero ── */}
+      <div style={{ background: BG, paddingTop: "6rem", paddingBottom: "3rem", textAlign: "center" }}>
+        <p style={{ fontFamily: FONT, fontSize: "0.88rem", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "1rem", animation: "fadeUp 0.6s ease both" }}>Prémio Nacional de Publicidade</p>
+        <h1 style={{ fontFamily: FONT, fontSize: "clamp(2.42rem,6vw,3.74rem)", fontWeight: 700, color: INK, margin: 0, animation: "fadeUp 0.7s ease 0.1s both" }}>Regulamento</h1>
+        {edicaoNum && <p style={{ fontFamily: FONT, fontSize: "1.045rem", color: INK_SOFT, marginTop: "0.8rem", animation: "fadeUp 0.8s ease 0.2s both" }}>{edicaoNum}ª Edição</p>}
+      </div>
 
-            {activeTab === "categorias" && (
-              <div className="rounded-xl max-w-7xl mx-auto px-6 sm:px-12 py-24 flex flex-wrap gap-12">
-                <div className="w-full">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-12 px-4 sm:px-6 lg:px-8">
-                    {Categoria.map((category: any) => (
-                      <div
-                        key={category.id}
-                        className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out transform hover:scale-105"
-                      >
-                        <h2 className="text-2xl sm:text-3xl font-bold text-transparent title-font mb-6 text-center tracking-wide bg-gradient-to-r from-yellow-500 to-orange-500 bg-clip-text">
-                          <a
-                            id={category.slug}
-                            className="hover:text-orange-600 transition-colors duration-300"
-                          >
-                            {category.titulo}
-                          </a>
-                        </h2>
-
-                        <div className="leading-relaxed text-lg text-gray-700 mb-4">
-                          <span dangerouslySetInnerHTML={category.descricao} />
-                        </div>
-
-                        {/* <div className="text-center">
-                          <a
-                            href={`#${category.slug}`}
-                            className="inline-block px-6 py-3 mt-4 text-sm font-semibold text-white bg-gradient-to-r from-yellow-500 to-orange-500 rounded-lg shadow-md hover:bg-orange-600 hover:shadow-lg transition-all duration-300 ease-in-out"
-                          >
-                            Ver Mais
-                          </a>
-                        </div> */}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
+      {/* ── Tab selector ── */}
+      <div style={{ background: BG, borderBottom: `1px solid ${BORDER}`, position: "sticky", top: "68px", zIndex: 10 }}>
+        <div style={{ maxWidth: "900px", margin: "0 auto", padding: "0 2rem", display: "flex", gap: "0" }}>
+          {(["regulamentos", "categorias"] as const).map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              style={{
+                fontFamily: FONT,
+                fontSize: "0.99rem",
+                fontWeight: 700,
+                padding: "1rem 1.5rem",
+                background: "transparent",
+                border: "none",
+                borderBottom: activeTab === tab ? `3px solid ${GOLD}` : "3px solid transparent",
+                color: activeTab === tab ? INK : INK_SOFT,
+                cursor: "pointer",
+                transition: "color 0.2s, border-color 0.2s",
+              }}
+            >
+              {tab === "regulamentos" ? "Regulamentos" : "Categorias"}
+            </button>
+          ))}
         </div>
-      </section>
+      </div>
+
+      {/* ── Content ── */}
+      <div style={{ background: BG, minHeight: "60vh", padding: "3.5rem 2rem 5rem" }}>
+        <div style={{ maxWidth: "900px", margin: "0 auto" }}>
+
+          {/* Regulamentos tab */}
+          {activeTab === "regulamentos" && RegulamentosData.map((r: any) => (
+            <div key={r.id}>
+              {r.titulo && (
+                <h2 style={{ fontFamily: FONT, fontSize: "1.54rem", fontWeight: 700, color: INK, marginBottom: "1.5rem", borderLeft: `3px solid ${GOLD}`, paddingLeft: "1rem" }}>
+                  {r.titulo}
+                </h2>
+              )}
+              <div className="reg-content" dangerouslySetInnerHTML={{ __html: r.html }} />
+            </div>
+          ))}
+
+          {/* Categorias tab */}
+          {activeTab === "categorias" && (
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(380px, 1fr))", gap: "1.5rem" }}>
+              {CategoriaData.map((cat: any) => (
+                <div key={cat.id} id={cat.slug} style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: "16px", padding: "2rem", position: "relative", overflow: "hidden" }}>
+                  <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "3px", background: GOLD }} />
+                  <h2 style={{ fontFamily: FONT, fontSize: "1.375rem", fontWeight: 700, color: INK, marginBottom: "1.1rem" }}>
+                    {cat.titulo}
+                  </h2>
+                  <div className="reg-content" dangerouslySetInnerHTML={{ __html: cat.html }} />
+                </div>
+              ))}
+            </div>
+          )}
+
+          {!edicao && (
+            <p style={{ fontFamily: FONT, color: INK_SOFT, textAlign: "center", fontSize: "1.045rem" }}>
+              Sem dados de regulamento disponíveis.
+            </p>
+          )}
+        </div>
+      </div>
     </Layout>
   )
 }
@@ -135,10 +141,7 @@ const Regulamentos = ({ social, contato, edicao, navbar }: any) => {
 export default Regulamentos
 
 export async function getServerSideProps() {
-  const query = qs.stringify(
-    { sort: ["N_Edicao:DESC"] },
-    { encodeValuesOnly: true }
-  )
+  const query = qs.stringify({ sort: ["N_Edicao:DESC"] }, { encodeValuesOnly: true })
 
   try {
     const results = await Promise.allSettled([
@@ -147,8 +150,8 @@ export async function getServerSideProps() {
       fetcher(`${api_link}/api/menus?populate=deep`),
     ])
     const [contato, edicaoResponse, menus] = results.map((r: any) => {
-      if (r.status === 'fulfilled') return r.value
-      console.error('Endpoint failed:', r.reason)
+      if (r.status === "fulfilled") return r.value
+      console.error("Endpoint failed:", r.reason)
       return null
     })
 
@@ -162,13 +165,6 @@ export async function getServerSideProps() {
     }
   } catch (error) {
     console.error("Error fetching regulamentos data:", error)
-    return {
-      props: {
-        social: { data: null },
-        contato: { data: null },
-        edicao: null,
-        navbar: [],
-      },
-    }
+    return { props: { social: [], contato: null, edicao: null, navbar: [] } }
   }
 }
