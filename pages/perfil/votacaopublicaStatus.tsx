@@ -6,6 +6,7 @@ import { useFetchUser } from "../../lib/authContext"
 import Router from "next/router"
 import qs from "qs"
 import UserProfileCard from "../../components/custom/sidemenu"
+import { hasJuryAccess } from "../../lib/roles"
 
 // PrimeReact components
 import React, { useState, useEffect, useRef } from "react"
@@ -33,7 +34,7 @@ const VotacaoPublicaStatus = ({ social, contato, Vpublica, navbar }: any) => {
 
   // Verificar se o usuário é permitido (depois de carregado)
   useEffect(() => {
-    if (!loading && user && role !== "jurado" && role !== "responsavel") {
+    if (!loading && user && !hasJuryAccess(role)) {
       Router.push("/perfil")
     }
   }, [user, role, loading])

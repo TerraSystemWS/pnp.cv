@@ -3,6 +3,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { FaUserAlt, FaStar, FaVoteYea } from "react-icons/fa"
+import { hasJuryAccess } from "../../lib/roles"
 
 interface UserProfileCardProps {
   user: string
@@ -34,21 +35,21 @@ const UserProfileCard = ({ user, role }: UserProfileCardProps) => {
       icon: <FaUserAlt className="mr-3 text-xl" />,
       label: "Perfil",
     },
-    role === "jurado" || role === "responsavel"
+    hasJuryAccess(role)
       ? {
           href: "/perfil/avaliacao",
           icon: <FaStar className="mr-3 text-xl" />,
           label: "Avaliar Projetos",
         }
       : null,
-    role === "jurado" || role === "responsavel"
+    hasJuryAccess(role)
       ? {
           href: "/perfil/votacaopublicaStatus",
           icon: <FaVoteYea className="mr-3 text-xl" />,
           label: "Resultado da Votação Pública",
         }
       : null,
-    role === "jurado" || role === "responsavel"
+    hasJuryAccess(role)
       ? {
           href: "/perfil/avaliacaoStatus",
           icon: <FaVoteYea className="mr-3 text-xl" />,

@@ -11,6 +11,7 @@ import qs from "qs"
 // import HeroSection from "../../components/HeroSection"
 import { useRouter } from "next/router"
 import UserProfileCard from "../../components/custom/sidemenu"
+import { hasJuryAccess } from "../../lib/roles"
 import { getTokenFromLocalCookie, getTokenFromServerCookie } from "../../lib/auth"
 
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
@@ -42,7 +43,7 @@ const Avaliacao = ({
 
   // Só jurados e responsáveis podem ver o resultado da avaliação
   useEffect(() => {
-    if (!loading && user && role !== "jurado" && role !== "responsavel") {
+    if (!loading && user && !hasJuryAccess(role)) {
       router.push("/perfil")
     }
   }, [user, role, loading, router])
