@@ -33,7 +33,7 @@ const VotacaoPublicaStatus = ({ social, contato, Vpublica, navbar }: any) => {
 
   // Verificar se o usuário é permitido (depois de carregado)
   useEffect(() => {
-    if (!loading && user && role !== "Jurado" && role !== "Responsavel") {
+    if (!loading && user && role !== "jurado" && role !== "responsavel") {
       Router.push("/perfil")
     }
   }, [user, role, loading])

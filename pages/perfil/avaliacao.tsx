@@ -51,7 +51,7 @@ const Avaliacao = ({
 
   // Só jurados e responsáveis podem avaliar projetos
   useEffect(() => {
-    if (!loading && user && role !== "Jurado" && role !== "Responsavel") {
+    if (!loading && user && role !== "jurado" && role !== "responsavel") {
       router.push("/perfil")
     }
   }, [user, role, loading, router])
