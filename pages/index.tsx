@@ -38,6 +38,8 @@ function stripHtml(html: string, maxLen = 110) {
 // ── home ──────────────────────────────────────────────────────────────────────
 
 const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
+  const UNDER_CONSTRUCTION = false
+
   const router = useRouter()
 
   const { user } = useFetchUser()
