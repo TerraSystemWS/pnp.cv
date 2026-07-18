@@ -14,7 +14,7 @@ interface Props {
   apiLink: string
   defaults: Partial<Inputs>
   categorias: Categoria[]
-  onSaved?: () => void
+  onSaved?: (data: Inputs) => void
   onSaveStatusChange?: (status: "idle" | "saving" | "saved" | "error") => void
 }
 
@@ -42,7 +42,7 @@ const FichaTecnicaForm = forwardRef<FormHandle, Props>(
           onSaveStatusChange?.("saved")
           reset(data)
           setHighlighted(new Set())
-          onSaved?.()
+          onSaved?.(data)
         } else {
           onSaveStatusChange?.("error")
         }
