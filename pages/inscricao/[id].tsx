@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react"
 import Head from "next/head"
+import { useRouter } from "next/router"
 import Layout from "../../components/Layout"
 import { fetcher } from "../../lib/api"
 import { parseNavbar } from "../../lib/parseNavbar"
@@ -39,7 +40,11 @@ const STEPS = [
 
 const Inscrever = ({ social, contato, edicao, navbar, inscricao, accessCode }: Props) => {
   const { user } = useFetchUser()
-  const attrs = inscricao.data?.attributes
+  const router = useRouter()
+  // Estado (não constante derivada da prop inicial) — cada painel funde aqui
+  // o que acabou de gravar, para os dados não "desaparecerem" ao voltar a
+  // um passo já visitado (cada passo desmonta/remonta ao trocar de separador).
+  const [attrs, setAttrs] = useState(inscricao.data?.attributes)
   const categorias: Categoria[] = edicao?.data?.[0]?.attributes?.categoria ?? []
   const cid = String(inscricao.data?.id ?? "")
 
@@ -65,9 +70,17 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao, accessCode }: P
     !!attrs?.coord_prod,
     existingFiles.length > 0,
   ]
+  const isCurrentStepDone = stepDone[activeStep] || savedSteps[activeStep]
 
   const markSaved = (step: number) =>
     setSavedSteps((prev) => { const next = [...prev]; next[step] = true; return next })
+
+  // Funde os dados que acabaram de ser gravados no estado local, para
+  // ficarem visíveis mesmo depois de sair e voltar a este passo.
+  const handleFormSaved = (step: number, data: any) => {
+    setAttrs((prev) => ({ ...(prev as any), ...data }))
+    markSaved(step)
+  }
 
   const currentRef = (): React.RefObject<FormHandle> | null => {
     if (activeStep === 0) return ref0
@@ -120,9 +133,37 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao, accessCode }: P
         .step-btn:hover .step-label { color: ${GOLD_DARK} !important; }
         .nav-btn { transition: background 0.2s, color 0.2s, border-color 0.2s; }
         .nav-btn:hover { background: ${GOLD}14 !important; color: ${GOLD_DARK} !important; border-color: ${GOLD} !important; }
-        .nav-btn-primary:hover { opacity: 0.85 !important; }
+        .nav-btn-primary:hover:not(:disabled) { opacity: 0.85 !important; }
         .save-btn:hover:not(:disabled) { opacity: 0.85 !important; }
+
+        .pnp-reminder { display: block; }
+        @media (max-width: 1180px) { .pnp-reminder { display: none; } }
       `}</style>
+
+      {/* ── Lembrete fixo (só ecrãs largos) ── */}
+      <div
+        className="pnp-reminder"
+        style={{
+          position: "fixed",
+          right: "1.5rem",
+          top: "50%",
+          transform: "translateY(-50%)",
+          zIndex: 30,
+          width: "220px",
+          background: CARD,
+          border: `1px solid ${GOLD}55`,
+          borderRadius: "12px",
+          padding: "1.1rem 1.2rem",
+          boxShadow: "0 8px 24px rgba(36,31,15,0.12)",
+        }}
+      >
+        <p style={{ fontFamily: FONT, fontSize: "0.792rem", fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: GOLD_DARK, margin: "0 0 0.5rem" }}>
+          ⚠ Lembrete
+        </p>
+        <p style={{ fontFamily: FONT, fontSize: "0.858rem", color: INK_SOFT, margin: 0, lineHeight: 1.5 }}>
+          Guarde cada passo antes de mudar de separador — os dados não são gravados automaticamente.
+        </p>
+      </div>
 
       {/* ── Hero ── */}
       <div style={{ background: BG_ALT, paddingTop: "6rem", paddingBottom: "2.5rem", textAlign: "center", borderBottom: `1px solid ${BORDER}` }}>
@@ -203,7 +244,7 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao, accessCode }: P
               cid={cid}
               apiLink={api_link ?? ""}
               defaults={{ nome_completo: attrs?.nome_completo, email: attrs?.email, sede: attrs?.sede, nif: attrs?.NIF as any, telefone: attrs?.telefone as any }}
-              onSaved={() => markSaved(0)}
+              onSaved={(data) => handleFormSaved(0, data)}
               onSaveStatusChange={setSaveStatus}
             />
           )}
@@ -214,7 +255,7 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao, accessCode }: P
               apiLink={api_link ?? ""}
               categorias={categorias}
               defaults={{ categoria: attrs?.categoria, nome_projeto: attrs?.nome_projeto, con_criativo: attrs?.con_criativo }}
-              onSaved={() => markSaved(1)}
+              onSaved={(data) => handleFormSaved(1, data)}
               onSaveStatusChange={setSaveStatus}
             />
           )}
@@ -224,7 +265,7 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao, accessCode }: P
               cid={cid}
               apiLink={api_link ?? ""}
               defaults={{ coord_prod: attrs?.coord_prod, dir_foto: attrs?.dir_foto, dir_art: attrs?.dir_art, realizador: attrs?.realizador, editor: attrs?.editor, autor_jingle: attrs?.autor_jingle, designer: attrs?.designer, outras_consideracoes: attrs?.outras_consideracoes, data_producao: attrs?.data_producao, data_divulgacao: attrs?.data_divulgacao, data_apresentacao_publica: attrs?.data_apresentacao_publica }}
-              onSaved={() => markSaved(2)}
+              onSaved={(data) => handleFormSaved(2, data)}
               onSaveStatusChange={setSaveStatus}
             />
           )}
@@ -288,15 +329,31 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao, accessCode }: P
                 )}
               </div>
 
-              {/* Next */}
-              <div>
+              {/* Next / Concluir */}
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "0.4rem" }}>
                 {activeStep < STEPS.length - 1 && (
                   <button
                     className="nav-btn-primary"
                     onClick={() => setActiveStep((s) => s + 1)}
-                    style={{ fontFamily: FONT, fontSize: "0.935rem", fontWeight: 700, color: INK, background: GOLD, border: "none", borderRadius: "100px", padding: "10px 24px", cursor: "pointer" }}
+                    disabled={!isCurrentStepDone}
+                    title={!isCurrentStepDone ? "Guarde este passo antes de avançar" : undefined}
+                    style={{ fontFamily: FONT, fontSize: "0.935rem", fontWeight: 700, color: isCurrentStepDone ? INK : INK_SOFT, background: isCurrentStepDone ? GOLD : BG_ALT, border: isCurrentStepDone ? "none" : `1px solid ${BORDER}`, borderRadius: "100px", padding: "10px 24px", cursor: isCurrentStepDone ? "pointer" : "not-allowed", transition: "opacity 0.2s" }}
                   >
                     Próximo →
+                  </button>
+                )}
+                {activeStep < STEPS.length - 1 && !isCurrentStepDone && (
+                  <span style={{ fontFamily: FONT, fontSize: "0.792rem", color: INK_SOFT }}>
+                    Guarde para poder avançar
+                  </span>
+                )}
+                {activeStep === STEPS.length - 1 && (
+                  <button
+                    className="nav-btn-primary"
+                    onClick={() => router.push("/perfil")}
+                    style={{ fontFamily: FONT, fontSize: "0.935rem", fontWeight: 700, color: INK, background: GOLD, border: "none", borderRadius: "100px", padding: "10px 24px", cursor: "pointer" }}
+                  >
+                    Concluir Inscrição
                   </button>
                 )}
               </div>

@@ -14,7 +14,7 @@ interface Props {
   cid: string
   apiLink: string
   defaults: Partial<Inputs>
-  onSaved?: () => void
+  onSaved?: (data: Inputs) => void
   onSaveStatusChange?: (status: "idle" | "saving" | "saved" | "error") => void
 }
 
@@ -52,7 +52,7 @@ const FichaInscricaoForm = forwardRef<FormHandle, Props>(
           onSaveStatusChange?.("saved")
           reset(data)
           setHighlighted(new Set())
-          onSaved?.()
+          onSaved?.(data)
         } else {
           onSaveStatusChange?.("error")
         }
