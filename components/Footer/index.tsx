@@ -44,7 +44,7 @@ const Footer: React.FC<FooterProps> = ({ rsocial, contato = null }) => {
 
   const siteLinks = [
     { name: "Home",         link: "/" },
-    { name: "Regulamentos", link: "/regulamentos" },
+    { name: "Regulamento", link: "/regulamentos" },
     { name: "Edições",      link: "/edicoes" },
     { name: "Parceiros",    link: "/parceiros" },
     { name: "Blog",         link: "/posts" },
