@@ -11,8 +11,10 @@ import qs from "qs"
 import HeroSection from "../../components/HeroSection"
 import { useRouter } from "next/router"
 import UserProfileCard from "../../components/custom/sidemenu"
+import EdicaoPicker from "../../components/custom/EdicaoPicker"
 import { getIdFromLocalCookie, getTokenFromLocalCookie } from "../../lib/auth"
 import { hasJuryAccess } from "../../lib/roles"
+import { getEdicoesDisponiveis, resolveEdicaoSelecionada } from "../../lib/edicoes"
 
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
 
@@ -22,9 +24,8 @@ const Avaliacao = ({
   contato,
   navbar,
   inscritos,
-  avaliacaos,
-  totalPages,
-  currentPage,
+  edicoesDisponiveis,
+  edicaoSelecionada,
 }: any) => {
   const { user, role, loading } = useFetchUser()
   const router = useRouter()
@@ -131,6 +132,12 @@ const Avaliacao = ({
                     title={`Projetos concorrentes à ${edicaoMaisRecente.N_Edicao}ª edição`}
                     subtitle={"Inscrições abertas de 1 a 31 de Janeiro de 2025"}
                   />
+                  <EdicaoPicker
+                    edicoes={edicoesDisponiveis}
+                    selecionada={edicaoSelecionada}
+                    basePath="/perfil/avaliacao"
+                    variant="inline"
+                  />
                   <h2 className="text-xl font-bold mt-6 mb-4">
                     Lista De Projetos
                   </h2>
@@ -233,31 +240,27 @@ const Avaliacao = ({
 
 export default Avaliacao
 
-// Server-Side Data Fetching with Pagination Logic
 export async function getServerSideProps({ query }: any) {
-  const page = query.page || 1 // Default to first page
-  const pageSize = 1 // Show only one edition per page
-
-  const queri = qs.stringify(
-    {
-      sort: ["N_Edicao:desc"], // Ordena pela edição mais recente
-      pagination: {
-        page, // Current page
-        pageSize, // Number of editions per page
-      },
-    },
-    { encodeValuesOnly: true }
-  )
-
   try {
-    // Fetch data concurrently
+    const edicoesDisponiveis = await getEdicoesDisponiveis()
+    const edicaoSelecionada = resolveEdicaoSelecionada(query.edicao, edicoesDisponiveis)
+
+    const edicaoQuery = qs.stringify(
+      { filters: { N_Edicao: { $eq: edicaoSelecionada } } },
+      { encodeValuesOnly: true }
+    )
+    const inscritosQuery = qs.stringify(
+      { filters: { edicoes: { N_Edicao: { $eq: edicaoSelecionada } } }, populate: "*" },
+      { encodeValuesOnly: true }
+    )
+
     const results = await Promise.allSettled([
       fetcher(
-        `${api_link}/api/edicoes?populate[categoria][fields]=titulo,id&[populate][inscricoes][fields]=titulo&${queri}`
+        `${api_link}/api/edicoes?populate[categoria][fields]=titulo,id&[populate][inscricoes][fields]=titulo&${edicaoQuery}`
       ),
       fetcher(`${api_link}/api/contato`),
       fetcher(`${api_link}/api/menus?populate=deep`),
-      fetcher(`${api_link}/api/inscricoes?populate=*`),
+      fetcher(`${api_link}/api/inscricoes?${inscritosQuery}`),
     ])
     const [edicoes, contato, menus, inscritos] = results.map((r: any) => {
       if (r.status === "fulfilled") return r.value
@@ -265,16 +268,11 @@ export async function getServerSideProps({ query }: any) {
       return null
     })
 
-    const totalPages = Math.ceil(
-      (edicoes?.meta?.pagination?.total ?? 0) / pageSize
-    )
-    const currentPage = edicoes?.meta?.pagination?.page ?? 1
-
     return {
       props: {
         edicoes: edicoes?.data ?? [],
-        totalPages,
-        currentPage,
+        edicoesDisponiveis,
+        edicaoSelecionada,
         social: parseNavbar(menus, "redes-social"),
         contato: contato ?? null,
         navbar: parseNavbar(menus, "menus"),
@@ -286,13 +284,12 @@ export async function getServerSideProps({ query }: any) {
     return {
       props: {
         edicoes: [],
+        edicoesDisponiveis: [],
+        edicaoSelecionada: null,
         social: [],
         contato: {},
         navbar: [],
         inscritos: [],
-        // avaliacaos: [],
-        totalPages: 1,
-        currentPage: 1,
       },
     }
   }

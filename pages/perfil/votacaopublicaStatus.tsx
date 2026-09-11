@@ -6,7 +6,9 @@ import { useFetchUser } from "../../lib/authContext"
 import Router from "next/router"
 import qs from "qs"
 import UserProfileCard from "../../components/custom/sidemenu"
+import EdicaoPicker from "../../components/custom/EdicaoPicker"
 import { hasJuryAccess } from "../../lib/roles"
+import { getEdicoesDisponiveis, resolveEdicaoSelecionada } from "../../lib/edicoes"
 
 // PrimeReact components
 import React, { useState, useEffect, useRef } from "react"
@@ -19,7 +21,7 @@ import { Tooltip } from "primereact/tooltip"
 // API base URL
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
 
-const VotacaoPublicaStatus = ({ social, contato, Vpublica, navbar }: any) => {
+const VotacaoPublicaStatus = ({ social, contato, Vpublica, navbar, edicoesDisponiveis, edicaoSelecionada }: any) => {
   const { user, role, loading } = useFetchUser()
   const [products, setProducts] = useState<any[]>([])
   const [selectedProducts, setSelectedProducts] = useState<any[]>([])
@@ -166,6 +168,12 @@ const VotacaoPublicaStatus = ({ social, contato, Vpublica, navbar }: any) => {
                           Contagem dos votos feitos na plataforma
                         </p>
                       </div>
+                      <EdicaoPicker
+                        edicoes={edicoesDisponiveis}
+                        selecionada={edicaoSelecionada}
+                        basePath="/perfil/votacaopublicaStatus"
+                        variant="inline"
+                      />
                       <div className="card">
                         <Tooltip
                           target=".export-buttons>button"
@@ -205,15 +213,19 @@ const VotacaoPublicaStatus = ({ social, contato, Vpublica, navbar }: any) => {
 export default VotacaoPublicaStatus
 
 // Fetch data on the server side
-export const getServerSideProps = async () => {
+export const getServerSideProps = async ({ query: routerQuery }: any) => {
   try {
     if (!api_link) {
       throw new Error("API_BASE_URL is not defined")
     }
 
+    const edicoesDisponiveis = await getEdicoesDisponiveis()
+    const edicaoSelecionada = resolveEdicaoSelecionada(routerQuery.edicao, edicoesDisponiveis)
+
     const query = qs.stringify(
       {
         fields: ["nome_completo", "categoria", "nome_projeto"],
+        filters: { edicoes: { N_Edicao: { $eq: edicaoSelecionada } } },
         populate: {
           votacao_publicas: {
             fields: ["id"],
@@ -241,6 +253,8 @@ export const getServerSideProps = async () => {
         contato: contato ?? null,
         Vpublica: inscricoes ?? { data: [] },
         navbar: parseNavbar(menus, "menus"),
+        edicoesDisponiveis,
+        edicaoSelecionada,
       },
     }
   } catch (error) {
@@ -251,6 +265,8 @@ export const getServerSideProps = async () => {
         contato: null,
         Vpublica: { data: [] },
         navbar: [],
+        edicoesDisponiveis: [],
+        edicaoSelecionada: null,
       },
     }
   }
