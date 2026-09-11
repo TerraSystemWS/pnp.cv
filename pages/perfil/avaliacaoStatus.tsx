@@ -6,7 +6,7 @@ import Head from "next/head"
 // import { StrapiImage } from "../../components/custom/StrapiImage"
 import { useFetchUser } from "../../lib/authContext"
 // import { formatDateTime } from "../../lib/utils"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import qs from "qs"
 // import HeroSection from "../../components/HeroSection"
 import { useRouter } from "next/router"
@@ -84,6 +84,40 @@ const Avaliacao = ({
     }
   }
 
+  // Agrupando avaliações por categoria e projeto.
+  // Memorizado por `avaliacoes` — antes era recriado a cada render, o que
+  // fazia o efeito abaixo (sem array de dependências) disparar um
+  // setState -> render -> efeito em loop infinito assim que havia dados.
+  const categorias: any = useMemo(() => {
+    const result: any = {}
+    ;(avaliacoes ?? []).forEach((avaliacao: any) => {
+      // Pula avaliações com relação órfã (inscrição ou usuário apagado/despublicado)
+      // em vez de quebrar a página inteira com um erro de "cannot read properties of null".
+      const inscricao = avaliacao?.attributes?.inscricoe?.data?.attributes
+      const userId = avaliacao?.attributes?.user_id?.data?.id
+      if (!inscricao || !userId) return
+
+      const nomeProjeto = inscricao.nome_projeto
+      const categoria = inscricao.categoria
+
+      if (!result[categoria]) {
+        result[categoria] = {}
+      }
+
+      if (!result[categoria][nomeProjeto]) {
+        result[categoria][nomeProjeto] = {
+          usuarios: [],
+        }
+      }
+
+      result[categoria][nomeProjeto].usuarios.push({
+        id: userId,
+        nota: avaliacao.attributes.notas,
+      })
+    })
+    return result
+  }, [avaliacoes])
+
   // Atualiza os nomes dos usuários quando as avaliações são carregadas
   useEffect(() => {
     const fetchUserNames = async () => {
@@ -105,30 +139,7 @@ const Avaliacao = ({
     }
 
     fetchUserNames()
-  }) // Dependência para buscar os nomes sempre que `categorias` mudar
-
-  // Agrupando avaliações por categoria e projeto
-  const categorias: any = {}
-  ;(avaliacoes ?? []).forEach((avaliacao: any) => {
-    const nomeProjeto =
-      avaliacao.attributes.inscricoe.data.attributes.nome_projeto
-    const categoria = avaliacao.attributes.inscricoe.data.attributes.categoria
-
-    if (!categorias[categoria]) {
-      categorias[categoria] = {}
-    }
-
-    if (!categorias[categoria][nomeProjeto]) {
-      categorias[categoria][nomeProjeto] = {
-        usuarios: [],
-      }
-    }
-
-    categorias[categoria][nomeProjeto].usuarios.push({
-      id: avaliacao.attributes.user_id.data.id,
-      nota: avaliacao.attributes.notas,
-    })
-  })
+  }, [categorias]) // Só busca de novo quando os dados agrupados realmente mudam
 
   return (
     <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>

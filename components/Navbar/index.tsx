@@ -13,6 +13,7 @@ import "primereact/resources/primereact.min.css"
 import "primeicons/primeicons.css"
 import { useForm, SubmitHandler } from "react-hook-form"
 import { GOLD, GOLD_DARK, GOLD_BRIGHT, DARK_BG, DARK_BORDER, LIGHT_TEXT, LIGHT_TEXT_SOFT, FONT, FONT_IMPORT } from "../../lib/theme"
+import { ApiError } from "../../lib/api"
 
 type Inputs = { email: string; password: string }
 
@@ -23,6 +24,7 @@ const Nav = ({ navbar }: any) => {
   const [visible, setVisible] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [hovered, setHovered]   = useState<string | null>(null)
+  const [loginError, setLoginError] = useState<string | null>(null)
 
   const isActiveLink = (href: string) => {
     if (!href || !router) return false
@@ -45,6 +47,7 @@ const Nav = ({ navbar }: any) => {
   const { register, handleSubmit, formState: { errors } } = useForm<Inputs>()
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    setLoginError(null)
     try {
       const res = await fetcher(
         `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/auth/local`,
@@ -58,6 +61,11 @@ const Nav = ({ navbar }: any) => {
       setVisible(false)
     } catch (err) {
       console.error("Login failed:", err)
+      setLoginError(
+        err instanceof ApiError && err.status === 400
+          ? "Email ou password incorretos."
+          : "Não foi possível entrar. Tente novamente."
+      )
     }
   }
 
@@ -361,7 +369,7 @@ const Nav = ({ navbar }: any) => {
         position="center"
         style={{ width: "min(420px, 92vw)" }}
         className="pnp-login-dialog"
-        onHide={() => setVisible(false)}
+        onHide={() => { setVisible(false); setLoginError(null) }}
         footer={
           <Button label="Cancelar" icon="pi pi-times" onClick={() => setVisible(false)} className="p-button-text" />
         }
@@ -392,6 +400,7 @@ const Nav = ({ navbar }: any) => {
             style={{ width: "100%", background: `${GOLD}0d`, border: `1px solid ${DARK_BORDER}`, borderRadius: "9px", padding: "11px 14px", fontSize: "0.95rem", color: LIGHT_TEXT, fontFamily: FONT, outline: "none", marginBottom: "1rem", boxSizing: "border-box" }}
           />
           {errors.password && <p style={{ color: "#f87171", fontSize: "0.8rem", marginTop: "-0.6rem", marginBottom: "0.6rem" }}>{errors.password.message}</p>}
+          {loginError && <p style={{ color: "#f87171", fontSize: "0.85rem", marginBottom: "0.85rem" }}>{loginError}</p>}
 
           <button
             type="submit"
