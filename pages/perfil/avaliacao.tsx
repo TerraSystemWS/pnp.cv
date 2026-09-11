@@ -74,7 +74,15 @@ const Avaliacao = ({
             }
           })
         )
-        setAvaliacoes(results)
+        // Promise.allSettled devolve { status, value }, não o valor resolvido
+        // direto — guardar `results` sem desembrulhar fazia o .find() abaixo
+        // nunca achar `inscricaoId` (fica dentro de `.value`), então TODO
+        // projeto aparecia como "Ainda não foi avaliado", mesmo já avaliado.
+        setAvaliacoes(
+          results
+            .filter((r): r is PromiseFulfilledResult<any> => r.status === "fulfilled")
+            .map((r) => r.value)
+        )
       }
       fetchAvaliacoes()
     }

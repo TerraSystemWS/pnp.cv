@@ -143,6 +143,11 @@ const Votacao = ({ edicaoId, inscricaoId, userId }: any) => {
         const registrada: string = "criada"
         setBlock(true)
         setBlockCor("bg-gray-500")
+        setAvaliacao({
+          sim: true,
+          notas: numberToWord[value],
+          comentario: numberToText[value],
+        })
         jsConfetti.addConfetti({
           emojis: ["🌈", "⚡️", "💥", "✨", "💫", "🌸"],
           emojiSize: 10,
