@@ -9,12 +9,6 @@ import Swal from "sweetalert2"
 const qs = require("qs")
 import { useFetchUser } from "../../lib/authContext"
 import { getTokenFromLocalCookie, getIdFromLocalCookie } from "../../lib/auth"
-import { Accordion, AccordionTab } from "primereact/accordion"
-import { Button } from "primereact/button"
-import { Image } from "primereact/image"
-import "primereact/resources/themes/lara-light-indigo/theme.css"
-import "primereact/resources/primereact.min.css"
-import "primeicons/primeicons.css"
 import JSConfetti from "js-confetti"
 import Votacao from "../../components/Votacao"
 import { GOLD, GOLD_DARK, GOLD_BRIGHT, INK, INK_SOFT, BG, BG_ALT, CARD, BORDER, FONT, FONT_IMPORT } from "../../lib/theme"
@@ -54,11 +48,112 @@ const Field = ({ label, value }: { label: string; value?: string }) => {
   )
 }
 
+type FileItem = { titulo: string; url: string; ext: string }
+
+// Acordeão nativo (substitui o PrimeReact Accordion) — só um item aberto de
+// cada vez, igual ao comportamento padrão do componente anterior.
+const FileAccordion = ({ items, onPreview }: { items: FileItem[]; onPreview: (image: { url: string; title: string }) => void }) => {
+  const [openIndex, setOpenIndex] = useState<number | null>(null)
+
+  return (
+    <div>
+      {items.map((item, index) => {
+        const open = openIndex === index
+        return (
+          <div key={index} style={{ marginBottom: "0.6rem" }}>
+            <button
+              type="button"
+              onClick={() => setOpenIndex(open ? null : index)}
+              aria-expanded={open}
+              style={{
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: "1rem",
+                background: open ? `${GOLD}14` : CARD,
+                border: `1px solid ${open ? GOLD : BORDER}`,
+                color: open ? GOLD_DARK : INK,
+                fontFamily: FONT,
+                fontSize: "0.9rem",
+                fontWeight: 600,
+                padding: "0.9rem 1.25rem",
+                borderRadius: open ? "8px 8px 0 0" : "8px",
+                cursor: "pointer",
+                textAlign: "left",
+              }}
+            >
+              <span>{item.titulo}</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
+                style={{ flexShrink: 0, transform: open ? "rotate(180deg)" : "none", transition: "transform 0.2s" }}>
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </button>
+            {open && (
+              <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderTop: "none", borderRadius: "0 0 8px 8px", padding: "1rem 1.25rem", color: INK_SOFT, fontFamily: FONT, fontSize: "0.9rem" }}>
+                <a href={item.url} target="_blank" rel="noreferrer" style={{ color: GOLD_DARK, fontSize: "0.968rem", fontWeight: 700 }}>[Abrir ficheiro]</a>
+                {item.ext === ".mp3" && <audio controls style={{ marginTop: "0.75rem", width: "100%" }}><source src={item.url} type="audio/mpeg" /></audio>}
+                {item.ext === ".mp4" && <video width="100%" controls style={{ marginTop: "0.75rem", borderRadius: "8px" }}><source src={item.url} type="video/mp4" /></video>}
+                {[".png", ".jpg", ".jpeg"].includes(item.ext) && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={item.url}
+                    alt={item.titulo}
+                    onClick={() => onPreview({ url: item.url, title: item.titulo })}
+                    style={{ marginTop: "0.75rem", width: "100%", borderRadius: "8px", cursor: "zoom-in" }}
+                  />
+                )}
+              </div>
+            )}
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+// Lightbox nativo (substitui o preview de imagem do PrimeReact).
+const ImageLightbox = ({ image, onClose }: { image: { url: string; title: string } | null; onClose: () => void }) => {
+  useEffect(() => {
+    if (!image) return
+    const onKeyDown = (e: KeyboardEvent) => { if (e.key === "Escape") onClose() }
+    document.addEventListener("keydown", onKeyDown)
+    return () => document.removeEventListener("keydown", onKeyDown)
+  }, [image, onClose])
+
+  if (!image) return null
+
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      onClick={onClose}
+      style={{ position: "fixed", inset: 0, zIndex: 300, background: "rgba(0,0,0,0.85)", display: "flex", alignItems: "center", justifyContent: "center", padding: "2rem", cursor: "zoom-out" }}
+    >
+      <button
+        onClick={onClose}
+        aria-label="Fechar"
+        style={{ position: "fixed", top: "1.5rem", right: "1.5rem", background: "transparent", border: "none", color: "#fff", cursor: "pointer", padding: "6px" }}
+      >
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+      </button>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={image.url}
+        alt={image.title}
+        onClick={(e) => e.stopPropagation()}
+        style={{ maxWidth: "100%", maxHeight: "100%", borderRadius: "8px", boxShadow: "0 30px 80px rgba(0,0,0,0.6)", cursor: "default" }}
+      />
+    </div>
+  )
+}
+
 const VpublicaDetalhes = ({ edicoes, social, contato, inscricao, navbar }: any) => {
   const { user, loading } = useFetchUser()
   const [cor, setCor] = useState("currentColor")
   const [isBlock, setBlock] = useState(false)
   const [nhaId, setNhaId] = useState<string | null>(null)
+  const [lightboxImage, setLightboxImage] = useState<{ url: string; title: string } | null>(null)
   const { register, handleSubmit, formState: { errors } } = useForm()
 
   useEffect(() => {
@@ -117,42 +212,6 @@ const VpublicaDetalhes = ({ edicoes, social, contato, inscricao, navbar }: any) 
       <style>{`
         ${FONT_IMPORT}
         @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
-
-        /* PrimeReact Accordion overrides */
-        .p-accordion .p-accordion-header .p-accordion-header-link {
-          background: ${CARD} !important;
-          border: 1px solid ${BORDER} !important;
-          color: ${INK} !important;
-          font-family: ${FONT} !important;
-          font-size: 0.9rem !important;
-          font-weight: 600 !important;
-          padding: 0.9rem 1.25rem !important;
-          border-radius: 8px !important;
-        }
-        .p-accordion .p-accordion-header:not(.p-highlight):not(.p-disabled):hover .p-accordion-header-link {
-          background: ${GOLD}0d !important;
-          border-color: ${GOLD} !important;
-          color: ${GOLD_DARK} !important;
-        }
-        .p-accordion .p-accordion-header.p-highlight .p-accordion-header-link {
-          background: ${GOLD}14 !important;
-          border-color: ${GOLD} !important;
-          color: ${GOLD_DARK} !important;
-          border-bottom-left-radius: 0 !important;
-          border-bottom-right-radius: 0 !important;
-        }
-        .p-accordion .p-accordion-content {
-          background: ${CARD} !important;
-          border: 1px solid ${BORDER} !important;
-          border-top: none !important;
-          color: ${INK_SOFT} !important;
-          font-family: ${FONT} !important;
-          font-size: 0.9rem !important;
-          border-bottom-left-radius: 8px !important;
-          border-bottom-right-radius: 8px !important;
-        }
-        .p-accordion .p-accordion-tab { margin-bottom: 0.6rem; }
-        .p-accordion-header-icon { color: ${GOLD_DARK} !important; }
 
         .vote-input {
           background: ${BG} !important;
@@ -247,43 +306,30 @@ const VpublicaDetalhes = ({ edicoes, social, contato, inscricao, navbar }: any) 
           {/* Documentos Privados — logged users only */}
           {!loading && user && (
             <SectionPanel title="Documentos Privados">
-              <Accordion>
-                {(attr.fileLink ?? []).filter((v: any) => v.publico === false).map((value: any, index: number) => {
-                  const url = `${api_link}${value.ficheiro?.data?.attributes?.url}`
-                  const ext = value.titulo?.slice(-4).toLowerCase()
-                  return (
-                    <AccordionTab key={index} header={value.titulo}>
-                      <a href={url} target="_blank" rel="noreferrer" style={{ color: GOLD_DARK, fontSize: "0.968rem", fontWeight: 700 }}>[Abrir ficheiro]</a>
-                      {ext === ".mp3" && <audio controls style={{ marginTop: "0.75rem", width: "100%" }}><source src={url} type="audio/mpeg" /></audio>}
-                      {ext === ".mp4" && <video width="100%" controls style={{ marginTop: "0.75rem", borderRadius: "8px" }}><source src={url} type="video/mp4" /></video>}
-                      {[".png", ".jpg", ".jpeg"].includes(ext) && (
-                        <div style={{ marginTop: "0.75rem" }}><Image src={url} alt={value.titulo} width="100%" preview /></div>
-                      )}
-                    </AccordionTab>
-                  )
-                })}
-              </Accordion>
+              <FileAccordion
+                onPreview={setLightboxImage}
+                items={(attr.fileLink ?? [])
+                  .filter((v: any) => v.publico === false)
+                  .map((value: any) => ({
+                    titulo: value.titulo,
+                    url: `${api_link}${value.ficheiro?.data?.attributes?.url}`,
+                    ext: value.titulo?.slice(-4).toLowerCase(),
+                  }))}
+              />
             </SectionPanel>
           )}
 
           {/* Documentos Públicos */}
           <SectionPanel title="Documentos Públicos">
-            <Accordion>
-              {(attr.fileLink ?? []).filter((v: any) => v.publico === true).map((value: any, index: number) => {
-                const url = `${api_link}${value.ficheiro?.data?.attributes?.url}`
-                const ext = url.slice(-4).toLowerCase()
-                return (
-                  <AccordionTab key={index} header={value.titulo}>
-                    <a href={url} target="_blank" rel="noreferrer" style={{ color: GOLD_DARK, fontSize: "0.968rem", fontWeight: 700 }}>[Abrir ficheiro]</a>
-                    {ext === ".mp3" && <audio controls style={{ marginTop: "0.75rem", width: "100%" }}><source src={url} type="audio/mpeg" /></audio>}
-                    {ext === ".mp4" && <video width="100%" controls style={{ marginTop: "0.75rem", borderRadius: "8px" }}><source src={url} type="video/mp4" /></video>}
-                    {[".png", ".jpg", ".jpeg"].includes(ext) && (
-                      <div style={{ marginTop: "0.75rem" }}><Image src={url} alt={value.titulo} width="100%" preview /></div>
-                    )}
-                  </AccordionTab>
-                )
-              })}
-            </Accordion>
+            <FileAccordion
+              onPreview={setLightboxImage}
+              items={(attr.fileLink ?? [])
+                .filter((v: any) => v.publico === true)
+                .map((value: any) => {
+                  const url = `${api_link}${value.ficheiro?.data?.attributes?.url}`
+                  return { titulo: value.titulo, url, ext: url.slice(-4).toLowerCase() }
+                })}
+            />
           </SectionPanel>
 
           {/* Avaliação do Júri — logged users only */}
@@ -356,6 +402,8 @@ const VpublicaDetalhes = ({ edicoes, social, contato, inscricao, navbar }: any) 
 
         </div>
       </div>
+
+      <ImageLightbox image={lightboxImage} onClose={() => setLightboxImage(null)} />
     </Layout>
   )
 }

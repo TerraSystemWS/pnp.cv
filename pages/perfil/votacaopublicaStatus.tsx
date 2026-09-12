@@ -11,10 +11,16 @@ import { hasJuryAccess } from "../../lib/roles"
 import { getEdicoesDisponiveis, resolveEdicaoSelecionada } from "../../lib/edicoes"
 import { GOLD, GOLD_DARK, INK, INK_SOFT, BG, BG_ALT, CARD, BORDER, FONT, FONT_IMPORT } from "../../lib/theme"
 
-// PrimeReact components
+// PrimeReact — única página que ainda depende disto (a DataTable, com
+// seleção múltipla e export para Excel/PDF). O restante do site já foi
+// migrado para componentes nativos com Tailwind; o CSS é importado aqui
+// porque deixou de vir "de graça" do Navbar/projetos depois dessa migração.
 import React, { useState, useEffect, useRef } from "react"
 import { DataTable } from "primereact/datatable"
 import { Column } from "primereact/column"
+import "primereact/resources/themes/lara-light-indigo/theme.css"
+import "primereact/resources/primereact.min.css"
+import "primeicons/primeicons.css"
 
 // Define types
 // API base URL
