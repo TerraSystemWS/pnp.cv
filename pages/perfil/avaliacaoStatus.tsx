@@ -11,8 +11,10 @@ import qs from "qs"
 // import HeroSection from "../../components/HeroSection"
 import { useRouter } from "next/router"
 import UserProfileCard from "../../components/custom/sidemenu"
+import EdicaoPicker from "../../components/custom/EdicaoPicker"
 import { hasJuryAccess } from "../../lib/roles"
 import { getTokenFromLocalCookie, getTokenFromServerCookie } from "../../lib/auth"
+import { getEdicoesDisponiveis, resolveEdicaoSelecionada } from "../../lib/edicoes"
 
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
 
@@ -25,8 +27,8 @@ const Avaliacao = ({
   navbar,
   inscritos,
   avaliacoes,
-  totalPages,
-  currentPage,
+  edicoesDisponiveis,
+  edicaoSelecionada,
 }: any) => {
   const { user, role, loading } = useFetchUser()
   const router = useRouter()
@@ -160,6 +162,12 @@ const Avaliacao = ({
                   <h2 className="text-xl font-bold mb-4">
                     Resultados das Avaliações
                   </h2>
+                  <EdicaoPicker
+                    edicoes={edicoesDisponiveis}
+                    selecionada={edicaoSelecionada}
+                    basePath="/perfil/avaliacaoStatus"
+                    variant="inline"
+                  />
                   <section className="py-12 bg-gray-50">
                     <div className="container mx-auto px-4">
                       <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">
@@ -250,34 +258,39 @@ const Avaliacao = ({
 
 export default Avaliacao
 
-// Server-Side Data Fetching with Pagination Logic
 export async function getServerSideProps({ query, req }: any) {
-  const page = query.page || 1 // Default to first page
-  const pageSize = 1 // Show only one edition per page
   const jwt = getTokenFromServerCookie(req)
 
-  const queri = qs.stringify(
-    {
-      sort: ["N_Edicao:desc"], // Ordena pela edição mais recente
-      pagination: {
-        page, // Current page
-        pageSize, // Number of editions per page
-      },
-    },
-    { encodeValuesOnly: true }
-  )
-
   try {
-    // Fetch data concurrently
+    const edicoesDisponiveis = await getEdicoesDisponiveis()
+    const edicaoSelecionada = resolveEdicaoSelecionada(query.edicao, edicoesDisponiveis)
+
+    const edicaoQuery = qs.stringify(
+      { filters: { N_Edicao: { $eq: edicaoSelecionada } } },
+      { encodeValuesOnly: true }
+    )
+    const inscritosQuery = qs.stringify(
+      { filters: { edicoes: { N_Edicao: { $eq: edicaoSelecionada } } }, populate: "*" },
+      { encodeValuesOnly: true }
+    )
+    const avaliacoesQuery = qs.stringify(
+      {
+        filters: { inscricoe: { edicoes: { N_Edicao: { $eq: edicaoSelecionada } } } },
+        populate: { user_id: { fields: ["id"] }, inscricoe: { fields: "*" } },
+        pagination: { page: 1, pageSize: 500 },
+      },
+      { encodeValuesOnly: true }
+    )
+
     const results = await Promise.allSettled([
       fetcher(
-        `${api_link}/api/edicoes?populate[categoria][fields]=titulo,id&[populate][inscricoes][fields]=titulo&${queri}`
+        `${api_link}/api/edicoes?populate[categoria][fields]=titulo,id&[populate][inscricoes][fields]=titulo&${edicaoQuery}`
       ),
       fetcher(`${api_link}/api/contato`),
       fetcher(`${api_link}/api/menus?populate=deep`),
-      fetcher(`${api_link}/api/inscricoes?populate=*`),
+      fetcher(`${api_link}/api/inscricoes?${inscritosQuery}`),
       fetcher(
-        `${api_link}/api/avaliacaos?populate[user_id][fields]=id&[populate][inscricoe][fields]=*&pagination[page]=1&pagination[pageSize]=500`,
+        `${api_link}/api/avaliacaos?${avaliacoesQuery}`,
         jwt ? { headers: { Authorization: `Bearer ${jwt}` } } : {}
       ),
     ])
@@ -287,14 +300,11 @@ export async function getServerSideProps({ query, req }: any) {
       return null
     })
 
-    const totalPages = Math.ceil((edicoes?.meta?.pagination?.total ?? 0) / pageSize)
-    const currentPage = edicoes?.meta?.pagination?.page ?? 1
-
     return {
       props: {
         edicoes: edicoes?.data ?? [],
-        totalPages,
-        currentPage,
+        edicoesDisponiveis,
+        edicaoSelecionada,
         social: parseNavbar(menus, "redes-social"),
         contato: contato ?? null,
         navbar: parseNavbar(menus, "menus"),
@@ -307,13 +317,13 @@ export async function getServerSideProps({ query, req }: any) {
     return {
       props: {
         edicoes: [],
+        edicoesDisponiveis: [],
+        edicaoSelecionada: null,
         social: [],
         contato: {},
         navbar: [],
         inscritos: [],
         avaliacoes: [],
-        totalPages: 1,
-        currentPage: 1,
       },
     }
   }
