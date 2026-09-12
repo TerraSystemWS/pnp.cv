@@ -92,11 +92,11 @@ const ParceirosPage = ({ social, contato, parceiros, navbar }: any) => {
                 const key = `${gi}-${p.id}`
                 const hov = hovCard === key
                 const isOrg = group.label === "Organização"
-                // Nem largura nem altura fixas — só um teto pros dois lados.
-                // O logo aparece no tamanho real dele (proporção intacta),
-                // em vez de forçado numa altura igual pra todos, que
-                // espremia logos retangulares (ex: wordmarks largos).
-                const logoMaxH = isOrg ? "120px" : "80px"
+                // Só um teto de largura — o logo aparece no tamanho real dele
+                // (largura e altura intactas), em vez de forçado numa altura
+                // igual pra todos, que espremia logos retangulares (ex:
+                // wordmarks largos e baixos).
+                const placeholderH = isOrg ? "120px" : "80px"
                 const logoMaxW = isOrg ? "320px" : "240px"
                 const cardMinW = isOrg ? "260px" : "180px"
                 return (
@@ -129,10 +129,10 @@ const ParceirosPage = ({ social, contato, parceiros, navbar }: any) => {
                         <img
                           src={p.foto}
                           alt={p.title}
-                          style={{ width: "auto", height: "auto", maxWidth: logoMaxW, maxHeight: logoMaxH }}
+                          style={{ width: "auto", height: "auto", maxWidth: logoMaxW }}
                         />
                       ) : (
-                        <div style={{ height: logoMaxH, minWidth: "130px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <div style={{ height: placeholderH, minWidth: "130px", display: "flex", alignItems: "center", justifyContent: "center" }}>
                           <span style={{ fontFamily: FONT, fontWeight: 700, fontSize: "1.1rem", color: INK_SOFT }}>{p.title}</span>
                         </div>
                       )}
