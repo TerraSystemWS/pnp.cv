@@ -6,11 +6,13 @@ import Head from "next/head"
 import { useFetchUser } from "../lib/authContext"
 import qs from "qs"
 import { useState } from "react"
+import EdicaoPicker from "../components/custom/EdicaoPicker"
+import { getEdicoesDisponiveis, resolveEdicaoSelecionada } from "../lib/edicoes"
 import { GOLD, GOLD_DARK, INK, INK_SOFT, BG, BG_ALT, CARD, BORDER, FONT, FONT_IMPORT } from "../lib/theme"
 
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
 
-const Regulamentos = ({ social, contato, edicao, navbar }: any) => {
+const Regulamentos = ({ social, contato, edicao, navbar, edicoesDisponiveis, edicaoSelecionada }: any) => {
   const { user } = useFetchUser()
   const [activeTab, setActiveTab] = useState<"regulamentos" | "categorias">("regulamentos")
 
@@ -69,6 +71,8 @@ const Regulamentos = ({ social, contato, edicao, navbar }: any) => {
         <h1 style={{ fontFamily: FONT, fontSize: "clamp(2.42rem,6vw,3.74rem)", fontWeight: 700, color: INK, margin: 0, animation: "fadeUp 0.7s ease 0.1s both" }}>Regulamento</h1>
         {edicaoNum && <p style={{ fontFamily: FONT, fontSize: "1.045rem", color: INK_SOFT, marginTop: "0.8rem", animation: "fadeUp 0.8s ease 0.2s both" }}>{edicaoNum}ª Edição</p>}
       </div>
+
+      <EdicaoPicker edicoes={edicoesDisponiveis} selecionada={edicaoSelecionada} basePath="/regulamentos" />
 
       {/* ── Tab selector ── */}
       <div style={{ background: BG, borderBottom: `1px solid ${BORDER}`, position: "sticky", top: "68px", zIndex: 10 }}>
@@ -140,13 +144,19 @@ const Regulamentos = ({ social, contato, edicao, navbar }: any) => {
 
 export default Regulamentos
 
-export async function getServerSideProps() {
-  const query = qs.stringify({ sort: ["N_Edicao:DESC"] }, { encodeValuesOnly: true })
-
+export async function getServerSideProps({ query: routerQuery }: any) {
   try {
+    const edicoesDisponiveis = await getEdicoesDisponiveis()
+    const edicaoSelecionada = resolveEdicaoSelecionada(routerQuery.edicao, edicoesDisponiveis)
+
+    const query = qs.stringify(
+      { filters: { N_Edicao: { $eq: edicaoSelecionada } }, populate: "deep" },
+      { encodeValuesOnly: true }
+    )
+
     const results = await Promise.allSettled([
       fetcher(`${api_link}/api/contato`),
-      fetcher(`${api_link}/api/edicoes?_limit=1&populate=deep&${query}`),
+      fetcher(`${api_link}/api/edicoes?${query}`),
       fetcher(`${api_link}/api/menus?populate=deep`),
     ])
     const [contato, edicaoResponse, menus] = results.map((r: any) => {
@@ -161,10 +171,12 @@ export async function getServerSideProps() {
         contato: contato ?? null,
         edicao: edicaoResponse?.data?.[0] ?? null,
         navbar: parseNavbar(menus, "menus"),
+        edicoesDisponiveis,
+        edicaoSelecionada,
       },
     }
   } catch (error) {
     console.error("Error fetching regulamentos data:", error)
-    return { props: { social: [], contato: null, edicao: null, navbar: [] } }
+    return { props: { social: [], contato: null, edicao: null, navbar: [], edicoesDisponiveis: [], edicaoSelecionada: null } }
   }
 }
