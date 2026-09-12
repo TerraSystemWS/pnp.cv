@@ -92,9 +92,12 @@ const ParceirosPage = ({ social, contato, parceiros, navbar }: any) => {
                 const key = `${gi}-${p.id}`
                 const hov = hovCard === key
                 const isOrg = group.label === "Organização"
-                const cardWidth = isOrg ? "260px" : "200px"
-                const logoW = isOrg ? "200px" : "130px"
+                // Altura fixa, largura livre (até um teto) — assim a caixa
+                // acompanha a forma real do logo em vez de espremer logos
+                // retangulares (ex: wordmarks largos) numa área quadrada.
                 const logoH = isOrg ? "120px" : "80px"
+                const logoMaxW = isOrg ? "320px" : "240px"
+                const cardMinW = isOrg ? "260px" : "180px"
                 return (
                   <Link
                     key={key}
@@ -110,7 +113,8 @@ const ParceirosPage = ({ social, contato, parceiros, navbar }: any) => {
                       border: hov ? `1px solid ${GOLD}` : `1px solid ${BORDER}`,
                       borderRadius: "14px",
                       padding: "2rem 1.75rem",
-                      width: cardWidth,
+                      minWidth: cardMinW,
+                      maxWidth: `calc(${logoMaxW} + 3.5rem)`,
                       display: "flex",
                       flexDirection: "column",
                       alignItems: "center",
@@ -124,10 +128,10 @@ const ParceirosPage = ({ social, contato, parceiros, navbar }: any) => {
                         <img
                           src={p.foto}
                           alt={p.title}
-                          style={{ width: logoW, height: logoH, objectFit: "contain" }}
+                          style={{ height: logoH, width: "auto", maxWidth: logoMaxW, objectFit: "contain" }}
                         />
                       ) : (
-                        <div style={{ width: logoW, height: logoH, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <div style={{ height: logoH, minWidth: "130px", display: "flex", alignItems: "center", justifyContent: "center" }}>
                           <span style={{ fontFamily: FONT, fontWeight: 700, fontSize: "1.1rem", color: INK_SOFT }}>{p.title}</span>
                         </div>
                       )}

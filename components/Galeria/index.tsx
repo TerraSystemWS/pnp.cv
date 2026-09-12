@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { getStrapiMedia } from "../../lib/utils";
 import ImageLightbox from "../custom/ImageLightbox";
+import { GREY } from "../../lib/theme";
 
 interface GalleryProps {
 	images: string[];
@@ -26,21 +27,21 @@ const Gallery: React.FC<GalleryProps> = ({ images }) => {
 						style={{
 							position: "relative",
 							display: "block",
+							width: "100%",
+							aspectRatio: "4 / 3",
 							padding: 0,
 							border: "none",
-							background: "transparent",
+							background: GREY,
 							cursor: "zoom-in",
 							borderRadius: "0.5rem",
 							overflow: "hidden",
 						}}
 					>
 						<Image
-							className="h-auto max-w-full rounded-lg"
 							src={fullUrl}
 							alt={`Imagem ${index + 1}`}
-							width={400}
-							height={300}
-							style={{ width: "100%", height: "auto", display: "block" }}
+							fill
+							style={{ objectFit: "contain" }}
 						/>
 						<span
 							style={{

@@ -7,173 +7,177 @@ import showdown from "showdown";
 import Link from "next/link";
 import Head from "next/head";
 import { useFetchUser } from "../../lib/authContext";
-// import { StrapiImage } from "../../components/custom/StrapiImage";
 import { getStrapiMedia } from "../../lib/utils";
+import { GOLD, GOLD_DARK, INK, INK_SOFT, BG, BG_ALT, CARD, BORDER, GREY, FONT, FONT_IMPORT } from "../../lib/theme";
 
-// link para a url do api
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 const Juris = ({ social, contato, edicao, navbar }: any) => {
-	const { user, loading } = useFetchUser();
+	const { user } = useFetchUser();
 	const router = useRouter();
 	const { id } = router.query;
-	// console.log("router");
-	// console.log(router.query.edicao);
-	const createMarkup = (values: any) => {
-		// const values =
-		const converter = new showdown.Converter();
-		const html = converter.makeHtml(values);
-		return { __html: html };
-	};
-	// dados do juri
-	let JurisA: any = [];
-	let JurisList: any = [];
-	// let N_juris: any = [];
 
-	// create Juris objetct
-	edicao.data.map((value: any, index: any) => {
-		value.attributes.juri.map((value2: any, index2: any) => {
-			// console.log("value2.id");
-			// console.log(value2.id);
+	const createMarkup = (values: any) => {
+		const converter = new showdown.Converter();
+		return { __html: converter.makeHtml(typeof values === "string" ? values : "") };
+	};
+
+	let JurisA: any[] = [];
+	let JurisList: any[] = [];
+
+	;(edicao?.data ?? []).forEach((value: any) => {
+		;(value.attributes?.juri ?? []).forEach((value2: any, index2: number) => {
+			const foto = getStrapiMedia(value2?.foto?.data?.attributes?.formats?.medium?.url ?? null) || null
 
 			if (id == value2.id) {
-				JurisA[index2] = {
-					id: index2 || " ",
-					edicao: value.attributes?.N_Edicao || " ",
-					j_foto:
-						getStrapiMedia(
-							value2.foto.data?.attributes.formats.medium.url
-						) || " ",
-					j_nome: value2?.nome || " ",
-					j_titulo: value2?.titulo || " ",
+				JurisA.push({
+					id: index2,
+					edicao: value.attributes?.N_Edicao || "",
+					j_foto: foto,
+					j_nome: value2?.nome || "",
+					j_titulo: value2?.titulo || "",
 					j_descricao: createMarkup(value2?.descricao),
-				};
+				})
 			}
 
-			if (
-				id != value2.id &&
-				router.query.edicao == value.attributes.N_Edicao
-			) {
-				JurisList[index2] = {
-					id: index2 || " ",
-					idd: value2?.id || " ",
-					edicao: value?.attributes?.N_Edicao || " ",
-					j_foto:
-						getStrapiMedia(
-							value2?.foto.data?.attributes?.formats.medium.url
-						) || " ",
-					j_nome: value2?.nome || " ",
-					j_titulo: value2?.titulo || " ",
-					j_descricao: createMarkup(value2?.descricao),
-				};
+			if (id != value2.id && router.query.edicao == value.attributes?.N_Edicao) {
+				JurisList.push({
+					id: index2,
+					idd: value2?.id || "",
+					edicao: value?.attributes?.N_Edicao || "",
+					j_foto: foto,
+					j_nome: value2?.nome || "",
+					j_titulo: value2?.titulo || "",
+				})
 			}
-		});
-	});
+		})
+	})
 
-	let Juris = JurisA.filter((n: any) => n);
-	// console.log(JurisList);
+	const jurado = JurisA[0]
 
-	let description: string = `Juri ${Juris[0].j_nome} participou na {Juris[0]?.edicao}ª Edição do Prémio Nacional De Publicidade`;
+	if (!jurado) {
+		return (
+			<Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
+				<div style={{ background: BG, minHeight: "70vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+					<p style={{ fontFamily: FONT, color: INK_SOFT, fontSize: "1.045rem" }}>Jurado não encontrado.</p>
+				</div>
+			</Layout>
+		)
+	}
+
+	const description = `Jurado ${jurado.j_nome} participou na ${jurado.edicao}ª Edição do Prémio Nacional De Publicidade`;
 
 	return (
 		<Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
 			<Head>
-				<title>
-					{" "}
-					{Juris[0].j_nome} - Prémio Nacional De Publicidade
-				</title>
+				<title>{jurado.j_nome} - Prémio Nacional De Publicidade</title>
 				<meta name="description" content={description} />
 			</Head>
-			<h1 className="text-4xl font-medium text-gray-700 text-center pt-2">
-				{" "}
-				Júri da {Juris[0]?.edicao}ª Edição
-			</h1>{" "}
-			<section className="text-gray-600 body-font">
-				<div className="container px-5 py-24 mx-auto flex flex-col">
-					<div className="lg:w-4/6 mx-auto">
-						<div className="flex flex-col sm:flex-row mt-10">
-							<div className="sm:w-1/3 text-center sm:pr-8 sm:py-8">
-								<div className=" ailton w-50 h-50 rounded-full inline-flex items-center justify-center bg-gray-200 text-gray-400">
-									<Image
-										src={Juris[0].j_foto}
-										alt={Juris[0].j_nome}
-										width={150}
-										height={150}
-										className="w-50 h-50 rounded-full"
-									/>
+
+			<style>{`
+				${FONT_IMPORT}
+				@keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+				.juri-bio h1,.juri-bio h2,.juri-bio h3 { font-family: ${FONT}; color: ${INK}; font-weight: 700; margin: 1.25rem 0 0.75rem; }
+				.juri-bio p { font-family: ${FONT}; font-size: 0.98rem; line-height: 1.8; color: ${INK_SOFT}; margin-bottom: 1rem; }
+				.juri-bio ul,.juri-bio ol { padding-left: 1.4rem; margin-bottom: 1rem; }
+				.juri-bio li { font-family: ${FONT}; font-size: 0.96rem; line-height: 1.7; color: ${INK_SOFT}; margin-bottom: 0.25rem; }
+				.juri-bio strong { color: ${INK}; font-weight: 700; }
+			`}</style>
+
+			{/* Hero */}
+			<div style={{ background: BG_ALT, paddingTop: "6rem", paddingBottom: "3rem", textAlign: "center", borderBottom: `1px solid ${BORDER}` }}>
+				<p style={{ fontFamily: FONT, fontSize: "0.88rem", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "1rem", animation: "fadeUp 0.6s ease both" }}>
+					Júri da {jurado.edicao}ª Edição
+				</p>
+				<h1 style={{ fontFamily: FONT, fontSize: "clamp(2.1rem,5vw,3.3rem)", fontWeight: 700, color: INK, margin: 0, animation: "fadeUp 0.7s ease 0.1s both" }}>
+					{jurado.j_nome}
+				</h1>
+				{jurado.j_titulo && (
+					<p style={{ fontFamily: FONT, fontSize: "1.045rem", color: INK_SOFT, marginTop: "0.6rem", animation: "fadeUp 0.8s ease 0.2s both" }}>
+						{jurado.j_titulo}
+					</p>
+				)}
+			</div>
+
+			{/* Perfil */}
+			<div style={{ background: BG, padding: "4rem 2rem" }}>
+				<div style={{ maxWidth: "900px", margin: "0 auto", display: "grid", gridTemplateColumns: "220px 1fr", gap: "3rem" }} className="juri-grid">
+					<div>
+						<div style={{ width: "220px", height: "220px", borderRadius: "50%", overflow: "hidden", background: GREY, border: `3px solid ${BG_ALT}`, boxShadow: `0 0 0 1px ${BORDER}`, position: "relative" }}>
+							{jurado.j_foto ? (
+								<Image src={jurado.j_foto} alt={jurado.j_nome} fill style={{ objectFit: "cover" }} />
+							) : (
+								<div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: FONT, fontSize: "3rem", fontWeight: 700, color: GOLD_DARK }}>
+									{jurado.j_nome.trim().charAt(0).toUpperCase() || "?"}
 								</div>
-								<div className="flex flex-col items-center text-center justify-center">
-									<h2 className="font-medium title-font mt-4 text-gray-900 text-lg">
-										{Juris[0].j_nome}
-									</h2>
-									<div className="w-12 h-1 bg-amarelo-ouro rounded mt-2 mb-4"></div>
-									<p className="text-base">
-										{Juris[0].j_titulo}
-									</p>
-								</div>
-							</div>
-							<div className="sm:w-2/3 sm:pl-8 sm:py-8 sm:border-l border-gray-200 sm:border-t-0 border-t mt-4 pt-4 sm:mt-0 text-center sm:text-left">
-								<div
-									className="leading-relaxed text-lg mb-4"
-									dangerouslySetInnerHTML={
-										Juris[0].j_descricao
-									}
-								></div>
-							</div>
+							)}
+						</div>
+					</div>
+					<div className="juri-bio" dangerouslySetInnerHTML={jurado.j_descricao} />
+				</div>
+			</div>
+
+			{/* Outros jurados da edição */}
+			{JurisList.length > 0 && (
+				<div style={{ background: BG_ALT, borderTop: `1px solid ${BORDER}`, padding: "3.5rem 2rem 5rem" }}>
+					<div style={{ maxWidth: "1100px", margin: "0 auto" }}>
+						<div style={{ display: "flex", alignItems: "center", gap: "1.5rem", marginBottom: "2rem" }}>
+							<h2 style={{ fontFamily: FONT, fontSize: "1.1rem", fontWeight: 700, color: GOLD_DARK, letterSpacing: "0.05em", textTransform: "uppercase", whiteSpace: "nowrap", margin: 0 }}>
+								Outros Jurados desta Edição
+							</h2>
+							<div style={{ flex: 1, height: "1px", background: BORDER }} />
+						</div>
+
+						<div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "1.25rem" }}>
+							{JurisList.map((value: any, index: number) => (
+								<Link
+									key={index}
+									href={`/juris/${value.idd}?edicao=${value.edicao}`}
+									style={{
+										display: "flex", alignItems: "center", gap: "1rem",
+										background: CARD, border: `1px solid ${BORDER}`, borderRadius: "14px",
+										padding: "1.1rem", textDecoration: "none",
+										transition: "border-color 0.2s, transform 0.2s, box-shadow 0.2s",
+									}}
+									onMouseEnter={(e) => { const el = e.currentTarget as HTMLElement; el.style.borderColor = GOLD; el.style.transform = "translateY(-3px)"; el.style.boxShadow = "0 10px 26px rgba(36,31,15,0.1)" }}
+									onMouseLeave={(e) => { const el = e.currentTarget as HTMLElement; el.style.borderColor = BORDER; el.style.transform = "none"; el.style.boxShadow = "none" }}
+								>
+									<div style={{ width: "56px", height: "56px", borderRadius: "50%", overflow: "hidden", background: GREY, flexShrink: 0, position: "relative" }}>
+										{value.j_foto ? (
+											<Image src={value.j_foto} alt={value.j_nome} fill style={{ objectFit: "cover" }} />
+										) : (
+											<div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: FONT, fontWeight: 700, color: GOLD_DARK }}>
+												{value.j_nome?.trim()?.charAt(0)?.toUpperCase() || "?"}
+											</div>
+										)}
+									</div>
+									<div style={{ minWidth: 0 }}>
+										<p style={{ fontFamily: FONT, fontSize: "0.98rem", fontWeight: 700, color: INK, margin: "0 0 0.15rem", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+											{value.j_nome}
+										</p>
+										<p style={{ fontFamily: FONT, fontSize: "0.82rem", color: INK_SOFT, margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+											{value.j_titulo}
+										</p>
+									</div>
+								</Link>
+							))}
 						</div>
 					</div>
 				</div>
-			</section>
-			{/* next juris */}
-			<section className="text-gray-600 body-font">
-				<div className="container px-5 py-24 mx-auto">
-					<div className="flex flex-wrap -m-4">
-						{JurisList.map((value: any, index: any) => (
-							<div
-								key={index}
-								className="lg:w-1/3 sm:w-1/2 p-4 z-0"
-							>
-								<Link
-									href={`/juris/${value.idd}?edicao=${value.edicao}`}
-								>
-									<div className="flex relative">
-										<Image
-											alt="gallery"
-											fill
-											className="absolute inset-0 object-cover object-center"
-											src={value.j_foto}
-										/>
-										<div className="px-8 py-10 relative z-10 w-full border-4 border-gray-200 bg-white opacity-0 hover:opacity-100">
-											<h2 className="tracking-widest text-sm title-font font-medium text-indigo-500 mb-1">
-												{value.edicao}ª Edição
-											</h2>
+			)}
 
-											<h1 className="title-font text-lg font-medium text-gray-900 mb-3">
-												{value.j_nome}
-											</h1>
-											<p className="leading-relaxed">
-												{value.j_titulo}
-											</p>
-										</div>
-									</div>
-								</Link>
-							</div>
-						))}
-					</div>
-				</div>
-			</section>
+			<style>{`
+				@media (max-width: 640px) {
+					.juri-grid { grid-template-columns: 1fr !important; justify-items: center; text-align: center; }
+				}
+			`}</style>
 		</Layout>
 	);
 };
 
 export default Juris;
 
-// This gets called on every request
-export async function getServerSideProps({ params, query }: any) {
-	// Fetch data from external API
-	console.log(query.edicao);
-
+export async function getServerSideProps() {
 	const results = await Promise.allSettled([
 		fetcher(`${api_link}/api/contato`),
 		fetcher(`${api_link}/api/banners?populate=deep`),

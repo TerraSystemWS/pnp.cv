@@ -6,6 +6,7 @@ import Head from "next/head"
 import Link from "next/link"
 import { useFetchUser } from "../../lib/authContext"
 import { getStrapiMedia } from "../../lib/utils"
+import ImageLightbox from "../../components/custom/ImageLightbox"
 import { GOLD, GOLD_DARK, GOLD_BRIGHT, INK, INK_SOFT, BG, BG_ALT, CARD, BORDER, FONT, FONT_IMPORT } from "../../lib/theme"
 
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
@@ -17,6 +18,7 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
   const [currentIdx, setCurrentIdx] = useState(0)
   const [activeTab, setActiveTab]   = useState<Tab>("jurados")
   const [hovCard, setHovCard]       = useState<string | null>(null)
+  const [lightboxImage, setLightboxImage] = useState<{ url: string; title: string } | null>(null)
 
   const editions: any[] = edicao?.data ?? []
   if (editions.length === 0) {
@@ -168,11 +170,27 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
                       const url = getStrapiMedia(img.attributes.formats?.medium?.url ?? null)
                       const hov = hovCard === `img-${ii}`
                       return (
-                        <div key={ii}
+                        <button key={ii}
+                          onClick={() => url && setLightboxImage({ url, title: g.titulo ?? "Galeria" })}
                           onMouseEnter={() => setHovCard(`img-${ii}`)} onMouseLeave={() => setHovCard(null)}
-                          style={{ position: "relative", aspectRatio: "16/10", borderRadius: "12px", overflow: "hidden", border: hov ? `1px solid ${GOLD}` : `1px solid ${BORDER}`, transition: "border-color 0.25s, transform 0.25s", transform: hov ? "scale(1.02)" : "none", background: CARD, cursor: "pointer" }}>
-                          {url && <img src={url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
-                        </div>
+                          style={{ position: "relative", aspectRatio: "16/10", borderRadius: "12px", overflow: "hidden", border: hov ? `1px solid ${GOLD}` : `1px solid ${BORDER}`, transition: "border-color 0.25s, transform 0.25s", transform: hov ? "scale(1.02)" : "none", background: CARD, cursor: "zoom-in", padding: 0 }}>
+                          {url && <img src={url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />}
+                          <span style={{
+                            position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center",
+                            background: hov ? "rgba(20,17,10,0.35)" : "rgba(20,17,10,0)", transition: "background 0.2s",
+                          }}>
+                            <span style={{
+                              width: "38px", height: "38px", borderRadius: "50%", background: "rgba(255,255,255,0.95)",
+                              display: "flex", alignItems: "center", justifyContent: "center",
+                              opacity: hov ? 1 : 0, transform: hov ? "scale(1)" : "scale(0.85)", transition: "opacity 0.2s, transform 0.2s",
+                            }}>
+                              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#241f0f" strokeWidth="2.2" strokeLinecap="round">
+                                <circle cx="11" cy="11" r="7" />
+                                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                              </svg>
+                            </span>
+                          </span>
+                        </button>
                       )
                     })}
                   </div>
@@ -242,6 +260,8 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
           )}
         </div>
       </div>
+
+      <ImageLightbox image={lightboxImage} onClose={() => setLightboxImage(null)} />
     </Layout>
   )
 }
