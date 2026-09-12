@@ -1,9 +1,8 @@
 import React from "react"
-import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/router"
-import { FaUserAlt, FaStar, FaVoteYea } from "react-icons/fa"
 import { hasJuryAccess } from "../../lib/roles"
+import { GOLD, GOLD_DARK, INK, INK_SOFT, CARD, BG_ALT, BORDER, FONT } from "../../lib/theme"
 
 interface UserProfileCardProps {
   user: string
@@ -12,93 +11,70 @@ interface UserProfileCardProps {
 
 type AccessLink = {
   href: string
-  icon: JSX.Element
   label: string
 }
 
 const UserProfileCard = ({ user, role }: UserProfileCardProps) => {
   const router = useRouter()
-  const pathname = router.pathname
+  const isActive = (path: string) => router.pathname === path
+  const initial = (user || "?").trim().charAt(0).toUpperCase()
 
-  // Helper function to check if the link is active
-  const isActive = (path: string) => pathname === path
-
-  // Avatar URL generator
-  const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(
-    user
-  )}&background=0D8ABC&color=fff&size=200`
-
-  // Access Links (define the type explicitly)
   const accessLinks: (AccessLink | null)[] = [
-    {
-      href: "/perfil",
-      icon: <FaUserAlt className="mr-3 text-xl" />,
-      label: "Perfil",
-    },
-    hasJuryAccess(role)
-      ? {
-          href: "/perfil/avaliacao",
-          icon: <FaStar className="mr-3 text-xl" />,
-          label: "Avaliar Projetos",
-        }
-      : null,
-    hasJuryAccess(role)
-      ? {
-          href: "/perfil/votacaopublicaStatus",
-          icon: <FaVoteYea className="mr-3 text-xl" />,
-          label: "Resultado da Votação Pública",
-        }
-      : null,
-    hasJuryAccess(role)
-      ? {
-          href: "/perfil/avaliacaoStatus",
-          icon: <FaVoteYea className="mr-3 text-xl" />,
-          label: "Resultado da Avaliação do Jurados",
-        }
-      : null,
+    { href: "/perfil", label: "Perfil" },
+    hasJuryAccess(role) ? { href: "/perfil/avaliacao", label: "Avaliar Projetos" } : null,
+    hasJuryAccess(role) ? { href: "/perfil/votacaopublicaStatus", label: "Resultado da Votação Pública" } : null,
+    hasJuryAccess(role) ? { href: "/perfil/avaliacaoStatus", label: "Resultado da Avaliação dos Jurados" } : null,
   ]
-
-  // Filter out null values
-  const filteredLinks = accessLinks.filter(
-    (link): link is AccessLink => link !== null
-  )
+  const filteredLinks = accessLinks.filter((link): link is AccessLink => link !== null)
 
   return (
     <div className="col-span-4 sm:col-span-3">
-      <div className="bg-white shadow-xl rounded-lg p-6">
-        <div className="flex flex-col items-center">
-          <Image
-            src={avatarUrl}
-            className="w-32 h-32 bg-gray-300 rounded-full mb-4 border-4 border-yellow-500"
-            alt={`Avatar de ${user}`}
-            width={128}
-            height={128}
-          />
-          <h1 className="text-2xl font-bold text-gray-900">{user}</h1>
+      <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: "16px", padding: "2rem 1.5rem", fontFamily: FONT }}>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: "1.5rem" }}>
+          <div style={{
+            width: "76px", height: "76px", borderRadius: "50%",
+            background: GOLD, color: INK,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            fontSize: "1.8rem", fontWeight: 700, marginBottom: "1rem",
+            border: `3px solid ${BG_ALT}`, boxShadow: `0 0 0 1px ${BORDER}`,
+          }}>
+            {initial}
+          </div>
+          <h1 style={{ fontSize: "1.15rem", fontWeight: 700, color: INK, margin: 0, textAlign: "center" }}>{user}</h1>
         </div>
-        <hr className="my-6 border-t border-gray-300" />
-        <div className="flex flex-col p-4 w-64 h-screen bg-gray-50 rounded-lg shadow-lg">
-          <span className="text-yellow-500 uppercase font-bold tracking-wider mb-6 text-lg">
-            Links de Acesso
-          </span>
-          <ul className="space-y-6">
-            {filteredLinks.map((link, index) => (
-              <li key={index} className="flex items-center mb-4">
+
+        <div style={{ height: "1px", background: BORDER, margin: "0 0 1.5rem" }} />
+
+        <p style={{ fontSize: "0.78rem", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "1rem" }}>
+          Links de Acesso
+        </p>
+        <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: "0.4rem" }}>
+          {filteredLinks.map((link) => {
+            const active = isActive(link.href)
+            return (
+              <li key={link.href}>
                 <Link
                   href={link.href}
-                  className={`flex items-center p-3 rounded-lg transition duration-300 ease-in-out ${
-                    isActive(link.href)
-                      ? "bg-yellow-500 text-white shadow-lg"
-                      : "hover:bg-yellow-100 hover:text-yellow-500"
-                  }`}
+                  style={{
+                    display: "block",
+                    padding: "0.7rem 0.9rem",
+                    borderRadius: "9px",
+                    fontSize: "0.87rem",
+                    fontWeight: 600,
+                    textDecoration: "none",
+                    color: active ? INK : INK_SOFT,
+                    background: active ? GOLD : "transparent",
+                    transition: "background 0.2s, color 0.2s",
+                  }}
+                  onMouseEnter={(e) => { if (!active) (e.currentTarget as HTMLElement).style.background = `${GOLD}18` }}
+                  onMouseLeave={(e) => { if (!active) (e.currentTarget as HTMLElement).style.background = "transparent" }}
                 >
-                  {link.icon}
-                  <span className="text-sm font-semibold">{link.label}</span>
+                  {link.label}
                 </Link>
               </li>
-            ))}
-          </ul>
-        </div>
+            )
+          })}
+        </ul>
       </div>
     </div>
   )
