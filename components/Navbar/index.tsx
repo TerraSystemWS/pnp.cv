@@ -6,6 +6,7 @@ import { useRouter } from "next/router"
 import { fetcher } from "../../lib/api"
 import { setToken, unsetToken } from "../../lib/auth"
 import { useUser } from "../../lib/authContext"
+import UserMenu from "./UserMenu"
 import { Dialog } from "primereact/dialog"
 import { Button } from "primereact/button"
 import "primereact/resources/themes/lara-light-indigo/theme.css"
@@ -198,9 +199,12 @@ const Nav = ({ navbar }: any) => {
           <Link
             href="/perfil"
             onClick={() => setOpen(false)}
-            style={{ fontFamily: FONT, fontSize: "1.05rem", fontWeight: 600, color: GOLD, textDecoration: "none", padding: "0.7rem 0", borderBottom: `1px solid ${DARK_BORDER}` }}
+            style={{ display: "flex", alignItems: "center", gap: "0.6rem", textDecoration: "none", padding: "0.7rem 0", borderBottom: `1px solid ${DARK_BORDER}` }}
           >
-            {user}
+            <span style={{ width: "28px", height: "28px", borderRadius: "50%", background: GOLD, color: "#241f0f", fontFamily: FONT, fontWeight: 700, fontSize: "0.82rem", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+              {String(user || "").trim().charAt(0).toUpperCase() || "?"}
+            </span>
+            <span style={{ fontFamily: FONT, fontSize: "1.05rem", fontWeight: 600, color: GOLD }}>{user}</span>
           </Link>
         )}
 
@@ -283,32 +287,8 @@ const Nav = ({ navbar }: any) => {
               )
             })}
 
-            {!loading && user && (
-              <Link
-                href="/perfil"
-                style={{ fontFamily: FONT, fontSize: "0.9rem", fontWeight: 700, color: GOLD, textDecoration: "none" }}
-              >
-                {user}
-              </Link>
-            )}
-
             {!loading && (user ? (
-              <button
-                onClick={logout}
-                style={{
-                  background: "transparent",
-                  border: `1px solid ${GOLD}55`,
-                  borderRadius: "100px",
-                  padding: "8px 22px",
-                  fontFamily: FONT,
-                  fontSize: "0.85rem",
-                  fontWeight: 600,
-                  color: LIGHT_TEXT,
-                  cursor: "pointer",
-                }}
-              >
-                Logout
-              </button>
+              <UserMenu username={user} onLogout={logout} />
             ) : (
               <button
                 onClick={() => setVisible(true)}
