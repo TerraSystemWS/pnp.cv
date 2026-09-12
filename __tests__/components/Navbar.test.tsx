@@ -41,17 +41,10 @@ jest.mock("next/link", () => ({
   ),
 }))
 
-jest.mock("primereact/dialog", () => ({ Dialog: () => null }))
-jest.mock("primereact/button", () => ({ Button: () => null }))
-jest.mock("primereact/password", () => ({ Password: () => null }))
-jest.mock("primereact/inputtext", () => ({ InputText: () => null }))
 jest.mock("react-icons/io5", () => ({
   IoGridOutline: () => <span>menu</span>,
   IoClose: () => <span>close</span>,
 }))
-jest.mock("primereact/resources/themes/lara-light-indigo/theme.css", () => ({}))
-jest.mock("primereact/resources/primereact.min.css", () => ({}))
-jest.mock("primeicons/primeicons.css", () => ({}))
 
 // ── import component AFTER mocks ─────────────────────────────────────────────
 

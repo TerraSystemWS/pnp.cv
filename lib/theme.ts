@@ -13,6 +13,7 @@ export const BG_ALT    = "#f7f2e6" // alternate section background
 export const CARD      = "#ffffff" // card background
 export const BORDER    = "#e7ddc4" // default border
 export const BORDER_STRONG = "#d8c791" // hover / active border
+export const GREY      = "#e7e6e2" // neutral letterbox fill behind photos/logos of mismatched aspect ratio
 
 export const FONT = "'DM Sans', sans-serif"
 

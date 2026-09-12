@@ -2,9 +2,9 @@ import Head from "next/head"
 import NavBar from "../Navbar"
 import Footer from "../Footer"
 import Meta from "../Meta"
+import RouteProgress from "../RouteProgress"
 import { UserProvider } from "../../lib/authContext"
-import React, { useState, useEffect, ReactNode } from "react"
-import LoadingSpinner from "../LoadingSpinner"
+import React, { ReactNode } from "react"
 
 interface Props {
   children?: ReactNode
@@ -23,15 +23,6 @@ const Layout = ({
   contato,
   navbar,
 }: Props) => {
-  const [isLoading, setIsLoading] = useState(true)
-
-  useEffect(() => {
-    // Simula um carregamento de dados
-    setTimeout(() => {
-      setIsLoading(false)
-    }, 2000) // Atraso de 3 segundos para simular o carregamento
-  }, [])
-
   return (
     <UserProvider value={{ user, loading }}>
       <div className="">
@@ -39,17 +30,13 @@ const Layout = ({
           <Meta />
         </Head>
 
+        <RouteProgress />
+
         <header>
           <NavBar navbar={navbar} />
         </header>
 
-        {isLoading ? (
-          // Exibe o spinner enquanto a página está carregando
-          <LoadingSpinner />
-        ) : (
-          // Exibe o conteúdo real depois que o carregamento termina
-          <div style={{ marginTop: "69px" }}>{children}</div>
-        )}
+        <div style={{ marginTop: "69px" }}>{children}</div>
 
         <Footer rsocial={rsocial} contato={contato} />
       </div>

@@ -7,11 +7,6 @@ import { fetcher } from "../../lib/api"
 import { setToken, unsetToken } from "../../lib/auth"
 import { useUser } from "../../lib/authContext"
 import UserMenu from "./UserMenu"
-import { Dialog } from "primereact/dialog"
-import { Button } from "primereact/button"
-import "primereact/resources/themes/lara-light-indigo/theme.css"
-import "primereact/resources/primereact.min.css"
-import "primeicons/primeicons.css"
 import { useForm, SubmitHandler } from "react-hook-form"
 import { GOLD, GOLD_DARK, GOLD_BRIGHT, DARK_BG, DARK_BORDER, LIGHT_TEXT, LIGHT_TEXT_SOFT, FONT, FONT_IMPORT } from "../../lib/theme"
 import { ApiError } from "../../lib/api"
@@ -41,9 +36,18 @@ const Nav = ({ navbar }: any) => {
   }, [])
 
   useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : ""
+    document.body.style.overflow = (open || visible) ? "hidden" : ""
     return () => { document.body.style.overflow = "" }
-  }, [open])
+  }, [open, visible])
+
+  useEffect(() => {
+    if (!visible) return
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") { setVisible(false); setLoginError(null) }
+    }
+    document.addEventListener("keydown", onKeyDown)
+    return () => document.removeEventListener("keydown", onKeyDown)
+  }, [visible])
 
   const { register, handleSubmit, formState: { errors } } = useForm<Inputs>()
 
@@ -90,51 +94,9 @@ const Nav = ({ navbar }: any) => {
           0%,100% { box-shadow: 0 0 0 0 rgba(194,161,43,0); }
           50%      { box-shadow: 0 0 18px 4px rgba(194,161,43,0.3); }
         }
-
-        .pnp-login-dialog.p-dialog {
-          background: ${DARK_BG} !important;
-          border: 1px solid ${DARK_BORDER} !important;
-          border-radius: 16px !important;
-          overflow: hidden !important;
-          box-shadow: 0 30px 80px rgba(0,0,0,0.5) !important;
-        }
-        .pnp-login-dialog .p-dialog-header {
-          background: ${DARK_BG} !important;
-          border-bottom: 1px solid ${DARK_BORDER} !important;
-          padding: 1.5rem 2rem !important;
-        }
-        .pnp-login-dialog .p-dialog-header .p-dialog-title {
-          font-family: ${FONT} !important;
-          font-size: 1.3rem !important;
-          font-weight: 700 !important;
-          color: ${LIGHT_TEXT} !important;
-          letter-spacing: 0 !important;
-        }
-        .pnp-login-dialog .p-dialog-header-icon {
-          color: ${LIGHT_TEXT_SOFT} !important;
-        }
-        .pnp-login-dialog .p-dialog-header-icon:hover {
-          color: ${LIGHT_TEXT} !important;
-          background: ${GOLD}18 !important;
-        }
-        .pnp-login-dialog .p-dialog-content {
-          background: ${DARK_BG} !important;
-          padding: 2rem !important;
-        }
-        .pnp-login-dialog .p-dialog-footer {
-          background: ${DARK_BG} !important;
-          border-top: 1px solid ${DARK_BORDER} !important;
-          padding: 1rem 2rem !important;
-        }
-        .pnp-login-dialog .p-button.p-button-text {
-          color: ${LIGHT_TEXT_SOFT} !important;
-          font-family: ${FONT} !important;
-          font-size: 0.85rem !important;
-          font-weight: 500 !important;
-        }
-        .pnp-login-dialog .p-button.p-button-text:hover {
-          color: ${LIGHT_TEXT} !important;
-          background: ${GOLD}18 !important;
+        @keyframes loginPanelIn {
+          from { opacity: 0; transform: translateY(10px) scale(0.98); }
+          to   { opacity: 1; transform: translateY(0)    scale(1);    }
         }
       `}</style>
 
@@ -342,54 +304,90 @@ const Nav = ({ navbar }: any) => {
         }
       `}</style>
 
-      {/* ── Login Dialog ── */}
-      <Dialog
-        header="Acesso"
-        visible={visible}
-        position="center"
-        style={{ width: "min(420px, 92vw)" }}
-        className="pnp-login-dialog"
-        onHide={() => { setVisible(false); setLoginError(null) }}
-        footer={
-          <Button label="Cancelar" icon="pi pi-times" onClick={() => setVisible(false)} className="p-button-text" />
-        }
-        draggable={false}
-        resizable={false}
-      >
-        <form onSubmit={handleSubmit(onSubmit)}>
-          {/* Email */}
-          <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 600, color: LIGHT_TEXT, marginBottom: "7px", fontFamily: FONT }}>
-            Email
-          </label>
-          <input
-            type="email"
-            placeholder="nome@email.com"
-            {...register("email", { required: "Email obrigatório" })}
-            style={{ width: "100%", background: `${GOLD}0d`, border: `1px solid ${DARK_BORDER}`, borderRadius: "9px", padding: "11px 14px", fontSize: "0.95rem", color: LIGHT_TEXT, fontFamily: FONT, outline: "none", marginBottom: "0.85rem", boxSizing: "border-box" }}
-          />
-          {errors.email && <p style={{ color: "#f87171", fontSize: "0.8rem", marginTop: "-0.6rem", marginBottom: "0.6rem" }}>{errors.email.message}</p>}
-
-          {/* Password */}
-          <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 600, color: LIGHT_TEXT, marginBottom: "7px", fontFamily: FONT }}>
-            Password
-          </label>
-          <input
-            type="password"
-            placeholder="••••••••"
-            {...register("password", { required: "Password obrigatória" })}
-            style={{ width: "100%", background: `${GOLD}0d`, border: `1px solid ${DARK_BORDER}`, borderRadius: "9px", padding: "11px 14px", fontSize: "0.95rem", color: LIGHT_TEXT, fontFamily: FONT, outline: "none", marginBottom: "1rem", boxSizing: "border-box" }}
-          />
-          {errors.password && <p style={{ color: "#f87171", fontSize: "0.8rem", marginTop: "-0.6rem", marginBottom: "0.6rem" }}>{errors.password.message}</p>}
-          {loginError && <p style={{ color: "#f87171", fontSize: "0.85rem", marginBottom: "0.85rem" }}>{loginError}</p>}
-
-          <button
-            type="submit"
-            style={{ width: "100%", background: GOLD, border: "none", borderRadius: "9px", padding: "13px", fontFamily: FONT, fontSize: "0.9rem", color: "#fff", fontWeight: 700, cursor: "pointer" }}
+      {/* ── Login Modal ── */}
+      {visible && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="login-title"
+          onClick={() => { setVisible(false); setLoginError(null) }}
+          style={{
+            position: "fixed", inset: 0, zIndex: 200,
+            background: "rgba(0,0,0,0.6)",
+            backdropFilter: "blur(4px)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            padding: "1rem",
+            animation: "overlayFade 0.2s ease",
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              width: "min(420px, 92vw)",
+              background: DARK_BG,
+              border: `1px solid ${DARK_BORDER}`,
+              borderRadius: "16px",
+              overflow: "hidden",
+              boxShadow: "0 30px 80px rgba(0,0,0,0.5)",
+              animation: "loginPanelIn 0.25s cubic-bezier(0.4,0,0.2,1) both",
+            }}
           >
-            Entrar
-          </button>
-        </form>
-      </Dialog>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "1.5rem 2rem", borderBottom: `1px solid ${DARK_BORDER}` }}>
+              <h2 id="login-title" style={{ fontFamily: FONT, fontSize: "1.3rem", fontWeight: 700, color: LIGHT_TEXT, margin: 0 }}>
+                Acesso
+              </h2>
+              <button
+                onClick={() => { setVisible(false); setLoginError(null) }}
+                aria-label="Fechar"
+                style={{ background: "transparent", border: "none", color: LIGHT_TEXT_SOFT, cursor: "pointer", padding: "4px", lineHeight: 0 }}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit(onSubmit)} style={{ padding: "2rem" }}>
+              <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 600, color: LIGHT_TEXT, marginBottom: "7px", fontFamily: FONT }}>
+                Email
+              </label>
+              <input
+                type="email"
+                placeholder="nome@email.com"
+                {...register("email", { required: "Email obrigatório" })}
+                style={{ width: "100%", background: `${GOLD}0d`, border: `1px solid ${DARK_BORDER}`, borderRadius: "9px", padding: "11px 14px", fontSize: "0.95rem", color: LIGHT_TEXT, fontFamily: FONT, outline: "none", marginBottom: "0.85rem", boxSizing: "border-box" }}
+              />
+              {errors.email && <p style={{ color: "#f87171", fontSize: "0.8rem", marginTop: "-0.6rem", marginBottom: "0.6rem" }}>{errors.email.message}</p>}
+
+              <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 600, color: LIGHT_TEXT, marginBottom: "7px", fontFamily: FONT }}>
+                Password
+              </label>
+              <input
+                type="password"
+                placeholder="••••••••"
+                {...register("password", { required: "Password obrigatória" })}
+                style={{ width: "100%", background: `${GOLD}0d`, border: `1px solid ${DARK_BORDER}`, borderRadius: "9px", padding: "11px 14px", fontSize: "0.95rem", color: LIGHT_TEXT, fontFamily: FONT, outline: "none", marginBottom: "1rem", boxSizing: "border-box" }}
+              />
+              {errors.password && <p style={{ color: "#f87171", fontSize: "0.8rem", marginTop: "-0.6rem", marginBottom: "0.6rem" }}>{errors.password.message}</p>}
+              {loginError && <p style={{ color: "#f87171", fontSize: "0.85rem", marginBottom: "0.85rem" }}>{loginError}</p>}
+
+              <button
+                type="submit"
+                style={{ width: "100%", background: GOLD, border: "none", borderRadius: "9px", padding: "13px", fontFamily: FONT, fontSize: "0.9rem", color: "#fff", fontWeight: 700, cursor: "pointer" }}
+              >
+                Entrar
+              </button>
+            </form>
+
+            <div style={{ padding: "1rem 2rem", borderTop: `1px solid ${DARK_BORDER}`, display: "flex", justifyContent: "flex-end" }}>
+              <button
+                onClick={() => { setVisible(false); setLoginError(null) }}
+                style={{ background: "transparent", border: "none", color: LIGHT_TEXT_SOFT, fontFamily: FONT, fontSize: "0.85rem", fontWeight: 500, cursor: "pointer", padding: "6px 10px", borderRadius: "6px" }}
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   )
 }
