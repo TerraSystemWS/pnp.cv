@@ -1,24 +1,27 @@
 import Layout from "../../components/Layout"
 import { fetcher } from "../../lib/api"
 import { parseNavbar } from "../../lib/parseNavbar"
-// import Link from "next/link"
 import Head from "next/head"
-// import { StrapiImage } from "../../components/custom/StrapiImage"
 import { useFetchUser } from "../../lib/authContext"
-// import { formatDateTime } from "../../lib/utils"
 import { useState, useEffect, useMemo } from "react"
 import qs from "qs"
-// import HeroSection from "../../components/HeroSection"
 import { useRouter } from "next/router"
 import UserProfileCard from "../../components/custom/sidemenu"
 import EdicaoPicker from "../../components/custom/EdicaoPicker"
 import { hasJuryAccess } from "../../lib/roles"
 import { getTokenFromLocalCookie, getTokenFromServerCookie } from "../../lib/auth"
 import { getEdicoesDisponiveis, resolveEdicaoSelecionada } from "../../lib/edicoes"
+import { GOLD_DARK, INK, INK_SOFT, BG, BG_ALT, CARD, BORDER, FONT, FONT_IMPORT } from "../../lib/theme"
 
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
 
-// import React, { useState, useEffect } from "react";
+const NOTA_COLORS: Record<string, string> = {
+  insuficiente: "#a13b34",
+  Insuficiente: "#a13b34",
+  Suficiente: "#93691a",
+  Bom: "#2f5a85",
+  Excelente: "#316647",
+}
 
 const Avaliacao = ({
   edicoes,
@@ -143,115 +146,97 @@ const Avaliacao = ({
     fetchUserNames()
   }, [categorias]) // Só busca de novo quando os dados agrupados realmente mudam
 
+  const temResultados = Object.keys(categorias).length > 0
+
   return (
     <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
       <Head>
-        <title>Perfil - dados do usuário</title>
-        <meta
-          name="description"
-          content="Aqui pode encontrar postagens e arquivos relacionados ao PNP e muito mais"
-        />
+        <title>Resultado da Avaliação dos Jurados - Prémio Nacional De Publicidade</title>
+        <meta name="description" content="Resultados das avaliações do júri no Prémio Nacional de Publicidade" />
       </Head>
-      <section>
-        <div className="bg-gray-100">
-          <div className="container mx-auto py-8">
-            <div className="grid grid-cols-4 sm:grid-cols-12 gap-6 px-4">
-              <UserProfileCard user={user} role={role} />
-              <div className="col-span-4 sm:col-span-9">
-                <div className="bg-white shadow rounded-lg p-6">
-                  <h2 className="text-xl font-bold mb-4">
-                    Resultados das Avaliações
-                  </h2>
-                  <EdicaoPicker
-                    edicoes={edicoesDisponiveis}
-                    selecionada={edicaoSelecionada}
-                    basePath="/perfil/avaliacaoStatus"
-                    variant="inline"
-                  />
-                  <section className="py-12 bg-gray-50">
-                    <div className="container mx-auto px-4">
-                      <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">
-                        Avaliações Realizadas
-                      </h2>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {Object.keys(categorias).map((categoria) => (
-                          <div key={categoria} className="mb-8">
-                            <h3 className="text-2xl font-semibold text-gray-800 mb-4">
-                              {categoria}
-                            </h3>
 
-                            {Object.keys(categorias[categoria]).map(
-                              (nomeProjeto) => {
-                                const { usuarios } =
-                                  categorias[categoria][nomeProjeto]
-                                const totalUsuarios = usuarios.length
+      <style>{`
+        ${FONT_IMPORT}
+        @keyframes fadeUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+      `}</style>
 
-                                return (
-                                  <div
-                                    key={nomeProjeto}
-                                    className="bg-white p-6 rounded-lg shadow-lg mb-6"
-                                  >
-                                    <h4 className="text-xl font-semibold mb-4">
-                                      {nomeProjeto}
-                                    </h4>
+      {/* Hero */}
+      <div style={{ background: BG_ALT, paddingTop: "6rem", paddingBottom: "3rem", textAlign: "center", borderBottom: `1px solid ${BORDER}` }}>
+        <p style={{ fontFamily: FONT, fontSize: "0.88rem", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "1rem", animation: "fadeUp 0.6s ease both" }}>
+          Prémio Nacional de Publicidade
+        </p>
+        <h1 style={{ fontFamily: FONT, fontSize: "clamp(2.42rem,6vw,3.74rem)", fontWeight: 700, color: INK, margin: 0, animation: "fadeUp 0.7s ease 0.1s both" }}>
+          Resultado da Avaliação dos Jurados
+        </h1>
+        <p style={{ fontFamily: FONT, fontSize: "1.1rem", color: INK_SOFT, marginTop: "1rem", animation: "fadeUp 0.8s ease 0.2s both" }}>
+          Notas atribuídas por cada jurado, por projeto e categoria.
+        </p>
+      </div>
 
-                                    <p className="text-sm font-semibold mb-4 text-gray-500">
-                                      {totalUsuarios} Avaliações
-                                    </p>
+      <div style={{ background: BG, padding: "3rem 2rem 6rem", fontFamily: FONT }}>
+        <div className="grid grid-cols-4 sm:grid-cols-12 gap-6" style={{ maxWidth: "1200px", margin: "0 auto" }}>
+          <UserProfileCard user={user} role={role} />
 
-                                    <ul className="text-sm text-gray-600">
-                                      {usuarios.map(
-                                        (usuario: any, index: any) => {
-                                          const userName =
-                                            userNames[usuario.id] ||
-                                            "Carregando..." // Atraso no nome, pode mostrar "Carregando..."
-                                          return (
-                                            <li
-                                              key={index}
-                                              className="mb-2 flex justify-between items-center"
-                                            >
-                                              <span>
-                                                {/* ID: {usuario.id} - Usuário{" "} */}
-                                                Juri #{usuario.id}: {userName}
-                                              </span>
+          <div className="col-span-4 sm:col-span-9">
+            <EdicaoPicker
+              edicoes={edicoesDisponiveis}
+              selecionada={edicaoSelecionada}
+              basePath="/perfil/avaliacaoStatus"
+              variant="inline"
+            />
 
-                                              <span
-                                                className={`px-3 py-1  rounded-full text-white ${
-                                                  usuario.nota ===
-                                                    "insuficiente" ||
-                                                  usuario.nota ===
-                                                    "Insuficiente"
-                                                    ? "bg-red-400"
-                                                    : usuario.nota ===
-                                                      "Suficiente"
-                                                    ? "bg-yellow-400"
-                                                    : usuario.nota === "Bom"
-                                                    ? "bg-blue-400"
-                                                    : "bg-green-400"
-                                                }`}
-                                              >
-                                                {usuario.nota}
-                                              </span>
-                                            </li>
-                                          )
-                                        }
-                                      )}
-                                    </ul>
-                                  </div>
-                                )
-                              }
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </section>
+            {!temResultados ? (
+              <p style={{ color: INK_SOFT, textAlign: "center", padding: "3rem 0" }}>
+                Ainda não há avaliações registadas nesta edição.
+              </p>
+            ) : (
+              Object.keys(categorias).map((categoria) => (
+                <div key={categoria} style={{ marginBottom: "3rem" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "1.5rem", marginBottom: "1.5rem" }}>
+                    <h2 style={{ fontSize: "1.1rem", fontWeight: 700, color: GOLD_DARK, letterSpacing: "0.05em", textTransform: "uppercase", whiteSpace: "nowrap", margin: 0 }}>
+                      {categoria}
+                    </h2>
+                    <div style={{ flex: 1, height: "1px", background: BORDER }} />
+                  </div>
+
+                  <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+                    {Object.keys(categorias[categoria]).map((nomeProjeto) => {
+                      const { usuarios } = categorias[categoria][nomeProjeto]
+
+                      return (
+                        <div key={nomeProjeto} style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: "14px", padding: "1.5rem" }}>
+                          <h4 style={{ fontSize: "1.05rem", fontWeight: 700, color: INK, margin: "0 0 0.2rem" }}>{nomeProjeto}</h4>
+                          <p style={{ fontSize: "0.8rem", fontWeight: 600, color: INK_SOFT, margin: "0 0 1rem" }}>
+                            {usuarios.length} avaliaç{usuarios.length === 1 ? "ão" : "ões"}
+                          </p>
+
+                          <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+                            {usuarios.map((usuario: any, index: number) => {
+                              const userName = userNames[usuario.id] || "Carregando..."
+                              return (
+                                <li key={index} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "0.87rem" }}>
+                                  <span style={{ color: INK }}>Jurado #{usuario.id}: {userName}</span>
+                                  <span style={{
+                                    fontSize: "0.74rem", fontWeight: 700, letterSpacing: "0.03em", textTransform: "uppercase",
+                                    color: "#fff", background: NOTA_COLORS[usuario.nota] ?? GOLD_DARK,
+                                    borderRadius: "100px", padding: "3px 11px",
+                                  }}>
+                                    {usuario.nota}
+                                  </span>
+                                </li>
+                              )
+                            })}
+                          </ul>
+                        </div>
+                      )
+                    })}
+                  </div>
                 </div>
-              </div>
-            </div>
+              ))
+            )}
           </div>
         </div>
-      </section>
+      </div>
     </Layout>
   )
 }

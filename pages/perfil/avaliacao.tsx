@@ -3,18 +3,25 @@ import { fetcher } from "../../lib/api"
 import { parseNavbar } from "../../lib/parseNavbar"
 import Link from "next/link"
 import Head from "next/head"
-import { StrapiImage } from "../../components/custom/StrapiImage"
 import { useFetchUser } from "../../lib/authContext"
-import { formatDateTime, getAvaliacaos } from "../../lib/utils"
+import { getAvaliacaos } from "../../lib/utils"
 import { useState, useEffect } from "react"
 import qs from "qs"
-import HeroSection from "../../components/HeroSection"
 import { useRouter } from "next/router"
 import UserProfileCard from "../../components/custom/sidemenu"
 import EdicaoPicker from "../../components/custom/EdicaoPicker"
 import { getIdFromLocalCookie, getTokenFromLocalCookie } from "../../lib/auth"
 import { hasJuryAccess } from "../../lib/roles"
 import { getEdicoesDisponiveis, resolveEdicaoSelecionada } from "../../lib/edicoes"
+import { GOLD, GOLD_DARK, INK, INK_SOFT, BG, BG_ALT, CARD, BORDER, FONT, FONT_IMPORT } from "../../lib/theme"
+
+const NOTA_COLORS: Record<string, string> = {
+  insuficiente: "#a13b34",
+  Insuficiente: "#a13b34",
+  Suficiente: "#93691a",
+  Bom: "#2f5a85",
+  Excelente: "#316647",
+}
 
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
 
@@ -89,151 +96,114 @@ const Avaliacao = ({
     }
   }, [userId, inscritos]) // Recarregar as avaliações quando userId ou inscritos mudarem
 
-  // Se não houver edições, exibe uma mensagem
   const edicaoMaisRecente = edicoes[0]?.attributes
-  if (!edicaoMaisRecente) {
-    return (
-      <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
-        <Head>
-          <title>Trabalhos concorrentes - Prémio Nacional De Publicidade</title>
-          <meta
-            name="description"
-            content="Projetos concorrentes aos Premios - Prémio Nacional De Publicidade"
-          />
-        </Head>
-        <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
-          <HeroSection
-            title="Sem Edições Disponíveis"
-            subtitle="Não há edições de concursos disponíveis no momento."
-          />
-        </div>
-      </Layout>
-    )
-  }
 
   return (
     <Layout rsocial={social} contato={contato} navbar={navbar} user={user}>
       <Head>
-        <title>Perfil - dados do usuário</title>
-        <meta
-          name="description"
-          content="Aqui pode encontrar postagens e arquivos relacionados ao PNP e muito mais"
-        />
+        <title>Avaliar Projetos - Prémio Nacional De Publicidade</title>
+        <meta name="description" content="Área de avaliação de projetos concorrentes ao Prémio Nacional de Publicidade" />
       </Head>
-      <section>
-        <div className="bg-gray-100">
-          <div className="container mx-auto py-8">
-            <div className="grid grid-cols-4 sm:grid-cols-12 gap-6 px-4">
-              <UserProfileCard user={user} role={role} />
-              <div className="col-span-4 sm:col-span-9">
-                <div className="bg-white shadow rounded-lg p-6">
-                  <h2 className="text-xl font-bold mb-4">Área dos Jurados</h2>
-                  <HeroSection
-                    title={`Projetos concorrentes à ${edicaoMaisRecente.N_Edicao}ª edição`}
-                    subtitle={"Inscrições abertas de 1 a 31 de Janeiro de 2025"}
-                  />
-                  <EdicaoPicker
-                    edicoes={edicoesDisponiveis}
-                    selecionada={edicaoSelecionada}
-                    basePath="/perfil/avaliacao"
-                    variant="inline"
-                  />
-                  <h2 className="text-xl font-bold mt-6 mb-4">
-                    Lista De Projetos
-                  </h2>
-                  <div className="mb-6">
-                    <div className="mt-4">
-                      <div className="bg-gray-200 p-4 rounded-lg">
-                        {edicaoMaisRecente.categoria.map((categoria: any) => {
-                          const inscricoesCategoria = inscritos.filter(
-                            (inscricao: any) =>
-                              inscricao.attributes.categoria ===
-                              categoria.titulo
-                          )
+
+      <style>{`
+        ${FONT_IMPORT}
+        @keyframes fadeUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+
+        .av-card { background: ${CARD}; border: 1px solid ${BORDER}; border-radius: 14px; padding: 1.5rem; width: 260px; transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s; text-decoration: none; display: block; }
+        .av-card:hover { border-color: ${GOLD}; transform: translateY(-4px); box-shadow: 0 10px 26px rgba(36,31,15,0.1); }
+      `}</style>
+
+      {/* Hero */}
+      <div style={{ background: BG_ALT, paddingTop: "6rem", paddingBottom: "3rem", textAlign: "center", borderBottom: `1px solid ${BORDER}` }}>
+        <p style={{ fontFamily: FONT, fontSize: "0.88rem", letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, marginBottom: "1rem", animation: "fadeUp 0.6s ease both" }}>
+          Prémio Nacional de Publicidade
+        </p>
+        <h1 style={{ fontFamily: FONT, fontSize: "clamp(2.42rem,6vw,3.74rem)", fontWeight: 700, color: INK, margin: 0, animation: "fadeUp 0.7s ease 0.1s both" }}>
+          Avaliar Projetos
+        </h1>
+        <p style={{ fontFamily: FONT, fontSize: "1.1rem", color: INK_SOFT, marginTop: "1rem", animation: "fadeUp 0.8s ease 0.2s both" }}>
+          {edicaoMaisRecente ? `Projetos concorrentes à ${edicaoMaisRecente.N_Edicao}ª edição` : "Sem edições disponíveis no momento"}
+        </p>
+      </div>
+
+      <div style={{ background: BG, padding: "3rem 2rem 6rem", fontFamily: FONT }}>
+        <div className="grid grid-cols-4 sm:grid-cols-12 gap-6" style={{ maxWidth: "1200px", margin: "0 auto" }}>
+          <UserProfileCard user={user} role={role} />
+
+          <div className="col-span-4 sm:col-span-9">
+            <EdicaoPicker
+              edicoes={edicoesDisponiveis}
+              selecionada={edicaoSelecionada}
+              basePath="/perfil/avaliacao"
+              variant="inline"
+            />
+
+            {!edicaoMaisRecente ? (
+              <p style={{ color: INK_SOFT, textAlign: "center", padding: "3rem 0" }}>
+                Não há edições de concursos disponíveis no momento.
+              </p>
+            ) : (
+              edicaoMaisRecente.categoria.map((categoria: any) => {
+                const inscricoesCategoria = inscritos.filter(
+                  (inscricao: any) => inscricao.attributes.categoria === categoria.titulo
+                )
+
+                return (
+                  <div key={categoria.id} style={{ marginBottom: "3rem" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "1.5rem", marginBottom: "1.5rem" }}>
+                      <h2 style={{ fontSize: "1.1rem", fontWeight: 700, color: GOLD_DARK, letterSpacing: "0.05em", textTransform: "uppercase", whiteSpace: "nowrap", margin: 0 }}>
+                        {categoria.titulo}
+                      </h2>
+                      <div style={{ flex: 1, height: "1px", background: BORDER }} />
+                    </div>
+
+                    {inscricoesCategoria.length > 0 ? (
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: "1.1rem" }}>
+                        {inscricoesCategoria.map((inscricao: any) => {
+                          const avaliacao = avaliacoes.find(
+                            (a) => a.inscricaoId === inscricao.id
+                          )?.avaliacao
+                          const notaColor = avaliacao ? (NOTA_COLORS[avaliacao.notas] ?? GOLD_DARK) : null
 
                           return (
-                            <div key={categoria.id} className="mb-8">
-                              <h4 className="text-2xl font-semibold text-gray-800 mb-4">
-                                {categoria.titulo}
+                            <Link key={inscricao.id} href={`/projetos/${inscricao.id}`} className="av-card">
+                              <h4 style={{ fontSize: "1.05rem", fontWeight: 700, color: INK, margin: "0 0 0.85rem", lineHeight: 1.3 }}>
+                                {inscricao.attributes.nome_projeto}
                               </h4>
 
-                              {inscricoesCategoria.length > 0 ? (
-                                <div className="flex flex-wrap gap-4 justify-start">
-                                  {inscricoesCategoria.map((inscricao: any) => {
-                                    // Busca a avaliação para a inscrição atual
-                                    const avaliacao = avaliacoes.find(
-                                      (a) => a.inscricaoId === inscricao.id
-                                    )?.avaliacao
-
-                                    return (
-                                      <Link
-                                        key={inscricao.id}
-                                        href={`/projetos/${inscricao.id}`}
-                                        className="block max-w-[18rem] rounded-lg bg-white text-left text-surface shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 dark:bg-surface-dark dark:text-white"
-                                      >
-                                        <div className="p-6">
-                                          <h6 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white leading-tight transition-colors duration-300">
-                                            {inscricao.attributes.nome_projeto}
-                                          </h6>
-
-                                          {/* Exibindo faixa de avaliação */}
-                                          {avaliacao ? (
-                                            <div className="mt-2 flex space-x-4">
-                                              <p>
-                                                <span
-                                                  className={`p-2 rounded-full text-white ${
-                                                    avaliacao.notas ===
-                                                      "insuficiente" ||
-                                                    avaliacao.notas ===
-                                                      "Insuficiente"
-                                                      ? "bg-red-400"
-                                                      : avaliacao.notas ===
-                                                          "Suficiente"
-                                                        ? "bg-yellow-400"
-                                                        : avaliacao.notas ===
-                                                            "Bom"
-                                                          ? "bg-blue-400"
-                                                          : "bg-green-400"
-                                                  }`}
-                                                >
-                                                  {avaliacao.notas
-                                                    .charAt(0)
-                                                    .toUpperCase() +
-                                                    avaliacao.notas.slice(1)}
-                                                </span>
-                                              </p>
-                                              <p className="text-sm text-gray-600">
-                                                {avaliacao.comentario}
-                                              </p>
-                                            </div>
-                                          ) : (
-                                            <p className="text-lg text-yellow-500">
-                                              Ainda não foi avaliado.
-                                            </p>
-                                          )}
-                                        </div>
-                                      </Link>
-                                    )
-                                  })}
+                              {avaliacao ? (
+                                <div>
+                                  <span style={{
+                                    display: "inline-block", fontSize: "0.76rem", fontWeight: 700,
+                                    letterSpacing: "0.03em", textTransform: "uppercase",
+                                    color: "#fff", background: notaColor ?? GOLD_DARK,
+                                    borderRadius: "100px", padding: "3px 11px", marginBottom: "0.5rem",
+                                  }}>
+                                    {avaliacao.notas.charAt(0).toUpperCase() + avaliacao.notas.slice(1)}
+                                  </span>
+                                  {avaliacao.comentario && (
+                                    <p style={{ fontSize: "0.82rem", color: INK_SOFT, margin: 0 }}>{avaliacao.comentario}</p>
+                                  )}
                                 </div>
                               ) : (
-                                <p className="text-gray-500">
-                                  Nenhuma inscrição encontrada para esta
-                                  categoria.
-                                </p>
+                                <span style={{ fontSize: "0.82rem", fontWeight: 600, color: GOLD_DARK }}>
+                                  Ainda não foi avaliado
+                                </span>
                               )}
-                            </div>
+                            </Link>
                           )
                         })}
                       </div>
-                    </div>
+                    ) : (
+                      <p style={{ color: INK_SOFT, fontSize: "0.9rem" }}>Nenhuma inscrição encontrada para esta categoria.</p>
+                    )}
                   </div>
-                </div>
-              </div>
-            </div>
+                )
+              })
+            )}
           </div>
         </div>
-      </section>
+      </div>
     </Layout>
   )
 }
