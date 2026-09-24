@@ -41,6 +41,13 @@ export function diasRestantes(i: EstadoInput): number | null {
   return Math.max(0, Math.ceil((new Date(i.expira_em).getTime() - Date.now()) / 86400000))
 }
 
+// Grande Prémio Palmeira e Prémio Público são atribuídos pelo júri/público
+// entre os concorrentes — não aparecem no formulário de candidatura.
+export function isCategoriaCandidatavel(titulo?: string | null) {
+  const t = String(titulo ?? "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
+  return !/grande premio|premio publico/.test(t)
+}
+
 export function formatPrazo(expira_em: string) {
   return new Date(expira_em).toLocaleDateString("pt-PT", { day: "numeric", month: "long" })
 }

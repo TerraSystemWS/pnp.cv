@@ -6,7 +6,7 @@ import { IncomingMessage } from "http"
 import Swal from "sweetalert2"
 import { fetcher, apiClient, ApiError } from "../../lib/api"
 import { getTokenFromServerCookie, getTokenFromLocalCookie } from "../../lib/auth"
-import { getEstado, ESTADO_LABEL, diasRestantes, formatPrazo } from "../../lib/inscricaoStatus"
+import { getEstado, ESTADO_LABEL, diasRestantes, formatPrazo, isCategoriaCandidatavel } from "../../lib/inscricaoStatus"
 import { parseNavbar } from "../../lib/parseNavbar"
 import { useFetchUser } from "../../lib/authContext"
 import FichaInscricaoForm from "../../components/Inscrever/FichaInscricaoForm"
@@ -48,7 +48,7 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: Props) => {
   // o que acabou de gravar, para os dados não "desaparecerem" ao voltar a
   // um passo já visitado (cada passo desmonta/remonta ao trocar de separador).
   const [attrs, setAttrs] = useState(inscricao.data?.attributes)
-  const categorias: Categoria[] = edicao?.data?.[0]?.attributes?.categoria ?? []
+  const categorias: Categoria[] = (edicao?.data?.[0]?.attributes?.categoria ?? []).filter((c) => isCategoriaCandidatavel(c.titulo))
   const url = attrs?.url ?? ""
   // Depois de submetida (ou aceite pela organização) a candidatura fica só de leitura.
   const readOnly = !!attrs?.publishedAt || !!attrs?.submetida_em

@@ -167,6 +167,9 @@ const VpublicaDetalhes = ({ edicoes, social, contato, inscricao, navbar }: any) 
 
   const attr = inscricao.data.attributes
   const edicaoNum = edicoes?.data?.[0]?.attributes?.N_Edicao
+  // Só se vota nos trabalhos da edição atual (a mais recente); as anteriores estão encerradas.
+  const projetoEdicaoNum = attr.edicoes?.data?.attributes?.N_Edicao
+  const votacaoAberta = !!projetoEdicaoNum && projetoEdicaoNum === edicaoNum
 
   const onVotar = async () => {
     const jwt = getTokenFromLocalCookie()
@@ -180,9 +183,10 @@ const VpublicaDetalhes = ({ edicoes, social, contato, inscricao, navbar }: any) 
     } catch (err) {
       if (err instanceof ApiError && err.status === 409) {
         setMeuVoto((prev) => ({ voted: true, inscricaoId: prev?.inscricaoId ?? null }))
-        Swal.fire({ icon: "warning", title: "Aviso", text: "Só pode votar uma única vez." })
+        Swal.fire({ icon: "warning", title: "Aviso", text: "Só pode votar uma vez por edição." })
       } else if (err instanceof ApiError && err.status === 403) {
-        Swal.fire({ icon: "warning", title: "Aviso", text: "Confirme o seu email antes de votar." })
+        // Email por confirmar ou votação da edição encerrada.
+        Swal.fire({ icon: "warning", title: "Aviso", text: err.message })
       } else {
         Swal.fire({ icon: "error", title: "Falhou", text: "Não foi possível votar." })
       }
@@ -321,10 +325,14 @@ const VpublicaDetalhes = ({ edicoes, social, contato, inscricao, navbar }: any) 
 
           {/* Votação Pública */}
           <SectionPanel title="Votação Pública" subtitle="Dê o seu voto a este trabalho">
-            {loading ? null : !user ? (
+            {loading ? null : !votacaoAberta ? (
+              <p style={{ fontFamily: FONT, fontSize: "0.99rem", color: INK_SOFT, margin: 0, lineHeight: 1.6 }}>
+                A votação pública {projetoEdicaoNum ? `da ${projetoEdicaoNum}ª edição ` : ""}está encerrada.
+              </p>
+            ) : !user ? (
               <div style={{ maxWidth: "480px" }}>
                 <p style={{ fontFamily: FONT, fontSize: "0.99rem", color: INK_SOFT, margin: "0 0 1.25rem", lineHeight: 1.6 }}>
-                  Para votar precisa de uma conta com email confirmado. Cada conta tem direito a um voto.
+                  Para votar precisa de uma conta com email confirmado. Cada conta tem direito a um voto por edição.
                 </p>
                 <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
                   <button type="button" onClick={openLogin} style={{ fontFamily: FONT, fontSize: "0.935rem", fontWeight: 700, color: INK, background: GOLD, border: "none", borderRadius: "100px", padding: "12px 28px", cursor: "pointer" }}>
@@ -341,7 +349,7 @@ const VpublicaDetalhes = ({ edicoes, social, contato, inscricao, navbar }: any) 
                   <p style={{ fontFamily: FONT, fontSize: "0.99rem", color: INK_SOFT, margin: "0 0 1.25rem" }}>
                     {meuVoto.inscricaoId === inscricao.data.id
                       ? "Votou neste projeto. Obrigado!"
-                      : "Já usou o seu voto noutro projeto — cada conta vota uma única vez."}
+                      : "Já usou o seu voto desta edição noutro projeto — cada conta vota uma vez por edição."}
                   </p>
                 )}
                 <button
@@ -392,7 +400,7 @@ export async function getServerSideProps({ query }: any) {
     fetcher(`${api_link}/api/edicoes?populate[categoria][fields]=titulo,id&${queri}`),
     fetcher(`${api_link}/api/contato`),
     fetcher(`${api_link}/api/menus?populate=deep`),
-    fetcher(`${api_link}/api/inscricoes/${id}?populate[fileLink][populate][ficheiro][fields]=url`),
+    fetcher(`${api_link}/api/inscricoes/${id}?populate[fileLink][populate][ficheiro][fields]=url&populate[edicoes][fields][0]=N_Edicao`),
   ])
   const [edicoes, contato, menus, inscritos] = results.map((r: any) => {
     if (r.status === "fulfilled") return r.value
