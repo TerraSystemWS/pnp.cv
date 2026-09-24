@@ -4,7 +4,7 @@ import { fetcher } from "../lib/api"
 import { parseNavbar } from "../lib/parseNavbar"
 import { useRouter } from "next/router"
 import { useFetchUser } from "../lib/authContext"
-import { getStrapiMedia } from "../lib/utils"
+import { getStrapiMedia, getStrapiImageUrl } from "../lib/utils"
 import Image from "next/image"
 import Link from "next/link"
 import { useEffect, useRef, useState } from "react"
@@ -43,7 +43,7 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
       id: i,
       idd: v.id,
       edicao: edicao.attributes.N_Edicao,
-      j_foto: v.foto.data?.attributes.formats.medium?.url ?? "/",
+      j_foto: getStrapiImageUrl(v.foto?.data?.attributes),
       j_nome: v.nome,
       j_titulo: v.titulo,
       j_descricao: v.descricao ?? "",
@@ -53,7 +53,7 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
     edicao?.attributes?.categoria?.map((c: any, i: number) => ({
       id: i,
       titulo: c.titulo,
-      url: getStrapiMedia(c.capa.data?.attributes.formats.small?.url ?? null),
+      url: getStrapiImageUrl(c.capa?.data?.attributes, ["small", "medium", "thumbnail"]),
       slug: c.titulo.replace(/ /g, "_"),
       descricao: c.descricao ?? "",
     })) ?? []
@@ -464,7 +464,7 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
                   {/* Portrait */}
                   <div style={{ position: "relative", height: "220px", background: BG_ALT }}>
                     <img
-                      src={getStrapiMedia(j.j_foto) ?? ""}
+                      src={j.j_foto ?? "https://placehold.co/400x440?text=%20"}
                       alt={j.j_nome}
                       style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }}
                     />

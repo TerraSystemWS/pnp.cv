@@ -17,12 +17,18 @@ const Regulamentos = ({ social, contato, edicao, navbar, edicoesDisponiveis, edi
   const [activeTab, setActiveTab] = useState<"regulamentos" | "categorias">("regulamentos")
 
   const converter = new showdown.Converter()
+  // O CKEditor já guarda HTML; passar HTML pelo showdown estraga a formatação
+  // (linhas indentadas viram <code>, etc.). Só converte conteúdo antigo em markdown.
+  const toHtml = (value: unknown) => {
+    if (typeof value !== "string") return ""
+    return /<\/?[a-z][\s\S]*>/i.test(value) ? value : converter.makeHtml(value)
+  }
 
   const RegulamentosData = (edicao?.attributes?.regulamentos ?? []).map(
     (r: any, i: number) => ({
       id: i,
       titulo: r.titulo,
-      html: converter.makeHtml(typeof r.descricao === "string" ? r.descricao : ""),
+      html: toHtml(r.descricao),
     })
   )
 
@@ -31,7 +37,7 @@ const Regulamentos = ({ social, contato, edicao, navbar, edicoesDisponiveis, edi
       id: i,
       titulo: c.titulo,
       slug: c.titulo.replace(/ /g, "_"),
-      html: converter.makeHtml(typeof c.descricao === "string" ? c.descricao : ""),
+      html: toHtml(c.descricao),
     })
   )
 
@@ -48,7 +54,7 @@ const Regulamentos = ({ social, contato, edicao, navbar, edicoesDisponiveis, edi
         ${FONT_IMPORT}
         @keyframes fadeUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
 
-        .reg-content h1,.reg-content h2,.reg-content h3 {
+        .reg-content h1,.reg-content h2,.reg-content h3,.reg-content h4 {
           font-family: ${FONT};
           color: ${INK};
           font-weight: 700;
@@ -57,12 +63,52 @@ const Regulamentos = ({ social, contato, edicao, navbar, edicoesDisponiveis, edi
         .reg-content h1 { font-size: 1.6rem; }
         .reg-content h2 { font-size: 1.35rem; }
         .reg-content h3 { font-size: 1.1rem; color: ${GOLD_DARK}; }
+        .reg-content h4 { font-size: 1rem; }
         .reg-content p  { font-family: ${FONT}; font-size: 0.98rem; line-height: 1.8; color: ${INK_SOFT}; margin-bottom: 1rem; }
         .reg-content ul,.reg-content ol { padding-left: 1.5rem; margin-bottom: 1rem; }
+        .reg-content ul { list-style: disc; }
+        .reg-content ol { list-style: decimal; }
+        .reg-content ul ul { list-style: circle; }
+        .reg-content ul ul ul { list-style: square; }
+        .reg-content ol ol { list-style: lower-alpha; }
+        .reg-content ol ol ol { list-style: lower-roman; }
+        .reg-content ul ul,.reg-content ol ol,.reg-content ul ol,.reg-content ol ul { margin: 0.25rem 0 0.25rem; }
         .reg-content li { font-family: ${FONT}; font-size: 0.96rem; line-height: 1.7; color: ${INK_SOFT}; margin-bottom: 0.25rem; }
-        .reg-content strong { color: ${INK}; font-weight: 700; }
+        .reg-content li::marker { color: ${GOLD_DARK}; }
+        .reg-content li > p { margin-bottom: 0.25rem; }
+        .reg-content strong,.reg-content b { color: ${INK}; font-weight: 700; }
+        .reg-content em,.reg-content i { font-style: italic; }
+        .reg-content u { text-decoration: underline; }
+        .reg-content s { text-decoration: line-through; }
+        .reg-content sub { vertical-align: sub; font-size: 0.75em; }
+        .reg-content sup { vertical-align: super; font-size: 0.75em; }
+        .reg-content code { font-family: ui-monospace, monospace; font-size: 0.9em; background: ${BG_ALT}; padding: 0.1rem 0.35rem; border-radius: 4px; }
         .reg-content a { color: ${GOLD_DARK}; text-decoration: underline; }
         .reg-content hr { border: none; border-top: 1px solid ${BORDER}; margin: 2rem 0; }
+        .reg-content blockquote { border-left: 3px solid ${GOLD}; padding: 0.25rem 0 0.25rem 1rem; margin: 1.25rem 0; font-style: italic; }
+        .reg-content figure { margin: 1.25rem 0; }
+        .reg-content img { max-width: 100%; height: auto; border-radius: 8px; }
+        .reg-content figure.image { display: table; margin: 1.25rem auto; }
+        .reg-content figure.image-style-side,.reg-content .image-style-align-right { float: right; margin-left: 1.25rem; max-width: 50%; }
+        .reg-content .image-style-align-left { float: left; margin-right: 1.25rem; max-width: 50%; }
+        .reg-content figcaption { font-family: ${FONT}; font-size: 0.85rem; color: ${INK_SOFT}; text-align: center; margin-top: 0.4rem; }
+        .reg-content figure.table { overflow-x: auto; display: block; }
+        .reg-content table { width: 100%; border-collapse: collapse; margin: 1.25rem 0; font-family: ${FONT}; font-size: 0.94rem; }
+        .reg-content th,.reg-content td { border: 1px solid ${BORDER}; padding: 0.6rem 0.8rem; text-align: left; vertical-align: top; color: ${INK_SOFT}; }
+        .reg-content th { background: ${BG_ALT}; color: ${INK}; font-weight: 700; }
+        .reg-content .text-tiny { font-size: 0.7em; }
+        .reg-content .text-small { font-size: 0.85em; }
+        .reg-content .text-big { font-size: 1.4em; }
+        .reg-content .text-huge { font-size: 1.8em; }
+        .reg-content .marker-yellow { background: #fdfd77; }
+        .reg-content .marker-green { background: #62f962; }
+        .reg-content .marker-pink { background: #fc7899; }
+        .reg-content .marker-blue { background: #72ccfd; }
+        .reg-content .pen-red { color: #e71313; background: transparent; }
+        .reg-content .pen-green { color: #128a00; background: transparent; }
+        .reg-content .todo-list { list-style: none; padding-left: 0.5rem; }
+        .reg-content .todo-list input[type=checkbox] { margin-right: 0.5rem; }
+        .reg-content::after { content: ""; display: block; clear: both; }
       `}</style>
 
       {/* ── Hero ── */}

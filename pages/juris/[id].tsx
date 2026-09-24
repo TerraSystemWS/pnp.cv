@@ -7,7 +7,7 @@ import showdown from "showdown";
 import Link from "next/link";
 import Head from "next/head";
 import { useFetchUser } from "../../lib/authContext";
-import { getStrapiMedia } from "../../lib/utils";
+import { getStrapiImageUrl } from "../../lib/utils";
 import { GOLD, GOLD_DARK, INK, INK_SOFT, BG, BG_ALT, CARD, BORDER, GREY, FONT, FONT_IMPORT } from "../../lib/theme";
 
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL;
@@ -27,7 +27,7 @@ const Juris = ({ social, contato, edicao, navbar }: any) => {
 
 	;(edicao?.data ?? []).forEach((value: any) => {
 		;(value.attributes?.juri ?? []).forEach((value2: any, index2: number) => {
-			const foto = getStrapiMedia(value2?.foto?.data?.attributes?.formats?.medium?.url ?? null) || null
+			const foto = getStrapiImageUrl(value2?.foto?.data?.attributes)
 
 			if (id == value2.id) {
 				JurisA.push({

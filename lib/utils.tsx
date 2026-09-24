@@ -9,6 +9,21 @@ export function getStrapiMedia(url: string | null) {
   return `${getStrapiURL()}${url}`
 }
 
+// Strapi só gera os formatos (large/medium/small) quando a imagem original é
+// maior do que o breakpoint, por isso cai para o próximo formato e, por fim,
+// para o ficheiro original.
+export function getStrapiImageUrl(
+  attributes: any,
+  preferred: Array<"large" | "medium" | "small" | "thumbnail"> = ["medium", "small", "large"]
+) {
+  if (!attributes) return null
+  for (const f of preferred) {
+    const url = attributes.formats?.[f]?.url
+    if (url) return getStrapiMedia(url)
+  }
+  return getStrapiMedia(attributes.url ?? null)
+}
+
 export const formatDateTime = (dateTimeString: string): string => {
   const date = new Date(dateTimeString)
   const hours = String(date.getHours()).padStart(2, "0")
