@@ -3,8 +3,10 @@ import Head from "next/head"
 import { useRouter } from "next/router"
 import Layout from "../../components/Layout"
 import { IncomingMessage } from "http"
-import { fetcher, apiClient } from "../../lib/api"
-import { getTokenFromServerCookie } from "../../lib/auth"
+import Swal from "sweetalert2"
+import { fetcher, apiClient, ApiError } from "../../lib/api"
+import { getTokenFromServerCookie, getTokenFromLocalCookie } from "../../lib/auth"
+import { getEstado, ESTADO_LABEL, diasRestantes, formatPrazo } from "../../lib/inscricaoStatus"
 import { parseNavbar } from "../../lib/parseNavbar"
 import { useFetchUser } from "../../lib/authContext"
 import FichaInscricaoForm from "../../components/Inscrever/FichaInscricaoForm"
@@ -48,8 +50,12 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: Props) => {
   const [attrs, setAttrs] = useState(inscricao.data?.attributes)
   const categorias: Categoria[] = edicao?.data?.[0]?.attributes?.categoria ?? []
   const url = attrs?.url ?? ""
-  // Depois de aceite (publicada) pela organização, a candidatura fica só de leitura.
-  const readOnly = !!attrs?.publishedAt
+  // Depois de submetida (ou aceite pela organização) a candidatura fica só de leitura.
+  const readOnly = !!attrs?.publishedAt || !!attrs?.submetida_em
+  const estado = getEstado(attrs ?? {})
+  const dias = diasRestantes(attrs ?? {})
+  const [submitting, setSubmitting] = useState(false)
+  const [resending, setResending] = useState(false)
 
   const [activeStep, setActiveStep] = useState(0)
   const [existingFiles, setExistingFiles] = useState<FileLink[]>(attrs?.fileLink ?? [])
@@ -108,6 +114,61 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: Props) => {
     if (!ref?.current) return
     setEmptyWarning(false)
     ref.current.submit()
+  }
+
+  // "Concluir": bloqueia a candidatura e o servidor envia o email de confirmação.
+  const handleSubmit = async () => {
+    const result = await Swal.fire({
+      title: "Submeter candidatura?",
+      html: "Depois de submeter <b>não poderá alterar</b> a candidatura.<br/>Vamos enviar-lhe um email para confirmar que as informações são verdadeiras e que deseja participar no concurso.",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: GOLD,
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Submeter",
+      cancelButtonText: "Voltar",
+    })
+    if (!result.isConfirmed) return
+    const jwt = getTokenFromLocalCookie()
+    if (!jwt) return router.push("/inscricao")
+
+    setSubmitting(true)
+    try {
+      const res = await apiClient.post(`/api/inscricoes/mine/${url}/submeter`, {}, jwt)
+      setAttrs((prev) => ({ ...(prev as any), ...res.data.attributes }))
+      Swal.fire({
+        icon: "success",
+        title: "Candidatura submetida",
+        text: `Enviámos um email para ${attrs?.email}. Abra-o e confirme a candidatura para concluir o processo.`,
+        confirmButtonColor: GOLD,
+      })
+    } catch (err) {
+      const missing: string[] = err instanceof ApiError ? err.details?.missing ?? [] : []
+      Swal.fire({
+        icon: "error",
+        title: "Não foi possível submeter",
+        html: missing.length
+          ? `Complete primeiro os campos em falta:<br/><b>${missing.join(", ")}</b>`
+          : err instanceof ApiError ? err.message : "Tente novamente.",
+        confirmButtonColor: GOLD,
+      })
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const handleResend = async () => {
+    const jwt = getTokenFromLocalCookie()
+    if (!jwt) return
+    setResending(true)
+    try {
+      await apiClient.post(`/api/inscricoes/mine/${url}/reenviar`, {}, jwt)
+      Swal.fire({ icon: "success", title: "Email reenviado", text: `Verifique a caixa de entrada de ${attrs?.email}.`, confirmButtonColor: GOLD })
+    } catch {
+      Swal.fire({ icon: "error", title: "Erro", text: "Não foi possível reenviar o email. Tente novamente.", confirmButtonColor: GOLD })
+    } finally {
+      setResending(false)
+    }
   }
 
   const saveLabel  = saveStatus === "saving" ? "A guardar…" : saveStatus === "saved" ? "✓ Guardado" : saveStatus === "error" ? "Erro ao guardar" : ""
@@ -170,18 +231,22 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: Props) => {
         </h1>
 
         {/* Status badge */}
-        <div style={{ display: "inline-flex", alignItems: "center", gap: "0.75rem", background: CARD, border: `1px solid ${readOnly ? GOLD : BORDER}`, borderRadius: "100px", padding: "0.6rem 1.25rem", animation: "fadeUp 0.8s ease 0.2s both" }}>
+        <div style={{ display: "inline-flex", alignItems: "center", gap: "0.75rem", background: CARD, border: `1px solid ${estado === "confirmada" || estado === "aceite" ? GOLD : BORDER}`, borderRadius: "100px", padding: "0.6rem 1.25rem", animation: "fadeUp 0.8s ease 0.2s both" }}>
           <span style={{ fontFamily: FONT, fontSize: "0.858rem", fontWeight: 700, color: INK_SOFT }}>
             Nº {inscricao.data?.id}
           </span>
           <span style={{ fontFamily: FONT, fontSize: "0.95rem", fontWeight: 700, color: INK }}>
-            {readOnly ? "Candidatura aceite" : "Em preparação"}
+            {ESTADO_LABEL[estado]}
           </span>
         </div>
 
         <p style={{ fontFamily: FONT, fontSize: "0.902rem", color: INK_SOFT, marginTop: "0.75rem", animation: "fadeUp 0.9s ease 0.3s both" }}>
-          {readOnly
+          {estado === "aceite"
             ? "A candidatura já foi aceite pela organização e não pode ser alterada."
+            : estado === "confirmada"
+            ? "A candidatura foi submetida e confirmada. Já não pode ser alterada."
+            : estado === "aguarda"
+            ? "A candidatura foi submetida e já não pode ser alterada. Falta confirmá-la no email."
             : "Pode voltar a esta candidatura a qualquer momento em \"As minhas candidaturas\"."}
         </p>
       </div>
@@ -210,6 +275,33 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: Props) => {
           })}
         </div>
       </div>
+
+      {/* ── Prazo de confirmação (visível em todos os passos) ── */}
+      {dias !== null && attrs?.expira_em && (
+        <div style={{ background: dias <= 2 ? "#c0392b0d" : `${GOLD}14`, borderBottom: `1px solid ${dias <= 2 ? "#c0392b33" : `${GOLD}55`}` }}>
+          <div style={{ maxWidth: "860px", margin: "0 auto", padding: "0.9rem 2rem", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1rem", flexWrap: "wrap" }}>
+            <p style={{ fontFamily: FONT, fontSize: "0.92rem", color: INK, margin: 0, lineHeight: 1.5 }}>
+              <strong style={{ color: dias <= 2 ? "#c0392b" : GOLD_DARK }}>
+                {dias === 0 ? "Último dia" : `Faltam ${dias} dia${dias === 1 ? "" : "s"}`}
+              </strong>
+              {" — "}
+              {estado === "aguarda"
+                ? <>enviámos um email para <strong>{attrs.email}</strong>. Confirme a candidatura até {formatPrazo(attrs.expira_em)}, caso contrário será eliminada.</>
+                : <>conclua a candidatura e confirme-a no email que lhe enviaremos até {formatPrazo(attrs.expira_em)} (fim das candidaturas desta edição), caso contrário será eliminada.</>}
+            </p>
+            {estado === "aguarda" && (
+              <button
+                className="nav-btn"
+                onClick={handleResend}
+                disabled={resending}
+                style={{ fontFamily: FONT, fontSize: "0.858rem", fontWeight: 700, color: INK, background: CARD, border: `1px solid ${BORDER}`, borderRadius: "100px", padding: "6px 16px", cursor: resending ? "not-allowed" : "pointer", whiteSpace: "nowrap" }}
+              >
+                {resending ? "A enviar…" : "Reenviar email"}
+              </button>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* ── Content ── */}
       <div style={{ background: BG, minHeight: "60vh", padding: "3rem 2rem 5rem" }}>
@@ -340,10 +432,11 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: Props) => {
                 {activeStep === STEPS.length - 1 && (
                   <button
                     className="nav-btn-primary"
-                    onClick={() => router.push("/inscricao")}
-                    style={{ fontFamily: FONT, fontSize: "0.935rem", fontWeight: 700, color: INK, background: GOLD, border: "none", borderRadius: "100px", padding: "10px 24px", cursor: "pointer" }}
+                    onClick={readOnly ? () => router.push("/inscricao") : handleSubmit}
+                    disabled={submitting}
+                    style={{ fontFamily: FONT, fontSize: "0.935rem", fontWeight: 700, color: INK, background: GOLD, border: "none", borderRadius: "100px", padding: "10px 24px", cursor: submitting ? "not-allowed" : "pointer", transition: "opacity 0.2s" }}
                   >
-                    Concluir Inscrição
+                    {readOnly ? "Voltar às candidaturas" : submitting ? "A submeter…" : "Concluir Inscrição"}
                   </button>
                 )}
               </div>

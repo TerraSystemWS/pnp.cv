@@ -1,8 +1,10 @@
 export class ApiError extends Error {
   status: number
-  constructor(message: string, status: number) {
+  details?: any
+  constructor(message: string, status: number, details?: any) {
     super(message)
     this.status = status
+    this.details = details
   }
 }
 
@@ -15,11 +17,13 @@ export async function fetcher(url: string, options: RequestInit = {}) {
 
   if (!response.ok) {
     let message = `Request failed with status ${response.status}`
+    let details
     try {
       const err = await response.json()
       message = err?.error?.message ?? err?.message ?? message
+      details = err?.error?.details
     } catch {}
-    throw new ApiError(message, response.status)
+    throw new ApiError(message, response.status, details)
   }
 
   return response.json()
