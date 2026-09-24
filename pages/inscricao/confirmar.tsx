@@ -68,10 +68,11 @@ const ConfirmarCandidatura = ({ social, contato, navbar }: any) => {
       ) : (
         <>
           {error && <div className="acc-alert acc-alert-err">{error}</div>}
+          {/* Declaração de Responsabilidade da ficha de inscrição do regulamento. */}
           <div className="acc-alert acc-alert-ok">
-            Declaro, sob compromisso de honra, que as informações submetidas nesta candidatura são verdadeiras
-            e que desejo participar no Prémio Nacional de Publicidade, de acordo com o{" "}
-            <Link href="/regulamentos" className="acc-link">regulamento</Link> do concurso.
+            Declaro que o trabalho submetido respeita as normas legais e éticas vigentes em Cabo Verde e aceito
+            integralmente o <Link href="/regulamentos" className="acc-link">regulamento</Link> do Prémio Nacional
+            de Publicidade PALMEIRA.
           </div>
           <button className="acc-btn" onClick={confirmar} disabled={sending || !token}>
             {sending ? "A confirmar…" : "Confirmo e quero participar"}
