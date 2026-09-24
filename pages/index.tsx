@@ -296,10 +296,10 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
                       transition: "border-color 0.25s, transform 0.25s, box-shadow 0.25s",
                     }}
                   >
-                    {/* Small icon */}
+                    {/* Icon */}
                     <div style={{
-                      width: "48px",
-                      height: "48px",
+                      width: "96px",
+                      height: "96px",
                       borderRadius: "50%",
                       overflow: "hidden",
                       background: BG_ALT,
@@ -316,7 +316,7 @@ const Home = ({ social, contato, banners, edicao, navbar, error }: any) => {
                           style={{ width: "100%", height: "100%", objectFit: "cover" }}
                         />
                       ) : (
-                        <span style={{ fontFamily: FONT, fontWeight: 700, color: GOLD_DARK, fontSize: "1.1rem" }}>
+                        <span style={{ fontFamily: FONT, fontWeight: 700, color: GOLD_DARK, fontSize: "2.2rem" }}>
                           {String(i + 1).padStart(2, "0")}
                         </span>
                       )}
