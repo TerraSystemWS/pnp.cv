@@ -10,7 +10,7 @@ import Swal from "sweetalert2"
 import { useFetchUser } from "../../lib/authContext"
 import { useEffect, useState } from "react"
 import { GOLD, GOLD_DARK, INK, INK_SOFT, BG, BG_ALT, CARD, BORDER, FONT, FONT_IMPORT } from "../../lib/theme"
-import { getEstado, ESTADO_LABEL, diasRestantes } from "../../lib/inscricaoStatus"
+import { getEstado, ESTADO_LABEL, diasRestantes, fimDoDia } from "../../lib/inscricaoStatus"
 
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
 
@@ -33,7 +33,7 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
   const [creating, setCreating] = useState(false)
 
   const dataFim = edicao?.data?.attributes?.data_fim
-    ? new Date(edicao.data.attributes.data_fim)
+    ? fimDoDia(edicao.data.attributes.data_fim)
     : new Date("2025-01-31")
   const diffDays = Math.max(0, Math.ceil((dataFim.getTime() - Date.now()) / 86400000))
   const deadlineStr = dataFim.toLocaleDateString("pt-PT", { day: "numeric", month: "long", year: "numeric" })
@@ -76,11 +76,12 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
       const res = await apiClient.post("/api/inscricoes/mine", {}, jwt)
       const url = res?.data?.url
       if (!url) throw new Error("Resposta sem url")
-      Swal.fire("Inscrição criada!", "Tem 7 dias para concluir a candidatura e confirmá-la no email que lhe vamos enviar. Caso contrário, será eliminada.", "success")
+      Swal.fire("Inscrição criada!", `Tem até ${deadlineStr} para concluir a candidatura e confirmá-la no email que lhe vamos enviar. Caso contrário, será eliminada.`, "success")
       router.push(`/inscricao/${url}`)
     } catch (err) {
+      // 403: conta por confirmar ou candidaturas da edição já encerradas.
       const text = err instanceof ApiError && err.status === 403
-        ? "Confirme o seu email antes de criar uma candidatura."
+        ? err.message
         : "Erro ao criar inscrição. Tente novamente."
       Swal.fire({ icon: "error", title: "Erro", text })
       setCreating(false)
@@ -410,11 +411,12 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
 export default Inscreve
 
 export async function getServerSideProps() {
-  const query = qs.stringify({ sort: ["N_Edicao:asc"] }, { encodeValuesOnly: true })
+  // Edição atual = a mais recente (a mesma em que o Strapi cria as candidaturas).
+  const query = qs.stringify({ sort: ["N_Edicao:desc"], pagination: { limit: 1 }, populate: "deep" }, { encodeValuesOnly: true })
   try {
     const results = await Promise.allSettled([
       fetcher(`${api_link}/api/contato`),
-      fetcher(`${api_link}/api/edicoes/1?populate=deep&${query}`),
+      fetcher(`${api_link}/api/edicoes?${query}`),
       fetcher(`${api_link}/api/menus?populate=deep`),
     ])
     const [contato, edicao, menus] = results.map((r: any) => {
@@ -426,7 +428,7 @@ export async function getServerSideProps() {
       props: {
         social: parseNavbar(menus, "redes-social"),
         contato: contato ?? null,
-        edicao: edicao ?? null,
+        edicao: edicao?.data?.[0] ? { data: edicao.data[0] } : null,
         navbar: parseNavbar(menus, "menus"),
       },
     }

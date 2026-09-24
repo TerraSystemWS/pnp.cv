@@ -24,6 +24,16 @@ export function getEstado(i: EstadoInput): Estado {
   return "preparacao"
 }
 
+// Fim do dia (hora de Cabo Verde, UTC-1) da data_fim da edição — igual ao
+// prazo calculado no Strapi, para "até dia X" incluir o dia X inteiro.
+export function fimDoDia(dataFim: string | Date): Date {
+  const [y, m, d] = new Date(dataFim)
+    .toLocaleDateString("en-CA", { timeZone: "Atlantic/Cape_Verde" })
+    .split("-")
+    .map(Number)
+  return new Date(Date.UTC(y, m - 1, d, 23, 59, 59, 999) + 60 * 60 * 1000)
+}
+
 // Dias que faltam até ao prazo, ou null se não houver prazo (já confirmada,
 // ou candidatura anterior a esta regra).
 export function diasRestantes(i: EstadoInput): number | null {

@@ -287,7 +287,7 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: Props) => {
               {" — "}
               {estado === "aguarda"
                 ? <>enviámos um email para <strong>{attrs.email}</strong>. Confirme a candidatura até {formatPrazo(attrs.expira_em)}, caso contrário será eliminada.</>
-                : <>conclua a candidatura e confirme-a no email que lhe enviaremos até {formatPrazo(attrs.expira_em)}, caso contrário será eliminada.</>}
+                : <>conclua a candidatura e confirme-a no email que lhe enviaremos até {formatPrazo(attrs.expira_em)} (fim das candidaturas desta edição), caso contrário será eliminada.</>}
             </p>
             {estado === "aguarda" && (
               <button
