@@ -5,7 +5,7 @@ import Layout from "../../components/Layout"
 import Head from "next/head"
 import Link from "next/link"
 import { useFetchUser } from "../../lib/authContext"
-import { getStrapiMedia } from "../../lib/utils"
+import { getStrapiImageUrl } from "../../lib/utils"
 import ImageLightbox from "../../components/custom/ImageLightbox"
 import { GOLD, GOLD_DARK, GOLD_BRIGHT, INK, INK_SOFT, BG, BG_ALT, CARD, BORDER, FONT, FONT_IMPORT } from "../../lib/theme"
 
@@ -134,7 +134,7 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
               {jurados.length === 0 && <EmptyMsg />}
               <div className="ed-jurado-scroll" style={{ display: "flex", gap: "1.25rem", overflowX: "auto", paddingBottom: "0.5rem", scrollSnapType: "x mandatory" }}>
                 {jurados.map((j: any) => {
-                  const imgUrl = getStrapiMedia(j.foto.data?.attributes.formats.small?.url ?? null)
+                  const imgUrl = getStrapiImageUrl(j.foto?.data?.attributes, ["small", "medium", "thumbnail"])
                   const hov    = hovCard === `j-${j.id}`
                   return (
                     <Link key={j.id} href={`/juris/${j.id}?edicao=${num}`} style={{ textDecoration: "none", flexShrink: 0, scrollSnapAlign: "start" }}>
@@ -167,7 +167,7 @@ const Edicoes = ({ social, contato, edicao, navbar }: any) => {
                   {g.titulo && <SectionHead title={g.titulo} />}
                   <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "1rem" }}>
                     {(g.imagens?.data ?? []).slice(0, 9).map((img: any, ii: number) => {
-                      const url = getStrapiMedia(img.attributes.formats?.medium?.url ?? null)
+                      const url = getStrapiImageUrl(img.attributes)
                       const hov = hovCard === `img-${ii}`
                       return (
                         <button key={ii}
