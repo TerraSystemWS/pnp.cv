@@ -2,7 +2,9 @@ import { useState, useRef, useEffect } from "react"
 import Head from "next/head"
 import { useRouter } from "next/router"
 import Layout from "../../components/Layout"
-import { fetcher } from "../../lib/api"
+import { IncomingMessage } from "http"
+import { fetcher, apiClient } from "../../lib/api"
+import { getTokenFromServerCookie } from "../../lib/auth"
 import { parseNavbar } from "../../lib/parseNavbar"
 import { useFetchUser } from "../../lib/authContext"
 import FichaInscricaoForm from "../../components/Inscrever/FichaInscricaoForm"
@@ -21,7 +23,6 @@ interface Props {
   edicao: { data: { attributes: { categoria: Categoria[] } }[] }
   navbar: ParsedNavLink[]
   inscricao: { data: { id: number; attributes: Inscricao & { fileLink?: FileLink[] } } | null }
-  accessCode: string
 }
 
 interface FormHandle {
@@ -38,7 +39,7 @@ const STEPS = [
   { label: "Documentos",     desc: "Ficheiros do trabalho" },
 ]
 
-const Inscrever = ({ social, contato, edicao, navbar, inscricao, accessCode }: Props) => {
+const Inscrever = ({ social, contato, edicao, navbar, inscricao }: Props) => {
   const { user } = useFetchUser()
   const router = useRouter()
   // Estado (não constante derivada da prop inicial) — cada painel funde aqui
@@ -46,12 +47,13 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao, accessCode }: P
   // um passo já visitado (cada passo desmonta/remonta ao trocar de separador).
   const [attrs, setAttrs] = useState(inscricao.data?.attributes)
   const categorias: Categoria[] = edicao?.data?.[0]?.attributes?.categoria ?? []
-  const cid = String(inscricao.data?.id ?? "")
+  const url = attrs?.url ?? ""
+  // Depois de aceite (publicada) pela organização, a candidatura fica só de leitura.
+  const readOnly = !!attrs?.publishedAt
 
   const [activeStep, setActiveStep] = useState(0)
   const [existingFiles, setExistingFiles] = useState<FileLink[]>(attrs?.fileLink ?? [])
   const [savedSteps, setSavedSteps] = useState([false, false, false, false])
-  const [copied, setCopied] = useState(false)
   const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle")
   const [emptyWarning, setEmptyWarning] = useState(false)
 
@@ -70,7 +72,7 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao, accessCode }: P
     !!attrs?.coord_prod,
     existingFiles.length > 0,
   ]
-  const isCurrentStepDone = stepDone[activeStep] || savedSteps[activeStep]
+  const isCurrentStepDone = readOnly || stepDone[activeStep] || savedSteps[activeStep]
 
   const markSaved = (step: number) =>
     setSavedSteps((prev) => { const next = [...prev]; next[step] = true; return next })
@@ -106,13 +108,6 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao, accessCode }: P
     if (!ref?.current) return
     setEmptyWarning(false)
     ref.current.submit()
-  }
-
-  const copyCode = () => {
-    navigator.clipboard.writeText(accessCode).then(() => {
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    })
   }
 
   const saveLabel  = saveStatus === "saving" ? "A guardar…" : saveStatus === "saved" ? "✓ Guardado" : saveStatus === "error" ? "Erro ao guardar" : ""
@@ -174,24 +169,20 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao, accessCode }: P
           A sua Inscrição
         </h1>
 
-        {/* Code badge */}
-        <div style={{ display: "inline-flex", alignItems: "center", gap: "0.75rem", background: CARD, border: `1px solid ${BORDER}`, borderRadius: "100px", padding: "0.6rem 1.25rem", animation: "fadeUp 0.8s ease 0.2s both" }}>
+        {/* Status badge */}
+        <div style={{ display: "inline-flex", alignItems: "center", gap: "0.75rem", background: CARD, border: `1px solid ${readOnly ? GOLD : BORDER}`, borderRadius: "100px", padding: "0.6rem 1.25rem", animation: "fadeUp 0.8s ease 0.2s both" }}>
           <span style={{ fontFamily: FONT, fontSize: "0.858rem", fontWeight: 700, color: INK_SOFT }}>
-            Código de acesso
+            Nº {inscricao.data?.id}
           </span>
-          <span style={{ fontFamily: FONT, fontSize: "1.1rem", fontWeight: 700, color: INK, letterSpacing: "0.04em" }}>
-            {accessCode}
+          <span style={{ fontFamily: FONT, fontSize: "0.95rem", fontWeight: 700, color: INK }}>
+            {readOnly ? "Candidatura aceite" : "Em preparação"}
           </span>
-          <button
-            onClick={copyCode}
-            style={{ background: "none", border: `1px solid ${BORDER}`, borderRadius: "100px", padding: "3px 12px", cursor: "pointer", fontFamily: FONT, fontSize: "0.825rem", fontWeight: 700, color: copied ? GOLD_DARK : INK_SOFT, transition: "color 0.2s" }}
-          >
-            {copied ? "✓ Copiado" : "Copiar"}
-          </button>
         </div>
 
         <p style={{ fontFamily: FONT, fontSize: "0.902rem", color: INK_SOFT, marginTop: "0.75rem", animation: "fadeUp 0.9s ease 0.3s both" }}>
-          Guarde este código — precisará dele para voltar à sua inscrição.
+          {readOnly
+            ? "A candidatura já foi aceite pela organização e não pode ser alterada."
+            : "Pode voltar a esta candidatura a qualquer momento em \"As minhas candidaturas\"."}
         </p>
       </div>
 
@@ -241,9 +232,9 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao, accessCode }: P
           {activeStep === 0 && (
             <FichaInscricaoForm
               ref={ref0}
-              cid={cid}
-              apiLink={api_link ?? ""}
-              defaults={{ nome_completo: attrs?.nome_completo, email: attrs?.email, sede: attrs?.sede, nif: attrs?.NIF as any, telefone: attrs?.telefone as any }}
+              url={url}
+              email={attrs?.email ?? ""}
+              defaults={{ nome_completo: attrs?.nome_completo, sede: attrs?.sede, nif: attrs?.NIF as any, telefone: attrs?.telefone as any }}
               onSaved={(data) => handleFormSaved(0, data)}
               onSaveStatusChange={setSaveStatus}
             />
@@ -251,8 +242,7 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao, accessCode }: P
           {activeStep === 1 && (
             <FichaTecnicaForm
               ref={ref1}
-              cid={cid}
-              apiLink={api_link ?? ""}
+              url={url}
               categorias={categorias}
               defaults={{ categoria: attrs?.categoria, nome_projeto: attrs?.nome_projeto, con_criativo: attrs?.con_criativo }}
               onSaved={(data) => handleFormSaved(1, data)}
@@ -262,8 +252,7 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao, accessCode }: P
           {activeStep === 2 && (
             <EquipaForm
               ref={ref2}
-              cid={cid}
-              apiLink={api_link ?? ""}
+              url={url}
               defaults={{ coord_prod: attrs?.coord_prod, dir_foto: attrs?.dir_foto, dir_art: attrs?.dir_art, realizador: attrs?.realizador, editor: attrs?.editor, autor_jingle: attrs?.autor_jingle, designer: attrs?.designer, outras_consideracoes: attrs?.outras_consideracoes, data_producao: attrs?.data_producao, data_divulgacao: attrs?.data_divulgacao, data_apresentacao_publica: attrs?.data_apresentacao_publica }}
               onSaved={(data) => handleFormSaved(2, data)}
               onSaveStatusChange={setSaveStatus}
@@ -271,8 +260,9 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao, accessCode }: P
           )}
           {activeStep === 3 && (
             <FileUploadSection
-              cid={cid}
+              url={url}
               apiLink={api_link ?? ""}
+              readOnly={readOnly}
               existingFiles={existingFiles}
               onFilesUpdated={(files) => { setExistingFiles(files); markSaved(3) }}
             />
@@ -317,7 +307,7 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao, accessCode }: P
                     {saveLabel}
                   </span>
                 )}
-                {activeStep < 3 && (
+                {activeStep < 3 && !readOnly && (
                   <button
                     className="save-btn"
                     onClick={handleSave}
@@ -335,14 +325,14 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao, accessCode }: P
                   <button
                     className="nav-btn-primary"
                     onClick={() => setActiveStep((s) => s + 1)}
-                    disabled={!isCurrentStepDone}
+                    disabled={!isCurrentStepDone && !readOnly}
                     title={!isCurrentStepDone ? "Guarde este passo antes de avançar" : undefined}
                     style={{ fontFamily: FONT, fontSize: "0.935rem", fontWeight: 700, color: isCurrentStepDone ? INK : INK_SOFT, background: isCurrentStepDone ? GOLD : BG_ALT, border: isCurrentStepDone ? "none" : `1px solid ${BORDER}`, borderRadius: "100px", padding: "10px 24px", cursor: isCurrentStepDone ? "pointer" : "not-allowed", transition: "opacity 0.2s" }}
                   >
                     Próximo →
                   </button>
                 )}
-                {activeStep < STEPS.length - 1 && !isCurrentStepDone && (
+                {activeStep < STEPS.length - 1 && !isCurrentStepDone && !readOnly && (
                   <span style={{ fontFamily: FONT, fontSize: "0.792rem", color: INK_SOFT }}>
                     Guarde para poder avançar
                   </span>
@@ -350,7 +340,7 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao, accessCode }: P
                 {activeStep === STEPS.length - 1 && (
                   <button
                     className="nav-btn-primary"
-                    onClick={() => router.push("/perfil")}
+                    onClick={() => router.push("/inscricao")}
                     style={{ fontFamily: FONT, fontSize: "0.935rem", fontWeight: 700, color: INK, background: GOLD, border: "none", borderRadius: "100px", padding: "10px 24px", cursor: "pointer" }}
                   >
                     Concluir Inscrição
@@ -367,16 +357,17 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao, accessCode }: P
 
 export default Inscrever
 
-export async function getServerSideProps({ query }: { query: Record<string, string> }) {
-  const { cid, cd } = query
-
-  if (!cid || isNaN(Number(cid))) return { notFound: true }
+export async function getServerSideProps({ params, req }: { params: { id: string }; req: IncomingMessage }) {
+  const jwt = getTokenFromServerCookie(req)
+  // Sem sessão ou inscrição de outra conta → volta à lista (que pede login).
+  const toList = { redirect: { destination: "/inscricao", permanent: false } }
+  if (!jwt || !/^[0-9a-f-]{36}$/i.test(params.id)) return toList
 
   const queri = qs.stringify({ sort: ["N_Edicao:desc"] }, { encodeValuesOnly: true })
 
   try {
-    const inscricao = await fetcher(`${api_link}/api/inscricoes/${cid}?populate=deep`)
-    if (!inscricao.data) return { notFound: true }
+    const inscricao = await apiClient.getWithAuth(`/api/inscricoes/mine/${params.id}`, jwt)
+    if (!inscricao.data) return toList
 
     const results = await Promise.allSettled([
       fetcher(`${api_link}/api/contato`),
@@ -396,11 +387,10 @@ export async function getServerSideProps({ query }: { query: Record<string, stri
         edicao:     edicao ?? null,
         navbar:     parseNavbar(menus, "menus"),
         inscricao,
-        accessCode: cd ?? "",
       },
     }
   } catch (error) {
-    console.error("Erro ao buscar dados:", error)
-    return { notFound: true }
+    console.error("Erro ao buscar inscrição:", error)
+    return toList
   }
 }

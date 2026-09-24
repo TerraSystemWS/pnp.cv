@@ -1,18 +1,20 @@
 import { useState, forwardRef, useImperativeHandle } from "react"
 import { useForm } from "react-hook-form"
-import { GOLD, GOLD_DARK, INK, INK_SOFT, BG, BORDER } from "../../lib/theme"
+import { getStrapiURL } from "../../lib/api"
+import { getTokenFromLocalCookie } from "../../lib/auth"
+import { GOLD, GOLD_DARK, INK, INK_SOFT, BG, BG_ALT, BORDER } from "../../lib/theme"
 
 interface Inputs {
   nome_completo: string
-  email: string
   sede: string
   nif: number
   telefone: number
 }
 
 interface Props {
-  cid: string
-  apiLink: string
+  url: string
+  // Email da conta — não é editável aqui (vem do perfil).
+  email: string
   defaults: Partial<Inputs>
   onSaved?: (data: Inputs) => void
   onSaveStatusChange?: (status: "idle" | "saving" | "saved" | "error") => void
@@ -23,29 +25,28 @@ export interface FormHandle {
   submit: () => void
 }
 
-const REQUIRED: (keyof Inputs)[] = ["nome_completo", "email"]
+const REQUIRED: (keyof Inputs)[] = ["nome_completo"]
 
 const FIELDS = [
   { label: "Nome Completo", name: "nome_completo" as const, type: "text",   span: 2, required: true  },
   { label: "NIF",           name: "nif"           as const, type: "number", span: 1, required: false },
-  { label: "Email",         name: "email"         as const, type: "email",  span: 1, required: true  },
   { label: "Sede ou Local de Residência", name: "sede" as const, type: "text", span: 2, required: false },
   { label: "Telefone",      name: "telefone"      as const, type: "tel",    span: 1, required: false },
 ]
 
 const FichaInscricaoForm = forwardRef<FormHandle, Props>(
-  ({ cid, apiLink, defaults, onSaved, onSaveStatusChange }, ref) => {
+  ({ url, email, defaults, onSaved, onSaveStatusChange }, ref) => {
     const { register, handleSubmit, reset, getValues } = useForm<Inputs>({ defaultValues: defaults })
     const [highlighted, setHighlighted] = useState<Set<string>>(new Set())
 
     const doSave = handleSubmit(async (data) => {
       onSaveStatusChange?.("saving")
       try {
-        const res = await fetch(`${apiLink}/api/inscricoes/${cid}`, {
+        const res = await fetch(`${getStrapiURL()}/api/inscricoes/mine/${url}`, {
           method: "PUT",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${getTokenFromLocalCookie()}` },
           body: JSON.stringify({
-            data: { nome_completo: data.nome_completo, NIF: data.nif || 0, email: data.email, sede: data.sede, telefone: data.telefone || 0 },
+            data: { nome_completo: data.nome_completo, NIF: data.nif || 0, sede: data.sede, telefone: data.telefone || 0 },
           }),
         })
         if (res.ok) {
@@ -84,8 +85,8 @@ const FichaInscricaoForm = forwardRef<FormHandle, Props>(
           .pnp-fi-err:focus { border-color:#c0392b !important; }
         `}</style>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem" }}>
-          {FIELDS.map((f) => (
-            <div key={f.name} style={{ gridColumn: `span ${f.span}` }}>
+          {FIELDS.map((f, i) => (
+            <div key={f.name} style={{ gridColumn: `span ${f.span}`, order: i * 2 }}>
               <label style={{ display: "flex", alignItems: "center", gap: "3px", fontFamily: "'DM Sans',sans-serif", fontSize: "0.88rem", fontWeight: 700, color: highlighted.has(f.name) ? "#c0392b" : INK, marginBottom: "0.4rem", transition: "color 0.2s" }}>
                 {f.label}
                 {f.required && <span style={{ color: highlighted.has(f.name) ? "#c0392b" : GOLD_DARK, lineHeight: 1 }}>*</span>}
@@ -103,6 +104,16 @@ const FichaInscricaoForm = forwardRef<FormHandle, Props>(
               />
             </div>
           ))}
+          {/* order 3: logo a seguir ao NIF, como antes */}
+          <div style={{ gridColumn: "span 1", order: 3 }}>
+            <label style={{ display: "block", fontFamily: "'DM Sans',sans-serif", fontSize: "0.88rem", fontWeight: 700, color: INK, marginBottom: "0.4rem" }}>
+              Email
+            </label>
+            <input type="email" className="pnp-fi-input" value={email} readOnly style={{ background: BG_ALT, color: INK_SOFT, cursor: "default" }} />
+            <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.8rem", color: INK_SOFT, margin: "0.35rem 0 0" }}>
+              Vem da sua conta — é para este email que enviamos as comunicações.
+            </p>
+          </div>
         </div>
       </div>
     )

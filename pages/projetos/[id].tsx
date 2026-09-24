@@ -1,14 +1,14 @@
 import Layout from "../../components/Layout"
-import { fetcher } from "../../lib/api"
+import { fetcher, apiClient, ApiError } from "../../lib/api"
 import { parseNavbar } from "../../lib/parseNavbar"
 import Head from "next/head"
 import Link from "next/link"
 import { useState, useEffect } from "react"
-import { useForm } from "react-hook-form"
 import Swal from "sweetalert2"
 const qs = require("qs")
 import { useFetchUser } from "../../lib/authContext"
-import { getTokenFromLocalCookie, getIdFromLocalCookie } from "../../lib/auth"
+import { getTokenFromLocalCookie, getIdFromLocalCookie, openLogin } from "../../lib/auth"
+import { hasJuryAccess } from "../../lib/roles"
 import JSConfetti from "js-confetti"
 import Votacao from "../../components/Votacao"
 import ImageLightbox from "../../components/custom/ImageLightbox"
@@ -114,16 +114,44 @@ const FileAccordion = ({ items, onPreview }: { items: FileItem[]; onPreview: (im
 }
 
 const VpublicaDetalhes = ({ edicoes, social, contato, inscricao, navbar }: any) => {
-  const { user, loading } = useFetchUser()
-  const [cor, setCor] = useState("currentColor")
-  const [isBlock, setBlock] = useState(false)
+  const { user, role, loading } = useFetchUser()
+  const isJury = hasJuryAccess(role)
   const [nhaId, setNhaId] = useState<string | null>(null)
   const [lightboxImage, setLightboxImage] = useState<{ url: string; title: string } | null>(null)
-  const { register, handleSubmit, formState: { errors } } = useForm()
+  // Voto do utilizador: null = ainda a carregar / sem sessão.
+  const [meuVoto, setMeuVoto] = useState<{ voted: boolean; inscricaoId: number | null } | null>(null)
+  const [voting, setVoting] = useState(false)
+  // Só júri: dados de contacto e documentos privados, pedidos com o token
+  // (não vêm na resposta pública do servidor).
+  const [ficha, setFicha] = useState<any>(null)
+  const [privateFiles, setPrivateFiles] = useState<any[]>([])
 
   useEffect(() => {
     getIdFromLocalCookie()?.then((id) => setNhaId(id ?? null))
   }, [])
+
+  useEffect(() => {
+    const jwt = getTokenFromLocalCookie()
+    if (loading || !user || !jwt) return
+    apiClient
+      .getWithAuth("/api/votacao-publicas/me", jwt)
+      .then((res: any) => setMeuVoto(res.data))
+      .catch((err: unknown) => console.error("Erro ao verificar voto:", err))
+  }, [user, loading])
+
+  const inscricaoId = inscricao?.data?.id
+  useEffect(() => {
+    const jwt = getTokenFromLocalCookie()
+    if (!isJury || !jwt || !inscricaoId) return
+    apiClient
+      .getWithAuth(`/api/inscricoes/${inscricaoId}/ficha`, jwt)
+      .then((res: any) => setFicha(res.data))
+      .catch((err: unknown) => console.error("Erro ao carregar ficha:", err))
+    apiClient
+      .getWithAuth(`/api/inscricoes/${inscricaoId}?populate[fileLink][populate][ficheiro][fields]=url`, jwt)
+      .then((res: any) => setPrivateFiles((res.data?.attributes?.fileLink ?? []).filter((f: any) => f.publico === false)))
+      .catch((err: unknown) => console.error("Erro ao carregar documentos privados:", err))
+  }, [isJury, inscricaoId])
 
   if (!inscricao?.data) {
     return (
@@ -140,30 +168,26 @@ const VpublicaDetalhes = ({ edicoes, social, contato, inscricao, navbar }: any) 
   const attr = inscricao.data.attributes
   const edicaoNum = edicoes?.data?.[0]?.attributes?.N_Edicao
 
-  const onVotar = async (data: any) => {
-    const jsConfetti = new JSConfetti()
+  const onVotar = async () => {
+    const jwt = getTokenFromLocalCookie()
+    if (!jwt) return openLogin()
+    setVoting(true)
     try {
-      const res = await fetcher(`${api_link}/api/votacao-publicas`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          data: {
-            nome_completo: data.nome,
-            email: data.email,
-            inscricoe: inscricao.data.id,
-          },
-        }),
-      })
-      if (res.data) {
-        setCor("red")
-        setBlock(true)
-        jsConfetti.addConfetti({ emojis: ["🌈", "⚡️", "💥", "✨", "💫", "🌸"], emojiSize: 10, confettiNumber: 500 })
-        Swal.fire({ icon: "success", title: "Voto registado!", text: "" })
-      } else {
+      await apiClient.post("/api/votacao-publicas/votar", { inscricaoId: inscricao.data.id }, jwt)
+      setMeuVoto({ voted: true, inscricaoId: inscricao.data.id })
+      new JSConfetti().addConfetti({ emojis: ["🌈", "⚡️", "💥", "✨", "💫", "🌸"], emojiSize: 10, confettiNumber: 500 })
+      Swal.fire({ icon: "success", title: "Voto registado!", text: "" })
+    } catch (err) {
+      if (err instanceof ApiError && err.status === 409) {
+        setMeuVoto((prev) => ({ voted: true, inscricaoId: prev?.inscricaoId ?? null }))
         Swal.fire({ icon: "warning", title: "Aviso", text: "Só pode votar uma única vez." })
+      } else if (err instanceof ApiError && err.status === 403) {
+        Swal.fire({ icon: "warning", title: "Aviso", text: "Confirme o seu email antes de votar." })
+      } else {
+        Swal.fire({ icon: "error", title: "Falhou", text: "Não foi possível votar." })
       }
-    } catch {
-      Swal.fire({ icon: "error", title: "Falhou", text: "Não foi possível votar." })
+    } finally {
+      setVoting(false)
     }
   }
 
@@ -178,21 +202,6 @@ const VpublicaDetalhes = ({ edicoes, social, contato, inscricao, navbar }: any) 
         ${FONT_IMPORT}
         @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
 
-        .vote-input {
-          background: ${BG} !important;
-          border: 1px solid ${BORDER} !important;
-          color: ${INK} !important;
-          font-family: ${FONT} !important;
-          font-size: 0.92rem !important;
-          border-radius: 8px !important;
-          padding: 0.75rem 1rem !important;
-          width: 100% !important;
-          outline: none !important;
-          transition: border-color 0.2s !important;
-          box-sizing: border-box !important;
-        }
-        .vote-input:focus { border-color: ${GOLD} !important; }
-        .vote-input::placeholder { color: ${INK_SOFT}88 !important; }
       `}</style>
 
       {/* ── Hero ── */}
@@ -220,15 +229,15 @@ const VpublicaDetalhes = ({ edicoes, social, contato, inscricao, navbar }: any) 
       <div style={{ background: BG, padding: "4rem 2rem 6rem" }}>
         <div style={{ maxWidth: "900px", margin: "0 auto" }}>
 
-          {/* Ficha de Inscrição — logged users only */}
-          {!loading && user && (
+          {/* Ficha de Inscrição — só júri */}
+          {!loading && isJury && (
             <SectionPanel title="Ficha de Inscrição" subtitle="Dados do participante">
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "0 2rem" }}>
-                <Field label="Nome Completo" value={attr.nome_completo} />
-                <Field label="NIF" value={attr.NIF} />
-                <Field label="Email" value={attr.email} />
-                <Field label="Sede / Residência" value={attr.sede} />
-                <Field label="Telefone" value={attr.telefone} />
+                <Field label="Nome Completo" value={ficha?.nome_completo ?? attr.nome_completo} />
+                <Field label="NIF" value={ficha?.NIF} />
+                <Field label="Email" value={ficha?.email} />
+                <Field label="Sede / Residência" value={ficha?.sede} />
+                <Field label="Telefone" value={ficha?.telefone} />
               </div>
             </SectionPanel>
           )}
@@ -247,8 +256,8 @@ const VpublicaDetalhes = ({ edicoes, social, contato, inscricao, navbar }: any) 
             )}
           </SectionPanel>
 
-          {/* Equipa — logged users only */}
-          {!loading && user && (
+          {/* Equipa — só júri */}
+          {!loading && isJury && (
             <SectionPanel title="Equipa do Projeto" subtitle="Colaboradores e datas">
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "0 2rem" }}>
                 <Field label="Coordenador / Produtor"     value={attr.coord_prod} />
@@ -268,13 +277,12 @@ const VpublicaDetalhes = ({ edicoes, social, contato, inscricao, navbar }: any) 
             </SectionPanel>
           )}
 
-          {/* Documentos Privados — logged users only */}
-          {!loading && user && (
+          {/* Documentos Privados — só júri */}
+          {!loading && isJury && (
             <SectionPanel title="Documentos Privados">
               <FileAccordion
                 onPreview={setLightboxImage}
-                items={(attr.fileLink ?? [])
-                  .filter((v: any) => v.publico === false)
+                items={privateFiles
                   .map((value: any) => ({
                     titulo: value.titulo,
                     url: `${api_link}${value.ficheiro?.data?.attributes?.url}`,
@@ -297,8 +305,8 @@ const VpublicaDetalhes = ({ edicoes, social, contato, inscricao, navbar }: any) 
             />
           </SectionPanel>
 
-          {/* Avaliação do Júri — logged users only */}
-          {!loading && user && (
+          {/* Avaliação do Júri — só júri */}
+          {!loading && isJury && (
             <SectionPanel title="Avaliação dos Jurados" subtitle="Notas por critério de cada jurado">
               <p style={{ fontFamily: FONT, fontSize: "0.968rem", color: INK_SOFT, marginBottom: "1.25rem" }}>
                 Categoria: <strong style={{ color: INK, fontWeight: 700 }}>{attr.categoria}</strong>
@@ -313,56 +321,56 @@ const VpublicaDetalhes = ({ edicoes, social, contato, inscricao, navbar }: any) 
 
           {/* Votação Pública */}
           <SectionPanel title="Votação Pública" subtitle="Dê o seu voto a este trabalho">
-            <form onSubmit={handleSubmit(onVotar)} style={{ maxWidth: "480px" }}>
-              <div style={{ marginBottom: "1rem" }}>
-                <label style={{ fontFamily: FONT, fontSize: "0.88rem", fontWeight: 700, color: INK, display: "block", marginBottom: "0.5rem" }}>
-                  Nome Completo
-                </label>
-                <input
-                  type="text"
-                  className="vote-input"
-                  placeholder="Seu nome"
-                  {...register("nome", { required: true })}
-                />
+            {loading ? null : !user ? (
+              <div style={{ maxWidth: "480px" }}>
+                <p style={{ fontFamily: FONT, fontSize: "0.99rem", color: INK_SOFT, margin: "0 0 1.25rem", lineHeight: 1.6 }}>
+                  Para votar precisa de uma conta com email confirmado. Cada conta tem direito a um voto.
+                </p>
+                <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
+                  <button type="button" onClick={openLogin} style={{ fontFamily: FONT, fontSize: "0.935rem", fontWeight: 700, color: INK, background: GOLD, border: "none", borderRadius: "100px", padding: "12px 28px", cursor: "pointer" }}>
+                    Entrar para votar
+                  </button>
+                  <Link href="/conta/registar" style={{ fontFamily: FONT, fontSize: "0.935rem", fontWeight: 700, color: INK, border: `1px solid ${BORDER}`, borderRadius: "100px", padding: "11px 26px", textDecoration: "none" }}>
+                    Criar conta
+                  </Link>
+                </div>
               </div>
-              <div style={{ marginBottom: "1.5rem" }}>
-                <label style={{ fontFamily: FONT, fontSize: "0.88rem", fontWeight: 700, color: INK, display: "block", marginBottom: "0.5rem" }}>
-                  Email
-                </label>
-                <input
-                  type="email"
-                  className="vote-input"
-                  placeholder="exemplo@email.com"
-                  {...register("email", { required: true })}
-                />
-                {errors.email && <span style={{ fontFamily: FONT, fontSize: "0.88rem", color: "#c0392b" }}>O email é obrigatório.</span>}
+            ) : (
+              <div style={{ maxWidth: "480px" }}>
+                {meuVoto?.voted && (
+                  <p style={{ fontFamily: FONT, fontSize: "0.99rem", color: INK_SOFT, margin: "0 0 1.25rem" }}>
+                    {meuVoto.inscricaoId === inscricao.data.id
+                      ? "Votou neste projeto. Obrigado!"
+                      : "Já usou o seu voto noutro projeto — cada conta vota uma única vez."}
+                  </p>
+                )}
+                <button
+                  type="button"
+                  onClick={onVotar}
+                  disabled={voting || !meuVoto || meuVoto.voted}
+                  style={{
+                    fontFamily: FONT,
+                    fontSize: "0.935rem",
+                    fontWeight: 700,
+                    color: meuVoto?.voted ? INK_SOFT : INK,
+                    background: meuVoto?.voted ? BG_ALT : GOLD,
+                    border: meuVoto?.voted ? `1px solid ${BORDER}` : "none",
+                    borderRadius: "100px",
+                    padding: "12px 32px",
+                    cursor: voting || !meuVoto || meuVoto.voted ? "not-allowed" : "pointer",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    transition: "opacity 0.2s",
+                  }}
+                >
+                  <svg width="16" height="16" fill={meuVoto?.inscricaoId === inscricao.data.id ? "#c0392b" : "currentColor"} viewBox="0 0 20 20">
+                    <path fillRule="evenodd" clipRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" />
+                  </svg>
+                  {voting ? "A votar…" : meuVoto?.voted ? "Voto registado" : "Votar"}
+                </button>
               </div>
-
-              <button
-                type="submit"
-                disabled={isBlock}
-                style={{
-                  fontFamily: FONT,
-                  fontSize: "0.935rem",
-                  fontWeight: 700,
-                  color: isBlock ? INK_SOFT : INK,
-                  background: isBlock ? BG_ALT : GOLD,
-                  border: isBlock ? `1px solid ${BORDER}` : "none",
-                  borderRadius: "100px",
-                  padding: "12px 32px",
-                  cursor: isBlock ? "not-allowed" : "pointer",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "8px",
-                  transition: "opacity 0.2s",
-                }}
-              >
-                <svg width="16" height="16" fill={cor} viewBox="0 0 20 20">
-                  <path fillRule="evenodd" clipRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" />
-                </svg>
-                {isBlock ? "Voto registado" : "Votar"}
-              </button>
-            </form>
+            )}
           </SectionPanel>
 
         </div>

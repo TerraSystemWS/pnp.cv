@@ -83,6 +83,13 @@ const UserMenu = ({ username, onLogout }: { username: string; onLogout: () => vo
           >
             Meu Perfil
           </Link>
+          <Link
+            href="/inscricao"
+            onClick={() => setOpen(false)}
+            style={{ display: "block", padding: "11px 16px", borderTop: `1px solid ${DARK_BORDER}`, color: LIGHT_TEXT, textDecoration: "none", fontFamily: FONT, fontSize: "0.85rem", fontWeight: 600 }}
+          >
+            As minhas candidaturas
+          </Link>
           <button
             onClick={() => { setOpen(false); onLogout() }}
             style={{ display: "block", width: "100%", textAlign: "left", padding: "11px 16px", background: "transparent", border: "none", borderTop: `1px solid ${DARK_BORDER}`, color: LIGHT_TEXT_SOFT, fontFamily: FONT, fontSize: "0.85rem", fontWeight: 600, cursor: "pointer" }}

@@ -1,34 +1,32 @@
 import Layout from "../../components/Layout"
 import Link from "next/link"
-import { fetcher } from "../../lib/api"
+import { fetcher, apiClient, ApiError } from "../../lib/api"
+import { getTokenFromLocalCookie, openLogin } from "../../lib/auth"
 import { parseNavbar } from "../../lib/parseNavbar"
 import qs from "qs"
 import Head from "next/head"
-import { useForm, SubmitHandler } from "react-hook-form"
 import { useRouter } from "next/router"
-import { v4 as uuidv4 } from "uuid"
 import Swal from "sweetalert2"
 import { useFetchUser } from "../../lib/authContext"
-import { useMemo } from "react"
+import { useEffect, useState } from "react"
 import { GOLD, GOLD_DARK, INK, INK_SOFT, BG, BG_ALT, CARD, BORDER, FONT, FONT_IMPORT } from "../../lib/theme"
 
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
 
-type AccessForm = { code: string }
-type NewForm = { ncode: string; calc: string }
-
-const parseInscricaoId = (code: string): string | null => {
-  const match = code.trim().match(/^pnp-i(\d+)$/)
-  return match ? match[1] : null
+interface MinhaInscricao {
+  id: number
+  url: string
+  nome_projeto: string | null
+  categoria: string | null
+  publishedAt: string | null
+  updatedAt: string
 }
 
 const Inscreve = ({ social, contato, edicao, navbar }: any) => {
-  const { user } = useFetchUser()
+  const { user, loading } = useFetchUser()
   const router = useRouter()
-
-  const num1 = useMemo(() => Math.floor(Math.random() * 20) + 1, [])
-  const num2 = useMemo(() => Math.floor(Math.random() * 10) + 1, [])
-  const expectedAnswer = num1 + num2
+  const [minhas, setMinhas] = useState<MinhaInscricao[] | null>(null)
+  const [creating, setCreating] = useState(false)
 
   const dataFim = edicao?.data?.attributes?.data_fim
     ? new Date(edicao.data.attributes.data_fim)
@@ -36,58 +34,20 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
   const diffDays = Math.max(0, Math.ceil((dataFim.getTime() - Date.now()) / 86400000))
   const deadlineStr = dataFim.toLocaleDateString("pt-PT", { day: "numeric", month: "long", year: "numeric" })
 
-  const {
-    register: regAccess,
-    handleSubmit: handleAccess,
-    formState: { errors: errAccess },
-  } = useForm<AccessForm>()
-
-  const {
-    register: regNew,
-    handleSubmit: handleNew,
-    formState: { errors: errNew },
-  } = useForm<NewForm>({ defaultValues: { ncode: "pnp-i" } })
-
-  const onSubmitcode: SubmitHandler<AccessForm> = async (data) => {
-    const id = parseInscricaoId(data.code)
-    if (!id) {
-      Swal.fire({ icon: "error", title: "Código inválido", text: "O formato correto é pnp-iXXX." })
-      return
-    }
-    try {
-      const res = await fetch(`${api_link}/api/inscricoes/${id}`, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
+  useEffect(() => {
+    if (loading || !user) return
+    const jwt = getTokenFromLocalCookie()
+    if (!jwt) return
+    apiClient
+      .getWithAuth("/api/inscricoes/mine", jwt)
+      .then((res: { data: MinhaInscricao[] }) => setMinhas(res.data ?? []))
+      .catch((err: unknown) => {
+        console.error("Erro ao carregar candidaturas:", err)
+        setMinhas([])
       })
-      if (!res.ok) throw new Error(`HTTP ${res.status}`)
-      const dados = await res.json()
-      const url = dados?.data?.attributes?.url
-      if (!url) throw new Error("URL não encontrada")
+  }, [user, loading])
 
-      let timerInterval: any
-      Swal.fire({
-        title: "Procurando inscrição...",
-        html: `Pesquisando o ID <b>${data.code}</b>...`,
-        timer: 2000,
-        timerProgressBar: true,
-        didOpen: () => {
-          Swal.showLoading()
-          const b = Swal.getHtmlContainer()?.querySelector("b")
-          if (b) timerInterval = setInterval(() => { b.textContent = Swal.getTimerLeft()?.toString() || "" }, 100)
-        },
-        willClose: () => clearInterval(timerInterval),
-      })
-      router.push(`/inscricao/${url}?cd=${data.code}&cid=${id}`)
-    } catch {
-      Swal.fire({ icon: "error", title: "Erro", text: "Erro ao buscar inscrição. Verifique o código e tente novamente." })
-    }
-  }
-
-  const onSubmitncode: SubmitHandler<NewForm> = async (data) => {
-    if (Number(data.calc) !== expectedAnswer) {
-      Swal.fire({ icon: "error", title: "Resposta incorreta", text: "Verifique o cálculo e tente novamente." })
-      return
-    }
+  const novaCandidatura = async () => {
     const result = await Swal.fire({
       title: "Prémio Nacional De Publicidade",
       text: "Antes de iniciar a candidatura, leia os regulamentos do concurso.",
@@ -104,38 +64,22 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
     })
     if (!result.isConfirmed) return
 
-    const uurl = uuidv4()
+    const jwt = getTokenFromLocalCookie()
+    if (!jwt) return openLogin()
+
+    setCreating(true)
     try {
-      const res = await fetch(`${api_link}/api/inscricoes`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ data: { code: data.ncode, url: uurl, publishedAt: null } }),
-      })
-      const responseData = await res.json()
-      if (!responseData.data?.id) throw new Error("Dados não encontrados.")
-
-      const code = data.ncode + responseData.data.id
-      const id = responseData.data.id
-
-      let timerInterval: any
-      Swal.fire({
-        title: "Criando sua inscrição",
-        html: `Criando ID <b>${data.ncode}</b>...`,
-        timer: 2000,
-        timerProgressBar: true,
-        didOpen: () => {
-          Swal.showLoading()
-          const b = Swal.getHtmlContainer()?.querySelector("b")
-          if (b) timerInterval = setInterval(() => { b.textContent = Swal.getTimerLeft()?.toString() || "" }, 100)
-        },
-        willClose: () => clearInterval(timerInterval),
-      })
-      setTimeout(() => {
-        Swal.fire("Inscrito!", `Inscrição criada. Tem ${diffDays} dias para finalizar o processo.`, "success")
-      }, 2500)
-      router.push(`/inscricao/${uurl}?cd=${code}&cid=${id}`)
-    } catch {
-      Swal.fire({ icon: "error", title: "Erro", text: "Erro ao criar inscrição. Tente novamente." })
+      const res = await apiClient.post("/api/inscricoes/mine", {}, jwt)
+      const url = res?.data?.url
+      if (!url) throw new Error("Resposta sem url")
+      Swal.fire("Inscrição criada!", `Tem ${diffDays} dias para finalizar o processo.`, "success")
+      router.push(`/inscricao/${url}`)
+    } catch (err) {
+      const text = err instanceof ApiError && err.status === 403
+        ? "Confirme o seu email antes de criar uma candidatura."
+        : "Erro ao criar inscrição. Tente novamente."
+      Swal.fire({ icon: "error", title: "Erro", text })
+      setCreating(false)
     }
   }
 
@@ -270,28 +214,6 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
           border-color: ${GOLD};
         }
 
-        /* remove number arrows */
-        .pnp-input[type=number]::-webkit-inner-spin-button,
-        .pnp-input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
-        .pnp-input[type=number] { -moz-appearance: textfield; }
-
-        .pnp-calc {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          margin-bottom: 10px;
-        }
-
-        .pnp-calc-eq {
-          font-family: ${FONT};
-          font-size: 1.1rem;
-          font-weight: 700;
-          color: ${GOLD_DARK};
-          background: ${BG_ALT};
-          border: 1px solid ${BORDER};
-          border-radius: 8px;
-          padding: 6px 18px;
-        }
 
         .pnp-btn {
           width: 100%;
@@ -319,6 +241,19 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
         .pnp-err { color: #c0392b; font-size: 0.82rem; margin-top: 4px; }
 
         .pnp-divider { display: none; }
+
+        .pnp-btn:disabled { opacity: 0.6; cursor: default; transform: none; box-shadow: none; }
+
+        .pnp-row {
+          display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+          padding: 1rem 1.25rem; text-decoration: none; transition: background 0.2s;
+        }
+        .pnp-row:hover { background: ${GOLD}10 !important; }
+
+        .pnp-badge {
+          flex-shrink: 0; font-size: 0.78rem; font-weight: 700; color: ${INK};
+          border: 1px solid ${BORDER}; border-radius: 100px; padding: 4px 12px; background: ${BG};
+        }
 
         @media (max-width: 768px) {
           .pnp-card { padding: 2rem 1.5rem; }
@@ -353,76 +288,93 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
 
         {/* Cards */}
         <div className="relative z-10 max-w-4xl mx-auto px-6 pb-28">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-
-            {/* Card 1 — Resume */}
-            <div className="pnp-card pnp-card-1">
-              <div className="pnp-icon">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
-                     stroke={GOLD_DARK} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="8" cy="15" r="4" />
-                  <line x1="12" y1="15" x2="22" y2="15" />
-                  <line x1="19" y1="12" x2="19" y2="18" />
-                </svg>
+          {loading ? null : !user ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              {/* Sem sessão — entrar */}
+              <div className="pnp-card">
+                <div className="pnp-icon">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+                       stroke={GOLD_DARK} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4" />
+                    <polyline points="10 17 15 12 10 7" />
+                    <line x1="15" y1="12" x2="3" y2="12" />
+                  </svg>
+                </div>
+                <h3 className="pnp-card-title">Já tenho conta</h3>
+                <p className="pnp-card-desc">
+                  Entre para criar uma nova candidatura ou continuar as que já começou.
+                </p>
+                <button type="button" className="pnp-btn" onClick={openLogin}>
+                  Entrar →
+                </button>
               </div>
 
-              <h3 className="pnp-card-title">Retomar Inscrição</h3>
-              <p className="pnp-card-desc">
-                Já iniciou a sua candidatura? Insira o código recebido para continuar de onde parou.
-              </p>
-
-              <form onSubmit={handleAccess(onSubmitcode)}>
-                <div>
-                  <label className="pnp-label">Código de acesso</label>
-                  <input
-                    className="pnp-input"
-                    placeholder="pnp-i000"
-                    {...regAccess("code", { required: "Código obrigatório" })}
-                  />
-                  {errAccess.code && <p className="pnp-err">{errAccess.code.message}</p>}
+              {/* Sem sessão — criar conta */}
+              <div className="pnp-card">
+                <div className="pnp-icon">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+                       stroke={GOLD_DARK} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <line x1="19" y1="8" x2="19" y2="14" />
+                    <line x1="22" y1="11" x2="16" y2="11" />
+                  </svg>
                 </div>
-                <button type="submit" className="pnp-btn">
-                  Retomar candidatura →
-                </button>
-              </form>
+                <h3 className="pnp-card-title">Criar conta</h3>
+                <p className="pnp-card-desc">
+                  Qualquer pessoa ou empresa pode candidatar projetos. Crie a sua conta com um email válido — enviamos um link de confirmação.
+                </p>
+                <Link href="/conta/registar" className="pnp-btn" style={{ display: "block", textAlign: "center", textDecoration: "none" }}>
+                  Criar conta →
+                </Link>
+              </div>
             </div>
-
-            {/* Card 2 — New */}
-            <div className="pnp-card pnp-card-2">
-              <div className="pnp-icon">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
-                     stroke={GOLD_DARK} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                </svg>
+          ) : (
+            <div className="pnp-card" style={{ transform: "none" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem", marginBottom: "1.5rem" }}>
+                <div>
+                  <h3 className="pnp-card-title">As minhas candidaturas</h3>
+                  <p className="pnp-card-desc" style={{ margin: 0 }}>
+                    Continue uma candidatura ou crie uma nova. O email de contacto é o da sua conta.
+                  </p>
+                </div>
+                <button type="button" className="pnp-btn" style={{ width: "auto", marginTop: 0 }} onClick={novaCandidatura} disabled={creating}>
+                  {creating ? "A criar…" : "+ Nova candidatura"}
+                </button>
               </div>
 
-              <h3 className="pnp-card-title">Nova Candidatura</h3>
-              <p className="pnp-card-desc">
-                Crie uma nova candidatura ao Prémio. Certifique-se de ter lido o regulamento antes de começar.
-              </p>
-
-              <form onSubmit={handleNew(onSubmitncode)}>
-                <input type="hidden" {...regNew("ncode")} />
-                <div>
-                  <label className="pnp-label">Verificação anti-spam</label>
-                  <div className="pnp-calc">
-                    <span className="pnp-calc-eq">{num1} + {num2} = ?</span>
-                  </div>
-                  <input
-                    className="pnp-input"
-                    type="number"
-                    placeholder="Resposta"
-                    {...regNew("calc", { required: "Resposta obrigatória" })}
-                  />
-                  {errNew.calc && <p className="pnp-err">{errNew.calc.message}</p>}
+              {minhas === null ? (
+                <p style={{ color: INK_SOFT, fontSize: "0.92rem" }}>A carregar…</p>
+              ) : minhas.length === 0 ? (
+                <p style={{ color: INK_SOFT, fontSize: "0.92rem" }}>
+                  Ainda não tem candidaturas. Leia o <Link href="/regulamentos" style={{ color: GOLD_DARK, textDecoration: "underline" }}>regulamento</Link> e comece a primeira.
+                </p>
+              ) : (
+                <div style={{ border: `1px solid ${BORDER}`, borderRadius: "12px", overflow: "hidden" }}>
+                  {minhas.map((m, i) => (
+                    <Link
+                      key={m.id}
+                      href={`/inscricao/${m.url}`}
+                      className="pnp-row"
+                      style={{ borderBottom: i < minhas.length - 1 ? `1px solid ${BORDER}` : "none", background: i % 2 === 0 ? CARD : BG_ALT }}
+                    >
+                      <div style={{ minWidth: 0 }}>
+                        <p style={{ margin: 0, fontWeight: 700, color: INK, fontSize: "1rem" }}>
+                          {m.nome_projeto || "Candidatura sem título"}
+                        </p>
+                        <p style={{ margin: "0.2rem 0 0", color: INK_SOFT, fontSize: "0.85rem" }}>
+                          {m.categoria || "Categoria por escolher"} · atualizada a {new Date(m.updatedAt).toLocaleDateString("pt-PT")}
+                        </p>
+                      </div>
+                      <span className="pnp-badge" style={m.publishedAt ? { background: `${GOLD}22`, borderColor: GOLD } : undefined}>
+                        {m.publishedAt ? "Aceite" : "Em preparação"}
+                      </span>
+                    </Link>
+                  ))}
                 </div>
-                <button type="submit" className="pnp-btn">
-                  Iniciar candidatura →
-                </button>
-              </form>
+              )}
             </div>
-
-          </div>
+          )}
 
           {/* Footer note */}
           <p className="text-center mt-10" style={{ color: INK_SOFT, fontFamily: FONT, fontSize: "0.935rem" }}>

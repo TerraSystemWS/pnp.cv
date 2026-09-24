@@ -4,7 +4,7 @@ import logo from "public/logo1.png"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { fetcher } from "../../lib/api"
-import { setToken, unsetToken } from "../../lib/auth"
+import { setToken, unsetToken, OPEN_LOGIN_EVENT } from "../../lib/auth"
 import { useUser } from "../../lib/authContext"
 import UserMenu from "./UserMenu"
 import { useForm, SubmitHandler } from "react-hook-form"
@@ -21,6 +21,16 @@ const Nav = ({ navbar }: any) => {
   const [scrolled, setScrolled] = useState(false)
   const [hovered, setHovered]   = useState<string | null>(null)
   const [loginError, setLoginError] = useState<string | null>(null)
+  // Email da conta por confirmar — mostra o botão "reenviar confirmação".
+  const [unconfirmedEmail, setUnconfirmedEmail] = useState<string | null>(null)
+  const [resendState, setResendState] = useState<"idle" | "sending" | "sent">("idle")
+
+  const closeLogin = () => {
+    setVisible(false)
+    setLoginError(null)
+    setUnconfirmedEmail(null)
+    setResendState("idle")
+  }
 
   const isActiveLink = (href: string) => {
     if (!href || !router) return false
@@ -43,16 +53,24 @@ const Nav = ({ navbar }: any) => {
   useEffect(() => {
     if (!visible) return
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") { setVisible(false); setLoginError(null) }
+      if (e.key === "Escape") closeLogin()
     }
     document.addEventListener("keydown", onKeyDown)
     return () => document.removeEventListener("keydown", onKeyDown)
   }, [visible])
 
+  useEffect(() => {
+    const onOpen = () => setVisible(true)
+    window.addEventListener(OPEN_LOGIN_EVENT, onOpen)
+    return () => window.removeEventListener(OPEN_LOGIN_EVENT, onOpen)
+  }, [])
+
   const { register, handleSubmit, formState: { errors } } = useForm<Inputs>()
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     setLoginError(null)
+    setUnconfirmedEmail(null)
+    setResendState("idle")
     try {
       const res = await fetcher(
         `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/auth/local`,
@@ -66,12 +84,33 @@ const Nav = ({ navbar }: any) => {
       setVisible(false)
     } catch (err) {
       console.error("Login failed:", err)
+      if (err instanceof ApiError && /not confirmed/i.test(err.message)) {
+        setUnconfirmedEmail(data.email)
+        setLoginError("A sua conta ainda não foi confirmada. Abra o link que enviámos para o seu email.")
+        return
+      }
       setLoginError(
         err instanceof ApiError && err.status === 400
           ? "Email ou password incorretos."
           : "Não foi possível entrar. Tente novamente."
       )
     }
+  }
+
+  const resendConfirmation = async () => {
+    if (!unconfirmedEmail) return
+    setResendState("sending")
+    try {
+      await fetcher(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/auth/send-email-confirmation`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: unconfirmedEmail }),
+      })
+    } catch (err) {
+      console.error("Resend confirmation failed:", err)
+    }
+    // Resposta igual com ou sem erro — não revela se o email existe.
+    setResendState("sent")
   }
 
   const logout = () => unsetToken()
@@ -167,6 +206,15 @@ const Nav = ({ navbar }: any) => {
               {String(user || "").trim().charAt(0).toUpperCase() || "?"}
             </span>
             <span style={{ fontFamily: FONT, fontSize: "1.05rem", fontWeight: 600, color: GOLD }}>{user}</span>
+          </Link>
+        )}
+        {!loading && user && (
+          <Link
+            href="/inscricao"
+            onClick={() => setOpen(false)}
+            style={{ fontFamily: FONT, fontSize: "1.05rem", fontWeight: 600, color: LIGHT_TEXT, textDecoration: "none", padding: "0.7rem 0", borderBottom: `1px solid ${DARK_BORDER}` }}
+          >
+            As minhas candidaturas
           </Link>
         )}
 
@@ -310,7 +358,7 @@ const Nav = ({ navbar }: any) => {
           role="dialog"
           aria-modal="true"
           aria-labelledby="login-title"
-          onClick={() => { setVisible(false); setLoginError(null) }}
+          onClick={closeLogin}
           style={{
             position: "fixed", inset: 0, zIndex: 200,
             background: "rgba(0,0,0,0.6)",
@@ -337,7 +385,7 @@ const Nav = ({ navbar }: any) => {
                 Acesso
               </h2>
               <button
-                onClick={() => { setVisible(false); setLoginError(null) }}
+                onClick={closeLogin}
                 aria-label="Fechar"
                 style={{ background: "transparent", border: "none", color: LIGHT_TEXT_SOFT, cursor: "pointer", padding: "4px", lineHeight: 0 }}
               >
@@ -368,6 +416,16 @@ const Nav = ({ navbar }: any) => {
               />
               {errors.password && <p style={{ color: "#f87171", fontSize: "0.8rem", marginTop: "-0.6rem", marginBottom: "0.6rem" }}>{errors.password.message}</p>}
               {loginError && <p style={{ color: "#f87171", fontSize: "0.85rem", marginBottom: "0.85rem" }}>{loginError}</p>}
+              {unconfirmedEmail && (
+                <button
+                  type="button"
+                  onClick={resendConfirmation}
+                  disabled={resendState !== "idle"}
+                  style={{ background: "transparent", border: `1px solid ${DARK_BORDER}`, borderRadius: "8px", padding: "8px 12px", marginBottom: "0.85rem", fontFamily: FONT, fontSize: "0.82rem", fontWeight: 600, color: GOLD_BRIGHT, cursor: resendState === "idle" ? "pointer" : "default" }}
+                >
+                  {resendState === "sent" ? "Email de confirmação reenviado" : resendState === "sending" ? "A reenviar…" : "Reenviar email de confirmação"}
+                </button>
+              )}
 
               <button
                 type="submit"
@@ -375,11 +433,20 @@ const Nav = ({ navbar }: any) => {
               >
                 Entrar
               </button>
+
+              <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "0.5rem", marginTop: "1rem" }}>
+                <Link href="/conta/esqueci-password" onClick={closeLogin} style={{ fontFamily: FONT, fontSize: "0.85rem", color: LIGHT_TEXT_SOFT, textDecoration: "underline", textUnderlineOffset: "3px" }}>
+                  Esqueci a password
+                </Link>
+                <Link href="/conta/registar" onClick={closeLogin} style={{ fontFamily: FONT, fontSize: "0.85rem", fontWeight: 700, color: GOLD_BRIGHT, textDecoration: "none" }}>
+                  Criar conta →
+                </Link>
+              </div>
             </form>
 
             <div style={{ padding: "1rem 2rem", borderTop: `1px solid ${DARK_BORDER}`, display: "flex", justifyContent: "flex-end" }}>
               <button
-                onClick={() => { setVisible(false); setLoginError(null) }}
+                onClick={closeLogin}
                 style={{ background: "transparent", border: "none", color: LIGHT_TEXT_SOFT, fontFamily: FONT, fontSize: "0.85rem", fontWeight: 500, cursor: "pointer", padding: "6px 10px", borderRadius: "6px" }}
               >
                 Cancelar
