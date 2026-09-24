@@ -25,7 +25,8 @@ const getBackgroundColor = (nota: any) => {
 
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
 
-const Votacao = ({ edicaoId, inscricaoId, userId }: any) => {
+// `encerrada`: projeto de uma edição anterior — só mostra a avaliação já feita.
+const Votacao = ({ edicaoId, inscricaoId, userId, encerrada = false }: any) => {
   const jwt = getTokenFromLocalCookie()
   // gaurdar para usal mais tarde
   const [avaliacao, setAvaliacao] = useState<any>(null)
@@ -133,7 +134,6 @@ const Votacao = ({ edicaoId, inscricaoId, userId }: any) => {
             notas: numberToWord[value], // Envia o nome da avaliação, ex: "Insuficiente", "Suficiente", etc.
             comentario: numberToText[value],
             // Ajustar para passar os IDs do usuário e da inscrição
-            user_id: userId, // ID do usuário jurado
             inscricoe: inscricaoId, // ID da inscrição
           },
         }),
@@ -201,6 +201,10 @@ const Votacao = ({ edicaoId, inscricaoId, userId }: any) => {
             </div>
           </div>
         </>
+      ) : encerrada ? (
+        <p className="text-center text-gray-600 text-lg">
+          A avaliação desta edição está encerrada.
+        </p>
       ) : (
         <>
           <h1 className="text-2xl font-bold mb-6 text-center">Avaliação</h1>

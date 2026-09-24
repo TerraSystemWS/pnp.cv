@@ -333,6 +333,7 @@ const VpublicaDetalhes = ({ edicoes, social, contato, inscricao, navbar }: any) 
                 edicaoId={edicoes?.data?.[0]?.id}
                 inscricaoId={inscricao.data.id}
                 userId={nhaId}
+                encerrada={!votacaoAberta}
               />
             </SectionPanel>
           )}

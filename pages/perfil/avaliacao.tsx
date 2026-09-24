@@ -138,6 +138,13 @@ const Avaliacao = ({
               variant="inline"
             />
 
+            {/* Só a edição mais recente se avalia; as anteriores ficam só para consulta. */}
+            {edicaoSelecionada !== edicoesDisponiveis?.[0] && (
+              <div style={{ margin: "0 0 1.5rem", padding: "0.85rem 1.25rem", background: BG_ALT, border: `1px solid ${BORDER}`, borderRadius: "8px", color: INK_SOFT, fontSize: "0.95rem" }}>
+                A avaliação da {edicaoSelecionada}ª edição está encerrada — os projetos ficam disponíveis só para consulta.
+              </div>
+            )}
+
             {!edicaoMaisRecente ? (
               <p style={{ color: INK_SOFT, textAlign: "center", padding: "3rem 0" }}>
                 Não há edições de concursos disponíveis no momento.
