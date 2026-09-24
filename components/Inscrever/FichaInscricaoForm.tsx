@@ -6,6 +6,7 @@ import { GOLD, GOLD_DARK, INK, INK_SOFT, BG, BG_ALT, BORDER } from "../../lib/th
 
 interface Inputs {
   nome_completo: string
+  responsavel: string
   sede: string
   nif: number
   telefone: number
@@ -25,13 +26,15 @@ export interface FormHandle {
   submit: () => void
 }
 
-const REQUIRED: (keyof Inputs)[] = ["nome_completo"]
+const REQUIRED: (keyof Inputs)[] = ["nome_completo", "responsavel"]
 
+// Campos da "Identificação do Concorrente" da ficha de inscrição do regulamento.
 const FIELDS = [
-  { label: "Nome Completo", name: "nome_completo" as const, type: "text",   span: 2, required: true  },
-  { label: "NIF",           name: "nif"           as const, type: "number", span: 1, required: false },
-  { label: "Sede ou Local de Residência", name: "sede" as const, type: "text", span: 2, required: false },
-  { label: "Telefone",      name: "telefone"      as const, type: "tel",    span: 1, required: false },
+  { label: "Concorrente (Agência, Produtora, Gráfica, Media, Criativo Independente ou Estudante)", name: "nome_completo" as const, type: "text", span: 2, required: true },
+  { label: "NIF (se aplicável)", name: "nif" as const, type: "number", span: 1, required: false },
+  { label: "Nome do Responsável pela Inscrição", name: "responsavel" as const, type: "text", span: 2, required: true },
+  { label: "Endereço completo", name: "sede" as const, type: "text", span: 2, required: false },
+  { label: "Telefone", name: "telefone" as const, type: "tel", span: 1, required: false },
 ]
 
 const FichaInscricaoForm = forwardRef<FormHandle, Props>(
@@ -46,7 +49,7 @@ const FichaInscricaoForm = forwardRef<FormHandle, Props>(
           method: "PUT",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${getTokenFromLocalCookie()}` },
           body: JSON.stringify({
-            data: { nome_completo: data.nome_completo, NIF: data.nif || 0, sede: data.sede, telefone: data.telefone || 0 },
+            data: { nome_completo: data.nome_completo, responsavel: data.responsavel, NIF: data.nif || null, sede: data.sede, telefone: data.telefone || 0 },
           }),
         })
         if (res.ok) {

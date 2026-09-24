@@ -51,3 +51,26 @@ export function isCategoriaCandidatavel(titulo?: string | null) {
 export function formatPrazo(expira_em: string) {
   return new Date(expira_em).toLocaleDateString("pt-PT", { day: "numeric", month: "long" })
 }
+
+// Meios de divulgação da ficha de inscrição (lista para escolher).
+export const MEIOS_DIVULGACAO = [
+  "Televisão",
+  "Rádio",
+  "Imprensa escrita",
+  "Outdoor / Via pública",
+  "Redes sociais",
+  "Website / Digital",
+  "Mobile / Apps",
+  "Cinema",
+  "Ponto de venda",
+  "Eventos / Ativações",
+  "Email / Marketing direto",
+  "Outro",
+]
+
+// Limite da "Breve descrição" da peça, definido no regulamento.
+export const MAX_PALAVRAS_DESCRICAO = 200
+
+export function contarPalavras(texto?: string | null) {
+  return String(texto ?? "").trim().split(/\s+/).filter(Boolean).length
+}

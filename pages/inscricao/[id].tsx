@@ -35,9 +35,9 @@ interface FormHandle {
 type SaveStatus = "idle" | "saving" | "saved" | "error"
 
 const STEPS = [
-  { label: "Dados Pessoais", desc: "Nome, email e contacto" },
-  { label: "Ficha Técnica",  desc: "Projeto e conceito" },
-  { label: "Equipa",         desc: "Colaboradores e datas" },
+  { label: "Concorrente",   desc: "Identificação do concorrente e do responsável" },
+  { label: "Peça",          desc: "Categoria, veiculação, meios e descrição" },
+  { label: "Equipa",        desc: "Equipa técnica e funções" },
   { label: "Documentos",     desc: "Ficheiros do trabalho" },
 ]
 
@@ -72,10 +72,11 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: Props) => {
     setEmptyWarning(false)
   }, [activeStep])
 
+  // Os mesmos requisitos que o servidor exige ao submeter.
   const stepDone = [
-    !!attrs?.nome_completo,
-    !!(attrs?.categoria && attrs?.nome_projeto),
-    !!attrs?.coord_prod,
+    !!(attrs?.nome_completo && attrs?.responsavel),
+    !!(attrs?.categoria && attrs?.nome_projeto && attrs?.con_criativo && attrs?.meios_divulgacao?.length),
+    !!attrs?.equipa?.length,
     existingFiles.length > 0,
   ]
   const isCurrentStepDone = readOnly || stepDone[activeStep] || savedSteps[activeStep]
@@ -326,7 +327,7 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: Props) => {
               ref={ref0}
               url={url}
               email={attrs?.email ?? ""}
-              defaults={{ nome_completo: attrs?.nome_completo, sede: attrs?.sede, nif: attrs?.NIF as any, telefone: attrs?.telefone as any }}
+              defaults={{ nome_completo: attrs?.nome_completo, responsavel: attrs?.responsavel, sede: attrs?.sede, nif: attrs?.NIF as any, telefone: attrs?.telefone as any }}
               onSaved={(data) => handleFormSaved(0, data)}
               onSaveStatusChange={setSaveStatus}
             />
@@ -336,7 +337,7 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: Props) => {
               ref={ref1}
               url={url}
               categorias={categorias}
-              defaults={{ categoria: attrs?.categoria, nome_projeto: attrs?.nome_projeto, con_criativo: attrs?.con_criativo }}
+              defaults={{ categoria: attrs?.categoria, nome_projeto: attrs?.nome_projeto, data_divulgacao: attrs?.data_divulgacao, meios_divulgacao: attrs?.meios_divulgacao ?? [], con_criativo: attrs?.con_criativo }}
               onSaved={(data) => handleFormSaved(1, data)}
               onSaveStatusChange={setSaveStatus}
             />
@@ -345,7 +346,7 @@ const Inscrever = ({ social, contato, edicao, navbar, inscricao }: Props) => {
             <EquipaForm
               ref={ref2}
               url={url}
-              defaults={{ coord_prod: attrs?.coord_prod, dir_foto: attrs?.dir_foto, dir_art: attrs?.dir_art, realizador: attrs?.realizador, editor: attrs?.editor, autor_jingle: attrs?.autor_jingle, designer: attrs?.designer, outras_consideracoes: attrs?.outras_consideracoes, data_producao: attrs?.data_producao, data_divulgacao: attrs?.data_divulgacao, data_apresentacao_publica: attrs?.data_apresentacao_publica }}
+              defaults={{ equipa: (attrs?.equipa ?? []).map((m) => ({ nome: m.nome, funcao: m.funcao ?? "" })), outras_consideracoes: attrs?.outras_consideracoes }}
               onSaved={(data) => handleFormSaved(2, data)}
               onSaveStatusChange={setSaveStatus}
             />

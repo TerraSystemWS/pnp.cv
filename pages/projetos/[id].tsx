@@ -170,6 +170,9 @@ const VpublicaDetalhes = ({ edicoes, social, contato, inscricao, navbar }: any) 
   // Só se vota nos trabalhos da edição atual (a mais recente); as anteriores estão encerradas.
   const projetoEdicaoNum = attr.edicoes?.data?.attributes?.N_Edicao
   const votacaoAberta = !!projetoEdicaoNum && projetoEdicaoNum === edicaoNum
+  // Candidaturas feitas com a ficha da 8ª edição (equipa em lista livre);
+  // as antigas continuam a mostrar os campos fixos de equipa e datas.
+  const novaFicha = (attr.equipa ?? []).length > 0
 
   const onVotar = async () => {
     const jwt = getTokenFromLocalCookie()
@@ -224,7 +227,7 @@ const VpublicaDetalhes = ({ edicoes, social, contato, inscricao, navbar }: any) 
         </h1>
         {edicaoNum && (
           <p style={{ fontFamily: FONT, fontSize: "0.99rem", color: INK_SOFT, animation: "fadeUp 0.8s ease 0.2s both" }}>
-            Concorrente da {edicaoNum}ª edição
+            Concorrente da {projetoEdicaoNum ?? edicaoNum}ª edição
           </p>
         )}
       </div>
@@ -237,24 +240,27 @@ const VpublicaDetalhes = ({ edicoes, social, contato, inscricao, navbar }: any) 
           {!loading && isJury && (
             <SectionPanel title="Ficha de Inscrição" subtitle="Dados do participante">
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "0 2rem" }}>
-                <Field label="Nome Completo" value={ficha?.nome_completo ?? attr.nome_completo} />
+                <Field label="Concorrente" value={ficha?.nome_completo ?? attr.nome_completo} />
+                <Field label="Responsável pela Inscrição" value={ficha?.responsavel} />
                 <Field label="NIF" value={ficha?.NIF} />
                 <Field label="Email" value={ficha?.email} />
-                <Field label="Sede / Residência" value={ficha?.sede} />
+                <Field label="Endereço" value={ficha?.sede} />
                 <Field label="Telefone" value={ficha?.telefone} />
               </div>
             </SectionPanel>
           )}
 
           {/* Ficha Técnica — always visible */}
-          <SectionPanel title="Ficha Técnica" subtitle="Categoria e conceito criativo">
+          <SectionPanel title="Ficha Técnica" subtitle="Categoria, veiculação e descrição">
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "0 2rem" }}>
               <Field label="Categoria" value={attr.categoria} />
-              <Field label="Nome do Projeto" value={attr.nome_projeto} />
+              <Field label="Título da peça" value={attr.nome_projeto} />
+              {novaFicha && <Field label="Data de veiculação" value={attr.data_divulgacao} />}
+              <Field label="Meios de divulgação" value={(attr.meios_divulgacao ?? []).join(", ")} />
             </div>
             {attr.con_criativo && (
               <div style={{ marginTop: "0.5rem", padding: "1.25rem 1.5rem", background: BG_ALT, border: `1px solid ${BORDER}`, borderRadius: "10px" }}>
-                <p style={{ fontFamily: FONT, fontSize: "0.825rem", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, margin: "0 0 0.5rem" }}>Conceito Criativo</p>
+                <p style={{ fontFamily: FONT, fontSize: "0.825rem", letterSpacing: "0.04em", textTransform: "uppercase", fontWeight: 700, color: GOLD_DARK, margin: "0 0 0.5rem" }}>{novaFicha ? "Descrição" : "Conceito Criativo"}</p>
                 <p style={{ fontFamily: FONT, fontSize: "1.045rem", color: INK, margin: 0, lineHeight: 1.7 }}>{attr.con_criativo}</p>
               </div>
             )}
@@ -262,7 +268,14 @@ const VpublicaDetalhes = ({ edicoes, social, contato, inscricao, navbar }: any) 
 
           {/* Equipa — só júri */}
           {!loading && isJury && (
-            <SectionPanel title="Equipa do Projeto" subtitle="Colaboradores e datas">
+            <SectionPanel title="Equipa do Projeto" subtitle={novaFicha ? "Equipa técnica e funções" : "Colaboradores e datas"}>
+              {novaFicha ? (
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "0 2rem" }}>
+                {attr.equipa.map((m: any, i: number) => (
+                  <Field key={m.id ?? i} label={m.funcao || "Membro"} value={m.nome} />
+                ))}
+              </div>
+              ) : (
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "0 2rem" }}>
                 <Field label="Coordenador / Produtor"     value={attr.coord_prod} />
                 <Field label="Diretor de Fotografia"       value={attr.dir_foto} />
@@ -275,6 +288,7 @@ const VpublicaDetalhes = ({ edicoes, social, contato, inscricao, navbar }: any) 
                 <Field label="Data de Divulgação"          value={attr.data_divulgacao} />
                 <Field label="Data de Apresentação Pública" value={attr.data_apresentacao_publica} />
               </div>
+              )}
               {attr.outras_consideracoes && (
                 <Field label="Outras Considerações" value={attr.outras_consideracoes} />
               )}
@@ -400,7 +414,7 @@ export async function getServerSideProps({ query }: any) {
     fetcher(`${api_link}/api/edicoes?populate[categoria][fields]=titulo,id&${queri}`),
     fetcher(`${api_link}/api/contato`),
     fetcher(`${api_link}/api/menus?populate=deep`),
-    fetcher(`${api_link}/api/inscricoes/${id}?populate[fileLink][populate][ficheiro][fields]=url&populate[edicoes][fields][0]=N_Edicao`),
+    fetcher(`${api_link}/api/inscricoes/${id}?populate[fileLink][populate][ficheiro][fields]=url&populate[edicoes][fields][0]=N_Edicao&populate[equipa]=*`),
   ])
   const [edicoes, contato, menus, inscritos] = results.map((r: any) => {
     if (r.status === "fulfilled") return r.value

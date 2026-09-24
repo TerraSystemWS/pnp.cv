@@ -87,6 +87,9 @@ export interface FileLink {
 
 export interface Inscricao {
   nome_completo: string
+  responsavel?: string
+  meios_divulgacao?: string[] | null
+  equipa?: { id?: number; nome: string; funcao?: string | null }[]
   email: string
   sede?: string
   NIF?: number
