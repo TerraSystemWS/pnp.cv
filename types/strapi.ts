@@ -109,6 +109,9 @@ export interface Inscricao {
   // Só presentes nas rotas do dono (/inscricoes/mine/*).
   url?: string
   publishedAt?: string | null
+  submetida_em?: string | null
+  confirmada_em?: string | null
+  expira_em?: string | null
 }
 
 export interface Avaliacao {

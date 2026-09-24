@@ -10,6 +10,7 @@ import Swal from "sweetalert2"
 import { useFetchUser } from "../../lib/authContext"
 import { useEffect, useState } from "react"
 import { GOLD, GOLD_DARK, INK, INK_SOFT, BG, BG_ALT, CARD, BORDER, FONT, FONT_IMPORT } from "../../lib/theme"
+import { getEstado, ESTADO_LABEL, diasRestantes } from "../../lib/inscricaoStatus"
 
 const api_link = process.env.NEXT_PUBLIC_STRAPI_URL
 
@@ -20,6 +21,9 @@ interface MinhaInscricao {
   categoria: string | null
   publishedAt: string | null
   updatedAt: string
+  submetida_em: string | null
+  confirmada_em: string | null
+  expira_em: string | null
 }
 
 const Inscreve = ({ social, contato, edicao, navbar }: any) => {
@@ -72,7 +76,7 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
       const res = await apiClient.post("/api/inscricoes/mine", {}, jwt)
       const url = res?.data?.url
       if (!url) throw new Error("Resposta sem url")
-      Swal.fire("Inscrição criada!", `Tem ${diffDays} dias para finalizar o processo.`, "success")
+      Swal.fire("Inscrição criada!", "Tem 7 dias para concluir a candidatura e confirmá-la no email que lhe vamos enviar. Caso contrário, será eliminada.", "success")
       router.push(`/inscricao/${url}`)
     } catch (err) {
       const text = err instanceof ApiError && err.status === 403
@@ -343,6 +347,12 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
                 </button>
               </div>
 
+              {router.query.confirmada === "1" && (
+                <div style={{ marginBottom: "1.25rem", padding: "0.85rem 1.25rem", background: `${GOLD}14`, border: `1px solid ${GOLD}`, borderRadius: "8px", color: INK, fontSize: "0.95rem", fontWeight: 700 }}>
+                  ✓ Candidatura confirmada com sucesso. Obrigado pela sua participação!
+                </div>
+              )}
+
               {minhas === null ? (
                 <p style={{ color: INK_SOFT, fontSize: "0.92rem" }}>A carregar…</p>
               ) : minhas.length === 0 ? (
@@ -366,9 +376,16 @@ const Inscreve = ({ social, contato, edicao, navbar }: any) => {
                           {m.categoria || "Categoria por escolher"} · atualizada a {new Date(m.updatedAt).toLocaleDateString("pt-PT")}
                         </p>
                       </div>
-                      <span className="pnp-badge" style={m.publishedAt ? { background: `${GOLD}22`, borderColor: GOLD } : undefined}>
-                        {m.publishedAt ? "Aceite" : "Em preparação"}
-                      </span>
+                      <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "0.3rem", flexShrink: 0 }}>
+                        <span className="pnp-badge" style={getEstado(m) === "aceite" || getEstado(m) === "confirmada" ? { background: `${GOLD}22`, borderColor: GOLD } : undefined}>
+                          {ESTADO_LABEL[getEstado(m)]}
+                        </span>
+                        {diasRestantes(m) !== null && (
+                          <span style={{ fontSize: "0.78rem", fontWeight: 700, color: (diasRestantes(m) ?? 0) <= 2 ? "#c0392b" : INK_SOFT }}>
+                            {diasRestantes(m) === 0 ? "Expira hoje" : `Expira em ${diasRestantes(m)} dia${diasRestantes(m) === 1 ? "" : "s"}`}
+                          </span>
+                        )}
+                      </div>
                     </Link>
                   ))}
                 </div>
