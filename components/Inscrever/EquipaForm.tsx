@@ -1,5 +1,7 @@
 import { useState, forwardRef, useImperativeHandle } from "react"
 import { useForm } from "react-hook-form"
+import { getStrapiURL } from "../../lib/api"
+import { getTokenFromLocalCookie } from "../../lib/auth"
 import { GOLD, GOLD_DARK, INK, INK_SOFT, BG, BORDER } from "../../lib/theme"
 
 interface Inputs {
@@ -17,8 +19,7 @@ interface Inputs {
 }
 
 interface Props {
-  cid: string
-  apiLink: string
+  url: string
   defaults: Partial<Inputs>
   onSaved?: (data: Inputs) => void
   onSaveStatusChange?: (status: "idle" | "saving" | "saved" | "error") => void
@@ -48,16 +49,16 @@ const DATE_FIELDS: { name: keyof Inputs; label: string }[] = [
 ]
 
 const EquipaForm = forwardRef<FormHandle, Props>(
-  ({ cid, apiLink, defaults, onSaved, onSaveStatusChange }, ref) => {
+  ({ url, defaults, onSaved, onSaveStatusChange }, ref) => {
     const { register, handleSubmit, reset, getValues } = useForm<Inputs>({ defaultValues: defaults })
     const [highlighted, setHighlighted] = useState<Set<string>>(new Set())
 
     const doSave = handleSubmit(async (data) => {
       onSaveStatusChange?.("saving")
       try {
-        const res = await fetch(`${apiLink}/api/inscricoes/${cid}`, {
+        const res = await fetch(`${getStrapiURL()}/api/inscricoes/mine/${url}`, {
           method: "PUT",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${getTokenFromLocalCookie()}` },
           body: JSON.stringify({ data }),
         })
         if (res.ok) {

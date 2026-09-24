@@ -8,6 +8,7 @@ import qs from "qs"
 import UserProfileCard from "../../components/custom/sidemenu"
 import EdicaoPicker from "../../components/custom/EdicaoPicker"
 import { hasJuryAccess } from "../../lib/roles"
+import { getTokenFromServerCookie } from "../../lib/auth"
 import { getEdicoesDisponiveis, resolveEdicaoSelecionada } from "../../lib/edicoes"
 import { GOLD, GOLD_DARK, INK, INK_SOFT, BG, BG_ALT, CARD, BORDER, FONT, FONT_IMPORT } from "../../lib/theme"
 
@@ -215,12 +216,13 @@ const VotacaoPublicaStatus = ({ social, contato, Vpublica, navbar, edicoesDispon
 export default VotacaoPublicaStatus
 
 // Fetch data on the server side
-export const getServerSideProps = async ({ query: routerQuery }: any) => {
+export const getServerSideProps = async ({ query: routerQuery, req }: any) => {
   try {
     if (!api_link) {
       throw new Error("API_BASE_URL is not defined")
     }
 
+    const jwt = getTokenFromServerCookie(req)
     const edicoesDisponiveis = await getEdicoesDisponiveis()
     const edicaoSelecionada = resolveEdicaoSelecionada(routerQuery.edicao, edicoesDisponiveis)
 
@@ -241,7 +243,8 @@ export const getServerSideProps = async ({ query: routerQuery }: any) => {
     const results = await Promise.allSettled([
       fetcher(`${api_link}/api/contato`),
       fetcher(`${api_link}/api/menus?populate=deep`),
-      fetcher(`${api_link}/api/inscricoes?${query}`),
+      // Com o token do júri: os votos (votacao_publicas) só são legíveis por jurados.
+      fetcher(`${api_link}/api/inscricoes?${query}`, jwt ? { headers: { Authorization: `Bearer ${jwt}` } } : {}),
     ])
     const [contato, menus, inscricoes] = results.map((r: any) => {
       if (r.status === "fulfilled") return r.value

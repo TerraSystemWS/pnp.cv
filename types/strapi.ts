@@ -106,6 +106,9 @@ export interface Inscricao {
   data_divulgacao?: string
   data_apresentacao_publica?: string
   fileLink?: FileLink[]
+  // Só presentes nas rotas do dono (/inscricoes/mine/*).
+  url?: string
+  publishedAt?: string | null
 }
 
 export interface Avaliacao {

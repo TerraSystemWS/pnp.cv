@@ -24,12 +24,14 @@ export const unsetToken = (): void => {
   Router.reload()
 }
 
+// Nome a mostrar: contas públicas têm `nome` (o username é o próprio email);
+// contas antigas de júri só têm username.
 export const getUserFromLocalCookie = (): Promise<string | undefined> | undefined => {
   const jwt = getTokenFromLocalCookie()
   if (!jwt) return
   return apiClient
     .getWithAuth("/api/users/me", jwt)
-    .then((data: { username: string }) => data.username)
+    .then((data: { username: string; nome?: string }) => data.nome || data.username)
     .catch((error: unknown) => { console.error(error); return undefined })
 }
 
@@ -83,4 +85,13 @@ export const getIdFromServerCookie = (req: IncomingMessage): string | undefined 
     .find((c) => c.trim().startsWith("id="))
   if (!idCookie) return undefined
   return idCookie.split("=")[1]
+}
+
+// Abre o diálogo de login da Navbar a partir de qualquer página
+// (ex: "Entrar para votar", "Entrar para se candidatar").
+export const OPEN_LOGIN_EVENT = "pnp:open-login"
+
+export const openLogin = (): void => {
+  if (typeof window === "undefined") return
+  window.dispatchEvent(new Event(OPEN_LOGIN_EVENT))
 }

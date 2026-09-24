@@ -49,4 +49,17 @@ export const apiClient = {
       body: JSON.stringify(body),
       ...options,
     }),
+
+  putWithAuth: (path: string, body: unknown, jwt: string) =>
+    fetcher(`${getStrapiURL()}${path}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${jwt}` },
+      body: JSON.stringify(body),
+    }),
+
+  deleteWithAuth: (path: string, jwt: string) =>
+    fetcher(`${getStrapiURL()}${path}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${jwt}` },
+    }),
 }

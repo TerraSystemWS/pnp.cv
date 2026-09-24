@@ -1,10 +1,15 @@
 import { useState } from "react"
+import Swal from "sweetalert2"
+import { apiClient } from "../../lib/api"
+import { getTokenFromLocalCookie } from "../../lib/auth"
 import { FileLink } from "../../types/strapi"
 import { GOLD, GOLD_DARK, INK, INK_SOFT, BG, BG_ALT, CARD, BORDER } from "../../lib/theme"
 
 interface Props {
-  cid: string
+  url: string
   apiLink: string
+  // Candidatura já aceite — não se pode enviar nem apagar ficheiros.
+  readOnly?: boolean
   existingFiles: FileLink[]
   onFilesUpdated: (files: FileLink[]) => void
 }
@@ -15,9 +20,39 @@ interface UploadingFile {
   status: "uploading" | "done" | "error"
 }
 
-export default function FileUploadSection({ cid, apiLink, existingFiles, onFilesUpdated }: Props) {
+export default function FileUploadSection({ url, apiLink, readOnly = false, existingFiles, onFilesUpdated }: Props) {
   const [uploading, setUploading] = useState<UploadingFile[]>([])
   const [isDragging, setIsDragging] = useState(false)
+  const [deletingId, setDeletingId] = useState<number | null>(null)
+  const jwt = getTokenFromLocalCookie() ?? ""
+  const authHeader = { Authorization: `Bearer ${jwt}` }
+
+  const deleteFile = async (file: FileLink) => {
+    const fileId = file.ficheiro.data?.id
+    if (!fileId) return
+    const result = await Swal.fire({
+      title: "Apagar ficheiro?",
+      text: `"${file.titulo}" será removido da candidatura. Esta ação não pode ser desfeita.`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#c0392b",
+      cancelButtonColor: "#8a8170",
+      confirmButtonText: "Sim, apagar",
+      cancelButtonText: "Cancelar",
+    })
+    if (!result.isConfirmed) return
+
+    setDeletingId(fileId)
+    try {
+      const res = await apiClient.deleteWithAuth(`/api/inscricoes/mine/${url}/files/${fileId}`, jwt)
+      onFilesUpdated(res.data?.attributes?.fileLink ?? [])
+    } catch (err) {
+      console.error("Erro ao apagar ficheiro:", err)
+      Swal.fire({ icon: "error", title: "Erro", text: "Não foi possível apagar o ficheiro. Tente novamente." })
+    } finally {
+      setDeletingId(null)
+    }
+  }
 
   const processFiles = async (selectedFiles: FileList) => {
     const list: UploadingFile[] = Array.from(selectedFiles).map((f) => ({
@@ -82,6 +117,7 @@ export default function FileUploadSection({ cid, apiLink, existingFiles, onFiles
         }
 
         xhr.open("POST", `${apiLink}/api/chunked-upload/${uploadId}/chunks/${chunkIndex}`)
+        xhr.setRequestHeader("Authorization", `Bearer ${jwt}`)
         xhr.send(formData)
       })
 
@@ -95,7 +131,7 @@ export default function FileUploadSection({ cid, apiLink, existingFiles, onFiles
 
         const initRes = await fetch(`${apiLink}/api/chunked-upload/init`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", ...authHeader },
           body: JSON.stringify({
             filename: file.name,
             mimetype: file.type || "application/octet-stream",
@@ -129,54 +165,25 @@ export default function FileUploadSection({ cid, apiLink, existingFiles, onFiles
 
         const completeRes = await fetch(`${apiLink}/api/chunked-upload/${uploadId}/complete`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", ...authHeader },
           body: JSON.stringify({}),
         })
         if (!completeRes.ok) throw new Error("Não foi possível concluir o upload")
         const uploadData = await completeRes.json()
 
-        // Fetch current inscription file list
-        const inscricaoRes = await fetch(
-          `${apiLink}/api/inscricoes/${cid}?populate[fileLink][populate][ficheiro][fields]=name,hash,ext,mime,url`
+        // Associa o ficheiro à candidatura no servidor (que confirma que é do utilizador).
+        const attached = await apiClient.post(
+          `/api/inscricoes/mine/${url}/files`,
+          { fileIds: uploadData.map((f: { id: number }) => f.id) },
+          jwt
         )
-        const inscricaoData = await inscricaoRes.json()
-        const existing: FileLink[] = inscricaoData.data?.attributes?.fileLink ?? []
+        onFilesUpdated(attached.data?.attributes?.fileLink ?? [])
 
-        const merged = [
-          ...existing.map((f: FileLink) => ({
-            titulo: f.titulo,
-            publico: f.publico,
-            ficheiro: { id: f.ficheiro.data?.id },
-          })),
-          ...uploadData.map((f: { id: number; name: string }) => ({
-            titulo: f.name,
-            publico: false,
-            ficheiro: { id: f.id },
-          })),
-        ]
-
-        const putRes = await fetch(`${apiLink}/api/inscricoes/${cid}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ data: { fileLink: merged } }),
+        setUploading((prev) => {
+          const next = [...prev]
+          next[index] = { ...next[index], progress: 100, status: "done" }
+          return next
         })
-
-        if (putRes.ok) {
-          // Fetch final file list to update parent
-          const finalRes = await fetch(
-            `${apiLink}/api/inscricoes/${cid}?populate[fileLink][populate][ficheiro][fields]=name,hash,ext,mime,url`
-          )
-          const finalData = await finalRes.json()
-          onFilesUpdated(finalData.data?.attributes?.fileLink ?? [])
-
-          setUploading((prev) => {
-            const next = [...prev]
-            next[index] = { ...next[index], progress: 100, status: "done" }
-            return next
-          })
-        } else {
-          throw new Error("Não foi possível associar o ficheiro à inscrição")
-        }
       } catch {
         setUploading((prev) => {
           const next = [...prev]
@@ -203,28 +210,42 @@ export default function FileUploadSection({ cid, apiLink, existingFiles, onFiles
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-between",
+                  gap: "1rem",
                   padding: "0.85rem 1.25rem",
                   background: i % 2 === 0 ? CARD : BG_ALT,
                   borderBottom: i < existingFiles.length - 1 ? `1px solid ${BORDER}` : "none",
                 }}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", minWidth: 0 }}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0 }}>
                     <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" stroke={GOLD_DARK} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                     <path d="M14 2v6h6" stroke={GOLD_DARK} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
-                  <span style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.99rem", color: INK }}>
+                  <span style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.99rem", color: INK, overflowWrap: "anywhere" }}>
                     {f.titulo}
                   </span>
                 </div>
-                <a
-                  href={`${apiLink}${f.ficheiro.data?.attributes?.url}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.858rem", fontWeight: 700, color: INK, textDecoration: "none", padding: "4px 12px", border: `1px solid ${BORDER}`, borderRadius: "100px" }}
-                >
-                  Abrir
-                </a>
+                <div style={{ display: "flex", gap: "0.5rem", flexShrink: 0 }}>
+                  <a
+                    href={`${apiLink}${f.ficheiro.data?.attributes?.url}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.858rem", fontWeight: 700, color: INK, textDecoration: "none", padding: "4px 12px", border: `1px solid ${BORDER}`, borderRadius: "100px" }}
+                  >
+                    Abrir
+                  </a>
+                  {!readOnly && (
+                    <button
+                      type="button"
+                      onClick={() => deleteFile(f)}
+                      disabled={deletingId !== null}
+                      aria-label={`Apagar ${f.titulo}`}
+                      style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.858rem", fontWeight: 700, color: "#c0392b", background: "none", padding: "4px 12px", border: "1px solid #c0392b55", borderRadius: "100px", cursor: deletingId !== null ? "default" : "pointer", opacity: deletingId !== null && deletingId !== f.ficheiro.data?.id ? 0.5 : 1 }}
+                    >
+                      {deletingId === f.ficheiro.data?.id ? "A apagar…" : "Apagar"}
+                    </button>
+                  )}
+                </div>
               </div>
             ))}
           </div>
@@ -232,6 +253,7 @@ export default function FileUploadSection({ cid, apiLink, existingFiles, onFiles
       )}
 
       {/* Upload zone */}
+      {!readOnly && (
       <div>
         <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: "0.88rem", fontWeight: 700, color: GOLD_DARK, marginBottom: "0.75rem" }}>
           Adicionar Ficheiros
@@ -292,6 +314,8 @@ export default function FileUploadSection({ cid, apiLink, existingFiles, onFiles
           ))}
         </div>
       </div>
+
+      )}
 
       {/* Upload progress */}
       {uploading.length > 0 && (
